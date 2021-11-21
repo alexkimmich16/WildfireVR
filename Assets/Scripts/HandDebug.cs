@@ -2,7 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+public enum Movements
+{
+    Push = 0,
+    Spike = 1,
+    Fireball = 2,
+    Shield = 3,
+}
 public class HandDebug : MonoBehaviour
 {
     public float CountEverySecond = 20;
@@ -32,12 +38,16 @@ public class HandDebug : MonoBehaviour
     public List<MovementData> MoveStorage = new List<MovementData>();
 
     private float TotalTime;
-    
+
+    //inside
+    public Movements CurrentMove;
+
     void Update()
     {
         //MoveNum
         ScriptableNum.text = "Current Scriptable:  " + PackageNum;
         Set.text = "Is Set: " + MoveStorage[PackageNum].Set;
+        Set.text = "Is Set: " + CurrentMove.ToString(); ;
 
         if (Right.TriggerPressed() == true && Right.GripPressed() == true)
         {

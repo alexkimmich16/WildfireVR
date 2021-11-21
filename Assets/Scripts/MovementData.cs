@@ -21,9 +21,5 @@ public class MovementData : ScriptableObject
 
     public bool Set = false;
 
-    public enum Movements
-    {
-       Push = 0,
-       Slash = 1,
-    }
+
 }
