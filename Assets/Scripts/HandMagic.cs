@@ -76,7 +76,7 @@ public class HandMagic : MonoBehaviour
                 Vector3 directionToTarget = pos - pushedOBJ.transform.position;
                 float angle = Vector3.Angle(dir, directionToTarget);
                 float distance = directionToTarget.magnitude;
-                Debug.Log(angle + " " + pushedOBJ);
+                //Debug.Log(angle + " " + pushedOBJ);
 
                 Rigidbody pushed = pushedOBJ.GetComponent<Rigidbody>();
                 pushed.AddExplosionForce(PushAmount, pos, PushRadius);

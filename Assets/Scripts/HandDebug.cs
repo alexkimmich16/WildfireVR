@@ -4,10 +4,9 @@ using UnityEngine;
 using TMPro;
 public enum Movements
 {
-    Push = 0,
-    Spike = 1,
-    Fireball = 2,
-    Shield = 3,
+    Spike = 0,
+    Fireball = 1,
+    Shield = 2,
 }
 public class HandDebug : MonoBehaviour
 {
@@ -26,16 +25,18 @@ public class HandDebug : MonoBehaviour
 
     public TextMeshProUGUI ScriptableNum;
     public TextMeshProUGUI Set;
+    public TextMeshProUGUI Type;
 
     [Header("OnePackageOnly")]
     public bool ResetWallPackage;
     public int PackageNum;
 
     [Header("Lists")]
-    public List<Vector3> WorldPos = new List<Vector3>();
-    public List<Vector3> LocalPos = new List<Vector3>();
-    public List<Vector3> DifferencePos = new List<Vector3>();
-    public List<MovementData> MoveStorage = new List<MovementData>();
+    private List<Vector3> WorldPos = new List<Vector3>();
+    private List<Vector3> LocalPos = new List<Vector3>();
+    private List<Vector3> DifferencePos = new List<Vector3>();
+
+    public List<DataSubscript> DataFolders = new List<DataSubscript>();
 
     private float TotalTime;
 
@@ -45,9 +46,11 @@ public class HandDebug : MonoBehaviour
     void Update()
     {
         //MoveNum
+        
+        int num = (int)CurrentMove;
         ScriptableNum.text = "Current Scriptable:  " + PackageNum;
-        Set.text = "Is Set: " + MoveStorage[PackageNum].Set;
-        Set.text = "Is Set: " + CurrentMove.ToString(); ;
+        Set.text = "Is Set: " + DataFolders[num].Storage[PackageNum].Set;
+        Type.text = "Testing: " + DataFolders[num].Name;
 
         if (Right.TriggerPressed() == true && Right.GripPressed() == true)
         {
@@ -95,19 +98,20 @@ public class HandDebug : MonoBehaviour
         }
     }
 
-    void SetScriptableObject(int Set)
+    void SetScriptableObject(int Num)
     {
-        MoveStorage[Set].RightWorldPos = new List<Vector3>(WorldPos);
-        MoveStorage[Set].RightLocalPos = new List<Vector3>(LocalPos);
-        MoveStorage[Set].RightDifferencePos = new List<Vector3>(DifferencePos);
-        MoveStorage[Set].Time = TotalTime;
-        MoveStorage[Set].Interval = MaxTime;
-        MoveStorage[Set].Set = true;
+        int Type = (int)CurrentMove;
+        DataFolders[Type].Storage[Num].RightWorldPos = new List<Vector3>(WorldPos);
+        DataFolders[Type].Storage[Num].RightLocalPos = new List<Vector3>(LocalPos);
+        DataFolders[Type].Storage[Num].RightDifferencePos = new List<Vector3>(DifferencePos);
+        DataFolders[Type].Storage[Num].Time = TotalTime;
+        DataFolders[Type].Storage[Num].Interval = MaxTime;
+        DataFolders[Type].Storage[Num].Set = true;
     }
 
     public void ChangeCurrentStorage(int Add)
     {
-        if (PackageNum + Add > -1 && PackageNum + Add < MoveStorage.Count)
+        if (PackageNum + Add > -1 && PackageNum + Add < DataFolders[(int)CurrentMove].Storage.Count)
         {
             PackageNum += Add;
         }
@@ -115,16 +119,31 @@ public class HandDebug : MonoBehaviour
 
     public void Reset()
     {
-        MoveStorage[PackageNum].RightWorldPos.Clear();
-        MoveStorage[PackageNum].RightLocalPos.Clear();
-        MoveStorage[PackageNum].RightDifferencePos.Clear();
-        MoveStorage[PackageNum].Time = 0f;
-        MoveStorage[PackageNum].Interval = 0f;
-        MoveStorage[PackageNum].Set = false;
+        DataFolders[(int)CurrentMove].Storage[PackageNum].RightWorldPos.Clear();
+        DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Clear();
+        DataFolders[(int)CurrentMove].Storage[PackageNum].RightDifferencePos.Clear();
+        DataFolders[(int)CurrentMove].Storage[PackageNum].Time = 0f;
+        DataFolders[(int)CurrentMove].Storage[PackageNum].Interval = 0f;
+        DataFolders[(int)CurrentMove].Storage[PackageNum].Set = false;
     }
 
     void Start()
     {
         MaxTime = 1f / CountEverySecond;
+    }
+
+    public void ChangeType()
+    {
+        int Current = (int)CurrentMove;
+        int Max = System.Enum.GetValues(typeof(Movements)).Length;
+        if (Current + 1 == Max)
+        {
+            Current = 0;
+        }
+        else
+        {
+            Current += 1;
+        }
+        CurrentMove = (Movements)Current;
     }
 }
