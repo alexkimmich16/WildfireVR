@@ -42,7 +42,16 @@ public class HandDebug : MonoBehaviour
 
     //inside
     public Movements CurrentMove;
+    /*
+    public Material Normal;
+    public Material Fire;
 
+    void Start()
+    {
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        meshRenderer.material = Normal;
+    }
+    */
     void Update()
     {
         //MoveNum
@@ -145,5 +154,17 @@ public class HandDebug : MonoBehaviour
             Current += 1;
         }
         CurrentMove = (Movements)Current;
+    }
+
+    public void GetAverage()
+    {
+        //if(topHeaderBoxCollider.bounds.Intersects(currentHeader.boxCollider.bounds))
+        for (int i = 0; i < DataFolders[(int)CurrentMove].Storage.Count; i++)
+        {
+            if (DataFolders[(int)CurrentMove].Storage[i] == true)
+            {
+
+            }
+        }
     }
 }

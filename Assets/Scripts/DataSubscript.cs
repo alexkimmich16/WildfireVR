@@ -7,5 +7,7 @@ using UnityEngine;
 public class DataSubscript
 {
     public string Name;
+    public MovementData WorkingInfo;
     public List<MovementData> Storage = new List<MovementData>();
+
 }

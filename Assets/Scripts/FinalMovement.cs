@@ -2,13 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum DirectionShip
+{
+    Down = 0,
+    Forward = 1,
+    Back = 2,
+    Left = 3,
+    Right = 4,
+    Up = 5,
+}
 
-[CreateAssetMenu(fileName = "MoveData", menuName = "MovementData")]
-public class MovementData : ScriptableObject
+[CreateAssetMenu(fileName = "FinalMove", menuName = "FinalMove")]
+public class FinalMovement : MonoBehaviour
 {
     public Movements MoveType;
 
-    public float Time;
+    public float TotalTime;
     public float Interval;
 
     public List<Vector3> LeftWorldPos = new List<Vector3>();

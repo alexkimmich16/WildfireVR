@@ -52,7 +52,14 @@ public class HandActions : MonoBehaviour
         }
         return false;
     }
-    //private bool Started = false;
+    public void CheckSpike()
+    {
+        //buttom and 
+        if ()
+        {
+
+        }
+    }
     public void CheckForcePush()
     {
         //constant positive acceleation = CPA
@@ -75,12 +82,6 @@ public class HandActions : MonoBehaviour
         float CurrentVelocity = Speed;
 
         //check for state 0 requirements if meets requirements
-
-        //t total should be about 0.5 seconds with 70ish percent before halfway
-        //eventually ristrict to a cirtain angle from body, so you can't push straight down
-
-        //record video?
-        //just test?
 
         if (Left == false && Test == true)
         {
@@ -193,11 +194,7 @@ public class HandActions : MonoBehaviour
     void Start()
     {
         HM = HandMagic.instance;
-
-
         PS.Stop();
-        //List<InputDevice> devices = new List<InputDevice>();
-        //InputDevices.GetDevicesWithCharacteristics(controllerCharacteristics, devices);
     }
 
     public void Fly()
