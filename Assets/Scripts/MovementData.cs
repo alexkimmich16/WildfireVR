@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-[CreateAssetMenu(fileName = "MoveData", menuName = "MovementData")]
+/// <summary>
+/// a simulated animation used to get finalmovement
+/// </summary>
+[CreateAssetMenu(menuName = "Container/MovementData")]
 public class MovementData : ScriptableObject
 {
     public Movements MoveType;

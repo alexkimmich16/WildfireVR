@@ -35,6 +35,13 @@ public class HandActions : MonoBehaviour
     private float Speed;
 
     public bool Test;
+
+    public Collider MyCollider;
+
+    public List<bool> Around = new List<bool>();
+
+    private bool SpikeFirst = false;
+
     public bool TriggerPressed()
     {
         if (Trigger > HandMagic.instance.TriggerThreshold)
@@ -54,8 +61,22 @@ public class HandActions : MonoBehaviour
     }
     public void CheckSpike()
     {
-        //buttom and 
-        if ()
+        //if the spike
+        if (Around[] == true && GripPressed() == true)
+        {
+
+        }
+        
+        if (SpikeFirst == false && GripPressed() == true)
+        {
+            SpikeFirst = true;
+        }
+        else
+        {
+            SpikeFirst = false;
+        }
+
+        if (Around == )
         {
 
         }
@@ -152,6 +173,21 @@ public class HandActions : MonoBehaviour
         }
     }
 
+    public void CheckColliders()
+    {
+        for(int i = 0; i < Around.Count; i++)
+        {
+            if (HM.AroundColliders[i].bounds.Contains(MyCollider))
+            {
+                Around[i] = true;
+            }
+            else
+            {
+                Around[i] = false;
+            }
+            
+        }
+    }
     void Update()
     {
         if (Odd == true && Left == false)

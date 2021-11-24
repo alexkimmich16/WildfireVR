@@ -10,6 +10,11 @@ public enum Movements
 }
 public class HandDebug : MonoBehaviour
 {
+    #region Singleton
+    public static HandDebug instance;
+    void Awake() { instance = this; }
+    #endregion
+
     public float CountEverySecond = 20;
     private float MaxTime;
     private float Timer;
@@ -45,13 +50,8 @@ public class HandDebug : MonoBehaviour
     /*
     public Material Normal;
     public Material Fire;
-
-    void Start()
-    {
-        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-        meshRenderer.material = Normal;
-    }
     */
+
     void Update()
     {
         //MoveNum
@@ -139,6 +139,8 @@ public class HandDebug : MonoBehaviour
     void Start()
     {
         MaxTime = 1f / CountEverySecond;
+        //MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        //meshRenderer.material = Normal;
     }
 
     public void ChangeType()

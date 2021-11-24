@@ -39,6 +39,8 @@ public class HandMagic : MonoBehaviour
 
     public bool Sounds;
 
+    public List<Collider> AroundColliders = new List<Collider>()
+
     //check and ajust speed and time
 
     public void ChangeText(string stuff, int Num)

@@ -2,6 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// includes final movement requirements
+/// </summary>
+/// 
+[CreateAssetMenu(menuName = "Container/FinalData")]
+public class FinalMovement : ScriptableObject
+{
+    public Movements MoveType;
+
+    public float TotalTime;
+    public float Interval;
+
+    public List<Vector3> LeftWorldPos;
+    public List<Vector3> LeftLocalPos;
+    public List<Vector3> LeftDifferencePos;
+
+    public List<Vector3> RightWorldPos;
+    public List<Vector3> RightLocalPos;
+    public List<Vector3> RightDifferencePos;
+
+    public List<DirectionShip> Directions;
+
+    public bool Set = false;
+}
+
 public enum DirectionShip
 {
     Down = 0,
@@ -10,23 +35,4 @@ public enum DirectionShip
     Left = 3,
     Right = 4,
     Up = 5,
-}
-
-[CreateAssetMenu(fileName = "FinalMove", menuName = "FinalMove")]
-public class FinalMovement : MonoBehaviour
-{
-    public Movements MoveType;
-
-    public float TotalTime;
-    public float Interval;
-
-    public List<Vector3> LeftWorldPos = new List<Vector3>();
-    public List<Vector3> LeftLocalPos = new List<Vector3>();
-    public List<Vector3> LeftDifferencePos = new List<Vector3>();
-
-    public List<Vector3> RightWorldPos;
-    public List<Vector3> RightLocalPos;
-    public List<Vector3> RightDifferencePos;
-
-    public bool Set = false;
 }

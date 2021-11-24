@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67f9541f0f3c8174a9bb971b362658c8, type: 3}
   m_Name: 1 7
   m_EditorClassIdentifier: 
-  MoveType: 0
+  MoveType: 1
+  Time: 0
+  Interval: 0
   LeftWorldPos: []
   LeftLocalPos: []
   LeftDifferencePos: []
   RightWorldPos: []
   RightLocalPos: []
   RightDifferencePos: []
+  Set: 0
