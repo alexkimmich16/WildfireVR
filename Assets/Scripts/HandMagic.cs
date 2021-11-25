@@ -33,15 +33,18 @@ public class HandMagic : MonoBehaviour
     public float PushRadius;
     public float PushCost;
 
+    public Material Active;
+    public Material DeActive;
+
     public List<TextMeshProUGUI> text = new List<TextMeshProUGUI>();
 
     public AudioSource Force;
 
     public bool Sounds;
 
-    public List<Collider> AroundColliders = new List<Collider>()
+    public List<Collider> AroundColliders = new List<Collider>();
 
-    //check and ajust speed and time
+
 
     public void ChangeText(string stuff, int Num)
     {
@@ -51,6 +54,11 @@ public class HandMagic : MonoBehaviour
     void Start()
     {
         CurrentMagic = MaxMagic;
+    }
+
+    public void UseSpike()
+    {
+
     }
 
     public void UseForcePush(float ZDirection, Vector3 pos, Vector3 dir)
@@ -150,7 +158,6 @@ public class HandMagic : MonoBehaviour
 
         ShouldCharge = !UsingMagic;
     }
-
     
     void Charge()
     {

@@ -11,8 +11,7 @@ public class FinalMovement : ScriptableObject
 {
     public Movements MoveType;
 
-    public float TotalTime;
-    public float Interval;
+    //public float TotalTime;
 
     public List<Vector3> LeftWorldPos;
     public List<Vector3> LeftLocalPos;
@@ -21,8 +20,6 @@ public class FinalMovement : ScriptableObject
     public List<Vector3> RightWorldPos;
     public List<Vector3> RightLocalPos;
     public List<Vector3> RightDifferencePos;
-
-    public List<DirectionShip> Directions;
 
     public bool Set = false;
 }

@@ -6,6 +6,7 @@ using Photon.Realtime;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+    public bool DebugScript = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,11 +15,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void ConnectToServer()
     {
         PhotonNetwork.ConnectUsingSettings();
-        Debug.Log("try connect to server");
+        if(DebugScript == true)
+        {
+            Debug.Log("try connect to server");
+        }
     }
     public override void OnConnectedToMaster()
     {
-        Debug.Log("connected to server");
+        if (DebugScript == true)
+        {
+            Debug.Log("connected to server");
+        }
+        
         base.OnConnectedToMaster();
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 10;
@@ -36,13 +44,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Debug.Log("joined a room");
+        if (DebugScript == true)
+        {
+            Debug.Log("joined a room");
+        }
         base.OnJoinedRoom();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.Log("a new player joined");
+        if (DebugScript == true)
+        {
+            Debug.Log("a new player joined");
+        }
         base.OnPlayerEnteredRoom(newPlayer);
     }
 }

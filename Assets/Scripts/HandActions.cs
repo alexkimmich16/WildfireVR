@@ -40,7 +40,12 @@ public class HandActions : MonoBehaviour
 
     public List<bool> Around = new List<bool>();
 
-    private bool SpikeFirst = false;
+    private bool SpikeSequenceActive = false;
+
+    private int SpikeFrame;
+
+    public SkinnedMeshRenderer meshRenderer;
+
 
     public bool TriggerPressed()
     {
@@ -50,7 +55,6 @@ public class HandActions : MonoBehaviour
         }
         return false;
     }
-
     public bool GripPressed()
     {
         if (Grip > HandMagic.instance.GripThreshold)
@@ -62,23 +66,44 @@ public class HandActions : MonoBehaviour
     public void CheckSpike()
     {
         //if the spike
-        if (Around[] == true && GripPressed() == true)
+        if (Around[0] == true && SpikeSequenceActive == false)
         {
-
+            SpikeSequenceActive = true;
+            SpikeFrame = 0;
         }
-        
-        if (SpikeFirst == false && GripPressed() == true)
+        if (SpikeSequenceActive == true)
         {
-            SpikeFirst = true;
-        }
-        else
-        {
-            SpikeFirst = false;
-        }
+            //distance
+            //time
 
-        if (Around == )
-        {
+            meshRenderer.material = HM.Active;
 
+            Vector3 pos = transform.position - HandDebug.instance.Player.position;
+            float distance;
+            if (Left == true)
+            {
+                distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.LeftLocalPos[SpikeFrame]);
+            }
+            else
+            {
+                distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos[SpikeFrame]);
+            }
+
+            
+            if (HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count -1 == SpikeFrame)
+            {
+                if (Around[1] == true)
+                {
+                    //do spike
+                }
+            }
+
+            if (HandDebug.instance.Leanience < distance)
+            {
+                SpikeSequenceActive = false;
+                meshRenderer.material = HM.DeActive;
+            }
+            SpikeFrame += 1;
         }
     }
     public void CheckForcePush()
@@ -177,7 +202,7 @@ public class HandActions : MonoBehaviour
     {
         for(int i = 0; i < Around.Count; i++)
         {
-            if (HM.AroundColliders[i].bounds.Contains(MyCollider))
+            if (HM.AroundColliders[i].bounds.Intersects(MyCollider.bounds))
             {
                 Around[i] = true;
             }
@@ -190,6 +215,7 @@ public class HandActions : MonoBehaviour
     }
     void Update()
     {
+        CheckColliders();
         if (Odd == true && Left == false)
         {
             old = transform.position;
@@ -203,6 +229,7 @@ public class HandActions : MonoBehaviour
         }
         Odd = !Odd;
         CheckForcePush();
+        CheckSpike();
         SetRemoteStats();
     }
 

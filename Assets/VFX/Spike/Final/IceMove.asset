@@ -12,14 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c78ab4d85e42c1f4794f9af6a626f946, type: 3}
   m_Name: IceMove
   m_EditorClassIdentifier: 
-  MoveType: 1
-  TotalTime: 0
-  Interval: 0
+  MoveType: 0
   LeftWorldPos: []
   LeftLocalPos: []
   LeftDifferencePos: []
   RightWorldPos: []
   RightLocalPos: []
   RightDifferencePos: []
-  Directions: 
-  Set: 0
+  Set: 1

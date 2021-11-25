@@ -12,7 +12,8 @@ public class HandDebug : MonoBehaviour
 {
     #region Singleton
     public static HandDebug instance;
-    void Awake() { instance = this; }
+    void Awake() { instance = this; DontDestroyOnLoad(this.gameObject); }
+
     #endregion
 
     public float CountEverySecond = 20;
@@ -47,6 +48,8 @@ public class HandDebug : MonoBehaviour
 
     //inside
     public Movements CurrentMove;
+
+    public float Leanience;
     /*
     public Material Normal;
     public Material Fire;
@@ -128,6 +131,7 @@ public class HandDebug : MonoBehaviour
 
     public void Reset()
     {
+        Debug.Log("reset");
         DataFolders[(int)CurrentMove].Storage[PackageNum].RightWorldPos.Clear();
         DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Clear();
         DataFolders[(int)CurrentMove].Storage[PackageNum].RightDifferencePos.Clear();
@@ -160,13 +164,37 @@ public class HandDebug : MonoBehaviour
 
     public void GetAverage()
     {
-        //if(topHeaderBoxCollider.bounds.Intersects(currentHeader.boxCollider.bounds))
+        Debug.Log("getaverage");
+        List<Vector3> LocalLeft = new List<Vector3>(1000);
+        List<Vector3> LocalRight = new List<Vector3>(1000);
+
+        List<Vector3> AverageLocalLeft = new List<Vector3>(1000);
+        List<Vector3> AverageLocalRight = new List<Vector3>(1000);
+
+        int Count = 0;
         for (int i = 0; i < DataFolders[(int)CurrentMove].Storage.Count; i++)
         {
+            Count += 1;
             if (DataFolders[(int)CurrentMove].Storage[i] == true)
             {
-
+                for (int j = 0; j < DataFolders[(int)CurrentMove].Storage[i].LeftLocalPos.Count; j++)
+                {
+                    Vector3 localRight = DataFolders[(int)CurrentMove].Storage[i].RightLocalPos[j];
+                    Vector3 localLeft = DataFolders[(int)CurrentMove].Storage[i].LeftLocalPos[j];
+                    LocalLeft[j] += localLeft;
+                    LocalRight[j] += localRight;
+                }
             }
         }
+        for (int i = 0; i < LocalLeft.Count; i++)
+        {
+            AverageLocalLeft[i] = LocalLeft[i] / Count;
+            AverageLocalRight[i] = LocalRight[i] / Count;
+        }
+
+        DataFolders[(int)CurrentMove].FinalInfo.LeftLocalPos = new List<Vector3>(AverageLocalLeft);
+        DataFolders[(int)CurrentMove].FinalInfo.RightLocalPos = new List<Vector3>(AverageLocalRight);
+        DataFolders[(int)CurrentMove].FinalInfo.Set = true;
+        //
     }
 }
