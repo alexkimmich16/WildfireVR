@@ -10,11 +10,15 @@ public enum Movements
 }
 public class HandDebug : MonoBehaviour
 {
+    
     #region Singleton
     public static HandDebug instance;
     void Awake() { instance = this; DontDestroyOnLoad(this.gameObject); }
 
     #endregion
+
+    //check saving
+    //STRUCT REPLACES SUBSCRIPTS!!
 
     public float CountEverySecond = 20;
     private float MaxTime;
@@ -26,8 +30,6 @@ public class HandDebug : MonoBehaviour
 
     public HandActions Left;
     public HandActions Right;
-
-    //public WallUI wall;
 
     public TextMeshProUGUI ScriptableNum;
     public TextMeshProUGUI Set;
@@ -50,20 +52,14 @@ public class HandDebug : MonoBehaviour
     public Movements CurrentMove;
 
     public float Leanience;
-    /*
-    public Material Normal;
-    public Material Fire;
-    */
 
     void Update()
     {
         //MoveNum
-        
         int num = (int)CurrentMove;
         ScriptableNum.text = "Current Scriptable:  " + PackageNum;
         Set.text = "Is Set: " + DataFolders[num].Storage[PackageNum].Set;
         Type.text = "Testing: " + DataFolders[num].Name;
-
         if (Right.TriggerPressed() == true && Right.GripPressed() == true)
         {
             TotalTime += Time.deltaTime;
@@ -73,7 +69,6 @@ public class HandDebug : MonoBehaviour
             {
                 WorldPos.Add(Right.transform.position);
                 LocalPos.Add(Right.transform.position - Player.position);
-                //PackageNum
                 //each difference is this local - the last one
                 if (LocalPos.Count > 1)
                 {
@@ -109,7 +104,34 @@ public class HandDebug : MonoBehaviour
             TotalTime = 0f;
         }
     }
+    public void LoadScriptableObjects(AllData Load)
+    {
+        for (var t = 0; t < Load.allTypes.TotalTypes.Count; t++)//for each type
+        {
+            for (var i = 0; i < Load.allTypes.TotalTypes[t].InsideType.Count; i++)//for all the units in the type type
+            {
+                MovementData data = HandDebug.instance.DataFolders[t].Storage[i];
+                MovementDataAdd StructData = allTypes.TotalTypes[t].InsideType[i];
+                List<Vector3> LocalRight = new List<Vector3>();
+                List<Vector3> LocalLeft = new List<Vector3>();
+                for (var j = 0; j < Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft.Count / 3; j++)//for each localdata in unit
+                {
+                    ArrayNum = j * 3;
+                    Vector3 left = new Vector3(StructData.LocalLeft[ArrayNum], StructData.LocalLeft[ArrayNum + 1], StructData.LocalLeft[ArrayNum + 2]);
+                    LocalLeft.Add(left);
+                    Vector3 right = new Vector3(StructData.LocalRight[ArrayNum], StructData.LocalRight[ArrayNum + 1], StructData.LocalRight[ArrayNum + 2]);
+                    LocalRight.Add(right);
+                }
+                data.Time = StructData.Time;
+                data.Interval = StructData.Interval;
+                data.MoveType = (Movements)i;
+                data.RightLocalPos = new List<Vector3>(LocalRight);
+                data.LeftLocalPos = new List<Vector3>(LocalLeft);
 
+
+            }
+        }
+    }
     void SetScriptableObject(int Num)
     {
         int Type = (int)CurrentMove;
@@ -120,7 +142,6 @@ public class HandDebug : MonoBehaviour
         DataFolders[Type].Storage[Num].Interval = MaxTime;
         DataFolders[Type].Storage[Num].Set = true;
     }
-
     public void ChangeCurrentStorage(int Add)
     {
         if (PackageNum + Add > -1 && PackageNum + Add < DataFolders[(int)CurrentMove].Storage.Count)
@@ -196,5 +217,10 @@ public class HandDebug : MonoBehaviour
         DataFolders[(int)CurrentMove].FinalInfo.RightLocalPos = new List<Vector3>(AverageLocalRight);
         DataFolders[(int)CurrentMove].FinalInfo.Set = true;
         //
+    }
+
+    public void SaveStats()
+    {
+        SaveScript.SaveStats();
     }
 }
