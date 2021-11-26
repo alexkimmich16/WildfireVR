@@ -11,7 +11,7 @@ public class FinalMovement : ScriptableObject
 {
     public Movements MoveType;
 
-    //public float TotalTime;
+    public float TotalTime;
 
     public List<Vector3> LeftWorldPos;
     public List<Vector3> LeftLocalPos;

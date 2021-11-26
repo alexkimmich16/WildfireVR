@@ -17,12 +17,14 @@ public class AllData
     public struct AllTypes
     {
         public TotalTypes[] TotalTypes;
+
     }
 
     [System.Serializable]
     public struct TotalTypes
     {
         public MovementDataAdd[] InsideType;
+        public MovementDataAdd Final;
     }
 
     [System.Serializable]
@@ -30,6 +32,12 @@ public class AllData
     {
         public float[] LocalRight;
         public float[] LocalLeft;
+
+        public float[] WorldRight;
+        public float[] WorldLeft;
+
+        public float[] DifferenceRight;
+        public float[] DifferenceLeft;
 
         public float Time;
         public float Interval;
@@ -43,45 +51,125 @@ public class AllData
     {
         
         allTypes.TotalTypes = new TotalTypes[HandDebug.instance.DataFolders.Count];
-        //Debug.Log("save1");
         for (var t = 0; t < HandDebug.instance.DataFolders.Count; t++)//for each type
         {
-            //Debug.Log("save2");
-            
             allTypes.TotalTypes[t].InsideType = new MovementDataAdd[HandDebug.instance.DataFolders[t].Storage.Count];
             for (var i = 0; i < HandDebug.instance.DataFolders[t].Storage.Count; i++)//for all the units in the type type
             {
                 MovementData data = HandDebug.instance.DataFolders[t].Storage[i];
-                //MovementDataAdd StructData = allTypes.TotalTypes[t].InsideType[i];
-                Debug.Log("Data" + data.Set);
                 allTypes.TotalTypes[t].InsideType[i].Set = data.Set;
                 if (data.Set == true)
                 {
                     allTypes.TotalTypes[t].InsideType[i].LocalLeft = new float[data.LeftLocalPos.Count * 3];
                     allTypes.TotalTypes[t].InsideType[i].LocalRight = new float[data.RightLocalPos.Count * 3];
-                    for (var j = 0; j < HandDebug.instance.DataFolders[t].Storage[i].LeftLocalPos.Count; j++)//for each localdata in unit
+
+                    allTypes.TotalTypes[t].InsideType[i].WorldLeft = new float[data.LeftLocalPos.Count * 3];
+                    allTypes.TotalTypes[t].InsideType[i].WorldRight = new float[data.RightLocalPos.Count * 3];
+
+                    allTypes.TotalTypes[t].InsideType[i].DifferenceLeft = new float[data.LeftLocalPos.Count * 3];
+                    allTypes.TotalTypes[t].InsideType[i].DifferenceRight = new float[data.RightLocalPos.Count * 3];
+                    for (var j = 0; j < data.LeftLocalPos.Count; j++)//LeftLocal
                     {
-                        Debug.Log("save8");
                         Vector3 LeftPos = data.LeftLocalPos[j];
-                        Vector3 RightPos = data.RightLocalPos[j];
+                        Vector3 LeftWorld = data.LeftWorldPos[j];
+                        Vector3 LeftDif = data.LeftDifferencePos[j];
+                        
                         int ArrayNum = 0 + j * 3;
                         allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum] = LeftPos.x;
-                        allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum] = RightPos.x;
+                        allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum] = LeftWorld.x;
+                        allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum] = LeftDif.x;
+                        
                         ArrayNum = 1 + j * 3;
                         allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum] = LeftPos.y;
-                        allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum] = RightPos.y;
+                        allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum] = LeftWorld.y;
+                        allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum] = LeftDif.y;
+
                         ArrayNum = 2 + j * 3;
                         allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum] = LeftPos.z;
-                        allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum] = RightPos.z;
+                        allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum] = LeftWorld.z;
+                        allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum] = LeftDif.z;
+
                     }
                     allTypes.TotalTypes[t].InsideType[i].Time = data.Time;
                     allTypes.TotalTypes[t].InsideType[i].Interval = data.Interval;
                     allTypes.TotalTypes[t].InsideType[i].MoveType = t;
-                    
-                    // Debug.Log("save4");
+                    for (var j = 0; j < data.RightLocalPos.Count; j++)//rightlocal
+                    {
+                        Vector3 RightPos = data.RightLocalPos[j];
+                        Vector3 RightWorld = data.RightWorldPos[j];
+                        Vector3 RightDif = data.RightDifferencePos[j];
+
+                        int ArrayNum = 0 + j * 3;
+                        allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum] = RightPos.x;
+                        allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum] = RightWorld.x;
+                        allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum] = RightDif.x;
+
+                        ArrayNum = 1 + j * 3;
+                        allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum] = RightPos.y;
+                        allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum] = RightWorld.y;
+                        allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum] = RightDif.y;
+
+                        ArrayNum = 2 + j * 3;
+                        allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum] = RightPos.z;
+                        allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum] = RightWorld.z;
+                        allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum] = RightDif.z;
+                    }
                 }
-                
             }
+            FinalMovement FinalData = HandDebug.instance.DataFolders[t].FinalInfo;
+            allTypes.TotalTypes[t].Final.LocalLeft = new float[FinalData.LeftLocalPos.Count * 3];
+            allTypes.TotalTypes[t].Final.LocalRight = new float[FinalData.RightLocalPos.Count * 3];
+
+            allTypes.TotalTypes[t].Final.WorldLeft = new float[FinalData.LeftLocalPos.Count * 3];
+            allTypes.TotalTypes[t].Final.WorldRight = new float[FinalData.RightLocalPos.Count * 3];
+
+            allTypes.TotalTypes[t].Final.DifferenceLeft = new float[FinalData.LeftLocalPos.Count * 3];
+            allTypes.TotalTypes[t].Final.DifferenceRight = new float[FinalData.RightLocalPos.Count * 3];
+            for (var j = 0; j < FinalData.LeftLocalPos.Count; j++)
+            {
+                Vector3 LeftPos = FinalData.LeftLocalPos[j];
+                Vector3 LeftWorld = FinalData.LeftWorldPos[j];
+                Vector3 LeftDif = FinalData.LeftDifferencePos[j];
+
+                int ArrayNum = 0 + j * 3;
+                allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum] = LeftPos.x;
+                allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum] = LeftWorld.x;
+                allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum] = LeftDif.x;
+
+                ArrayNum = 1 + j * 3;
+                allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum] = LeftPos.y;
+                allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum] = LeftWorld.y;
+                allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum] = LeftDif.y;
+
+                ArrayNum = 2 + j * 3;
+                allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum] = LeftPos.z;
+                allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum] = LeftWorld.z;
+                allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum] = LeftDif.z;
+            }
+            for (var j = 0; j < FinalData.RightLocalPos.Count; j++)
+            {
+                Vector3 RightPos = FinalData.RightLocalPos[j];
+                Vector3 RightWorld = FinalData.RightWorldPos[j];
+                Vector3 RightDif = FinalData.RightDifferencePos[j];
+
+                int ArrayNum = 0 + j * 3;
+                allTypes.TotalTypes[t].Final.LocalRight[ArrayNum] = RightPos.x;
+                allTypes.TotalTypes[t].Final.WorldRight[ArrayNum] = RightWorld.x;
+                allTypes.TotalTypes[t].Final.DifferenceRight[ArrayNum] = RightDif.x;
+
+                ArrayNum = 1 + j * 3;
+                allTypes.TotalTypes[t].Final.LocalRight[ArrayNum] = RightPos.y;
+                allTypes.TotalTypes[t].Final.WorldRight[ArrayNum] = RightWorld.y;
+                allTypes.TotalTypes[t].Final.DifferenceRight[ArrayNum] = RightDif.y;
+
+                ArrayNum = 2 + j * 3;
+                allTypes.TotalTypes[t].Final.LocalRight[ArrayNum] = RightPos.z;
+                allTypes.TotalTypes[t].Final.WorldRight[ArrayNum] = RightWorld.z;
+                allTypes.TotalTypes[t].Final.DifferenceRight[ArrayNum] = RightDif.z;
+            }
+            allTypes.TotalTypes[t].Final.Time = FinalData.TotalTime;
+            allTypes.TotalTypes[t].Final.MoveType = t;
+            //allTypes.TotalTypes[t].Final.Interval = FinalData.Interval;
             //problem inside set
         }
 

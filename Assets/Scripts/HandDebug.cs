@@ -24,7 +24,6 @@ public class HandDebug : MonoBehaviour
     public float CountEverySecond = 20;
     private float MaxTime;
     private float Timer;
-    public int MoveNum;
     private bool CurrentMovement = false;
 
     public Transform Player;
@@ -37,13 +36,17 @@ public class HandDebug : MonoBehaviour
     public TextMeshProUGUI Type;
 
     [Header("OnePackageOnly")]
-    public bool ResetWallPackage;
     public int PackageNum;
 
     [Header("Lists")]
-    private List<Vector3> WorldPos = new List<Vector3>();
-    private List<Vector3> LocalPos = new List<Vector3>();
-    private List<Vector3> DifferencePos = new List<Vector3>();
+    private List<Vector3> LeftWorldPos = new List<Vector3>();
+    private List<Vector3> RightWorldPos = new List<Vector3>();
+
+    private List<Vector3> LeftLocalPos = new List<Vector3>();
+    private List<Vector3> RightLocalPos = new List<Vector3>();
+    
+    private List<Vector3> LeftDifferencePos = new List<Vector3>();
+    private List<Vector3> RightDifferencePos = new List<Vector3>();
 
     public List<DataSubscript> DataFolders = new List<DataSubscript>();
 
@@ -53,13 +56,9 @@ public class HandDebug : MonoBehaviour
     public Movements CurrentMove;
 
     public float Leanience;
-    void Update()
+
+    public void CreateInfo()
     {
-        //MoveNum
-        int num = (int)CurrentMove;
-        ScriptableNum.text = "Current Scriptable:  " + PackageNum;
-        Set.text = "Is Set: " + DataFolders[num].Storage[PackageNum].Set;
-        Type.text = "Testing: " + DataFolders[num].Name;
         if (Right.TriggerPressed() == true && Right.GripPressed() == true)
         {
             TotalTime += Time.deltaTime;
@@ -67,16 +66,28 @@ public class HandDebug : MonoBehaviour
             Timer += Time.deltaTime;
             if (Timer > MaxTime)
             {
-                WorldPos.Add(Right.transform.position);
-                LocalPos.Add(Right.transform.position - Player.position);
+                RightWorldPos.Add(Right.transform.position);
+                RightLocalPos.Add(Right.transform.position - Player.position);
+
+                LeftWorldPos.Add(Left.transform.position);
+                LeftLocalPos.Add(Left.transform.position - Player.position);
                 //each difference is this local - the last one
-                if (LocalPos.Count > 1)
+                if (LeftLocalPos.Count > 1)
                 {
-                    DifferencePos.Add(LocalPos[LocalPos.Count - 1] - LocalPos[LocalPos.Count - 2]);
+                    LeftDifferencePos.Add(LeftLocalPos[LeftLocalPos.Count - 1] - LeftLocalPos[LeftLocalPos.Count - 2]);
                 }
                 else
                 {
-                    DifferencePos.Add(Vector3.zero);
+                    LeftDifferencePos.Add(Vector3.zero);
+                }
+
+                if (RightLocalPos.Count > 1)
+                {
+                    RightDifferencePos.Add(RightLocalPos[RightLocalPos.Count - 1] - RightLocalPos[RightLocalPos.Count - 2]);
+                }
+                else
+                {
+                    RightDifferencePos.Add(Vector3.zero);
                 }
             }
         }
@@ -84,25 +95,30 @@ public class HandDebug : MonoBehaviour
         {
             if (CurrentMovement == true)
             {
-                if (ResetWallPackage == true)
-                {
-                    SetScriptableObject(PackageNum);
-                }
-                else
-                {
-                    SetScriptableObject(MoveNum);
-                }
+                SetScriptableObject(PackageNum);
+
+                RightWorldPos.Clear();
+                LeftWorldPos.Clear();
+
+                RightDifferencePos.Clear();
+                LeftDifferencePos.Clear();
                 
-                WorldPos.Clear();
-                LocalPos.Clear();
-                DifferencePos.Clear();
+                RightLocalPos.Clear();
+                LeftLocalPos.Clear();
 
                 CurrentMovement = false;
-                MoveNum += 1;
             }
             Timer = 0f;
             TotalTime = 0f;
         }
+    }
+    void Update()
+    {
+        int num = (int)CurrentMove;
+        ScriptableNum.text = "Current Scriptable:  " + PackageNum;
+        Set.text = "Is Set: " + DataFolders[num].Storage[PackageNum].Set;
+        Type.text = "Testing: " + DataFolders[num].Name;
+        CreateInfo();
     }
     public void LoadScriptableObjects(AllData Load)
     {
@@ -112,31 +128,69 @@ public class HandDebug : MonoBehaviour
             for (var i = 0; i < Load.allTypes.TotalTypes[t].InsideType.Length; i++)//for all the units in the type type
             {
                 MovementData data = HandDebug.instance.DataFolders[t].Storage[i];
-                Debug.Log("Load  " + Load.allTypes.TotalTypes[t].InsideType[i].Set);
                 if (Load.allTypes.TotalTypes[t].InsideType[i].Set == true)
                 {
-                    
-                    List<Vector3> LocalRight = new List<Vector3>();
                     List<Vector3> LocalLeft = new List<Vector3>();
+                    List<Vector3> WorldLeft = new List<Vector3>();
+                    List<Vector3> DifferenceLeft = new List<Vector3>();
                     for (var j = 0; j < Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft.Length / 3; j++)//for each localdata in unit
                     {
                         int ArrayNum = j * 3;
-                        Vector3 left = new Vector3(
+                        Vector3 leftLocal = new Vector3(
                             Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum],
                             Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum + 1],
                             Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum + 2]);
-                        LocalLeft.Add(left);
+                        LocalLeft.Add(leftLocal);
+
+                        Vector3 leftWorld = new Vector3(
+                            Load.allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum],
+                            Load.allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum + 1],
+                            Load.allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum + 2]);
+                        WorldLeft.Add(leftWorld);
+
+                        Vector3 leftDifference = new Vector3(
+                            Load.allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum],
+                            Load.allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum + 1],
+                            Load.allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum + 2]);
+                        DifferenceLeft.Add(leftDifference);
+                    }
+
+                    List<Vector3> LocalRight = new List<Vector3>();
+                    List<Vector3> WorldRight = new List<Vector3>();
+                    List<Vector3> DifferenceRight = new List<Vector3>();
+                    for (var j = 0; j < Load.allTypes.TotalTypes[t].InsideType[i].LocalRight.Length / 3; j++)
+                    {
+                        int ArrayNum = j * 3;
                         Vector3 right = new Vector3(
                             Load.allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum],
                             Load.allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum + 1],
                             Load.allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum + 2]);
                         LocalRight.Add(right);
+
+                        Vector3 rightWorld = new Vector3(
+                            Load.allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum],
+                            Load.allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum + 1],
+                            Load.allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum + 2]);
+                        WorldRight.Add(rightWorld);
+
+                        Vector3 rightDifference = new Vector3(
+                            Load.allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum],
+                            Load.allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum + 1],
+                            Load.allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum + 2]);
+                        DifferenceRight.Add(rightDifference);
                     }
+                    //Debug.Log(LocalRight.Count);
                     data.Time = Load.allTypes.TotalTypes[t].InsideType[i].Time;
                     data.Interval = Load.allTypes.TotalTypes[t].InsideType[i].Interval;
                     data.MoveType = (Movements)i;
+
                     data.RightLocalPos = new List<Vector3>(LocalRight);
                     data.LeftLocalPos = new List<Vector3>(LocalLeft);
+                    data.RightWorldPos = new List<Vector3>(WorldRight);
+                    data.LeftWorldPos = new List<Vector3>(WorldLeft);
+                    data.RightDifferencePos = new List<Vector3>(DifferenceRight);
+                    data.LeftDifferencePos = new List<Vector3>(DifferenceLeft);
+
                     data.Set = Load.allTypes.TotalTypes[t].InsideType[i].Set;
                 }
             }
@@ -145,9 +199,14 @@ public class HandDebug : MonoBehaviour
     void SetScriptableObject(int Num)
     {
         int Type = (int)CurrentMove;
-        DataFolders[Type].Storage[Num].RightWorldPos = new List<Vector3>(WorldPos);
-        DataFolders[Type].Storage[Num].RightLocalPos = new List<Vector3>(LocalPos);
-        DataFolders[Type].Storage[Num].RightDifferencePos = new List<Vector3>(DifferencePos);
+        DataFolders[Type].Storage[Num].RightWorldPos = new List<Vector3>(RightWorldPos);
+        DataFolders[Type].Storage[Num].RightLocalPos = new List<Vector3>(RightLocalPos);
+        DataFolders[Type].Storage[Num].RightDifferencePos = new List<Vector3>(RightDifferencePos);
+
+        DataFolders[Type].Storage[Num].LeftWorldPos = new List<Vector3>(LeftWorldPos);
+        DataFolders[Type].Storage[Num].LeftLocalPos = new List<Vector3>(LeftLocalPos);
+        DataFolders[Type].Storage[Num].LeftDifferencePos = new List<Vector3>(LeftDifferencePos);
+
         DataFolders[Type].Storage[Num].Time = TotalTime;
         DataFolders[Type].Storage[Num].Interval = MaxTime;
         DataFolders[Type].Storage[Num].Set = true;
