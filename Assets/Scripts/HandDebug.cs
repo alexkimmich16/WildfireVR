@@ -13,12 +13,13 @@ public class HandDebug : MonoBehaviour
     
     #region Singleton
     public static HandDebug instance;
-    void Awake() { instance = this; DontDestroyOnLoad(this.gameObject); }
+    void Awake() { instance = this; }
 
     #endregion
 
-    //check saving
-    //STRUCT REPLACES SUBSCRIPTS!!
+    ///for tomorrow:
+    ///player look direction raycast spawns
+    ///structs for subscripts
 
     public float CountEverySecond = 20;
     private float MaxTime;
@@ -52,7 +53,6 @@ public class HandDebug : MonoBehaviour
     public Movements CurrentMove;
 
     public float Leanience;
-
     void Update()
     {
         //MoveNum
@@ -106,29 +106,39 @@ public class HandDebug : MonoBehaviour
     }
     public void LoadScriptableObjects(AllData Load)
     {
-        for (var t = 0; t < Load.allTypes.TotalTypes.Count; t++)//for each type
+        //Debug.Log(Load.allTypes.TotalTypes[0].InsideType[0].Interval);
+        for (var t = 0; t < Load.allTypes.TotalTypes.Length; t++)//for each type
         {
-            for (var i = 0; i < Load.allTypes.TotalTypes[t].InsideType.Count; i++)//for all the units in the type type
+            for (var i = 0; i < Load.allTypes.TotalTypes[t].InsideType.Length; i++)//for all the units in the type type
             {
                 MovementData data = HandDebug.instance.DataFolders[t].Storage[i];
-                MovementDataAdd StructData = allTypes.TotalTypes[t].InsideType[i];
-                List<Vector3> LocalRight = new List<Vector3>();
-                List<Vector3> LocalLeft = new List<Vector3>();
-                for (var j = 0; j < Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft.Count / 3; j++)//for each localdata in unit
+                Debug.Log("Load  " + Load.allTypes.TotalTypes[t].InsideType[i].Set);
+                if (Load.allTypes.TotalTypes[t].InsideType[i].Set == true)
                 {
-                    ArrayNum = j * 3;
-                    Vector3 left = new Vector3(StructData.LocalLeft[ArrayNum], StructData.LocalLeft[ArrayNum + 1], StructData.LocalLeft[ArrayNum + 2]);
-                    LocalLeft.Add(left);
-                    Vector3 right = new Vector3(StructData.LocalRight[ArrayNum], StructData.LocalRight[ArrayNum + 1], StructData.LocalRight[ArrayNum + 2]);
-                    LocalRight.Add(right);
+                    
+                    List<Vector3> LocalRight = new List<Vector3>();
+                    List<Vector3> LocalLeft = new List<Vector3>();
+                    for (var j = 0; j < Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft.Length / 3; j++)//for each localdata in unit
+                    {
+                        int ArrayNum = j * 3;
+                        Vector3 left = new Vector3(
+                            Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum],
+                            Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum + 1],
+                            Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum + 2]);
+                        LocalLeft.Add(left);
+                        Vector3 right = new Vector3(
+                            Load.allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum],
+                            Load.allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum + 1],
+                            Load.allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum + 2]);
+                        LocalRight.Add(right);
+                    }
+                    data.Time = Load.allTypes.TotalTypes[t].InsideType[i].Time;
+                    data.Interval = Load.allTypes.TotalTypes[t].InsideType[i].Interval;
+                    data.MoveType = (Movements)i;
+                    data.RightLocalPos = new List<Vector3>(LocalRight);
+                    data.LeftLocalPos = new List<Vector3>(LocalLeft);
+                    data.Set = Load.allTypes.TotalTypes[t].InsideType[i].Set;
                 }
-                data.Time = StructData.Time;
-                data.Interval = StructData.Interval;
-                data.MoveType = (Movements)i;
-                data.RightLocalPos = new List<Vector3>(LocalRight);
-                data.LeftLocalPos = new List<Vector3>(LocalLeft);
-
-
             }
         }
     }
@@ -164,6 +174,7 @@ public class HandDebug : MonoBehaviour
     void Start()
     {
         MaxTime = 1f / CountEverySecond;
+        SaveScript.LoadGameLarge();
         //MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
         //meshRenderer.material = Normal;
     }

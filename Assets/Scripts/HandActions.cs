@@ -65,6 +65,8 @@ public class HandActions : MonoBehaviour
     }
     public void CheckSpike()
     {
+        if (HandDebug.instance.DataFolders[0].FinalInfo.LeftLocalPos.Count < 1)
+            return;
         //if the spike
         if (Around[0] == true && SpikeSequenceActive == false)
         {
@@ -75,10 +77,10 @@ public class HandActions : MonoBehaviour
         {
             //distance
             //time
-
             meshRenderer.material = HM.Active;
-
             Vector3 pos = transform.position - HandDebug.instance.Player.position;
+            //Debug.Log("pt2");
+            //Debug.Log(SpikeFrame + "  " + HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count);
             float distance;
             if (Left == true)
             {
@@ -89,7 +91,8 @@ public class HandActions : MonoBehaviour
                 distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos[SpikeFrame]);
             }
 
-            
+            //Debug.Log("pt3");
+
             if (HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count -1 == SpikeFrame)
             {
                 if (Around[1] == true)
@@ -97,7 +100,11 @@ public class HandActions : MonoBehaviour
                     //do spike
                 }
             }
-
+            else
+            {
+                SpikeSequenceActive = false;
+                meshRenderer.material = HM.DeActive;
+            }
             if (HandDebug.instance.Leanience < distance)
             {
                 SpikeSequenceActive = false;
@@ -106,6 +113,7 @@ public class HandActions : MonoBehaviour
             SpikeFrame += 1;
         }
     }
+
     public void CheckForcePush()
     {
         //constant positive acceleation = CPA

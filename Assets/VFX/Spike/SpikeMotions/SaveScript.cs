@@ -6,7 +6,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public static class SaveScript
 {
-
     static bool DoDebug = true;
     public static void SaveStats()
     {
