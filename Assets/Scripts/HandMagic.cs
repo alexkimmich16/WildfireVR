@@ -13,7 +13,6 @@ public class HandMagic : MonoBehaviour
     public HandActions Right;
     public List<HandActions> Controllers = new List<HandActions>();
 
-
     [Range(0f, 1f)]
     public float TriggerThreshold, GripThreshold;
 
@@ -26,8 +25,6 @@ public class HandMagic : MonoBehaviour
 
     [Range(0f, 1f)]
     public float FlyingCost;
-
-    public List<OverTime> ForcePush = new List<OverTime>();
 
     public float PushAmount;
     public float PushRadius;
@@ -44,23 +41,55 @@ public class HandMagic : MonoBehaviour
 
     public List<Collider> AroundColliders = new List<Collider>();
 
+    private bool SpikeActive, ShieldActive;
 
-
-    public void ChangeText(string stuff, int Num)
+    public bool UseSpikePlacement = false;
+    //inumerator should be the one handactions sends to saying it should start sequence
+    public void MagicBools()
     {
-        text[Num].text = stuff;
+        //get raycast of head direction
+        //get spot of hitpoint where raycast hits layer of ground
+        //spawn spike there
+        //get and play animation of the spike
+        //after certain amount of time remove spike
+        //raycast and if null return
+        if (UseSpikePlacement == true)
+        {
+            if (SpikeActive == true)
+            {
+                //show menu for spi
+                //raycast spike
+                //if player touches button to confirm
+                    //useSpike()
+                
+            }
+        }
+        else
+        {
+            if (SpikeActive == true)
+            {
+                //UseSpike
+                SpikeActive = false;
+            }
+        }
+    }
+    public void UseSpike(Vector3 Position)
+    {
+        //instantiate spike at position
+        //get component partical effect of spike and play
+        //wait x seconds than stop, and delete
+
+
+        //eventually check for the collision check.
+        //and do damage based on if it hits or not
+        
+        
     }
 
-    void Start()
+    public void StartSpike()
     {
-        CurrentMagic = MaxMagic;
+        SpikeActive = true;
     }
-
-    public void UseSpike()
-    {
-
-    }
-
     public void UseForcePush(float ZDirection, Vector3 pos, Vector3 dir)
     {
         //make z relavant
@@ -197,5 +226,15 @@ public class HandMagic : MonoBehaviour
                 CurrentMagic -= Positive;
             }
         }
+    }
+
+    public void ChangeText(string stuff, int Num)
+    {
+        text[Num].text = stuff;
+    }
+
+    void Start()
+    {
+        CurrentMagic = MaxMagic;
     }
 }

@@ -194,6 +194,65 @@ public class HandDebug : MonoBehaviour
                     data.Set = Load.allTypes.TotalTypes[t].InsideType[i].Set;
                 }
             }
+            FinalMovement FinalData = DataFolders[t].FinalInfo;
+            //Load.allTypes.TotalTypes[t].Final
+            List<Vector3> LocalLeftFinal = new List<Vector3>();
+            List<Vector3> WorldLeftFinal = new List<Vector3>();
+            List<Vector3> DifferenceLeftFinal = new List<Vector3>();
+            for (var j = 0; j < Load.allTypes.TotalTypes[t].Final.LocalLeft.Length / 3; j++)//for each localdata in unit
+            {
+                int ArrayNum = j * 3;
+                Vector3 leftLocal = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum + 2]);
+                LocalLeftFinal.Add(leftLocal);
+
+                Vector3 leftWorld = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum + 2]);
+                WorldLeftFinal.Add(leftWorld);
+
+                Vector3 leftDifference = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum + 2]);
+                DifferenceLeftFinal.Add(leftDifference);
+            }
+
+            List<Vector3> LocalRightFinal = new List<Vector3>();
+            List<Vector3> WorldRightFinal = new List<Vector3>();
+            List<Vector3> DifferenceRightFinal = new List<Vector3>();
+            for (var j = 0; j < Load.allTypes.TotalTypes[t].Final.LocalRight.Length / 3; j++)
+            {
+                int ArrayNum = j * 3;
+                Vector3 right = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.LocalRight[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.LocalRight[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.LocalRight[ArrayNum + 2]);
+                LocalRightFinal.Add(right);
+
+                Vector3 rightWorld = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.WorldRight[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.WorldRight[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.WorldRight[ArrayNum + 2]);
+                WorldRightFinal.Add(rightWorld);
+
+                Vector3 rightDifference = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.DifferenceRight[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.DifferenceRight[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.DifferenceRight[ArrayNum + 2]);
+                DifferenceRightFinal.Add(rightDifference);
+            }
+            FinalData.RightLocalPos = new List<Vector3>(LocalRightFinal);
+            FinalData.LeftLocalPos = new List<Vector3>(LocalLeftFinal);
+            FinalData.RightWorldPos = new List<Vector3>(WorldRightFinal);
+            FinalData.LeftWorldPos = new List<Vector3>(WorldLeftFinal);
+            FinalData.RightDifferencePos = new List<Vector3>(DifferenceRightFinal);
+            FinalData.LeftDifferencePos = new List<Vector3>(DifferenceLeftFinal);
+            FinalData.TotalTime = Load.allTypes.TotalTypes[t].Final.Time;
+            FinalData.MoveType = (Movements)t;
         }
     }
     void SetScriptableObject(int Num)

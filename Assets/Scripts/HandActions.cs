@@ -113,7 +113,7 @@ public class HandActions : MonoBehaviour
             SpikeFrame += 1;
         }
     }
-
+    /*
     public void CheckForcePush()
     {
         //constant positive acceleation = CPA
@@ -205,7 +205,7 @@ public class HandActions : MonoBehaviour
             ProgressTimer = 0;
         }
     }
-
+    */
     public void CheckColliders()
     {
         for(int i = 0; i < Around.Count; i++)
@@ -236,7 +236,7 @@ public class HandActions : MonoBehaviour
             //HM.ChangeText(Speed.ToString());
         }
         Odd = !Odd;
-        CheckForcePush();
+        //CheckForcePush();
         CheckSpike();
         SetRemoteStats();
     }
