@@ -12,24 +12,24 @@ public class HandMagic : MonoBehaviour
     public HandActions Left;
     public HandActions Right;
     public List<HandActions> Controllers = new List<HandActions>();
+    public Transform Cam;
 
     [Range(0f, 1f)]
     public float TriggerThreshold, GripThreshold;
-
+    [Header("Magic")]
     public bool ShouldCharge;
     public bool InfiniteMagic;
-
     public float CurrentMagic;
     public float MagicRecharge;
     public int MaxMagic;
-
+    [Header("Flying")]
     [Range(0f, 1f)]
     public float FlyingCost;
-
+    [Header("Push")]
     public float PushAmount;
     public float PushRadius;
     public float PushCost;
-
+    [Header("Misc")]
     public Material Active;
     public Material DeActive;
 
@@ -40,56 +40,118 @@ public class HandMagic : MonoBehaviour
     public bool Sounds;
 
     public List<Collider> AroundColliders = new List<Collider>();
-
+    [Header("Spike")]
     private bool SpikeActive, ShieldActive;
-
     public bool UseSpikePlacement = false;
+    public float SpikeTimeDelete;
+    public GameObject Spike;
+    [Header("Shield")]
+    public GameObject Shield;
+    public int MaxShield;
+
+    //0 is left, 1 is right
+    public List<ShieldName> Shields = new List<ShieldName>();
+    [Range(0f, 1f)]
+    public float ShieldCost;
     //inumerator should be the one handactions sends to saying it should start sequence
+    
+    public void ShieldDamage(int Damage, int Side)
+    {
+        Shields[Side].Health -= Damage;
+        if (Shields[Side].Health < 1)
+        {
+            Shields[Side].Health = 0;
+            ChangeShield(Side, false);
+        }
+    }
+    //on health smaller than 0 shatter and endshield and take away a bunch of mana
+    public void StartShield(int Left)
+    {
+        Shields[Left].Health = MaxShield;
+        ChangeShield(Left, true);
+    }
+    public void EndShield(int Left)
+    {
+        Shields[Left].Health = 0;
+        ChangeShield(Left, false);
+        //remove shield
+    }
+    
+    public void ChangeShield(int Side, bool On)
+    {
+        Shields[Side].Shield.SetActive(On);
+    }
+
+    //public void 
+
+    public Vector3 RaycastGround()
+    {
+        RaycastHit hit;
+        int layerMask = 1 << 8;
+        layerMask = ~layerMask;
+        // Does the ray intersect any objects excluding the player layer
+        if (Physics.Raycast(Cam.position, Cam.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask))
+        {
+            //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+            return hit.point;
+            Debug.Log("Did Hit");
+        }
+        else
+        {
+            //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
+            Debug.Log("Did not Hit");
+            return Vector3.zero;
+        }
+    }
+
     public void MagicBools()
     {
+        if (SpikeActive == true)
+        {
+            if (UseSpikePlacement == true)
+            {
+                //show menu for spi
+                Vector3 point = RaycastGround();
+
+                //raycast spike
+                //if player touches button to confirm
+                //useSpike()
+            }
+            else
+            {
+                //UseSpike
+
+                if (RaycastGround() != Vector3.zero)
+                {
+                    UseSpike(RaycastGround());
+                    SpikeActive = false;
+                }
+            }
+        }
+        
+        //check x distance
         //get raycast of head direction
+        
         //get spot of hitpoint where raycast hits layer of ground
         //spawn spike there
         //get and play animation of the spike
         //after certain amount of time remove spike
         //raycast and if null return
-        if (UseSpikePlacement == true)
-        {
-            if (SpikeActive == true)
-            {
-                //show menu for spi
-                //raycast spike
-                //if player touches button to confirm
-                    //useSpike()
-                
-            }
-        }
-        else
-        {
-            if (SpikeActive == true)
-            {
-                //UseSpike
-                SpikeActive = false;
-            }
-        }
+        
     }
     public void UseSpike(Vector3 Position)
     {
-        //instantiate spike at position
-        //get component partical effect of spike and play
-        //wait x seconds than stop, and delete
+        GameObject spike = Instantiate(Spike, Position, Quaternion.identity);
+        spike.GetComponent<ParticleSystem>().Play();
+        Destroy(spike, SpikeTimeDelete);
 
-
-        //eventually check for the collision check.
-        //and do damage based on if it hits or not
-        
-        
+        //eventually check for people and do damage
     }
-
     public void StartSpike()
     {
         SpikeActive = true;
     }
+
     public void UseForcePush(float ZDirection, Vector3 pos, Vector3 dir)
     {
         //make z relavant
@@ -236,5 +298,13 @@ public class HandMagic : MonoBehaviour
     void Start()
     {
         CurrentMagic = MaxMagic;
+    }
+
+    [System.Serializable]
+    public class ShieldName
+    {
+        public string name;
+        public int Health;
+        public GameObject Shield;
     }
 }
