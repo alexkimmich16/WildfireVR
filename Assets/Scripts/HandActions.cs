@@ -45,6 +45,7 @@ public class HandActions : MonoBehaviour
     private int SpikeFrame;
 
     public SkinnedMeshRenderer meshRenderer;
+    public bool SettingStats = false;
 
 
     public bool TriggerPressed()
@@ -65,13 +66,39 @@ public class HandActions : MonoBehaviour
     }
     public void CheckSpike()
     {
+        //make sure not to let go of trigger too early
         if (HandDebug.instance.DataFolders[0].FinalInfo.LeftLocalPos.Count < 1)
+        {
+            if (SpikeFrame > 0)
+            {
+                Debug.Log("failed");
+            }
+            SpikeFrame = 0;
             return;
+        }
+        if (TriggerPressed() == false)
+        {
+            if (SpikeFrame > 0)
+            {
+                Debug.Log("failed1");
+            }
+            return;
+        }
+        if (SettingStats == true)
+        {
+            if (SpikeFrame > 0)
+            {
+                Debug.Log("failed2");
+            }
+            return;
+        }
+            
         //if the spike
         if (Around[0] == true && SpikeSequenceActive == false)
         {
             SpikeSequenceActive = true;
             SpikeFrame = 0;
+            Debug.Log("started");
         }
         if (SpikeSequenceActive == true)
         {
@@ -80,7 +107,8 @@ public class HandActions : MonoBehaviour
             meshRenderer.material = HM.Active;
             Vector3 pos = transform.position - HandDebug.instance.Player.position;
             //Debug.Log("pt2");
-            //Debug.Log(SpikeFrame + "  " + HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count);
+
+            
             float distance;
             if (Left == true)
             {
@@ -89,23 +117,33 @@ public class HandActions : MonoBehaviour
             else
             {
                 distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos[SpikeFrame]);
+                //Debug.Log(SpikeFrame + " Dis:  " + distance);
             }
-
+            
             //Debug.Log("pt3");
 
             if (HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count -1 == SpikeFrame)
             {
                 if (Around[1] == true)
                 {
-                    //do spike
+                    Debug.Log("DidSpike");
+                    HM.StartSpike();
+                    SpikeFrame = 0;
+                }
+                else
+                {
+                    SpikeFrame = 0;
+                    //Debug.Log("failed");
                 }
             }
-            else
+            //if inbounds go to next
+            //else stop
+            if (HandDebug.instance.Leanience > distance)
             {
-                SpikeSequenceActive = false;
-                meshRenderer.material = HM.DeActive;
+                SpikeSequenceActive = true;
+                meshRenderer.material = HM.Active;
             }
-            if (HandDebug.instance.Leanience < distance)
+            else
             {
                 SpikeSequenceActive = false;
                 meshRenderer.material = HM.DeActive;
@@ -113,6 +151,7 @@ public class HandActions : MonoBehaviour
             SpikeFrame += 1;
         }
     }
+
     /*
     public void CheckForcePush()
     {
@@ -266,6 +305,7 @@ public class HandActions : MonoBehaviour
     {
         HM = HandMagic.instance;
         PS.Stop();
+        SpikeFrame = 1;
     }
 
     public void Fly()

@@ -45,6 +45,8 @@ public class HandMagic : MonoBehaviour
     public bool UseSpikePlacement = false;
     public float SpikeTimeDelete;
     public GameObject Spike;
+    public float YRise;
+
     [Header("Shield")]
     public GameObject Shield;
     public int MaxShield;
@@ -88,11 +90,12 @@ public class HandMagic : MonoBehaviour
     {
         RaycastHit hit;
         int layerMask = 1 << 8;
-        layerMask = ~layerMask;
-        // Does the ray intersect any objects excluding the player layer
-        if (Physics.Raycast(Cam.position, Cam.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask))
+        //layerMask = ~layerMask;
+
+        if (Physics.Raycast(Cam.position, Cam.forward, out hit, Mathf.Infinity, layerMask))
         {
-            //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+            Vector3 HitSpot = hit.point;
+            HitSpot = new Vector3(HitSpot.x, HitSpot.y + YRise, HitSpot.z);
             return hit.point;
             Debug.Log("Did Hit");
         }
@@ -104,40 +107,37 @@ public class HandMagic : MonoBehaviour
         }
     }
 
-    public void MagicBools()
+    public void SpikeBools()
     {
-        if (SpikeActive == true)
+        if (UseSpikePlacement == true)
         {
-            if (UseSpikePlacement == true)
-            {
-                //show menu for spi
-                Vector3 point = RaycastGround();
+            //show menu for spi
+            Vector3 point = RaycastGround();
 
-                //raycast spike
-                //if player touches button to confirm
-                //useSpike()
-            }
-            else
-            {
-                //UseSpike
+            //raycast spike
+            //if player touches button to confirm
+            //useSpike()
+        }
+        else
+        {
+            //UseSpike
 
-                if (RaycastGround() != Vector3.zero)
-                {
-                    UseSpike(RaycastGround());
-                    SpikeActive = false;
-                }
+            if (RaycastGround() != Vector3.zero)
+            {
+                UseSpike(RaycastGround());
+                SpikeActive = false;
             }
         }
-        
+
         //check x distance
         //get raycast of head direction
-        
+
         //get spot of hitpoint where raycast hits layer of ground
         //spawn spike there
         //get and play animation of the spike
         //after certain amount of time remove spike
         //raycast and if null return
-        
+
     }
     public void UseSpike(Vector3 Position)
     {
@@ -214,6 +214,11 @@ public class HandMagic : MonoBehaviour
 
     void Update()
     {
+        Debug.DrawRay(Cam.position, Cam.forward * 10000f, Color.red);
+        if (SpikeActive == true)
+        {
+            SpikeBools();
+        }
         if (ShouldCharge == true)
         {
             Charge();

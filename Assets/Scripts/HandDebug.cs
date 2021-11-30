@@ -7,6 +7,7 @@ public enum Movements
     Spike = 0,
     Fireball = 1,
     Shield = 2,
+    Push = 3,
 }
 public class HandDebug : MonoBehaviour
 {
@@ -61,6 +62,8 @@ public class HandDebug : MonoBehaviour
     {
         if (Right.TriggerPressed() == true && Right.GripPressed() == true)
         {
+            Left.SettingStats = true;
+            Right.SettingStats = true;
             TotalTime += Time.deltaTime;
             CurrentMovement = true;
             Timer += Time.deltaTime;
@@ -93,6 +96,8 @@ public class HandDebug : MonoBehaviour
         }
         else
         {
+            Left.SettingStats = false;
+            Right.SettingStats = false;
             if (CurrentMovement == true)
             {
                 SetScriptableObject(PackageNum);
@@ -314,32 +319,42 @@ public class HandDebug : MonoBehaviour
 
     public void GetAverage()
     {
-        Debug.Log("getaverage");
-        List<Vector3> LocalLeft = new List<Vector3>(1000);
-        List<Vector3> LocalRight = new List<Vector3>(1000);
+        //Debug.Log("getaverage1");
+        List<Vector3> LocalLeft = new List<Vector3>();
+        List<Vector3> LocalRight = new List<Vector3>();
 
-        List<Vector3> AverageLocalLeft = new List<Vector3>(1000);
-        List<Vector3> AverageLocalRight = new List<Vector3>(1000);
-
-        int Count = 0;
+        List<Vector3> AverageLocalLeft = new List<Vector3>();
+        List<Vector3> AverageLocalRight = new List<Vector3>();
+        //Debug.Log("getaverage2");
+        int Count = DataFolders[(int)CurrentMove].Storage.Count;
         for (int i = 0; i < DataFolders[(int)CurrentMove].Storage.Count; i++)
         {
-            Count += 1;
+           // Debug.Log("getaverage3");
             if (DataFolders[(int)CurrentMove].Storage[i] == true)
             {
+                //Debug.Log("getaverage4");
                 for (int j = 0; j < DataFolders[(int)CurrentMove].Storage[i].LeftLocalPos.Count; j++)
                 {
+                    //Debug.Log("getaverage5");
+                    if (j + 1 > LocalLeft.Count)
+                    {
+                        //Debug.Log("getaverage6");
+                        LocalLeft.Add(new Vector3(0, 0, 0));
+                        LocalRight.Add(new Vector3(0, 0, 0));
+                    }
+                    //Debug.Log("getaverage7");
                     Vector3 localRight = DataFolders[(int)CurrentMove].Storage[i].RightLocalPos[j];
                     Vector3 localLeft = DataFolders[(int)CurrentMove].Storage[i].LeftLocalPos[j];
-                    LocalLeft[j] += localLeft;
-                    LocalRight[j] += localRight;
+                    LocalLeft[j] = new Vector3(LocalLeft[j].x + localLeft.x, LocalLeft[j].y + localLeft.y, LocalLeft[j].z + localLeft.z);
+                    LocalRight[j] = new Vector3(LocalRight[j].x + localRight.x, LocalRight[j].y + localRight.y, LocalRight[j].z + localRight.z);
+
                 }
             }
         }
         for (int i = 0; i < LocalLeft.Count; i++)
         {
-            AverageLocalLeft[i] = LocalLeft[i] / Count;
-            AverageLocalRight[i] = LocalRight[i] / Count;
+            AverageLocalLeft.Add(new Vector3(LocalLeft[i].x / Count, LocalLeft[i].y / Count, LocalLeft[i].z / Count));
+            AverageLocalRight.Add(new Vector3(LocalRight[i].x / Count, LocalRight[i].y / Count, LocalRight[i].z / Count));
         }
 
         DataFolders[(int)CurrentMove].FinalInfo.LeftLocalPos = new List<Vector3>(AverageLocalLeft);
