@@ -23,13 +23,3 @@ public class FinalMovement : ScriptableObject
 
     public bool Set = false;
 }
-
-public enum DirectionShip
-{
-    Down = 0,
-    Forward = 1,
-    Back = 2,
-    Left = 3,
-    Right = 4,
-    Up = 5,
-}

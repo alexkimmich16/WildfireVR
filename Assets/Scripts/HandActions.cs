@@ -47,7 +47,6 @@ public class HandActions : MonoBehaviour
     public SkinnedMeshRenderer meshRenderer;
     public bool SettingStats = false;
 
-
     public bool TriggerPressed()
     {
         if (Trigger > HandMagic.instance.TriggerThreshold)
@@ -64,6 +63,8 @@ public class HandActions : MonoBehaviour
         }
         return false;
     }
+
+    #region Spike
     public void CheckSpike()
     {
         //make sure not to let go of trigger too early
@@ -92,7 +93,7 @@ public class HandActions : MonoBehaviour
             }
             return;
         }
-            
+
         //if the spike
         if (Around[0] == true && SpikeSequenceActive == false)
         {
@@ -108,7 +109,7 @@ public class HandActions : MonoBehaviour
             Vector3 pos = transform.position - HandDebug.instance.Player.position;
             //Debug.Log("pt2");
 
-            
+
             float distance;
             if (Left == true)
             {
@@ -119,10 +120,10 @@ public class HandActions : MonoBehaviour
                 distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos[SpikeFrame]);
                 //Debug.Log(SpikeFrame + " Dis:  " + distance);
             }
-            
+
             //Debug.Log("pt3");
 
-            if (HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count -1 == SpikeFrame)
+            if (HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count - 1 == SpikeFrame)
             {
                 if (Around[1] == true)
                 {
@@ -151,6 +152,8 @@ public class HandActions : MonoBehaviour
             SpikeFrame += 1;
         }
     }
+    #endregion
+
 
     /*
     public void CheckForcePush()
@@ -245,6 +248,11 @@ public class HandActions : MonoBehaviour
         }
     }
     */
+
+    public void CheckAll()
+    {
+
+    }
     public void CheckColliders()
     {
         for(int i = 0; i < Around.Count; i++)

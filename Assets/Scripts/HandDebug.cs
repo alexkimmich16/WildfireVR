@@ -15,9 +15,16 @@ public class HandDebug : MonoBehaviour
     #region Singleton
     public static HandDebug instance;
     void Awake() { instance = this; }
-
     #endregion
 
+    [System.Serializable]
+    public class DataSubscript
+    {
+        public string Name;
+        public FinalMovement FinalInfo;
+        public List<MovementData> Storage = new List<MovementData>();
+        public List<MovementData> Directions = new List<MovementData>();
+    }
     ///for tomorrow:
     ///player look direction raycast spawns
     ///structs for subscripts
@@ -367,4 +374,16 @@ public class HandDebug : MonoBehaviour
     {
         SaveScript.SaveStats();
     }
+
+
+}
+
+public enum DirectionShip
+{
+    Down = 0,
+    Forward = 1,
+    Back = 2,
+    Left = 3,
+    Right = 4,
+    Up = 5,
 }
