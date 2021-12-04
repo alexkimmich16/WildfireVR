@@ -76,7 +76,6 @@ public class HandMagic : MonoBehaviour
     {
         Shields[Left].Health = 0;
         ChangeShield(Left, false);
-        //remove shield
     }
     
     public void ChangeShield(int Side, bool On)
