@@ -72,7 +72,7 @@ public class HandActions : MonoBehaviour
         {
             if (SpikeFrame > 0)
             {
-                Debug.Log("failed");
+                //Debug.Log("failed");
             }
             SpikeFrame = 0;
             return;
@@ -81,7 +81,7 @@ public class HandActions : MonoBehaviour
         {
             if (SpikeFrame > 0)
             {
-                Debug.Log("failed1");
+                //Debug.Log("failed1");
             }
             return;
         }
@@ -89,7 +89,7 @@ public class HandActions : MonoBehaviour
         {
             if (SpikeFrame > 0)
             {
-                Debug.Log("failed2");
+                //Debug.Log("failed2");
             }
             return;
         }
@@ -99,7 +99,7 @@ public class HandActions : MonoBehaviour
         {
             SpikeSequenceActive = true;
             SpikeFrame = 0;
-            Debug.Log("started");
+            //Debug.Log("started");
         }
         if (SpikeSequenceActive == true)
         {
@@ -127,7 +127,7 @@ public class HandActions : MonoBehaviour
             {
                 if (Around[1] == true)
                 {
-                    Debug.Log("DidSpike");
+                    //Debug.Log("DidSpike");
                     HM.StartSpike();
                     SpikeFrame = 0;
                 }
@@ -154,105 +154,94 @@ public class HandActions : MonoBehaviour
     }
     #endregion
 
-
-    /*
-    public void CheckForcePush()
+    public void CheckSpikeRegular()
     {
-        //constant positive acceleation = CPA
-        //require weightlike motion like star wars
-
-        //eventually track rotation
-
-        if (Trigger > HM.TriggerThreshold)
+        //make sure not to let go of trigger too early
+        if (HandDebug.instance.DataFolders[0].FinalInfo.LeftLocalPos.Count < 1)
         {
-            //Debug.Log();
-        }
-
-        //may or may not use this step
-        //5 -  quick stop reguarless of CPA
-        int S = ForceState;
-        float Min = HM.ForcePush[S].MinVelocity;
-        float Max = HM.ForcePush[S].MaxVelocity;
-
-        ///get current velocity
-        float CurrentVelocity = Speed;
-
-        //check for state 0 requirements if meets requirements
-
-        if (Left == false && Test == true)
-        {
-            //float StateTime = HM.ForcePush[S].Time;
-            HM.ChangeText("NeededProgress:" + HM.ForcePush[S].Time.ToString(), 0);
-            HM.ChangeText("CurrentProgress:" + ProgressTimer.ToString(), 1);
-            HM.ChangeText("ResetTime:" + HM.ForcePush[S].AfterTimeDelay.ToString(), 2);
-            HM.ChangeText("StateTime:" + StateTimer.ToString(), 3);
-
-            HM.ChangeText("DesiredSpeed:" + Min.ToString() + " To "+ Max.ToString(), 4);
-            HM.ChangeText("CurrentSpeed:" + Speed.ToString(), 5);
-            
-            HM.ChangeText("State:" + S.ToString(), 6);
-        }
-        //AfterTimeDelay
-        
-        //if is in delay period don't cancel or first
-        if(S == 0 && ProgressTimer > 0)
-        {
-            StateTimer += Time.deltaTime;
-        }
-        else if (S != 0)
-        {
-            StateTimer += Time.deltaTime;
-        }
-        
-        if (StateTimer < HM.ForcePush[S].AfterTimeDelay || Max > CurrentVelocity && CurrentVelocity > Min)
-        {
-            if (Max > CurrentVelocity && CurrentVelocity > Min)
+            if (SpikeFrame > 0)
             {
-                ProgressTimer += Time.deltaTime;
-                
-                //progress to next
-                if (ProgressTimer > HM.ForcePush[S].Time)
-                {
-                    //Debug.Log("01");
-                    ForceState += 1;
-                    StateTimer = 0;
-                    ProgressTimer = 0;
-                }
-
-                //cast
-                if (ForceState >= HM.ForcePush.Count)
-                {
-                    Vector3 pos = transform.position;
-                    Direction.x = 0;
-
-                    //find this somehow
-                    //maybe by compairing pushing up vs horizonal left + right vs forward + backward
-                    Debug.Log("Finished");
-                    float ZDirection = 0;
-                    HM.UseForcePush(ZDirection, pos, Direction);
-                    //push and reset
-                    //Debug.Log("02");
-                    ForceState = 0;
-                    StateTimer = 0;
-                    ProgressTimer = 0;
-                }
-
+                //Debug.Log("failed");
             }
+            SpikeFrame = 0;
+            return;
         }
-        else
+        if (TriggerPressed() == false)
         {
-            //Debug.Log("03");
-            ForceState = 0;
-            StateTimer = 0;
-            ProgressTimer = 0;
+            if (SpikeFrame > 0)
+            {
+                //Debug.Log("failed1");
+            }
+            return;
+        }
+        if (SettingStats == true)
+        {
+            if (SpikeFrame > 0)
+            {
+                //Debug.Log("failed2");
+            }
+            return;
+        }
+
+        //if the spike
+        if (Around[0] == true && SpikeSequenceActive == false)
+        {
+            SpikeSequenceActive = true;
+            SpikeFrame = 0;
+            //Debug.Log("started");
+        }
+        if (SpikeSequenceActive == true)
+        {
+            //distance
+            //time
+            meshRenderer.material = HM.Active;
+            Vector3 pos = transform.position - HandDebug.instance.Player.position;
+            //Debug.Log("pt2");
+
+
+            float distance;
+            if (Left == true)
+            {
+                distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.LeftLocalPos[SpikeFrame]);
+            }
+            else
+            {
+                distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos[SpikeFrame]);
+                //Debug.Log(SpikeFrame + " Dis:  " + distance);
+            }
+
+            //Debug.Log("pt3");
+
+            if (HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count - 1 == SpikeFrame)
+            {
+                if (Around[1] == true)
+                {
+                    //Debug.Log("DidSpike");
+                    HM.StartSpike();
+                    SpikeFrame = 0;
+                }
+                else
+                {
+                    SpikeFrame = 0;
+                    //Debug.Log("failed");
+                }
+            }
+            //if inbounds go to next
+            //else stop
+            if (HandDebug.instance.Leanience > distance)
+            {
+                SpikeSequenceActive = true;
+                meshRenderer.material = HM.Active;
+            }
+            else
+            {
+                SpikeSequenceActive = false;
+                meshRenderer.material = HM.DeActive;
+            }
+            SpikeFrame += 1;
         }
     }
-    */
 
-    public void CheckAll()
-    {
-
-    }
     public void CheckColliders()
     {
         for(int i = 0; i < Around.Count; i++)
@@ -284,7 +273,15 @@ public class HandActions : MonoBehaviour
         }
         Odd = !Odd;
         //CheckForcePush();
-        CheckSpike();
+        if(HandDebug.instance.EngineStats == true)
+        {
+            CheckSpike();
+        }
+        else
+        {
+            CheckSpikeRegular();
+        }
+        
         SetRemoteStats();
     }
 

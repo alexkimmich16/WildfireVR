@@ -34,12 +34,10 @@ public class HandMagic : MonoBehaviour
     public Material DeActive;
 
     public List<TextMeshProUGUI> text = new List<TextMeshProUGUI>();
-
     public AudioSource Force;
-
     public bool Sounds;
-
     public List<Collider> AroundColliders = new List<Collider>();
+
     [Header("Spike")]
     private bool SpikeActive, ShieldActive;
     public bool UseSpikePlacement = false;

@@ -11,11 +11,11 @@ public enum Movements
 }
 public class HandDebug : MonoBehaviour
 {
-    
-    #region Singleton
+    //check all motions through list
+    //store info inside list 
+    #region Singleton + Classes
     public static HandDebug instance;
     void Awake() { instance = this; }
-    #endregion
 
     [System.Serializable]
     public class DataSubscript
@@ -25,9 +25,32 @@ public class HandDebug : MonoBehaviour
         public List<MovementData> Storage = new List<MovementData>();
         public List<MovementData> Directions = new List<MovementData>();
     }
-    ///for tomorrow:
-    ///player look direction raycast spawns
-    ///structs for subscripts
+    [System.Serializable]
+    public class StaticFinalMovements
+    {
+        public string Name;
+        public StaticDataFolder FinalInfo;
+    }
+    [System.Serializable]
+    public class StaticDataFolder
+    {
+        public string Name;
+        public FinalMovement FinalInfo;
+
+        public List<Vector3> LeftLocalPos;
+        public List<Vector3> LeftWorldPos;
+        public List<Vector3> LeftDifferencePos;
+
+        public List<Vector3> RightLocalPos;
+        public List<Vector3> RightWorldPos;
+        public List<Vector3> RightDifferencePos;
+
+        public float Time;
+        public float Interval;
+
+        public bool Set = false;
+    }
+    #endregion
 
     public float CountEverySecond = 20;
     private float MaxTime;
@@ -58,12 +81,17 @@ public class HandDebug : MonoBehaviour
 
     public List<DataSubscript> DataFolders = new List<DataSubscript>();
 
+    //predetermined, and works for everyone
+    public List<StaticFinalMovements> StaticFolders = new List<StaticFinalMovements>();
+
     private float TotalTime;
 
     //inside
     public Movements CurrentMove;
 
     public float Leanience;
+
+    public bool EngineStats = false;
 
     public void CreateInfo()
     {

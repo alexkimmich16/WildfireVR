@@ -5,15 +5,19 @@ using UnityEngine;
 public class Fireball : MonoBehaviour
 {
     public float Speed;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
     void Update()
     {
         transform.Translate(-Vector3.left * Time.deltaTime * Speed);
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        //if (col.transform.GetComponent<pla>())
+
+        //destroy
+        //leave fire
+        //play sound
+        Destroy(gameObject);
     }
 }
