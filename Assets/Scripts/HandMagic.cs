@@ -2,11 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+public enum SpellType
+{
+    Individual = 0,
+    Both = 1,
+}
+public enum Side
+{
+    Left = 0,
+    Right = 1,
+}
 public class HandMagic : MonoBehaviour
 {
-    #region Singleton
+    #region Singleton + classes
     public static HandMagic instance;
     void Awake() { instance = this; }
+
+    [System.Serializable]
+    public class MagicInfo
+    {
+        public string Name;
+        public SpellType Type;
+        public List<ControllerInfo> Controllers = new List<ControllerInfo>();
+    }
+
+    [System.Serializable]
+    public class ControllerInfo
+    {
+        public Side side;
+        public int Current;
+    }
     #endregion
 
     public HandActions Left;
@@ -53,8 +78,13 @@ public class HandMagic : MonoBehaviour
     public List<ShieldName> Shields = new List<ShieldName>();
     [Range(0f, 1f)]
     public float ShieldCost;
+
+    public List<MagicInfo> Spells = new List<MagicInfo>();
     //inumerator should be the one handactions sends to saying it should start sequence
-    
+    public void CheckAllMagic()
+    {
+
+    }
     public void ShieldDamage(int Damage, int Side)
     {
         Shields[Side].Health -= Damage;

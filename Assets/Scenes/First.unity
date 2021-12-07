@@ -481,7 +481,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 442842, guid: 346c6f128ac15c74fbbe8cfcfeca87bb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.249897
+      value: 10.035
       objectReference: {fileID: 0}
     - target: {fileID: 442842, guid: 346c6f128ac15c74fbbe8cfcfeca87bb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -489,7 +489,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 442842, guid: 346c6f128ac15c74fbbe8cfcfeca87bb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.228
+      value: -1.67
       objectReference: {fileID: 0}
     - target: {fileID: 442842, guid: 346c6f128ac15c74fbbe8cfcfeca87bb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3166,6 +3166,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2139675061}
     m_Modifications:
+    - target: {fileID: 121483749562581139, guid: 02b5b3fa118e50240aed4c286e05d7a1,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3033c1080b087944fa22e230d20ac2b0, type: 2}
     - target: {fileID: 1289353370770275324, guid: 02b5b3fa118e50240aed4c286e05d7a1,
         type: 3}
       propertyPath: m_RootOrder
@@ -9124,7 +9129,59 @@ MonoBehaviour:
     - {fileID: 11400000, guid: f13b9916d103b8f489605fd2b4d4e0f4, type: 2}
     - {fileID: 11400000, guid: 1dd5ed60eb203864787d411807f113cd, type: 2}
     Directions: []
-  StaticFolders: []
+  StaticFolders:
+  - Name: Spike
+    FinalInfo:
+      Name: 
+      FinalInfo: {fileID: 0}
+      LeftLocalPos: []
+      LeftWorldPos: []
+      LeftDifferencePos: []
+      RightLocalPos: []
+      RightWorldPos: []
+      RightDifferencePos: []
+      Time: 0
+      Interval: 0
+      Set: 0
+  - Name: Fireball
+    FinalInfo:
+      Name: 
+      FinalInfo: {fileID: 0}
+      LeftLocalPos: []
+      LeftWorldPos: []
+      LeftDifferencePos: []
+      RightLocalPos: []
+      RightWorldPos: []
+      RightDifferencePos: []
+      Time: 0
+      Interval: 0
+      Set: 0
+  - Name: Shield
+    FinalInfo:
+      Name: 
+      FinalInfo: {fileID: 0}
+      LeftLocalPos: []
+      LeftWorldPos: []
+      LeftDifferencePos: []
+      RightLocalPos: []
+      RightWorldPos: []
+      RightDifferencePos: []
+      Time: 0
+      Interval: 0
+      Set: 0
+  - Name: Push
+    FinalInfo:
+      Name: 
+      FinalInfo: {fileID: 0}
+      LeftLocalPos: []
+      LeftWorldPos: []
+      LeftDifferencePos: []
+      RightLocalPos: []
+      RightWorldPos: []
+      RightDifferencePos: []
+      Time: 0
+      Interval: 0
+      Set: 0
   CurrentMove: 0
   Leanience: 0.7
   EngineStats: 0
@@ -15567,6 +15624,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1403439321}
     m_Modifications:
+    - target: {fileID: 121483749562581139, guid: 02b5b3fa118e50240aed4c286e05d7a1,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3033c1080b087944fa22e230d20ac2b0, type: 2}
     - target: {fileID: 1289353370770275324, guid: 02b5b3fa118e50240aed4c286e05d7a1,
         type: 3}
       propertyPath: m_RootOrder
@@ -20698,7 +20760,7 @@ MonoBehaviour:
   Spike: {fileID: 6692573771616719421, guid: 761339995afa238419153ae2cf2b71aa, type: 3}
   YRise: 0
   Shield: {fileID: 0}
-  MaxShield: 0
+  MaxShield: 100
   Shields:
   - name: Left
     Health: 0
@@ -20707,6 +20769,15 @@ MonoBehaviour:
     Health: 0
     Shield: {fileID: 650824682}
   ShieldCost: 0
+  Spells:
+  - Name: Spike
+    Type: 0
+  - Name: Fireball
+    Type: 0
+  - Name: Shield
+    Type: 0
+  - Name: ForcePush
+    Type: 1
 --- !u!4 &1860277308
 Transform:
   m_ObjectHideFlags: 0

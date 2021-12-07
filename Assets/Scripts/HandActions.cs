@@ -19,7 +19,7 @@ public class HandActions : MonoBehaviour
     public bool BottomButtonPressed;
     public bool BottomButtonTouched;
 
-    public bool Left;
+    public Side side;
 
     public ParticleSystem PS;
 
@@ -65,6 +65,139 @@ public class HandActions : MonoBehaviour
     }
 
     #region Spike
+    //a motion, then press trigger to confirm, hold trigger to control it, release to activate
+    //spike - 
+    //fireball - 
+    //shield - 
+    //push - 
+
+    //left is 0
+    //supllies handmagic with info
+    public void CheckAll()
+    {
+        Vector3 Localpos = transform.position - HandDebug.instance.Player.position;
+        int SideNum = (int)side;
+        for (int i = 0; i < HM.Spells.Count; i++)
+        {
+            float distance;
+            distance = Vector3.Distance(Localpos, HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[SpikeFrame]);
+            int Current = HM.Spells[i].Controllers[SideNum].Current;
+            if (HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1 == SpikeFrame)
+            {
+                if (Around[1] == true)
+                {
+                    HM.StartSpike();
+                    SpikeFrame = 0;
+                }
+                else
+                {
+                    SpikeFrame = 0;
+                }
+            }
+            //if inbounds go to next
+            //else stop
+            if (HandDebug.instance.Leanience > distance)
+            {
+                SpikeSequenceActive = true;
+                meshRenderer.material = HM.Active;
+            }
+            else
+            {
+                SpikeSequenceActive = false;
+                meshRenderer.material = HM.DeActive;
+            }
+            SpikeFrame += 1;
+
+
+
+
+
+            //make sure not to let go of trigger too early
+            if (HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count < 1)
+            {
+                if (SpikeFrame > 0)
+                {
+                    //Debug.Log("failed");
+                }
+                SpikeFrame = 0;
+                return;
+            }
+            if (TriggerPressed() == false)
+            {
+                if (SpikeFrame > 0)
+                {
+                    //Debug.Log("failed1");
+                }
+                return;
+            }
+            if (SettingStats == true)
+            {
+                if (SpikeFrame > 0)
+                {
+                    //Debug.Log("failed2");
+                }
+                return;
+            }
+
+            //if the spike
+            if (Around[0] == true && SpikeSequenceActive == false)
+            {
+                SpikeSequenceActive = true;
+                SpikeFrame = 0;
+                //Debug.Log("started");
+            }
+            if (SpikeSequenceActive == true)
+            {
+                //distance
+                //time
+                meshRenderer.material = HM.Active;
+                Vector3 pos = transform.position - HandDebug.instance.Player.position;
+                //Debug.Log("pt2");
+
+
+                float distance;
+                if (Left == true)
+                {
+                    distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.LeftLocalPos[SpikeFrame]);
+                }
+                else
+                {
+                    distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos[SpikeFrame]);
+                    //Debug.Log(SpikeFrame + " Dis:  " + distance);
+                }
+
+                //Debug.Log("pt3");
+
+                if (HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count - 1 == SpikeFrame)
+                {
+                    if (Around[1] == true)
+                    {
+                        //Debug.Log("DidSpike");
+                        HM.StartSpike();
+                        SpikeFrame = 0;
+                    }
+                    else
+                    {
+                        SpikeFrame = 0;
+                        //Debug.Log("failed");
+                    }
+                }
+                //if inbounds go to next
+                //else stop
+                if (HandDebug.instance.Leanience > distance)
+                {
+                    SpikeSequenceActive = true;
+                    meshRenderer.material = HM.Active;
+                }
+                else
+                {
+                    SpikeSequenceActive = false;
+                    meshRenderer.material = HM.DeActive;
+                }
+                SpikeFrame += 1;
+            }
+        }
+    }
     public void CheckSpike()
     {
         //make sure not to let go of trigger too early
@@ -107,9 +240,6 @@ public class HandActions : MonoBehaviour
             //time
             meshRenderer.material = HM.Active;
             Vector3 pos = transform.position - HandDebug.instance.Player.position;
-            //Debug.Log("pt2");
-
-
             float distance;
             if (Left == true)
             {
@@ -120,8 +250,6 @@ public class HandActions : MonoBehaviour
                 distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos[SpikeFrame]);
                 //Debug.Log(SpikeFrame + " Dis:  " + distance);
             }
-
-            //Debug.Log("pt3");
 
             if (HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count - 1 == SpikeFrame)
             {
@@ -153,94 +281,6 @@ public class HandActions : MonoBehaviour
         }
     }
     #endregion
-
-    public void CheckSpikeRegular()
-    {
-        //make sure not to let go of trigger too early
-        if (HandDebug.instance.DataFolders[0].FinalInfo.LeftLocalPos.Count < 1)
-        {
-            if (SpikeFrame > 0)
-            {
-                //Debug.Log("failed");
-            }
-            SpikeFrame = 0;
-            return;
-        }
-        if (TriggerPressed() == false)
-        {
-            if (SpikeFrame > 0)
-            {
-                //Debug.Log("failed1");
-            }
-            return;
-        }
-        if (SettingStats == true)
-        {
-            if (SpikeFrame > 0)
-            {
-                //Debug.Log("failed2");
-            }
-            return;
-        }
-
-        //if the spike
-        if (Around[0] == true && SpikeSequenceActive == false)
-        {
-            SpikeSequenceActive = true;
-            SpikeFrame = 0;
-            //Debug.Log("started");
-        }
-        if (SpikeSequenceActive == true)
-        {
-            //distance
-            //time
-            meshRenderer.material = HM.Active;
-            Vector3 pos = transform.position - HandDebug.instance.Player.position;
-            //Debug.Log("pt2");
-
-
-            float distance;
-            if (Left == true)
-            {
-                distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.LeftLocalPos[SpikeFrame]);
-            }
-            else
-            {
-                distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos[SpikeFrame]);
-                //Debug.Log(SpikeFrame + " Dis:  " + distance);
-            }
-
-            //Debug.Log("pt3");
-
-            if (HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count - 1 == SpikeFrame)
-            {
-                if (Around[1] == true)
-                {
-                    //Debug.Log("DidSpike");
-                    HM.StartSpike();
-                    SpikeFrame = 0;
-                }
-                else
-                {
-                    SpikeFrame = 0;
-                    //Debug.Log("failed");
-                }
-            }
-            //if inbounds go to next
-            //else stop
-            if (HandDebug.instance.Leanience > distance)
-            {
-                SpikeSequenceActive = true;
-                meshRenderer.material = HM.Active;
-            }
-            else
-            {
-                SpikeSequenceActive = false;
-                meshRenderer.material = HM.DeActive;
-            }
-            SpikeFrame += 1;
-        }
-    }
 
     public void CheckColliders()
     {
@@ -279,7 +319,7 @@ public class HandActions : MonoBehaviour
         }
         else
         {
-            CheckSpikeRegular();
+            //CheckSpikeRegular();
         }
         
         SetRemoteStats();
