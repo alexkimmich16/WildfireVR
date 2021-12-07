@@ -23,6 +23,7 @@ public class HandMagic : MonoBehaviour
     {
         public string Name;
         public SpellType Type;
+        public List<ControllerInfo> Steps = new List<ControllerInfo>();
         public List<ControllerInfo> Controllers = new List<ControllerInfo>();
     }
 
@@ -250,7 +251,6 @@ public class HandMagic : MonoBehaviour
         {
             Charge();
         }
-
         bool UsingMagic = false;
 
         //check for flying
@@ -269,16 +269,13 @@ public class HandMagic : MonoBehaviour
             }
             else
             {
-                
                 if (Controllers[i].Playing == true)
                 {
                     Controllers[i].Playing = false;
                     Controllers[i].PS.Stop();
                 }
             }
-            
         }
-
         ShouldCharge = !UsingMagic;
     }
     
