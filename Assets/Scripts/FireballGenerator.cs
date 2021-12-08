@@ -7,6 +7,7 @@ public class FireballGenerator : MonoBehaviour
     public float MaxTime;
     public float Speed;
     public GameObject Fireball;
+    public Transform Spawn;
     private float Timer;
 
     void Update()
@@ -21,7 +22,7 @@ public class FireballGenerator : MonoBehaviour
 
     public void SpawnFireball()
     {
-        GameObject Current = Instantiate(Fireball, transform.position, Quaternion.identity);
+        GameObject Current = Instantiate(Fireball, Spawn.position, Quaternion.identity);
         Current.GetComponent<Fireball>().Speed = Speed;
     }
 }

@@ -12,11 +12,9 @@ GameObject:
   - component: {fileID: 19865666}
   - component: {fileID: 19965666}
   - component: {fileID: 13565666}
-  - component: {fileID: 11465660}
-  - component: {fileID: 11465662}
-  - component: {fileID: 11465664}
   - component: {fileID: 11465666}
   - component: {fileID: 5465666}
+  - component: {fileID: 8251094843468970332}
   m_Layer: 0
   m_Name: Fire_Fireball
   m_TagString: Untagged
@@ -32,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 165666}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.7, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 496276}
@@ -291,7 +289,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeY:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -344,7 +342,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeZ:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -397,7 +395,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startRotationX:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 0
       minScalar: 0
       maxCurve:
@@ -450,7 +448,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startRotationY:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 0
       minScalar: 0
       maxCurve:
@@ -4739,60 +4737,11 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 165666}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.3
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &11465660
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 165666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99f7dd29227cf224eb83f39b0139033a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 5
-  Noise: {x: 20, y: 20, z: 20}
-  Damping: 0.1
---- !u!114 &11465662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 165666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b2d6ee4de32ca747bd27eb53657655a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FixRotation: 0
-  Normal: 0
-  FXSpawn: {fileID: 142254, guid: 7203052176ec71a4ca8280b5a9aa3668, type: 3}
-  LifeTime: 5
-  TimeSpawn: 0
---- !u!114 &11465664
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 165666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49ffe117472f28a42ae488a517f0f3ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FXSpawn: {fileID: 166318, guid: 6f813a83ace7f354794a0c8f4721d934, type: 3}
-  DestoyOnHit: 1
-  FixRotation: 0
-  LifeTimeAfterHit: 1
-  LifeTime: 5
 --- !u!114 &11465666
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4805,7 +4754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aea3c196ff927664fac017e6ff812a54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LifeTime: 3
+  LifeTime: 20
   SpawnAfterDead: {fileID: 0}
 --- !u!54 &5465666
 Rigidbody:
@@ -4823,6 +4772,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &8251094843468970332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c54bf950d536654091c22b79e43fa27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Speed: 2.15
+  Explosion: {fileID: 166318, guid: 6f813a83ace7f354794a0c8f4721d934, type: 3}
+  Flash: {fileID: 142254, guid: 7203052176ec71a4ca8280b5a9aa3668, type: 3}
 --- !u!1 &196276
 GameObject:
   m_ObjectHideFlags: 0

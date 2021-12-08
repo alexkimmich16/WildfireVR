@@ -35,8 +35,6 @@ public class HandActions : MonoBehaviour
 
     public List<bool> Around = new List<bool>();
 
-    private int SpikeFrame;
-
     public SkinnedMeshRenderer meshRenderer;
     public bool SettingStats = false;
 
@@ -50,10 +48,27 @@ public class HandActions : MonoBehaviour
         {
             //max frames and trigger
             // if not trigger after all frames, stop
-            if ()
+            int Current = HM.Spells[i].Controllers[(int)side].Current;
+            FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
+            if (info.RightLocalPos.Count == Current)
             {
-
+                HM.Behaviour(i, 0);
+                HM.Spells[i].Finished[0] = true;
+                if (TriggerPressed() == true && HM.Spells[i].Finished[1] == false)
+                {
+                    HM.Behaviour(i, 1);
+                    HM.Spells[i].Finished[1] = true;
+                    //HM.StartSpike();
+                }
+                if (HM.Spells[i].Finished[1] == true && TriggerPressed() == false)
+                {
+                    HM.Behaviour(i, 2);
+                    HM.Spells[i].Finished[0] = false;
+                    HM.Spells[i].Finished[1] = false;
+                    HM.Spells[i].Controllers[(int)side].Current = 0;
+                }
             }
+            
         }
     }
 
@@ -61,228 +76,40 @@ public class HandActions : MonoBehaviour
     {
         Vector3 Localpos = transform.position - HandDebug.instance.Player.position;
         int SideNum = (int)side;
-        for (int i = 0; i < HM.Spells.Count; i++)
+        //HM.Spells.Count
+        for (int i = 0; i < HandDebug.instance.DataFolders.Count; i++)
         {
-            Vector3 AveragePos;
+            FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
             int Current = HM.Spells[i].Controllers[SideNum].Current;
-            FinalInfo info = HandDebug.instance.DataFolders[i].FinalInfo;
-            if ()
-            {
-
-            }
-            float distance;
             
-            if (SideNum == 0)
-                AveragePos = info.LeftLocalPos[Current];
-            else
-                AveragePos = info.RightLocalPos[Current];
-            distance = Vector3.Distance(Localpos, AveragePos);
-            if (info.RightLocalPos.Count - 1 == Current)
+            if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
             {
-                HM.StartSpike();
-            }
-            //distance is close enough, and 
-            if ()
-            {
-
-            }
-
-            HM.Spells[i].Controllers[SideNum].Current += 1;
-
-            //if inbounds go to next
-            //else stop
-            /*
-            if (HandDebug.instance.Leanience > distance)
-            {
-                meshRenderer.material = HM.Active;
-            }
-            else
-            {
-                meshRenderer.material = HM.DeActive;
-            }
-            */
-
-            //make sure not to let go of trigger too early
-            if (HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count < 1)
-            {
-                if (SpikeFrame > 0)
-                {
-                    //Debug.Log("failed");
-                }
-                SpikeFrame = 0;
-                return;
-            }
-            if (TriggerPressed() == false)
-            {
-                if (SpikeFrame > 0)
-                {
-                    //Debug.Log("failed1");
-                }
-                return;
-            }
-            if (SettingStats == true)
-            {
-                if (SpikeFrame > 0)
-                {
-                    //Debug.Log("failed2");
-                }
-                return;
-            }
-
-            //if the spike
-            if (Around[0] == true && SpikeSequenceActive == false)
-            {
-                SpikeSequenceActive = true;
-                SpikeFrame = 0;
-                //Debug.Log("started");
-            }
-            if (SpikeSequenceActive == true)
-            {
-                //distance
-                //time
-                meshRenderer.material = HM.Active;
-                Vector3 pos = transform.position - HandDebug.instance.Player.position;
-                //Debug.Log("pt2");
-
-
-                //Debug.Log("pt3");
-
-                if (HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count - 1 == SpikeFrame)
-                {
-                    if (Around[1] == true)
-                    {
-                        //Debug.Log("DidSpike");
-                        HM.StartSpike();
-                        SpikeFrame = 0;
-                    }
-                    else
-                    {
-                        SpikeFrame = 0;
-                        //Debug.Log("failed");
-                    }
-                }
-                //if inbounds go to next
-                //else stop
-                /*
-                if (HandDebug.instance.Leanience > distance)
-                {
-                    SpikeSequenceActive = true;
-                    meshRenderer.material = HM.Active;
-                }
+                Vector3 AveragePos;
+                float distance;
+                
+                if (SideNum == 0)
+                    AveragePos = new Vector3(info.LeftLocalPos[Current].x, info.LeftLocalPos[Current].y, info.LeftLocalPos[Current].z);
                 else
-                {
-                    SpikeSequenceActive = false;
-                    meshRenderer.material = HM.DeActive;
-                }
-                */
-                SpikeFrame += 1;
-            }
-        }
-    }
-    public void CheckSpike()
-    {
-        /*
-        //make sure not to let go of trigger too early
-        if (HandDebug.instance.DataFolders[0].FinalInfo.LeftLocalPos.Count < 1)
-        {
-            if (SpikeFrame > 0)
-            {
-                //Debug.Log("failed");
-            }
-            SpikeFrame = 0;
-            return;
-        }
-        if (TriggerPressed() == false)
-        {
-            if (SpikeFrame > 0)
-            {
-                //Debug.Log("failed1");
-            }
-            return;
-        }
-        if (SettingStats == true)
-        {
-            if (SpikeFrame > 0)
-            {
-                //Debug.Log("failed2");
-            }
-            return;
-        }
+                    AveragePos = new Vector3(info.RightLocalPos[Current].x, info.RightLocalPos[Current].y, info.RightLocalPos[Current].z);
 
-        //if the spike
-        if (Around[0] == true && SpikeSequenceActive == false)
-        {
-            SpikeSequenceActive = true;
-            SpikeFrame = 0;
-            //Debug.Log("started");
-        }
-        if (SpikeSequenceActive == true)
-        {
-            //distance
-            //time
-            meshRenderer.material = HM.Active;
-            Vector3 pos = transform.position - HandDebug.instance.Player.position;
-            float distance;
-            
-            if (Left == true)
-            {
-                distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.LeftLocalPos[SpikeFrame]);
-            }
-            else
-            {
-                distance = Vector3.Distance(pos, HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos[SpikeFrame]);
-                //Debug.Log(SpikeFrame + " Dis:  " + distance);
-            }
-            
-        if (HandDebug.instance.DataFolders[0].FinalInfo.RightLocalPos.Count - 1 == SpikeFrame)
-        {
-            if (Around[1] == true)
-            {
-                //Debug.Log("DidSpike");
-                HM.StartSpike();
-                SpikeFrame = 0;
-            }
-            else
-            {
-                SpikeFrame = 0;
-                //Debug.Log("failed");
-            }
-        }
-        //if inbounds go to next
-        //else stop
-        if (HandDebug.instance.Leanience > distance)
-        {
-            SpikeSequenceActive = true;
-            meshRenderer.material = HM.Active;
-        }
-        else
-        {
-            SpikeSequenceActive = false;
-            meshRenderer.material = HM.DeActive;
-        }
-        SpikeFrame += 1;
-    }
-    */
-}
-#endregion
+                distance = Vector3.Distance(AveragePos, Localpos); 
+                if (SideNum == 1)
+                    //Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + Localpos.ToString("F3") + "   AveragePos:  " + AveragePos.ToString("F3"));
 
-    public void CheckColliders()
-    {
-        for(int i = 0; i < Around.Count; i++)
-        {
-            if (HM.AroundColliders[i].bounds.Intersects(MyCollider.bounds))
-            {
-                Around[i] = true;
+                //is it close enough, if not restart
+                if (HM.Spells[i].Leanience > distance)
+                    HM.Spells[i].Controllers[SideNum].Current += 1;
+                else
+                    HM.Spells[i].Controllers[SideNum].Current = 0;
             }
-            else
-            {
-                Around[i] = false;
-            }
-            
         }
     }
+    #endregion
+
+   
     void Update()
     {
+        SetRemoteStats();
         CheckColliders();
         int SideNum = (int)side;
         //Speed = (transform.position - old).magnitude / Time.deltaTime;
@@ -292,43 +119,17 @@ public class HandActions : MonoBehaviour
         //CheckForcePush();
         if(HandDebug.instance.EngineStats == true)
         {
-            CheckSpike();
+            CheckAll();
         }
         else
         {
             //CheckSpikeRegular();
         }
+        WaitFrames();
         
-        SetRemoteStats();
     }
 
-    public void SetRemoteStats()
-    {
-        InputDevice device = InputDevices.GetDeviceAtXRNode(inputSource);
-
-        device.TryGetFeatureValue(CommonUsages.trigger, out Trigger);
-
-        device.TryGetFeatureValue(CommonUsages.grip, out Grip);
-
-        device.TryGetFeatureValue(CommonUsages.secondaryButton, out BottomButtonPressed);
-        device.TryGetFeatureValue(CommonUsages.secondaryTouch, out BottomButtonTouched);
-        device.TryGetFeatureValue(CommonUsages.primaryButton, out TopButtonPressed);
-        device.TryGetFeatureValue(CommonUsages.primaryTouch, out TopButtonTouched);
-
-
-        device.TryGetFeatureValue(CommonUsages.primary2DAxis, out Direction);
-        if (Direction != Vector2.zero)
-        {
-            //Debug.Log("touchpad" + Direction);
-        }
-    }
-
-    void Start()
-    {
-        HM = HandMagic.instance;
-        PS.Stop();
-        SpikeFrame = 1;
-    }
+    
 
     public void Fly()
     {
@@ -358,5 +159,46 @@ public class HandActions : MonoBehaviour
             return true;
         }
         return false;
+    }
+    public void CheckColliders()
+    {
+        for (int i = 0; i < Around.Count; i++)
+        {
+            if (HM.AroundColliders[i].bounds.Intersects(MyCollider.bounds))
+            {
+                Around[i] = true;
+            }
+            else
+            {
+                Around[i] = false;
+            }
+
+        }
+    }
+    public void SetRemoteStats()
+    {
+        InputDevice device = InputDevices.GetDeviceAtXRNode(inputSource);
+
+        device.TryGetFeatureValue(CommonUsages.trigger, out Trigger);
+
+        device.TryGetFeatureValue(CommonUsages.grip, out Grip);
+
+        device.TryGetFeatureValue(CommonUsages.secondaryButton, out BottomButtonPressed);
+        device.TryGetFeatureValue(CommonUsages.secondaryTouch, out BottomButtonTouched);
+        device.TryGetFeatureValue(CommonUsages.primaryButton, out TopButtonPressed);
+        device.TryGetFeatureValue(CommonUsages.primaryTouch, out TopButtonTouched);
+
+
+        device.TryGetFeatureValue(CommonUsages.primary2DAxis, out Direction);
+        if (Direction != Vector2.zero)
+        {
+            //Debug.Log("touchpad" + Direction);
+        }
+    }
+
+    void Start()
+    {
+        HM = HandMagic.instance;
+        PS.Stop();
     }
 }

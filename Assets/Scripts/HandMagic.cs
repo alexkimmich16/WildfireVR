@@ -23,14 +23,17 @@ public class HandMagic : MonoBehaviour
     {
         public string Name;
         public SpellType Type;
-        public List<ControllerInfo> Steps = new List<ControllerInfo>();
+        //public List<ControllerInfo> Steps = new List<ControllerInfo>();
+        public float Leanience;
+        public List<bool> Finished = new List<bool>();
+        //public Vector3 Leanience;
         public List<ControllerInfo> Controllers = new List<ControllerInfo>();
     }
 
     [System.Serializable]
     public class ControllerInfo
     {
-        public Side side;
+        //public Side side;
         public int Current;
     }
     #endregion
@@ -65,7 +68,6 @@ public class HandMagic : MonoBehaviour
     public List<Collider> AroundColliders = new List<Collider>();
 
     [Header("Spike")]
-    private bool SpikeActive, ShieldActive;
     public bool UseSpikePlacement = false;
     public float SpikeTimeDelete;
     public GameObject Spike;
@@ -81,6 +83,73 @@ public class HandMagic : MonoBehaviour
     public float ShieldCost;
 
     public List<MagicInfo> Spells = new List<MagicInfo>();
+
+    public List<GameObject> Follows = new List<GameObject>();
+
+    public void Behaviour(int Spell, int Part)
+    {
+        if (Spell == 0)
+        {
+            if (Part == 0)
+            {
+                //motion
+            }
+            else if (Part == 1)
+            {
+                //pressed
+            }
+            else if (Part == 2)
+            {
+                UseSpike(RaycastGround());
+            }
+        }
+        if (Spell == 1)
+        {
+            if (Part == 0)
+            {
+                //motion
+            }
+            else if (Part == 1)
+            {
+                //pressed
+            }
+            else if (Part == 2)
+            {
+                UseSpike(RaycastGround());
+            }
+        }
+        if (Spell == 2)
+        {
+            if (Part == 0)
+            {
+                //motion
+            }
+            else if (Part == 1)
+            {
+                //pressed
+                StartShield(1);
+            }
+            else if (Part == 2)
+            {
+                EndShield(1);
+            }
+        }
+        if (Spell == 3)
+        {
+            if (Part == 0)
+            {
+                //motion
+            }
+            else if (Part == 1)
+            {
+                //pressed
+            }
+            else if (Part == 2)
+            {
+                UseSpike(RaycastGround());
+            }
+        }
+    }
     //inumerator should be the one handactions sends to saying it should start sequence
     public void CheckAllMagic()
     {
@@ -112,7 +181,23 @@ public class HandMagic : MonoBehaviour
         Shields[Side].Shield.SetActive(On);
     }
 
-    //public void 
+    public void FollowMotion()
+    {
+        
+        for (int i = 0; i < Follows.Count; i++)
+        {
+            int Current = Spells[i].Controllers[1].Current;
+            if (Current > HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1)
+            {
+                Current -= 1;
+            }
+
+            Vector3 Local = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
+            Vector3 Spot = Cam.transform.position + Local;
+            Follows[i].transform.position = Spot;
+        }
+        
+    }
 
     public Vector3 RaycastGround()
     {
@@ -135,38 +220,6 @@ public class HandMagic : MonoBehaviour
         }
     }
 
-    public void SpikeBools()
-    {
-        if (UseSpikePlacement == true)
-        {
-            //show menu for spi
-            Vector3 point = RaycastGround();
-
-            //raycast spike
-            //if player touches button to confirm
-            //useSpike()
-        }
-        else
-        {
-            //UseSpike
-
-            if (RaycastGround() != Vector3.zero)
-            {
-                UseSpike(RaycastGround());
-                SpikeActive = false;
-            }
-        }
-
-        //check x distance
-        //get raycast of head direction
-
-        //get spot of hitpoint where raycast hits layer of ground
-        //spawn spike there
-        //get and play animation of the spike
-        //after certain amount of time remove spike
-        //raycast and if null return
-
-    }
     public void UseSpike(Vector3 Position)
     {
         GameObject spike = Instantiate(Spike, Position, Quaternion.identity);
@@ -174,10 +227,6 @@ public class HandMagic : MonoBehaviour
         Destroy(spike, SpikeTimeDelete);
 
         //eventually check for people and do damage
-    }
-    public void StartSpike()
-    {
-        SpikeActive = true;
     }
 
     public void UseForcePush(float ZDirection, Vector3 pos, Vector3 dir)
@@ -242,11 +291,8 @@ public class HandMagic : MonoBehaviour
 
     void Update()
     {
+        FollowMotion();
         Debug.DrawRay(Cam.position, Cam.forward * 10000f, Color.red);
-        if (SpikeActive == true)
-        {
-            SpikeBools();
-        }
         if (ShouldCharge == true)
         {
             Charge();

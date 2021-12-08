@@ -361,12 +361,13 @@ public class HandDebug : MonoBehaviour
         List<Vector3> AverageLocalLeft = new List<Vector3>();
         List<Vector3> AverageLocalRight = new List<Vector3>();
         //Debug.Log("getaverage2");
-        int Count = DataFolders[(int)CurrentMove].Storage.Count;
+        int Count = 0;
         for (int i = 0; i < DataFolders[(int)CurrentMove].Storage.Count; i++)
         {
            // Debug.Log("getaverage3");
-            if (DataFolders[(int)CurrentMove].Storage[i] == true)
+            if (DataFolders[(int)CurrentMove].Storage[i].Set == true)
             {
+                Count += 1;
                 //Debug.Log("getaverage4");
                 for (int j = 0; j < DataFolders[(int)CurrentMove].Storage[i].LeftLocalPos.Count; j++)
                 {
