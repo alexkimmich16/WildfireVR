@@ -102,31 +102,67 @@ public class HandDebug : MonoBehaviour
             TotalTime += Time.deltaTime;
             CurrentMovement = true;
             Timer += Time.deltaTime;
+            
             if (Timer > MaxTime)
             {
-                RightWorldPos.Add(Right.transform.position);
-                RightLocalPos.Add(Right.transform.position - Player.position);
+                SpellType CastType = HandMagic.instance.Spells[(int)CurrentMove].Type;
+                if ((int)CastType == 0)
+                {
+                    //individual so mirror on right for left
+                    RightWorldPos.Add(Right.transform.position);
+                    RightLocalPos.Add(Right.transform.position - Player.position);
 
-                LeftWorldPos.Add(Left.transform.position);
-                LeftLocalPos.Add(Left.transform.position - Player.position);
-                //each difference is this local - the last one
-                if (LeftLocalPos.Count > 1)
-                {
-                    LeftDifferencePos.Add(LeftLocalPos[LeftLocalPos.Count - 1] - LeftLocalPos[LeftLocalPos.Count - 2]);
-                }
-                else
-                {
-                    LeftDifferencePos.Add(Vector3.zero);
-                }
+                    LeftWorldPos.Add(new Vector3(Left.transform.position.x, Right.transform.position.y, Right.transform.position.z));
+                    Vector3 Local = Right.transform.position - Player.position;
+                    LeftLocalPos.Add(new Vector3(-Local.x, Local.y, Local.z));
+                    //each difference is this local - the last one
+                    if (LeftLocalPos.Count > 1)
+                    {
+                        LeftDifferencePos.Add(LeftLocalPos[LeftLocalPos.Count - 1] - LeftLocalPos[LeftLocalPos.Count - 2]);
+                    }
+                    else
+                    {
+                        LeftDifferencePos.Add(Vector3.zero);
+                    }
 
-                if (RightLocalPos.Count > 1)
-                {
-                    RightDifferencePos.Add(RightLocalPos[RightLocalPos.Count - 1] - RightLocalPos[RightLocalPos.Count - 2]);
+                    if (RightLocalPos.Count > 1)
+                    {
+                        RightDifferencePos.Add(RightLocalPos[RightLocalPos.Count - 1] - RightLocalPos[RightLocalPos.Count - 2]);
+                    }
+                    else
+                    {
+                        RightDifferencePos.Add(Vector3.zero);
+                    }
                 }
-                else
+                else if ((int)CastType == 1)
                 {
-                    RightDifferencePos.Add(Vector3.zero);
+                    //track both seperately
+                    //individual so mirror on right for left
+                    RightWorldPos.Add(Right.transform.position);
+                    RightLocalPos.Add(Right.transform.position - Player.position);
+
+                    LeftWorldPos.Add(Left.transform.position);
+                    LeftLocalPos.Add(Left.transform.position - Player.position);
+                    //each difference is this local - the last one
+                    if (LeftLocalPos.Count > 1)
+                    {
+                        LeftDifferencePos.Add(LeftLocalPos[LeftLocalPos.Count - 1] - LeftLocalPos[LeftLocalPos.Count - 2]);
+                    }
+                    else
+                    {
+                        LeftDifferencePos.Add(Vector3.zero);
+                    }
+
+                    if (RightLocalPos.Count > 1)
+                    {
+                        RightDifferencePos.Add(RightLocalPos[RightLocalPos.Count - 1] - RightLocalPos[RightLocalPos.Count - 2]);
+                    }
+                    else
+                    {
+                        RightDifferencePos.Add(Vector3.zero);
+                    }
                 }
+                
             }
         }
         else

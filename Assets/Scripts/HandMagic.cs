@@ -86,7 +86,7 @@ public class HandMagic : MonoBehaviour
 
     public List<GameObject> Follows = new List<GameObject>();
 
-    public void Behaviour(int Spell, int Part)
+    public void Behaviour(int Spell, int Part, int Side)
     {
         if (Spell == 0)
         {
@@ -108,6 +108,7 @@ public class HandMagic : MonoBehaviour
             if (Part == 0)
             {
                 //motion
+                //fireball
             }
             else if (Part == 1)
             {
@@ -123,6 +124,7 @@ public class HandMagic : MonoBehaviour
             if (Part == 0)
             {
                 //motion
+                //shield
             }
             else if (Part == 1)
             {
@@ -139,6 +141,7 @@ public class HandMagic : MonoBehaviour
             if (Part == 0)
             {
                 //motion
+                //forceblast
             }
             else if (Part == 1)
             {

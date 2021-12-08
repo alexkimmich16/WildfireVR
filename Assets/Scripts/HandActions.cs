@@ -52,17 +52,17 @@ public class HandActions : MonoBehaviour
             FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
             if (info.RightLocalPos.Count == Current)
             {
-                HM.Behaviour(i, 0);
+                HM.Behaviour(i, 0, (int)side);
                 HM.Spells[i].Finished[0] = true;
                 if (TriggerPressed() == true && HM.Spells[i].Finished[1] == false)
                 {
-                    HM.Behaviour(i, 1);
+                    HM.Behaviour(i, 1,(int)side);
                     HM.Spells[i].Finished[1] = true;
                     //HM.StartSpike();
                 }
                 if (HM.Spells[i].Finished[1] == true && TriggerPressed() == false)
                 {
-                    HM.Behaviour(i, 2);
+                    HM.Behaviour(i, 2, (int)side);
                     HM.Spells[i].Finished[0] = false;
                     HM.Spells[i].Finished[1] = false;
                     HM.Spells[i].Controllers[(int)side].Current = 0;
