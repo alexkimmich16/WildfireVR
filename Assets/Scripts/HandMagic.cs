@@ -23,9 +23,11 @@ public class HandMagic : MonoBehaviour
     {
         public string Name;
         public SpellType Type;
+        public float Cost;
         //public List<ControllerInfo> Steps = new List<ControllerInfo>();
         public float Leanience;
         public List<bool> Finished = new List<bool>();
+        
         //public Vector3 Leanience;
         public List<ControllerInfo> Controllers = new List<ControllerInfo>();
     }
@@ -54,10 +56,7 @@ public class HandMagic : MonoBehaviour
     [Header("Flying")]
     [Range(0f, 1f)]
     public float FlyingCost;
-    [Header("Push")]
-    public float PushAmount;
-    public float PushRadius;
-    public float PushCost;
+    
     [Header("Misc")]
     public Material Active;
     public Material DeActive;
@@ -68,20 +67,24 @@ public class HandMagic : MonoBehaviour
     public List<Collider> AroundColliders = new List<Collider>();
 
     [Header("Spike")]
-    public bool UseSpikePlacement = false;
+    private bool UseSpikePlacement = false;
     public float SpikeTimeDelete;
     public GameObject Spike;
     public float YRise;
 
+    [Header("Fireball")]
+
     [Header("Shield")]
-    public GameObject Shield;
     public int MaxShield;
-
-    //0 is left, 1 is right
+    public GameObject Fireball;
     public List<ShieldName> Shields = new List<ShieldName>();
-    [Range(0f, 1f)]
-    public float ShieldCost;
 
+    [Header("ForcePush")]
+    public float PushAmount;
+    public float PushRadius;
+
+
+    [Header("Other")]
     public List<MagicInfo> Spells = new List<MagicInfo>();
 
     public List<GameObject> Follows = new List<GameObject>();
@@ -100,6 +103,7 @@ public class HandMagic : MonoBehaviour
             }
             else if (Part == 2)
             {
+                ChangeMagic(-Spells[Spell].Cost);
                 UseSpike(RaycastGround());
             }
         }
@@ -112,11 +116,12 @@ public class HandMagic : MonoBehaviour
             }
             else if (Part == 1)
             {
-                //pressed
+                FireballCharge(Side);
             }
             else if (Part == 2)
             {
-                UseSpike(RaycastGround());
+                ChangeMagic(-Spells[Spell].Cost);
+                FireballShoot(Side);
             }
         }
         if (Spell == 2)
@@ -128,7 +133,8 @@ public class HandMagic : MonoBehaviour
             }
             else if (Part == 1)
             {
-                //pressed
+                //pressedCost
+                ChangeMagic(-Spells[Spell].Cost);
                 StartShield(1);
             }
             else if (Part == 2)
@@ -149,14 +155,21 @@ public class HandMagic : MonoBehaviour
             }
             else if (Part == 2)
             {
-                UseSpike(RaycastGround());
+                ChangeMagic(-Spells[Spell].Cost);
+                UseForcePush();
             }
         }
     }
     //inumerator should be the one handactions sends to saying it should start sequence
-    public void CheckAllMagic()
+    public void FireballCharge(int Hand)
     {
+        
+    }
 
+    public void FireballShoot(int Hand)
+    {
+        GameObject Current = Instantiate(Fireball, Controllers[Hand].transform.position, Quaternion.LookRotation(Controllers[Hand].transform.forward));
+       // Controllers[Hand].transform
     }
     public void ShieldDamage(int Damage, int Side)
     {
@@ -170,6 +183,7 @@ public class HandMagic : MonoBehaviour
     //on health smaller than 0 shatter and endshield and take away a bunch of mana
     public void StartShield(int Left)
     {
+        ChangeMagic(-Spells[2].Cost);
         Shields[Left].Health = MaxShield;
         ChangeShield(Left, true);
     }
@@ -186,7 +200,6 @@ public class HandMagic : MonoBehaviour
 
     public void FollowMotion()
     {
-        
         for (int i = 0; i < Follows.Count; i++)
         {
             int Current = Spells[i].Controllers[1].Current;
@@ -232,22 +245,18 @@ public class HandMagic : MonoBehaviour
         //eventually check for people and do damage
     }
 
-    public void UseForcePush(float ZDirection, Vector3 pos, Vector3 dir)
+    public void UseForcePush()
     {
-        //make z relavant
-        if(Sounds == true)
+        //float ZDirection;
+        Vector3 pos = Cam.transform.position;
+        Vector3 dir;
+        if (Sounds == true)
         {
             Force.Play();
         }
-        
-        if (CurrentMagic < PushCost)
-        {
-            //show not enough magic
-            return;
-        }
+     
         //do some effect animation
         //play force sound
-        ChangeMagic(-PushCost);
 
         Collider[] colliders = Physics.OverlapSphere(pos, PushRadius);
         foreach (Collider pushedOBJ in colliders)
@@ -255,18 +264,20 @@ public class HandMagic : MonoBehaviour
             if (pushedOBJ.tag != "Player" && pushedOBJ.gameObject.GetComponent<Rigidbody>() != null)
             {
                 Vector3 directionToTarget = pos - pushedOBJ.transform.position;
-                float angle = Vector3.Angle(dir, directionToTarget);
-                float distance = directionToTarget.magnitude;
+                //float angle = Vector3.Angle(dir, directionToTarget);
+                //float distance = directionToTarget.magnitude;
                 //Debug.Log(angle + " " + pushedOBJ);
 
                 Rigidbody pushed = pushedOBJ.GetComponent<Rigidbody>();
                 pushed.AddExplosionForce(PushAmount, pos, PushRadius);
+                /*
                 if (Mathf.Abs(angle) < 90 && distance < 10)
                 {
                     //Debug.Log("target is in front of me");
                     //Rigidbody pushed = pushedOBJ.GetComponent<Rigidbody>();
                     //pushed.AddExplosionForce(PushAmount, pos, PushRadius);
                 }
+                */
             }
         }
     }

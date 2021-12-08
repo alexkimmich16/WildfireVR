@@ -2951,7 +2951,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 574997495}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.684, y: 0, z: 0}
+  m_LocalPosition: {x: 0.659, y: 0, z: 0}
   m_LocalScale: {x: 0.35, y: 0.07, z: 0.27}
   m_Children:
   - {fileID: 1239900194}
@@ -21291,9 +21291,6 @@ MonoBehaviour:
   MagicRecharge: 0.02
   MaxMagic: 100
   FlyingCost: 0.03
-  PushAmount: 2461.7
-  PushRadius: 50
-  PushCost: 20
   Active: {fileID: 2100000, guid: 571b2552e5235754b8efe104c204a0f2, type: 2}
   DeActive: {fileID: 2100000, guid: 0ec23855425a0564da1712255a24b724, type: 2}
   text:
@@ -21313,12 +21310,11 @@ MonoBehaviour:
   - {fileID: 1697897730}
   - {fileID: 287718969}
   - {fileID: 1426866892}
-  UseSpikePlacement: 0
   SpikeTimeDelete: 4.43
   Spike: {fileID: 6692573771616719421, guid: 761339995afa238419153ae2cf2b71aa, type: 3}
   YRise: 0
-  Shield: {fileID: 0}
   MaxShield: 100
+  Fireball: {fileID: 165666, guid: b0bb155f49707cd4aa51ccc28d0cadc8, type: 3}
   Shields:
   - name: Left
     Health: 0
@@ -21326,10 +21322,12 @@ MonoBehaviour:
   - name: Right
     Health: 0
     Shield: {fileID: 1663750908}
-  ShieldCost: 0
+  PushAmount: 2461.7
+  PushRadius: 50
   Spells:
   - Name: Spike
     Type: 0
+    Cost: 0
     Leanience: 0.25
     Finished: 0000
     Controllers:
@@ -21337,6 +21335,7 @@ MonoBehaviour:
     - Current: 0
   - Name: Fireball
     Type: 0
+    Cost: 0
     Leanience: 0.25
     Finished: 0000
     Controllers:
@@ -21344,6 +21343,7 @@ MonoBehaviour:
     - Current: 0
   - Name: Shield
     Type: 0
+    Cost: 0
     Leanience: 0.25
     Finished: 0000
     Controllers:
@@ -21351,6 +21351,7 @@ MonoBehaviour:
     - Current: 0
   - Name: ForcePush
     Type: 1
+    Cost: 0
     Leanience: 0.25
     Finished: 0000
     Controllers:

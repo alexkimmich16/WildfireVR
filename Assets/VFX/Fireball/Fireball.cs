@@ -11,7 +11,7 @@ public class Fireball : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(-Vector3.left * Time.deltaTime * Speed);
+        transform.Translate(transform.forward * Time.deltaTime * Speed);
     }
 
     void OnCollisionEnter(Collision col)
