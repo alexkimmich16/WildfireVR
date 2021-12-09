@@ -22,7 +22,7 @@ public class FireballGenerator : MonoBehaviour
 
     public void SpawnFireball()
     {
-        GameObject Current = Instantiate(Fireball, Spawn.position, Quaternion.LookRotation(transform.forward));
+        GameObject Current = Instantiate(Fireball, Spawn.position, Spawn.rotation);
         Current.GetComponent<Fireball>().Speed = Speed;
     }
 }

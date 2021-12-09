@@ -30,6 +30,8 @@ public class HandMagic : MonoBehaviour
         
         //public Vector3 Leanience;
         public List<ControllerInfo> Controllers = new List<ControllerInfo>();
+
+        public List<GameObject> Sides = new List<GameObject>();
     }
 
     [System.Serializable]
@@ -37,6 +39,7 @@ public class HandMagic : MonoBehaviour
     {
         //public Side side;
         public int Current;
+        public List<bool> ControllerFinished = new List<bool>();
     }
     #endregion
 
@@ -67,10 +70,10 @@ public class HandMagic : MonoBehaviour
     public List<Collider> AroundColliders = new List<Collider>();
 
     [Header("Spike")]
-    private bool UseSpikePlacement = false;
     public float SpikeTimeDelete;
     public GameObject Spike;
     public float YRise;
+    private bool UseSpikePlacement = false;
 
     [Header("Fireball")]
 
@@ -87,8 +90,41 @@ public class HandMagic : MonoBehaviour
     [Header("Other")]
     public List<MagicInfo> Spells = new List<MagicInfo>();
 
-    public List<GameObject> Follows = new List<GameObject>();
+    //public List<FollowInfo> Follows = new List<FollowInfo>();
+    public void BothSpellManager()
+    {
+        for (int i = 0; i < Spells.Count; i++)
+        {
+            SpellType type = Spells[i].Type;
+            int TypeNum = (int)type;
+            if (TypeNum == 1)
+            {
+                //if hand motion 0 and 1 complete
+                //if trigger on both
+                //if both are now not a trigger
+                //HM.Behaviour(i, 0, (int)side);
+                //HM.Spells[i].Controllers[(int)side].Current = 0;
 
+
+                if (Spells[i].Controllers[0].ControllerFinished[0] == true && Spells[i].Controllers[1].ControllerFinished[0] == true)
+                {
+                    Spells[i].Finished[0] = true;
+                }
+                if (Spells[i].Finished[0] == true && Controllers[0].TriggerPressed() == true && Controllers[1].TriggerPressed())
+                {
+                    Spells[i].Finished[1] = true;
+                }
+                if (Spells[i].Finished[1] == true && Controllers[0].TriggerPressed() == false && Controllers[1].TriggerPressed() == false)
+                {
+                    Spells[i].Finished[0] = false;
+                    Spells[i].Finished[1] = false;
+
+                    Spells[i].Controllers[0].Current = 0;
+                    Spells[i].Controllers[1].Current = 0;
+                }
+            }
+        }
+    }
     public void Behaviour(int Spell, int Part, int Side)
     {
         if (Spell == 0)
@@ -200,17 +236,39 @@ public class HandMagic : MonoBehaviour
 
     public void FollowMotion()
     {
-        for (int i = 0; i < Follows.Count; i++)
+        for (int i = 0; i < Spells.Count; i++)
         {
-            int Current = Spells[i].Controllers[1].Current;
-            if (Current > HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1)
+            for (int j = 0; j < Spells[i].Sides.Count; j++)
             {
-                Current -= 1;
+                int Current = Spells[i].Controllers[j].Current;
+                SpellType Type = Spells[i].Type;
+                int TypeNum = (int)Type;
+                if (TypeNum == 0)
+                {
+                    //indivigual
+                }
+                else if (TypeNum == 1)
+                {
+                    //both
+                }
+                if (Current > HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1)
+                {
+                    Current -= 1;
+                }
+                Vector3 Local = Vector3.zero;
+                if (j == 0)
+                {
+                    Local = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
+                }
+                else
+                {
+                    Local = HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
+                }
+                Vector3 Spot = Cam.transform.position + Local;
+                Spells[i].Sides[j].transform.position = Spot;
             }
-
-            Vector3 Local = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
-            Vector3 Spot = Cam.transform.position + Local;
-            Follows[i].transform.position = Spot;
+                
+            
         }
         
     }
@@ -226,12 +284,10 @@ public class HandMagic : MonoBehaviour
             Vector3 HitSpot = hit.point;
             HitSpot = new Vector3(HitSpot.x, HitSpot.y + YRise, HitSpot.z);
             return hit.point;
-            Debug.Log("Did Hit");
         }
         else
         {
             //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-            Debug.Log("Did not Hit");
             return Vector3.zero;
         }
     }
@@ -305,6 +361,7 @@ public class HandMagic : MonoBehaviour
 
     void Update()
     {
+        BothSpellManager();
         FollowMotion();
         Debug.DrawRay(Cam.position, Cam.forward * 10000f, Color.red);
         if (ShouldCharge == true)

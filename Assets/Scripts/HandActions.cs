@@ -48,25 +48,49 @@ public class HandActions : MonoBehaviour
         {
             //max frames and trigger
             // if not trigger after all frames, stop
+            SpellType type = HM.Spells[i].Type;
+            int TypeNum = (int)type;
             int Current = HM.Spells[i].Controllers[(int)side].Current;
             FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
             if (info.RightLocalPos.Count == Current)
             {
-                HM.Behaviour(i, 0, (int)side);
-                HM.Spells[i].Finished[0] = true;
-                if (TriggerPressed() == true && HM.Spells[i].Finished[1] == false)
+                if (TypeNum == 0)
                 {
-                    HM.Behaviour(i, 1,(int)side);
-                    HM.Spells[i].Finished[1] = true;
-                    //HM.StartSpike();
+                    //individual
+                    HM.Behaviour(i, 0, (int)side);
+                    HM.Spells[i].Finished[0] = true;
+                    if (TriggerPressed() == true && HM.Spells[i].Finished[1] == false)
+                    {
+                        HM.Behaviour(i, 1, (int)side);
+                        HM.Spells[i].Finished[1] = true;
+                        //HM.StartSpike();
+                    }
+                    if (HM.Spells[i].Finished[1] == true && TriggerPressed() == false)
+                    {
+                        HM.Behaviour(i, 2, (int)side);
+                        HM.Spells[i].Finished[0] = false;
+                        HM.Spells[i].Finished[1] = false;
+                        HM.Spells[i].Controllers[(int)side].Current = 0;
+                    }
                 }
-                if (HM.Spells[i].Finished[1] == true && TriggerPressed() == false)
+                else if (TypeNum == 1)
                 {
-                    HM.Behaviour(i, 2, (int)side);
-                    HM.Spells[i].Finished[0] = false;
-                    HM.Spells[i].Finished[1] = false;
-                    HM.Spells[i].Controllers[(int)side].Current = 0;
+                    //both
+                    HM.Spells[i].Controllers[(int)side].ControllerFinished[0] = true;
+                    if (TriggerPressed() == true && HM.Spells[i].Controllers[(int)side].ControllerFinished[1] == false)
+                    {
+                        //HM.Behaviour(i, 1, (int)side);
+                        HM.Spells[i].Controllers[(int)side].ControllerFinished[1] = true;
+                    }
+                    if (HM.Spells[i].Controllers[(int)side].ControllerFinished[1] == true && TriggerPressed() == false)
+                    {
+                        //HM.Behaviour(i, 2, (int)side);
+                        HM.Spells[i].Controllers[(int)side].ControllerFinished[0] = true;
+                        HM.Spells[i].Controllers[(int)side].ControllerFinished[1] = true;
+                        //HM.Spells[i].Controllers[(int)side].Current = 0;
+                    }
                 }
+                
             }
             
         }
