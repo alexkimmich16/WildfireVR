@@ -21,7 +21,7 @@ public class HandActions : MonoBehaviour
 
     public Side side;
 
-    public ParticleSystem PS;
+    //public ParticleSystem PS;
 
     public bool Playing = false;
     
@@ -57,17 +57,18 @@ public class HandActions : MonoBehaviour
                 if (TypeNum == 0)
                 {
                     //individual
-                    HM.Behaviour(i, 0, (int)side);
+                    //HM.Behaviour(i, 0, (int)side);
                     HM.Spells[i].Finished[0] = true;
                     if (TriggerPressed() == true && HM.Spells[i].Finished[1] == false)
                     {
-                        HM.Behaviour(i, 1, (int)side);
+                        //HM.Behaviour(i, 1, (int)side);
+
                         HM.Spells[i].Finished[1] = true;
                         //HM.StartSpike();
                     }
                     if (HM.Spells[i].Finished[1] == true && TriggerPressed() == false)
                     {
-                        HM.Behaviour(i, 2, (int)side);
+                        //HM.Behaviour(i, 2, (int)side);
                         HM.Spells[i].Finished[0] = false;
                         HM.Spells[i].Finished[1] = false;
                         HM.Spells[i].Controllers[(int)side].Current = 0;
@@ -104,8 +105,9 @@ public class HandActions : MonoBehaviour
         for (int i = 0; i < HandDebug.instance.DataFolders.Count; i++)
         {
             FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
+
             int Current = HM.Spells[i].Controllers[SideNum].Current;
-            
+
             if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
             {
                 Vector3 AveragePos;
@@ -223,6 +225,6 @@ public class HandActions : MonoBehaviour
     void Start()
     {
         HM = HandMagic.instance;
-        PS.Stop();
+        //PS.Stop();
     }
 }

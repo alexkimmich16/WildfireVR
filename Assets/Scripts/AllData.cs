@@ -80,9 +80,12 @@ public class AllData
             {
                 //Debug.Log("Test3");
                 MovementData data = HandDebug.instance.DataFolders[t].Storage[i];
+                //Debug.Log("Test3.1");
                 allTypes.TotalTypes[t].InsideType[i].Set = data.Set;
+                //Debug.Log("Test3.2");
                 if (data.Set == true)
                 {
+                    //Debug.Log("Test3.3");
                     allTypes.TotalTypes[t].InsideType[i].LocalLeft = new float[data.LeftLocalPos.Count * 3];
                     allTypes.TotalTypes[t].InsideType[i].LocalRight = new float[data.RightLocalPos.Count * 3];
 
@@ -91,52 +94,54 @@ public class AllData
 
                     allTypes.TotalTypes[t].InsideType[i].DifferenceLeft = new float[data.LeftLocalPos.Count * 3];
                     allTypes.TotalTypes[t].InsideType[i].DifferenceRight = new float[data.RightLocalPos.Count * 3];
+                    //Debug.Log("Test3.4");
                     for (var j = 0; j < data.LeftLocalPos.Count; j++)//LeftLocal
                     {
+                        //Debug.Log("Test3.5");
                         Vector3 LeftPos = data.LeftLocalPos[j];
-                        Vector3 LeftWorld = data.LeftWorldPos[j];
-                        Vector3 LeftDif = data.LeftDifferencePos[j];
+                        //Vector3 LeftWorld = data.LeftWorldPos[j];
+                        //Vector3 LeftDif = data.LeftDifferencePos[j];
                         
                         int ArrayNum = 0 + j * 3;
                         allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum] = LeftPos.x;
-                        allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum] = LeftWorld.x;
-                        allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum] = LeftDif.x;
+                        //allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum] = LeftWorld.x;
+                        //allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum] = LeftDif.x;
                         
                         ArrayNum = 1 + j * 3;
                         allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum] = LeftPos.y;
-                        allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum] = LeftWorld.y;
-                        allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum] = LeftDif.y;
+                        //allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum] = LeftWorld.y;
+                        //allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum] = LeftDif.y;
 
                         ArrayNum = 2 + j * 3;
                         allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum] = LeftPos.z;
-                        allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum] = LeftWorld.z;
-                        allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum] = LeftDif.z;
-
+                        //allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum] = LeftWorld.z;
+                       // allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum] = LeftDif.z;
+                        //Debug.Log("Test3.6");
                     }
-                    //Debug.Log("Test4");
+                   // Debug.Log("Test4");
                     allTypes.TotalTypes[t].InsideType[i].Time = data.Time;
                     allTypes.TotalTypes[t].InsideType[i].Interval = data.Interval;
                     allTypes.TotalTypes[t].InsideType[i].MoveType = t;
                     for (var j = 0; j < data.RightLocalPos.Count; j++)//rightlocal
                     {
                         Vector3 RightPos = data.RightLocalPos[j];
-                        Vector3 RightWorld = data.RightWorldPos[j];
-                        Vector3 RightDif = data.RightDifferencePos[j];
+                        //Vector3 RightWorld = data.RightWorldPos[j];
+                        //Vector3 RightDif = data.RightDifferencePos[j];
 
                         int ArrayNum = 0 + j * 3;
                         allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum] = RightPos.x;
-                        allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum] = RightWorld.x;
-                        allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum] = RightDif.x;
+                        //allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum] = RightWorld.x;
+                        //allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum] = RightDif.x;
 
                         ArrayNum = 1 + j * 3;
                         allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum] = RightPos.y;
-                        allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum] = RightWorld.y;
-                        allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum] = RightDif.y;
+                        //allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum] = RightWorld.y;
+                        //allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum] = RightDif.y;
 
                         ArrayNum = 2 + j * 3;
                         allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum] = RightPos.z;
-                        allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum] = RightWorld.z;
-                        allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum] = RightDif.z;
+                        //allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum] = RightWorld.z;
+                        //allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum] = RightDif.z;
                     }
                     //Debug.Log("Test5");
                 }
@@ -181,7 +186,7 @@ public class AllData
             //Debug.Log("Test10");
             for (var j = 0; j < FinalData.RightLocalPos.Count; j++)
             {
-                //Debug.Log("Test11");
+               //Debug.Log("Test11");
                 Vector3 RightPos = FinalData.RightLocalPos[j];
                 //Vector3 RightWorld = FinalData.RightWorldPos[j];
                 //Vector3 RightDif = FinalData.RightDifferencePos[j];

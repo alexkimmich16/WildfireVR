@@ -109,30 +109,30 @@ public class HandDebug : MonoBehaviour
                 if ((int)CastType == 0)
                 {
                     //individual so mirror on right for left
-                    RightWorldPos.Add(Right.transform.position);
-                    RightLocalPos.Add(Right.transform.position - Player.position);
 
-                    LeftWorldPos.Add(new Vector3(Left.transform.position.x, Right.transform.position.y, Right.transform.position.z));
-                    Vector3 Local = Right.transform.position - Player.position;
-                    LeftLocalPos.Add(new Vector3(-Local.x, Local.y, Local.z));
+                    //x is distance
+                    //y is direction of vr y axis
+                    //z is up/down add
+                    
+                    
+                    Vector3 ZPlacementController = new Vector3(Player.position.x - Right.transform.position.x, Player.position.y, Player.position.z - Right.transform.position.z);
+                    float YChange = Player.position.y - Right.transform.position.y;
+                    float Dist = Vector3.Distance(ZPlacementController, Player.position);
+
+                    Vector3 targetDir = ZPlacementController + Player.transform.position;
+                    //angle
+
+
+                    //float RotationFromHead = Vector3.SignedAngle(targetDir, Player.transform.forward, Vector3.up);
+                    float angle = Vector3.Angle(targetDir, transform.forward);
+                    Vector3 RightLocalInfo = new Vector3(Dist, 0, YChange);
+                    RightLocalPos.Add(RightLocalInfo);
+
+                    //for left just invert angle of other
+
+                    //Vector3 LeftLocalInfo = Right.transform.position - Player.position;
+                    LeftLocalPos.Add(new Vector3(Dist, -0, YChange));
                     //each difference is this local - the last one
-                    if (LeftLocalPos.Count > 1)
-                    {
-                        LeftDifferencePos.Add(LeftLocalPos[LeftLocalPos.Count - 1] - LeftLocalPos[LeftLocalPos.Count - 2]);
-                    }
-                    else
-                    {
-                        LeftDifferencePos.Add(Vector3.zero);
-                    }
-
-                    if (RightLocalPos.Count > 1)
-                    {
-                        RightDifferencePos.Add(RightLocalPos[RightLocalPos.Count - 1] - RightLocalPos[RightLocalPos.Count - 2]);
-                    }
-                    else
-                    {
-                        RightDifferencePos.Add(Vector3.zero);
-                    }
                 }
                 else if ((int)CastType == 1)
                 {
@@ -203,7 +203,7 @@ public class HandDebug : MonoBehaviour
         {
             for (var i = 0; i < Load.allTypes.TotalTypes[t].InsideType.Length; i++)//for all the units in the type type
             {
-                MovementData data = HandDebug.instance.DataFolders[t].Storage[i];
+                MovementData data = DataFolders[t].Storage[i];
                 if (Load.allTypes.TotalTypes[t].InsideType[i].Set == true)
                 {
                     List<Vector3> LocalLeft = new List<Vector3>();
@@ -452,3 +452,24 @@ public enum DirectionShip
     Right = 4,
     Up = 5,
 }
+//LeftWorldPos.Add(new Vector3(Left.transform.position.x, Right.transform.position.y, Right.transform.position.z));
+//RightWorldPos.Add(Right.transform.position);
+/*
+if (LeftLocalPos.Count > 1)
+{
+    LeftDifferencePos.Add(LeftLocalPos[LeftLocalPos.Count - 1] - LeftLocalPos[LeftLocalPos.Count - 2]);
+}
+else
+{
+    LeftDifferencePos.Add(Vector3.zero);
+}
+
+if (RightLocalPos.Count > 1)
+{
+    RightDifferencePos.Add(RightLocalPos[RightLocalPos.Count - 1] - RightLocalPos[RightLocalPos.Count - 2]);
+}
+else
+{
+    RightDifferencePos.Add(Vector3.zero);
+}
+*/

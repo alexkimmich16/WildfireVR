@@ -85,6 +85,12 @@ public class HandMagic : MonoBehaviour
     [Header("ForcePush")]
     public float PushAmount;
     public float PushRadius;
+    public float DistanceCheck;
+
+    public Vector3 Offset;
+    public float RotCheck;
+
+    public Transform empty;
 
 
     [Header("Other")]
@@ -233,16 +239,21 @@ public class HandMagic : MonoBehaviour
     {
         Shields[Side].Shield.SetActive(On);
     }
-
     public void FollowMotion()
     {
+        //OR
+
+        // value
+       
         for (int i = 0; i < Spells.Count; i++)
         {
             for (int j = 0; j < Spells[i].Sides.Count; j++)
             {
+                
                 int Current = Spells[i].Controllers[j].Current;
                 SpellType Type = Spells[i].Type;
                 int TypeNum = (int)Type;
+                //Debug.Log("1");
                 if (TypeNum == 0)
                 {
                     //indivigual
@@ -251,26 +262,53 @@ public class HandMagic : MonoBehaviour
                 {
                     //both
                 }
+                //Debug.Log("1.1");
                 if (Current > HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1)
                 {
                     Current -= 1;
                 }
+                //Debug.Log("1.2");
                 Vector3 Local = Vector3.zero;
-                if (j == 0)
+                Vector3 Final = Vector3.zero;
+                if (i == 0)
                 {
-                    Local = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
+                    if (j == 0)
+                    {
+                        Local = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
+                    }
+                    else
+                    {
+                        Local = HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
+                    }
                 }
-                else
-                {
-                    Local = HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
-                }
-                Vector3 Spot = Cam.transform.position + Local;
-                Spells[i].Sides[j].transform.position = Spot;
-            }
                 
-            
+                float Distance = Local.x;
+                float RotationOffset = Local.y;
+                float HorizonalOffset = Local.z;
+                //Debug.Log("2");
+
+                //Vector3 Direction = new Vector3(0, Cam.rotation.eulerAngles.y - RotationOffset + 180, 0);
+                //RotCheck = Direction.y;
+                //Debug.Log("Direction" + Direction + " " );
+                //Vector3 YPosition = Cam.position + Direction * Distance;
+                empty.rotation = Quaternion.Euler(0, Cam.rotation.eulerAngles.y + RotationOffset, 0);
+
+                //Debug.Log("3");
+                // = ModifiedForward;
+                Ray r = new Ray(Cam.position, empty.forward);
+                Vector3 YPosition = r.GetPoint(Distance);
+                Offset = r.GetPoint(Distance);
+
+                Final = new Vector3(YPosition.x, HorizonalOffset, YPosition.z);
+                //Vector3 Spot = Cam.transform.position + Final;
+                
+                if (i == 0)
+                {
+                    Spells[i].Sides[j].transform.position = Final;
+                }
+                //Debug.Log("4");
+            }
         }
-        
     }
 
     public Vector3 RaycastGround()
@@ -363,36 +401,13 @@ public class HandMagic : MonoBehaviour
     {
         BothSpellManager();
         FollowMotion();
-        Debug.DrawRay(Cam.position, Cam.forward * 10000f, Color.red);
+        //Debug.DrawRay(Cam.position, Cam.forward * 10000f, Color.red);
         if (ShouldCharge == true)
         {
             Charge();
         }
         bool UsingMagic = false;
-
-        //check for flying
-        for (int i = 0; i < 2; i++)
-        {
-            bool Flying = CheckFlying(Controllers[i]);
-            // trigger is held and has enough magic
-            if(Flying == true)
-            {
-                UsingMagic = true;
-                if (Controllers[i].Playing == false)
-                {
-                    Controllers[i].Playing = true;
-                    Controllers[i].PS.Play();
-                }
-            }
-            else
-            {
-                if (Controllers[i].Playing == true)
-                {
-                    Controllers[i].Playing = false;
-                    Controllers[i].PS.Stop();
-                }
-            }
-        }
+        
         ShouldCharge = !UsingMagic;
     }
     
@@ -452,5 +467,34 @@ public class HandMagic : MonoBehaviour
         public string name;
         public int Health;
         public GameObject Shield;
+    }
+
+    public void CheckFlying()
+    {
+
+        //check for flying
+        for (int i = 0; i < 2; i++)
+        {
+            bool Flying = CheckFlying(Controllers[i]);
+            // trigger is held and has enough magic
+            if (Flying == true)
+            {
+                //UsingMagic = true;
+                if (Controllers[i].Playing == false)
+                {
+                    Controllers[i].Playing = true;
+                    //Controllers[i].PS.Play();
+                }
+            }
+            else
+            {
+                if (Controllers[i].Playing == true)
+                {
+                    Controllers[i].Playing = false;
+                    // Controllers[i].PS.Stop();
+                }
+            }
+        }
+
     }
 }

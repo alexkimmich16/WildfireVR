@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ToDo
   m_EditorClassIdentifier: 
   ToDo:
-  - make standard motions
   - shield effects
-  ToDoActive: []
+  ToDoActive:
+  - make tracking based on forward direction of headset
+  - set up  mirror motions on x axis
