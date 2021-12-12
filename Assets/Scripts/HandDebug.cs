@@ -23,7 +23,6 @@ public class HandDebug : MonoBehaviour
         public string Name;
         public FinalMovement FinalInfo;
         public List<MovementData> Storage = new List<MovementData>();
-        public List<MovementData> Directions = new List<MovementData>();
     }
     [System.Serializable]
     public class StaticFinalMovements
@@ -115,8 +114,9 @@ public class HandDebug : MonoBehaviour
                     //z is up/down add
                     
                     
-                    Vector3 ZPlacementController = new Vector3(Player.position.x - Right.transform.position.x, Player.position.y, Player.position.z - Right.transform.position.z);
-                    float YChange = Player.position.y - Right.transform.position.y;
+                    Vector3 ZPlacementController = new Vector3(Right.transform.position.x - Player.position.x, Player.position.y, Right.transform.position.z - Player.position.z );
+                    float YChange = Right.transform.position.y - Player.position.y;
+                    //than add this back
                     float Dist = Vector3.Distance(ZPlacementController, Player.position);
 
                     Vector3 targetDir = ZPlacementController + Player.transform.position;
@@ -124,7 +124,9 @@ public class HandDebug : MonoBehaviour
 
 
                     //float RotationFromHead = Vector3.SignedAngle(targetDir, Player.transform.forward, Vector3.up);
-                    float angle = Vector3.Angle(targetDir, transform.forward);
+
+                    //if PROBLEM IS THIS
+                    float angle = Vector3.Angle(targetDir, Player.transform.forward);
                     Vector3 RightLocalInfo = new Vector3(Dist, 0, YChange);
                     RightLocalPos.Add(RightLocalInfo);
 
@@ -138,29 +140,9 @@ public class HandDebug : MonoBehaviour
                 {
                     //track both seperately
                     //individual so mirror on right for left
-                    RightWorldPos.Add(Right.transform.position);
-                    RightLocalPos.Add(Right.transform.position - Player.position);
 
-                    LeftWorldPos.Add(Left.transform.position);
                     LeftLocalPos.Add(Left.transform.position - Player.position);
-                    //each difference is this local - the last one
-                    if (LeftLocalPos.Count > 1)
-                    {
-                        LeftDifferencePos.Add(LeftLocalPos[LeftLocalPos.Count - 1] - LeftLocalPos[LeftLocalPos.Count - 2]);
-                    }
-                    else
-                    {
-                        LeftDifferencePos.Add(Vector3.zero);
-                    }
-
-                    if (RightLocalPos.Count > 1)
-                    {
-                        RightDifferencePos.Add(RightLocalPos[RightLocalPos.Count - 1] - RightLocalPos[RightLocalPos.Count - 2]);
-                    }
-                    else
-                    {
-                        RightDifferencePos.Add(Vector3.zero);
-                    }
+                    RightLocalPos.Add(Right.transform.position - Player.position);
                 }
                 
             }

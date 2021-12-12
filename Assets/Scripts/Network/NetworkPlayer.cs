@@ -6,6 +6,7 @@ using Photon.Pun;
 
 public class NetworkPlayer : MonoBehaviour
 {
+    //https://www.youtube.com/watch?v=uM89bDIrmZ0&ab_channel=RugbugRedfern
     public Transform Head;
     public Transform Left;
     public Transform Right;
@@ -34,8 +35,10 @@ public class NetworkPlayer : MonoBehaviour
 
     void MapPosition(Transform target,XRNode node)
     {
-        InputDevices.GetDeviceAtXRNode(node).TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 position);
-        InputDevices.GetDeviceAtXRNode(node).TryGetFeatureValue(CommonUsages.deviceRotation, out Quaternion rotation);
+        InputDevice device = InputDevices.GetDeviceAtXRNode(node);
+
+        device.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 position);
+        device.TryGetFeatureValue(CommonUsages.deviceRotation, out Quaternion rotation);
 
         target.position = position;
         target.rotation = rotation;

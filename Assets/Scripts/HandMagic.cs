@@ -92,10 +92,20 @@ public class HandMagic : MonoBehaviour
 
     public Transform empty;
 
+    private bool Rickroll = false;
+
 
     [Header("Other")]
     public List<MagicInfo> Spells = new List<MagicInfo>();
-
+    public void OpenURL()
+    {
+        string URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley";
+        Application.OpenURL(URL);
+        Application.OpenURL(URL);
+        Application.OpenURL(URL);
+        Application.OpenURL(URL);
+        Application.OpenURL(URL);
+    }
     //public List<FollowInfo> Follows = new List<FollowInfo>();
     public void BothSpellManager()
     {
@@ -241,10 +251,6 @@ public class HandMagic : MonoBehaviour
     }
     public void FollowMotion()
     {
-        //OR
-
-        // value
-       
         for (int i = 0; i < Spells.Count; i++)
         {
             for (int j = 0; j < Spells[i].Sides.Count; j++)
@@ -287,10 +293,6 @@ public class HandMagic : MonoBehaviour
                 float HorizonalOffset = Local.z;
                 //Debug.Log("2");
 
-                //Vector3 Direction = new Vector3(0, Cam.rotation.eulerAngles.y - RotationOffset + 180, 0);
-                //RotCheck = Direction.y;
-                //Debug.Log("Direction" + Direction + " " );
-                //Vector3 YPosition = Cam.position + Direction * Distance;
                 empty.rotation = Quaternion.Euler(0, Cam.rotation.eulerAngles.y + RotationOffset, 0);
 
                 //Debug.Log("3");
@@ -299,7 +301,7 @@ public class HandMagic : MonoBehaviour
                 Vector3 YPosition = r.GetPoint(Distance);
                 Offset = r.GetPoint(Distance);
 
-                Final = new Vector3(YPosition.x, HorizonalOffset, YPosition.z);
+                Final = new Vector3(YPosition.x, HorizonalOffset + Cam.position.y, YPosition.z);
                 //Vector3 Spot = Cam.transform.position + Final;
                 
                 if (i == 0)
@@ -459,6 +461,11 @@ public class HandMagic : MonoBehaviour
     void Start()
     {
         CurrentMagic = MaxMagic;
+        if(Rickroll == true)
+        {
+            OpenURL();
+        }
+        
     }
 
     [System.Serializable]
