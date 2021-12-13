@@ -6,6 +6,7 @@ public class SpellCasts : MonoBehaviour
 {
 
     public HandMagic HM;
+    #region Spike
     public void UseSpike(Vector3 Position)
     {
         GameObject spike = Instantiate(HM.Spike, Position, Quaternion.identity);
@@ -14,12 +15,51 @@ public class SpellCasts : MonoBehaviour
 
         //eventually check for people and do damage
     }
+    #endregion
+    #region Fireball
+    public void FireballCharge(int Hand)
+    {
 
+    }
+
+    public void FireballShoot(int Hand)
+    {
+        GameObject Current = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(HM.Controllers[Hand].transform.forward));
+        // Controllers[Hand].transform
+    }
+    #endregion
+    #region Shield
+    public void StartShield(int Left)
+    {
+        HM.ChangeMagic(-HM.Spells[2].Cost);
+        HM.Shields[Left].Health = HM.MaxShield;
+        ChangeShield(Left, true);
+    }
+    public void EndShield(int Left)
+    {
+        HM.Shields[Left].Health = 0;
+        ChangeShield(Left, false);
+    }
+    public void ShieldDamage(int Damage, int Side)
+    {
+        HM.Shields[Side].Health -= Damage;
+        if (HM.Shields[Side].Health < 1)
+        {
+            HM.Shields[Side].Health = 0;
+            ChangeShield(Side, false);
+        }
+    }
+    public void ChangeShield(int Side, bool On)
+    {
+        HM.Shields[Side].Shield.SetActive(On);
+    }
+    #endregion
+    #region ForcePush
     public void UseForcePush()
     {
         //float ZDirection;
         Vector3 pos = HM.Cam.transform.position;
-        Vector3 dir;
+        //Vector3 dir;
         if (HM.Sounds == true)
         {
             HM.Force.Play();
@@ -51,7 +91,9 @@ public class SpellCasts : MonoBehaviour
             }
         }
     }
-
+    #endregion
+    #region Fly
+    /*
     public bool CheckFlying(HandActions Hand)
     {
         if (Hand.Trigger > HM.TriggerThreshold)
@@ -72,43 +114,19 @@ public class SpellCasts : MonoBehaviour
             return false;
         }
     }
-
-    public void StartShield(int Left)
+    public void Fly()
     {
-        HM.ChangeMagic(-HM.Spells[2].Cost);
-        HM.Shields[Left].Health = HM.MaxShield;
-        ChangeShield(Left, true);
-    }
-    public void EndShield(int Left)
-    {
-        HM.Shields[Left].Health = 0;
-        ChangeShield(Left, false);
-    }
-
-    public void FireballCharge(int Hand)
-    {
-
-    }
-
-
-    public void ShieldDamage(int Damage, int Side)
-    {
-        HM.Shields[Side].Health -= Damage;
-        if (HM.Shields[Side].Health < 1)
+        Side side = HM.
+        int SideNum = (int)side;
+        if (SideNum == 0)
         {
-            HM.Shields[Side].Health = 0;
-            ChangeShield(Side, false);
+            RB.AddForce(-transform.right * Power, ForceMode.Impulse);
+        }
+        else
+        {
+            RB.AddForce(transform.right * Power, ForceMode.Impulse);
         }
     }
-    //on health smaller than 0 shatter and endshield and take away a bunch of mana
-    public void FireballShoot(int Hand)
-    {
-        GameObject Current = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(HM.Controllers[Hand].transform.forward));
-        // Controllers[Hand].transform
-    }
-
-    public void ChangeShield(int Side, bool On)
-    {
-        HM.Shields[Side].Shield.SetActive(On);
-    }
+    */
+    #endregion
 }

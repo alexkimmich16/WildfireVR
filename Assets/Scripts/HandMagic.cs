@@ -218,60 +218,38 @@ public class HandMagic : MonoBehaviour
                 int Current = Spells[i].Controllers[j].Current;
                 SpellType Type = Spells[i].Type;
                 int TypeNum = (int)Type;
-                //Debug.Log("1");
-                if (TypeNum == 0)
-                {
-                    //indivigual
-                }
-                else if (TypeNum == 1)
-                {
-                    //both
-                }
-                //Debug.Log("1.1");
                 if (Current > HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1)
                 {
                     Current -= 1;
                 }
                 //Debug.Log("1.2");
                 Vector3 Local = Vector3.zero;
-                Vector3 Final = Vector3.zero;
-                if (i == 0)
+                if (j == 0)
                 {
-                    if (j == 0)
-                    {
-                        Local = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
-                    }
-                    else
-                    {
-                        Local = HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
-                    }
+                    Local = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
                 }
-                
-                float Distance = Local.x;
-                float RotationOffset = Local.y;
-                float HorizonalOffset = Local.z;
-                //Debug.Log("2");
-
-                empty.rotation = Quaternion.Euler(0, Cam.rotation.eulerAngles.y + RotationOffset, 0);
-
-                //Debug.Log("3");
-                // = ModifiedForward;
-                Ray r = new Ray(Cam.position, empty.forward);
-                Vector3 YPosition = r.GetPoint(Distance);
-                Offset = r.GetPoint(Distance);
-
-                Final = new Vector3(YPosition.x, HorizonalOffset + Cam.position.y, YPosition.z);
-                //Vector3 Spot = Cam.transform.position + Final;
-                
-                if (i == 0)
+                else
                 {
-                    Spells[i].Sides[j].transform.position = Final;
+                    Local = HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
                 }
+                Vector3 Final = ConvertDataToPoint(Local);
+                Spells[i].Sides[j].transform.position = Final;
                 //Debug.Log("4");
             }
         }
     }
+    public Vector3 ConvertDataToPoint(Vector3 Local)
+    {
+        float Distance = Local.x;
+        float RotationOffset = Local.y;
+        float HorizonalOffset = Local.z;
 
+        empty.rotation = Quaternion.Euler(0, Cam.rotation.eulerAngles.y + RotationOffset, 0);
+        Ray r = new Ray(Cam.position, empty.forward);
+        Vector3 YPosition = r.GetPoint(Distance);
+        Offset = r.GetPoint(Distance);
+        return new Vector3(YPosition.x, HorizonalOffset + Cam.position.y, YPosition.z);
+    }
     public Vector3 RaycastGround()
     {
         RaycastHit hit;
@@ -368,13 +346,13 @@ public class HandMagic : MonoBehaviour
         public int Health;
         public GameObject Shield;
     }
-
+    /*
     public void CheckFlying()
     {
         //check for flying
         for (int i = 0; i < 2; i++)
         {
-            bool Flying = SC.CheckFlying(Controllers[i]);
+            //bool Flying = SC.CheckFlying(Controllers[i]);
             // trigger is held and has enough magic
             if (Flying == true)
             {
@@ -396,7 +374,7 @@ public class HandMagic : MonoBehaviour
         }
 
     }
-
+    */
     public void OpenURL()
     {
         string URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley";

@@ -421,8 +421,6 @@ public class HandDebug : MonoBehaviour
     {
         SaveScript.SaveStats();
     }
-
-
 }
 
 public enum DirectionShip

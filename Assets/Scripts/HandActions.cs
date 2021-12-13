@@ -21,8 +21,6 @@ public class HandActions : MonoBehaviour
 
     public Side side;
 
-    //public ParticleSystem PS;
-
     public bool Playing = false;
     
     private int ForceState;
@@ -38,7 +36,6 @@ public class HandActions : MonoBehaviour
     public SkinnedMeshRenderer meshRenderer;
     public bool SettingStats = false;
 
-    #region Spike
     //a motion, then press trigger to confirm, hold trigger to control it, release to activate
     //left is 0
     //supllies handmagic with info
@@ -54,8 +51,9 @@ public class HandActions : MonoBehaviour
             FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
             if (info.RightLocalPos.Count == Current)
             {
-                if (TypeNum == 0)
+                if (type == SpellType.Individual)
                 {
+                    
                     //individual
                     //HM.Behaviour(i, 0, (int)side);
                     HM.Spells[i].Finished[0] = true;
@@ -74,7 +72,7 @@ public class HandActions : MonoBehaviour
                         HM.Spells[i].Controllers[(int)side].Current = 0;
                     }
                 }
-                else if (TypeNum == 1)
+                else if (type == SpellType.Both)
                 {
                     //both
                     HM.Spells[i].Controllers[(int)side].ControllerFinished[0] = true;
@@ -107,18 +105,17 @@ public class HandActions : MonoBehaviour
             FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
 
             int Current = HM.Spells[i].Controllers[SideNum].Current;
-
+            
             if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
             {
-                Vector3 AveragePos;
-                float distance;
+                Vector3 UnConverted;
                 
                 if (SideNum == 0)
-                    AveragePos = new Vector3(info.LeftLocalPos[Current].x, info.LeftLocalPos[Current].y, info.LeftLocalPos[Current].z);
+                    UnConverted = new Vector3(info.LeftLocalPos[Current].x, info.LeftLocalPos[Current].y, info.LeftLocalPos[Current].z);
                 else
-                    AveragePos = new Vector3(info.RightLocalPos[Current].x, info.RightLocalPos[Current].y, info.RightLocalPos[Current].z);
-
-                distance = Vector3.Distance(AveragePos, Localpos); 
+                    UnConverted = new Vector3(info.RightLocalPos[Current].x, info.RightLocalPos[Current].y, info.RightLocalPos[Current].z);
+                Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
+                float distance = Vector3.Distance(Converted, Localpos); 
                 if (SideNum == 1)
                     //Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + Localpos.ToString("F3") + "   AveragePos:  " + AveragePos.ToString("F3"));
 
@@ -130,46 +127,22 @@ public class HandActions : MonoBehaviour
             }
         }
     }
-    #endregion
 
-   
     void Update()
     {
         SetRemoteStats();
         CheckColliders();
         int SideNum = (int)side;
-        //Speed = (transform.position - old).magnitude / Time.deltaTime;
-        //Speed = Mathf.Round(Speed * 100f) / 100f;
-        //Direction = transform.position - old;
-        //HM.ChangeText(Speed.ToString());
-        //CheckForcePush();
         if(HandDebug.instance.EngineStats == true)
         {
             CheckAll();
-        }
-        else
-        {
-            //CheckSpikeRegular();
         }
         WaitFrames();
         
     }
 
     
-
-    public void Fly()
-    {
-        int SideNum = (int)side;
-        if (SideNum == 0)
-        {
-            RB.AddForce(-transform.right * Power, ForceMode.Impulse);
-        }
-        else
-        {
-            RB.AddForce(transform.right * Power, ForceMode.Impulse);
-        }
-    }
-
+    #region Checks
     public bool TriggerPressed()
     {
         if (Trigger > HandMagic.instance.TriggerThreshold)
@@ -221,6 +194,7 @@ public class HandActions : MonoBehaviour
             //Debug.Log("touchpad" + Direction);
         }
     }
+    #endregion
 
     void Start()
     {
