@@ -47,6 +47,7 @@ public class HandMagic : MonoBehaviour
     public HandActions Right;
     public List<HandActions> Controllers = new List<HandActions>();
     public Transform Cam;
+    public SpellCasts SC;
 
     [Range(0f, 1f)]
     public float TriggerThreshold, GripThreshold;
@@ -97,15 +98,7 @@ public class HandMagic : MonoBehaviour
 
     [Header("Other")]
     public List<MagicInfo> Spells = new List<MagicInfo>();
-    public void OpenURL()
-    {
-        string URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley";
-        Application.OpenURL(URL);
-        Application.OpenURL(URL);
-        Application.OpenURL(URL);
-        Application.OpenURL(URL);
-        Application.OpenURL(URL);
-    }
+    
     //public List<FollowInfo> Follows = new List<FollowInfo>();
     public void BothSpellManager()
     {
@@ -156,7 +149,7 @@ public class HandMagic : MonoBehaviour
             else if (Part == 2)
             {
                 ChangeMagic(-Spells[Spell].Cost);
-                UseSpike(RaycastGround());
+                SC.UseSpike(RaycastGround());
             }
         }
         if (Spell == 1)
@@ -168,12 +161,12 @@ public class HandMagic : MonoBehaviour
             }
             else if (Part == 1)
             {
-                FireballCharge(Side);
+                SC.FireballCharge(Side);
             }
             else if (Part == 2)
             {
                 ChangeMagic(-Spells[Spell].Cost);
-                FireballShoot(Side);
+                SC.FireballShoot(Side);
             }
         }
         if (Spell == 2)
@@ -187,11 +180,11 @@ public class HandMagic : MonoBehaviour
             {
                 //pressedCost
                 ChangeMagic(-Spells[Spell].Cost);
-                StartShield(1);
+                SC.StartShield(1);
             }
             else if (Part == 2)
             {
-                EndShield(1);
+                SC.EndShield(1);
             }
         }
         if (Spell == 3)
@@ -208,47 +201,13 @@ public class HandMagic : MonoBehaviour
             else if (Part == 2)
             {
                 ChangeMagic(-Spells[Spell].Cost);
-                UseForcePush();
+                SC.UseForcePush();
             }
         }
     }
     //inumerator should be the one handactions sends to saying it should start sequence
-    public void FireballCharge(int Hand)
-    {
-        
-    }
-
-    public void FireballShoot(int Hand)
-    {
-        GameObject Current = Instantiate(Fireball, Controllers[Hand].transform.position, Quaternion.LookRotation(Controllers[Hand].transform.forward));
-       // Controllers[Hand].transform
-    }
-    public void ShieldDamage(int Damage, int Side)
-    {
-        Shields[Side].Health -= Damage;
-        if (Shields[Side].Health < 1)
-        {
-            Shields[Side].Health = 0;
-            ChangeShield(Side, false);
-        }
-    }
-    //on health smaller than 0 shatter and endshield and take away a bunch of mana
-    public void StartShield(int Left)
-    {
-        ChangeMagic(-Spells[2].Cost);
-        Shields[Left].Health = MaxShield;
-        ChangeShield(Left, true);
-    }
-    public void EndShield(int Left)
-    {
-        Shields[Left].Health = 0;
-        ChangeShield(Left, false);
-    }
     
-    public void ChangeShield(int Side, bool On)
-    {
-        Shields[Side].Shield.SetActive(On);
-    }
+
     public void FollowMotion()
     {
         for (int i = 0; i < Spells.Count; i++)
@@ -332,72 +291,7 @@ public class HandMagic : MonoBehaviour
         }
     }
 
-    public void UseSpike(Vector3 Position)
-    {
-        GameObject spike = Instantiate(Spike, Position, Quaternion.identity);
-        spike.GetComponent<ParticleSystem>().Play();
-        Destroy(spike, SpikeTimeDelete);
-
-        //eventually check for people and do damage
-    }
-
-    public void UseForcePush()
-    {
-        //float ZDirection;
-        Vector3 pos = Cam.transform.position;
-        Vector3 dir;
-        if (Sounds == true)
-        {
-            Force.Play();
-        }
-     
-        //do some effect animation
-        //play force sound
-
-        Collider[] colliders = Physics.OverlapSphere(pos, PushRadius);
-        foreach (Collider pushedOBJ in colliders)
-        {
-            if (pushedOBJ.tag != "Player" && pushedOBJ.gameObject.GetComponent<Rigidbody>() != null)
-            {
-                Vector3 directionToTarget = pos - pushedOBJ.transform.position;
-                //float angle = Vector3.Angle(dir, directionToTarget);
-                //float distance = directionToTarget.magnitude;
-                //Debug.Log(angle + " " + pushedOBJ);
-
-                Rigidbody pushed = pushedOBJ.GetComponent<Rigidbody>();
-                pushed.AddExplosionForce(PushAmount, pos, PushRadius);
-                /*
-                if (Mathf.Abs(angle) < 90 && distance < 10)
-                {
-                    //Debug.Log("target is in front of me");
-                    //Rigidbody pushed = pushedOBJ.GetComponent<Rigidbody>();
-                    //pushed.AddExplosionForce(PushAmount, pos, PushRadius);
-                }
-                */
-            }
-        }
-    }
-
-    public bool CheckFlying(HandActions Hand)
-    {
-        if (Hand.Trigger > TriggerThreshold)
-        {
-            if (CurrentMagic > 1)
-            {
-                //Controllers[i].Fly();
-                ChangeMagic(-FlyingCost);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
+    
 
     void Update()
     {
@@ -465,7 +359,6 @@ public class HandMagic : MonoBehaviour
         {
             OpenURL();
         }
-        
     }
 
     [System.Serializable]
@@ -478,11 +371,10 @@ public class HandMagic : MonoBehaviour
 
     public void CheckFlying()
     {
-
         //check for flying
         for (int i = 0; i < 2; i++)
         {
-            bool Flying = CheckFlying(Controllers[i]);
+            bool Flying = SC.CheckFlying(Controllers[i]);
             // trigger is held and has enough magic
             if (Flying == true)
             {
@@ -503,5 +395,15 @@ public class HandMagic : MonoBehaviour
             }
         }
 
+    }
+
+    public void OpenURL()
+    {
+        string URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley";
+        Application.OpenURL(URL);
+        Application.OpenURL(URL);
+        Application.OpenURL(URL);
+        Application.OpenURL(URL);
+        Application.OpenURL(URL);
     }
 }

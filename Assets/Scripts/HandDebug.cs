@@ -114,7 +114,7 @@ public class HandDebug : MonoBehaviour
                     //z is up/down add
                     
                     
-                    Vector3 ZPlacementController = new Vector3(Right.transform.position.x - Player.position.x, Player.position.y, Right.transform.position.z - Player.position.z );
+                    Vector3 ZPlacementController = new Vector3(Right.transform.position.x, Player.position.y, Right.transform.position.z);
                     float YChange = Right.transform.position.y - Player.position.y;
                     //than add this back
                     float Dist = Vector3.Distance(ZPlacementController, Player.position);
