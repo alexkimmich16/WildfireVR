@@ -22219,6 +22219,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1860277308}
   - component: {fileID: 1860277307}
+  - component: {fileID: 1860277309}
   m_Layer: 0
   m_Name: Magic
   m_TagString: Untagged
@@ -22244,6 +22245,7 @@ MonoBehaviour:
   - {fileID: 1403439324}
   - {fileID: 2139675064}
   Cam: {fileID: 1973720620}
+  SC: {fileID: 1860277309}
   TriggerThreshold: 0.3
   GripThreshold: 0.3
   ShouldCharge: 1
@@ -22356,6 +22358,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1860277309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1860277306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dc19a5370b411241bce7f1f7567eee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HM: {fileID: 1860277307}
 --- !u!1 &1873657260 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1137606935514613496, guid: 0582e0279a45e6f4ba41f98c95cf421e,
