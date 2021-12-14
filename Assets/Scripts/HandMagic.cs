@@ -17,7 +17,13 @@ public class HandMagic : MonoBehaviour
     #region Singleton + classes
     public static HandMagic instance;
     void Awake() { instance = this; }
-
+    [System.Serializable]
+    public class ShieldName
+    {
+        public Side side;
+        public int Health;
+        public GameObject Shield;
+    }
     [System.Serializable]
     public class MagicInfo
     {
@@ -106,23 +112,25 @@ public class HandMagic : MonoBehaviour
         {
             SpellType type = Spells[i].Type;
             int TypeNum = (int)type;
-            if (TypeNum == 1)
+            if (type == SpellType.Both)
             {
                 //if hand motion 0 and 1 complete
                 //if trigger on both
                 //if both are now not a trigger
-                //HM.Behaviour(i, 0, (int)side);
-                //HM.Spells[i].Controllers[(int)side].Current = 0;
 
-
+                //both controllers finished animation
                 if (Spells[i].Controllers[0].ControllerFinished[0] == true && Spells[i].Controllers[1].ControllerFinished[0] == true)
                 {
                     Spells[i].Finished[0] = true;
                 }
-                if (Spells[i].Finished[0] == true && Controllers[0].TriggerPressed() == true && Controllers[1].TriggerPressed())
+
+                //both animation finished, and either trigger pressed
+                if (Spells[i].Finished[0] == true && Controllers[0].TriggerPressed() == true || Controllers[1].TriggerPressed())
                 {
                     Spells[i].Finished[1] = true;
                 }
+
+                //all of last, and both triggers released
                 if (Spells[i].Finished[1] == true && Controllers[0].TriggerPressed() == false && Controllers[1].TriggerPressed() == false)
                 {
                     Spells[i].Finished[0] = false;
@@ -145,6 +153,7 @@ public class HandMagic : MonoBehaviour
             else if (Part == 1)
             {
                 //pressed
+                //if UseSpikePlacement, change bool true that is changed false on complete
             }
             else if (Part == 2)
             {
@@ -253,8 +262,6 @@ public class HandMagic : MonoBehaviour
     {
         RaycastHit hit;
         int layerMask = 1 << 8;
-        //layerMask = ~layerMask;
-
         if (Physics.Raycast(Cam.position, Cam.forward, out hit, Mathf.Infinity, layerMask))
         {
             Vector3 HitSpot = hit.point;
@@ -274,14 +281,10 @@ public class HandMagic : MonoBehaviour
     {
         BothSpellManager();
         FollowMotion();
-        //Debug.DrawRay(Cam.position, Cam.forward * 10000f, Color.red);
         if (ShouldCharge == true)
         {
             Charge();
         }
-        bool UsingMagic = false;
-        
-        ShouldCharge = !UsingMagic;
     }
     
     void Charge()
@@ -338,13 +341,7 @@ public class HandMagic : MonoBehaviour
         }
     }
 
-    [System.Serializable]
-    public class ShieldName
-    {
-        public string name;
-        public int Health;
-        public GameObject Shield;
-    }
+    
     /*
     public void CheckFlying()
     {

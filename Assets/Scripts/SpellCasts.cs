@@ -19,13 +19,12 @@ public class SpellCasts : MonoBehaviour
     #region Fireball
     public void FireballCharge(int Hand)
     {
-
+        //flame animation on hand or soemthing
     }
 
     public void FireballShoot(int Hand)
     {
         GameObject Current = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(HM.Controllers[Hand].transform.forward));
-        // Controllers[Hand].transform
     }
     #endregion
     #region Shield

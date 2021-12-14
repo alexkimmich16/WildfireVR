@@ -52,19 +52,17 @@ public class HandActions : MonoBehaviour
             {
                 if (type == SpellType.Individual)
                 {
-                    //individual
-                    //HM.Behaviour(i, 0, (int)side);
+                    HM.Behaviour(i, 0, (int)side);
                     HM.Spells[i].Finished[0] = true;
                     if (TriggerPressed() == true && HM.Spells[i].Finished[1] == false)
                     {
-                        //HM.Behaviour(i, 1, (int)side);
+                        HM.Behaviour(i, 1, (int)side);
 
                         HM.Spells[i].Finished[1] = true;
-                        //HM.StartSpike();
                     }
                     if (HM.Spells[i].Finished[1] == true && TriggerPressed() == false)
                     {
-                        //HM.Behaviour(i, 2, (int)side);
+                        HM.Behaviour(i, 2, (int)side);
                         HM.Spells[i].Finished[0] = false;
                         HM.Spells[i].Finished[1] = false;
                         HM.Spells[i].Controllers[(int)side].Current = 0;
@@ -72,7 +70,8 @@ public class HandActions : MonoBehaviour
                 }
                 else if (type == SpellType.Both)
                 {
-                    //both
+                    //handmagic handles this
+                    /*
                     HM.Spells[i].Controllers[(int)side].ControllerFinished[0] = true;
                     if (TriggerPressed() == true && HM.Spells[i].Controllers[(int)side].ControllerFinished[1] == false)
                     {
@@ -86,6 +85,7 @@ public class HandActions : MonoBehaviour
                         HM.Spells[i].Controllers[(int)side].ControllerFinished[1] = true;
                         //HM.Spells[i].Controllers[(int)side].Current = 0;
                     }
+                    */
                 }
                 
             }
