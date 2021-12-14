@@ -214,7 +214,6 @@ public class HandMagic : MonoBehaviour
         {
             for (int j = 0; j < Spells[i].Sides.Count; j++)
             {
-                
                 int Current = Spells[i].Controllers[j].Current;
                 SpellType Type = Spells[i].Type;
                 int TypeNum = (int)Type;

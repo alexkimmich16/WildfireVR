@@ -105,15 +105,11 @@ public class HandDebug : MonoBehaviour
             if (Timer > MaxTime)
             {
                 SpellType CastType = HandMagic.instance.Spells[(int)CurrentMove].Type;
-                if ((int)CastType == 0)
+                if (CastType == SpellType.Individual)
                 {
-                    //individual so mirror on right for left
-
                     //x is distance
                     //y is direction of vr y axis
-                    //z is up/down add
-                    
-                    
+                    //z is up/down add                 
                     Vector3 ZPlacementController = new Vector3(Right.transform.position.x, Player.position.y, Right.transform.position.z);
                     float YChange = Right.transform.position.y - Player.position.y;
                     //than add this back
@@ -124,25 +120,28 @@ public class HandDebug : MonoBehaviour
 
 
                     //float RotationFromHead = Vector3.SignedAngle(targetDir, Player.transform.forward, Vector3.up);
-
-                    //if PROBLEM IS THIS
                     float angle = Vector3.Angle(targetDir, Player.transform.forward);
-                    Vector3 RightLocalInfo = new Vector3(Dist, 0, YChange);
+                    Vector3 RightLocalInfo = new Vector3(Dist, angle + 180, YChange);
                     RightLocalPos.Add(RightLocalInfo);
-
-                    //for left just invert angle of other
-
-                    //Vector3 LeftLocalInfo = Right.transform.position - Player.position;
-                    LeftLocalPos.Add(new Vector3(Dist, -0, YChange));
+                    LeftLocalPos.Add(new Vector3(Dist, -angle + 180, YChange));
                     //each difference is this local - the last one
                 }
-                else if ((int)CastType == 1)
+                else if (CastType == SpellType.Both)
                 {
                     //track both seperately
                     //individual so mirror on right for left
-
-                    LeftLocalPos.Add(Left.transform.position - Player.position);
-                    RightLocalPos.Add(Right.transform.position - Player.position);
+                    Vector3 RightPlacement = new Vector3(Right.transform.position.x, Player.position.y, Right.transform.position.z);
+                    Vector3 LeftPlacement = new Vector3(Left.transform.position.x, Player.position.y, Left.transform.position.z);
+                    float YChangeRight = Right.transform.position.y - Player.position.y;
+                    float YChangeLeft = Left.transform.position.y - Player.position.y;
+                    float LeftDist = Vector3.Distance(LeftPlacement, Player.position);
+                    float RightDist = Vector3.Distance(RightPlacement, Player.position);
+                    Vector3 LeftTargetDir = LeftPlacement + Player.transform.position;
+                    Vector3 RightTargetDir = RightPlacement + Player.transform.position;
+                    float Leftangle = Vector3.Angle(LeftTargetDir, Player.transform.forward);
+                    float Rightangle = Vector3.Angle(RightTargetDir, Player.transform.forward);
+                    RightLocalPos.Add(new Vector3(RightDist, Rightangle + 180, YChangeRight));
+                    LeftLocalPos.Add(new Vector3(LeftDist, -Leftangle + 180, YChangeLeft));
                 }
                 
             }

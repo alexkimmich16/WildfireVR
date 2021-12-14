@@ -23,7 +23,6 @@ public class HandActions : MonoBehaviour
 
     public bool Playing = false;
     
-    private int ForceState;
     public Vector2 Direction;
     //private float Speed;
 
@@ -53,7 +52,6 @@ public class HandActions : MonoBehaviour
             {
                 if (type == SpellType.Individual)
                 {
-                    
                     //individual
                     //HM.Behaviour(i, 0, (int)side);
                     HM.Spells[i].Finished[0] = true;
@@ -115,9 +113,9 @@ public class HandActions : MonoBehaviour
                 else
                     UnConverted = new Vector3(info.RightLocalPos[Current].x, info.RightLocalPos[Current].y, info.RightLocalPos[Current].z);
                 Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
-                float distance = Vector3.Distance(Converted, Localpos); 
-                if (SideNum == 1)
-                    //Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + Localpos.ToString("F3") + "   AveragePos:  " + AveragePos.ToString("F3"));
+                float distance = Vector3.Distance(Converted, transform.position); 
+                if (SideNum == 1 && i == 0)
+                    //Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
 
                 //is it close enough, if not restart
                 if (HM.Spells[i].Leanience > distance)
@@ -138,7 +136,6 @@ public class HandActions : MonoBehaviour
             CheckAll();
         }
         WaitFrames();
-        
     }
 
     
