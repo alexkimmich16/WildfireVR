@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using Photon.Pun;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class NetworkPlayer : MonoBehaviour
 {
@@ -11,11 +12,18 @@ public class NetworkPlayer : MonoBehaviour
     public Transform Left;
     public Transform Right;
     public PhotonView photonView;
-    
+
+    private Transform RigHead;
+    private Transform RigLeft;
+    private Transform RigRight;
+
     // Start is called before the first frame update
     void Start()
     {
         photonView = GetComponent<PhotonView>();
+        XRRig rig = FindObjectOfType<XRRig>();
+        RigHead = rig.transform.Find("Camera Offset/Main Camera");
+        //3:30
     }
 
     // Update is called once per frame
