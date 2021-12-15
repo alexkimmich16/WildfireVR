@@ -97,25 +97,21 @@ public class HandActions : MonoBehaviour
     {
         Vector3 Localpos = transform.position - HandDebug.instance.Player.position;
         int SideNum = (int)side;
-        //HM.Spells.Count
         for (int i = 0; i < HandDebug.instance.DataFolders.Count; i++)
         {
             FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
-
             int Current = HM.Spells[i].Controllers[SideNum].Current;
-            
             if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
             {
                 Vector3 UnConverted;
-                
-                if (SideNum == 0)
-                    UnConverted = new Vector3(info.LeftLocalPos[Current].x, info.LeftLocalPos[Current].y, info.LeftLocalPos[Current].z);
+                if (side == Side.Left)
+                    UnConverted = HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
                 else
-                    UnConverted = new Vector3(info.RightLocalPos[Current].x, info.RightLocalPos[Current].y, info.RightLocalPos[Current].z);
+                    UnConverted = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
                 Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
                 float distance = Vector3.Distance(Converted, transform.position); 
-                if (SideNum == 1 && i == 0)
-                    //Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
+                if (SideNum == 1 && i == 2)
+                    Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
 
                 //is it close enough, if not restart
                 if (HM.Spells[i].Leanience > distance)
@@ -168,7 +164,6 @@ public class HandActions : MonoBehaviour
             {
                 Around[i] = false;
             }
-
         }
     }
     public void SetRemoteStats()
@@ -183,7 +178,6 @@ public class HandActions : MonoBehaviour
         device.TryGetFeatureValue(CommonUsages.secondaryTouch, out BottomButtonTouched);
         device.TryGetFeatureValue(CommonUsages.primaryButton, out TopButtonPressed);
         device.TryGetFeatureValue(CommonUsages.primaryTouch, out TopButtonTouched);
-
 
         device.TryGetFeatureValue(CommonUsages.primary2DAxis, out Direction);
         if (Direction != Vector2.zero)

@@ -25,6 +25,7 @@ public class SpellCasts : MonoBehaviour
     public void FireballShoot(int Hand)
     {
         GameObject Current = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(HM.Controllers[Hand].transform.forward));
+        //direction of hand velocity
     }
     #endregion
     #region Shield

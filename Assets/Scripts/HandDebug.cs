@@ -92,6 +92,44 @@ public class HandDebug : MonoBehaviour
 
     public bool EngineStats = false;
 
+
+
+    [Header("Angle")]
+    public int Angle;
+    public TextMeshProUGUI AngleType;
+
+    [Header("Lerp")]
+    public int MaxLerp;
+    public int MinLerp;
+    public void LerpRotation()
+    {
+        //get gradual and equal rotation of current stat
+    }
+
+    public void SetAngle()
+    {
+        for (var t = 0; t < DataFolders[(int)CurrentMove].Storage[PackageNum].LeftLocalPos.Count; t++)
+        {
+            //left small
+            Vector3 Right = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos[t];
+            DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos[t] = new Vector3(Right.x, 360f - Angle, Right.z);
+
+            Vector3 Left = DataFolders[(int)CurrentMove].Storage[PackageNum].LeftLocalPos[t];
+            DataFolders[(int)CurrentMove].Storage[PackageNum].LeftLocalPos[t] = new Vector3(Left.x, Angle, Left.z);
+        }
+    }
+    public void ChangeAngle(int Change)
+    {
+        Angle += Change;
+        if(Angle > 360)
+        {
+            Angle -= 360;
+        }
+        if (Angle < 0)
+        {
+            Angle += 360;
+        }
+    }
     public void CreateInfo()
     {
         if (Right.TriggerPressed() == true && Right.GripPressed() == true)
@@ -106,25 +144,14 @@ public class HandDebug : MonoBehaviour
             {
                 SpellType CastType = HandMagic.instance.Spells[(int)CurrentMove].Type;
                 if (CastType == SpellType.Individual)
-                {
-                    //x is distance
-                    //y is direction of vr y axis
-                    //z is up/down add                 
+                {            
                     Vector3 ZPlacementController = new Vector3(Right.transform.position.x, Player.position.y, Right.transform.position.z);
                     float YChange = Right.transform.position.y - Player.position.y;
-                    //than add this back
                     float Dist = Vector3.Distance(ZPlacementController, Player.position);
-
                     Vector3 targetDir = ZPlacementController + Player.transform.position;
-                    //angle
-
-
-                    //float RotationFromHead = Vector3.SignedAngle(targetDir, Player.transform.forward, Vector3.up);
                     float angle = Vector3.Angle(targetDir, Player.transform.forward);
-                    Vector3 RightLocalInfo = new Vector3(Dist, angle + 180, YChange);
-                    RightLocalPos.Add(RightLocalInfo);
+                    RightLocalPos.Add(new Vector3(Dist, angle + 180, YChange));
                     LeftLocalPos.Add(new Vector3(Dist, -angle + 180, YChange));
-                    //each difference is this local - the last one
                 }
                 else if (CastType == SpellType.Both)
                 {
@@ -175,6 +202,7 @@ public class HandDebug : MonoBehaviour
         ScriptableNum.text = "Current Scriptable:  " + PackageNum;
         Set.text = "Is Set: " + DataFolders[num].Storage[PackageNum].Set;
         Type.text = "Testing: " + DataFolders[num].Name;
+        AngleType.text = "Angle: " + Angle;
         CreateInfo();
     }
     public void LoadScriptableObjects(AllData Load)

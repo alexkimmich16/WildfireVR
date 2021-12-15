@@ -100,6 +100,7 @@ public class HandMagic : MonoBehaviour
     public Transform empty;
 
     private bool Rickroll = false;
+    public static bool AllSounds = false;
 
 
     [Header("Other")]
@@ -215,7 +216,6 @@ public class HandMagic : MonoBehaviour
         }
     }
     //inumerator should be the one handactions sends to saying it should start sequence
-    
 
     public void FollowMotion()
     {
@@ -230,7 +230,6 @@ public class HandMagic : MonoBehaviour
                 {
                     Current -= 1;
                 }
-                //Debug.Log("1.2");
                 Vector3 Local = Vector3.zero;
                 if (j == 0)
                 {
@@ -242,7 +241,6 @@ public class HandMagic : MonoBehaviour
                 }
                 Vector3 Final = ConvertDataToPoint(Local);
                 Spells[i].Sides[j].transform.position = Final;
-                //Debug.Log("4");
             }
         }
     }
