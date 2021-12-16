@@ -92,23 +92,23 @@ public class HandDebug : MonoBehaviour
 
     public bool EngineStats = false;
 
-
-
     [Header("Angle")]
     public int Angle;
     public TextMeshProUGUI AngleType;
-
+    
     [Header("Lerp")]
-    public int MaxLerp;
-    public int MinLerp;
+    public float EndLerp; // 10
+    public float StartLerp; // 1
     public TextMeshProUGUI Max;
     public TextMeshProUGUI Min;
+
+    #region Lerp
     public void Lerp(int Type)
     {
         int Inside = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Count;
-        int Difference = MaxLerp - MinLerp;
+        float Difference = EndLerp - StartLerp;
         float StepAdd = Difference / Inside;
-        float Current = MinLerp;
+        float Current = StartLerp;
         MovementData data = DataFolders[(int)CurrentMove].Storage[PackageNum];
         for (var t = 0; t < Inside; t++)
         {
@@ -129,17 +129,19 @@ public class HandDebug : MonoBehaviour
             }
             Current += StepAdd;
         }
-        
-    }
-    public void ChangeMax(int Add)
-    {
-        MaxLerp += Add;
-    }
-    public void ChangeMin(int Add)
-    {
-        MinLerp += Add;
-    }
 
+    }
+    public void ChangeMax(float Add)
+    {
+        EndLerp += Add;
+    }
+    public void ChangeMin(float Add)
+    {
+        StartLerp += Add;
+    }
+    #endregion
+
+    #region Angle
     public void SetAngle()
     {
         for (var t = 0; t < DataFolders[(int)CurrentMove].Storage[PackageNum].LeftLocalPos.Count; t++)
@@ -155,7 +157,7 @@ public class HandDebug : MonoBehaviour
     public void ChangeAngle(int Change)
     {
         Angle += Change;
-        if(Angle > 360)
+        if (Angle > 360)
         {
             Angle -= 360;
         }
@@ -164,6 +166,8 @@ public class HandDebug : MonoBehaviour
             Angle += 360;
         }
     }
+    #endregion
+
     public void CreateInfo()
     {
         if (Right.TriggerPressed() == true && Right.GripPressed() == true)
@@ -236,8 +240,8 @@ public class HandDebug : MonoBehaviour
         Set.text = "Is Set: " + DataFolders[num].Storage[PackageNum].Set;
         Type.text = "Testing: " + DataFolders[num].Name;
         AngleType.text = "Angle: " + Angle;
-        Max.text = "Max: " + MaxLerp;
-        Min.text = "Min: " + MinLerp;
+        Max.text = "Max: " + EndLerp;
+        Min.text = "Min: " + StartLerp;
 
         CreateInfo();
     }

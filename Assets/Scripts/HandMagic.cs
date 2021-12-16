@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 public enum SpellType
 {
     Individual = 0,
@@ -61,6 +62,9 @@ public class HandMagic : MonoBehaviour
     public float CurrentMagic;
     public float MagicRecharge;
     public int MaxMagic;
+
+    public Slider MagicSlider;
+
     [Header("Flying")]
     [Range(0f, 1f)]
     public float FlyingCost;
@@ -68,10 +72,7 @@ public class HandMagic : MonoBehaviour
     [Header("Misc")]
     public Material Active;
     public Material DeActive;
-
-    public List<TextMeshProUGUI> text = new List<TextMeshProUGUI>();
-    public AudioSource Force;
-    public bool Sounds;
+    
     public List<Collider> AroundColliders = new List<Collider>();
 
     [Header("Spike")]
@@ -81,6 +82,7 @@ public class HandMagic : MonoBehaviour
     private bool UseSpikePlacement = false;
 
     [Header("Fireball")]
+    public float Speed;
 
     [Header("Shield")]
     public int MaxShield;
@@ -92,14 +94,14 @@ public class HandMagic : MonoBehaviour
     public float PushRadius;
     public float DistanceCheck;
 
-    public Vector3 Offset;
-    public float RotCheck;
+    public AudioSource Force;
 
     public Transform empty;
 
     private static bool Rickroll = false;
     public static bool AllSounds = false;
 
+    
 
     [Header("Other")]
     public List<MagicInfo> Spells = new List<MagicInfo>();
@@ -242,36 +244,17 @@ public class HandMagic : MonoBehaviour
             }
         }
     }
-    public Vector3 ConvertDataToPoint(Vector3 Local)
-    {
-        float Distance = Local.x;
-        float RotationOffset = Local.y;
-        float HorizonalOffset = Local.z;
 
-        empty.rotation = Quaternion.Euler(0, Cam.rotation.eulerAngles.y + RotationOffset, 0);
-        Ray r = new Ray(Cam.position, empty.forward);
-        Vector3 YPosition = r.GetPoint(Distance);
-        Offset = r.GetPoint(Distance);
-        return new Vector3(YPosition.x, HorizonalOffset + Cam.position.y, YPosition.z);
-    }
-    public Vector3 RaycastGround()
-    {
-        RaycastHit hit;
-        int layerMask = 1 << 8;
-        if (Physics.Raycast(Cam.position, Cam.forward, out hit, Mathf.Infinity, layerMask))
-        {
-            Vector3 HitSpot = hit.point;
-            HitSpot = new Vector3(HitSpot.x, HitSpot.y + YRise, HitSpot.z);
-            return hit.point;
-        }
-        else
-        {
-            //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-            return Vector3.zero;
-        }
-    }
 
-    
+    void Start()
+    {
+        CurrentMagic = MaxMagic;
+        if (Rickroll == true)
+        {
+            OpenURL();
+        }
+        MagicSlider.maxValue = MaxMagic;
+    }
 
     void Update()
     {
@@ -281,6 +264,10 @@ public class HandMagic : MonoBehaviour
         {
             Charge();
         }
+        if(InfiniteMagic == false)
+            MagicSlider.value = CurrentMagic;
+        else
+            MagicSlider.value = MaxMagic;
     }
     
     void Charge()
@@ -323,21 +310,36 @@ public class HandMagic : MonoBehaviour
         }
     }
 
-    public void ChangeText(string stuff, int Num)
+    
+    public Vector3 ConvertDataToPoint(Vector3 Local)
     {
-        text[Num].text = stuff;
+        float Distance = Local.x;
+        float RotationOffset = Local.y;
+        float HorizonalOffset = Local.z;
+
+        empty.rotation = Quaternion.Euler(0, Cam.rotation.eulerAngles.y + RotationOffset, 0);
+        Ray r = new Ray(Cam.position, empty.forward);
+        Vector3 YPosition = r.GetPoint(Distance);
+        return new Vector3(YPosition.x, HorizonalOffset + Cam.position.y, YPosition.z);
     }
 
-    void Start()
+    public Vector3 RaycastGround()
     {
-        CurrentMagic = MaxMagic;
-        if(Rickroll == true)
+        RaycastHit hit;
+        int layerMask = 1 << 8;
+        if (Physics.Raycast(Cam.position, Cam.forward, out hit, Mathf.Infinity, layerMask))
         {
-            OpenURL();
+            Vector3 HitSpot = hit.point;
+            HitSpot = new Vector3(HitSpot.x, HitSpot.y + YRise, HitSpot.z);
+            return hit.point;
+        }
+        else
+        {
+            //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
+            return Vector3.zero;
         }
     }
 
-    
     /*
     public void CheckFlying()
     {

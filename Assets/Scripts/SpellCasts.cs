@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SpellCasts : MonoBehaviour
 {
-
     public HandMagic HM;
     #region Spike
     public void UseSpike(Vector3 Position)
@@ -19,12 +18,19 @@ public class SpellCasts : MonoBehaviour
     #region Fireball
     public void FireballCharge(int Hand)
     {
-        //flame animation on hand or soemthing
+        ///flame animation on hand
+        ///OR
+        ///fireball in palm of hand
+
     }
 
     public void FireballShoot(int Hand)
     {
-        GameObject Current = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(HM.Controllers[Hand].transform.forward));
+        //undue fireball change
+        
+        Vector3 VelDirection = HM.Controllers[Hand].transform.GetComponent<Rigidbody>().velocity.normalized;
+        GameObject FireBall = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
+        FireBall.GetComponent<Fireball>().Speed = HM.Speed;
         //direction of hand velocity
     }
     #endregion
@@ -57,16 +63,11 @@ public class SpellCasts : MonoBehaviour
     #region ForcePush
     public void UseForcePush()
     {
-        //float ZDirection;
         Vector3 pos = HM.Cam.transform.position;
-        //Vector3 dir;
-        if (HM.Sounds == true)
+        if (HandMagic.AllSounds == true)
         {
             HM.Force.Play();
         }
-
-        //do some effect animation
-        //play force sound
 
         Collider[] colliders = Physics.OverlapSphere(pos, HM.PushRadius);
         foreach (Collider pushedOBJ in colliders)
