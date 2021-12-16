@@ -23,6 +23,8 @@ public class NetworkPlayer : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         XRRig rig = FindObjectOfType<XRRig>();
         RigHead = rig.transform.Find("Camera Offset/Main Camera");
+        RigLeft = rig.transform.Find("Camera Offset/LeftHand Controller");
+        RigRight = rig.transform.Find("Camera Offset/RightHand Controller");
         //3:30
     }
 
@@ -35,20 +37,15 @@ public class NetworkPlayer : MonoBehaviour
             Left.gameObject.SetActive(false);
             Right.gameObject.SetActive(false);
 
-            MapPosition(Head, XRNode.Head);
-            MapPosition(Left, XRNode.LeftHand);
-            MapPosition(Right, XRNode.RightHand);
+            MapPosition(Head, RigHead);
+            MapPosition(Left, RigLeft);
+            MapPosition(Right, RigRight);
         }
     }
 
-    void MapPosition(Transform target,XRNode node)
+    void MapPosition(Transform target,Transform rigTrans)
     {
-        InputDevice device = InputDevices.GetDeviceAtXRNode(node);
-
-        device.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 position);
-        device.TryGetFeatureValue(CommonUsages.deviceRotation, out Quaternion rotation);
-
-        target.position = position;
-        target.rotation = rotation;
+        target.position = rigTrans.position;
+        target.rotation = rigTrans.rotation;
     }
 }

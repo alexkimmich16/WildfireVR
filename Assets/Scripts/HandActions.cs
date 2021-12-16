@@ -111,7 +111,7 @@ public class HandActions : MonoBehaviour
                 Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
                 float distance = Vector3.Distance(Converted, transform.position); 
                 if (SideNum == 1 && i == 2)
-                    Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
+                    //Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
 
                 //is it close enough, if not restart
                 if (HM.Spells[i].Leanience > distance)

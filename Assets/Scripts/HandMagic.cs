@@ -49,8 +49,6 @@ public class HandMagic : MonoBehaviour
     }
     #endregion
 
-    public HandActions Left;
-    public HandActions Right;
     public List<HandActions> Controllers = new List<HandActions>();
     public Transform Cam;
     public SpellCasts SC;
@@ -99,7 +97,7 @@ public class HandMagic : MonoBehaviour
 
     public Transform empty;
 
-    private bool Rickroll = false;
+    private static bool Rickroll = false;
     public static bool AllSounds = false;
 
 

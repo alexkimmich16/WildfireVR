@@ -36,11 +36,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.JoinOrCreateRoom("Room 1", roomOptions, TypedLobby.Default);
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public override void OnJoinedRoom()
     {
