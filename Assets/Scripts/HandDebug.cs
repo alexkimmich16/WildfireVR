@@ -101,9 +101,43 @@ public class HandDebug : MonoBehaviour
     [Header("Lerp")]
     public int MaxLerp;
     public int MinLerp;
-    public void LerpRotation()
+    public TextMeshProUGUI Max;
+    public TextMeshProUGUI Min;
+    public void Lerp(int Type)
     {
-        //get gradual and equal rotation of current stat
+        int Inside = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Count;
+        int Difference = MaxLerp - MinLerp;
+        float StepAdd = Difference / Inside;
+        float Current = MinLerp;
+        MovementData data = DataFolders[(int)CurrentMove].Storage[PackageNum];
+        for (var t = 0; t < Inside; t++)
+        {
+            if (Type == 0)
+            {
+                data.RightLocalPos[t] = new Vector3(Current, data.RightLocalPos[t].y, data.RightLocalPos[t].z);
+                data.LeftLocalPos[t] = new Vector3(Current, data.LeftLocalPos[t].y, data.LeftLocalPos[t].z);
+            }
+            else if (Type == 1)
+            {
+                data.RightLocalPos[t] = new Vector3(data.RightLocalPos[t].x, Current, data.RightLocalPos[t].z);
+                data.LeftLocalPos[t] = new Vector3(data.LeftLocalPos[t].x, Current, data.LeftLocalPos[t].z);
+            }
+            else if (Type == 2)
+            {
+                data.RightLocalPos[t] = new Vector3(data.RightLocalPos[t].x, data.RightLocalPos[t].y, Current);
+                data.LeftLocalPos[t] = new Vector3(data.LeftLocalPos[t].x, data.LeftLocalPos[t].y, Current);
+            }
+            Current += StepAdd;
+        }
+        
+    }
+    public void ChangeMax(int Add)
+    {
+        MaxLerp += Add;
+    }
+    public void ChangeMin(int Add)
+    {
+        MinLerp += Add;
     }
 
     public void SetAngle()
@@ -180,7 +214,6 @@ public class HandDebug : MonoBehaviour
             if (CurrentMovement == true)
             {
                 SetScriptableObject(PackageNum);
-
                 RightWorldPos.Clear();
                 LeftWorldPos.Clear();
 
@@ -203,6 +236,9 @@ public class HandDebug : MonoBehaviour
         Set.text = "Is Set: " + DataFolders[num].Storage[PackageNum].Set;
         Type.text = "Testing: " + DataFolders[num].Name;
         AngleType.text = "Angle: " + Angle;
+        Max.text = "Max: " + MaxLerp;
+        Min.text = "Min: " + MinLerp;
+
         CreateInfo();
     }
     public void LoadScriptableObjects(AllData Load)
