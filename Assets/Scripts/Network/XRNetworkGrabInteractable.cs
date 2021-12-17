@@ -12,12 +12,6 @@ public class XRNetworkGrabInteractable : XRGrabInteractable
         photonView = GetComponent<PhotonView>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     protected override void OnSelectEntered(XRBaseInteractor interactor)
     {
         photonView.RequestOwnership();

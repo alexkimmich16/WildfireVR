@@ -100,8 +100,8 @@ public class HandMagic : MonoBehaviour
 
     private static bool Rickroll = false;
     public static bool AllSounds = false;
+    //public static bool DebugMot
 
-    
 
     [Header("Other")]
     public List<MagicInfo> Spells = new List<MagicInfo>();
@@ -190,11 +190,11 @@ public class HandMagic : MonoBehaviour
             {
                 //pressedCost
                 ChangeMagic(-Spells[Spell].Cost);
-                SC.StartShield(1);
+                SC.StartShield(Side);
             }
             else if (Part == 2)
             {
-                SC.EndShield(1);
+                SC.EndShield(Side);
             }
         }
         if (Spell == 3)

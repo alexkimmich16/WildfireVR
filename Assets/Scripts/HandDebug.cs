@@ -119,7 +119,7 @@ public class HandDebug : MonoBehaviour
             }
             else if (Type == 1)
             {
-                data.RightLocalPos[t] = new Vector3(data.RightLocalPos[t].x, Current, data.RightLocalPos[t].z);
+                data.RightLocalPos[t] = new Vector3(data.RightLocalPos[t].x, 360f - Current, data.RightLocalPos[t].z);
                 data.LeftLocalPos[t] = new Vector3(data.LeftLocalPos[t].x, Current, data.LeftLocalPos[t].z);
             }
             else if (Type == 2)
@@ -240,8 +240,8 @@ public class HandDebug : MonoBehaviour
         Set.text = "Is Set: " + DataFolders[num].Storage[PackageNum].Set;
         Type.text = "Testing: " + DataFolders[num].Name;
         AngleType.text = "Angle: " + Angle;
-        Max.text = "Max: " + EndLerp;
-        Min.text = "Min: " + StartLerp;
+        Max.text = "Max: " + EndLerp.ToString("F1");
+        Min.text = "Min: " + StartLerp.ToString("F1");
 
         CreateInfo();
     }

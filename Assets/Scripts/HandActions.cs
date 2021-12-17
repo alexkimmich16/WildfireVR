@@ -35,6 +35,10 @@ public class HandActions : MonoBehaviour
     public SkinnedMeshRenderer meshRenderer;
     public bool SettingStats = false;
 
+    public static int PastFrameCount = 20;
+
+    //[HideInInspector]
+    public List<Vector3> PastFrames = new List<Vector3>();
     //a motion, then press trigger to confirm, hold trigger to control it, release to activate
     //left is 0
     //supllies handmagic with info
@@ -53,18 +57,18 @@ public class HandActions : MonoBehaviour
                 if (type == SpellType.Individual)
                 {
                     HM.Behaviour(i, 0, (int)side);
-                    HM.Spells[i].Finished[0] = true;
-                    if (TriggerPressed() == true && HM.Spells[i].Finished[1] == false)
+                    HM.Spells[i].Controllers[(int)side].ControllerFinished[0] = true;
+                    if (TriggerPressed() == true && HM.Spells[i].Controllers[(int)side].ControllerFinished[1] == false)
                     {
                         HM.Behaviour(i, 1, (int)side);
 
-                        HM.Spells[i].Finished[1] = true;
+                        HM.Spells[i].Controllers[(int)side].ControllerFinished[1] = true;
                     }
-                    if (HM.Spells[i].Finished[1] == true && TriggerPressed() == false)
+                    if (HM.Spells[i].Controllers[(int)side].ControllerFinished[1] == true && TriggerPressed() == false)
                     {
                         HM.Behaviour(i, 2, (int)side);
-                        HM.Spells[i].Finished[0] = false;
-                        HM.Spells[i].Finished[1] = false;
+                        HM.Spells[i].Controllers[(int)side].ControllerFinished[0] = false;
+                        HM.Spells[i].Controllers[(int)side].ControllerFinished[1] = false;
                         HM.Spells[i].Controllers[(int)side].Current = 0;
                     }
                 }
@@ -95,7 +99,6 @@ public class HandActions : MonoBehaviour
 
     public void CheckAll()
     {
-        Vector3 Localpos = transform.position - HandDebug.instance.Player.position;
         int SideNum = (int)side;
         for (int i = 0; i < HandDebug.instance.DataFolders.Count; i++)
         {
@@ -110,9 +113,10 @@ public class HandActions : MonoBehaviour
                     UnConverted = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
                 Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
                 float distance = Vector3.Distance(Converted, transform.position); 
+                
                 if (SideNum == 1 && i == 2)
-                    //Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
-
+                    Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
+                
                 //is it close enough, if not restart
                 if (HM.Spells[i].Leanience > distance)
                     HM.Spells[i].Controllers[SideNum].Current += 1;
@@ -132,8 +136,32 @@ public class HandActions : MonoBehaviour
             CheckAll();
         }
         WaitFrames();
+        LastFrameSave();
     }
-
+    public void LastFrameSave()
+    {
+        int Count = 0;
+        for (int i = 0; i < PastFrameCount; i++)
+        {
+            if (PastFrames.Count < PastFrameCount)
+            {
+                PastFrames.Add(Vector3.zero);
+                return;
+            }
+            Count = PastFrameCount - i - 1;
+            //2 == 1
+            //1 == 0
+            //0 is newest
+            if (Count == 0)
+            {
+                PastFrames[0] = transform.position;
+            }
+            else
+            {
+                PastFrames[Count] = PastFrames[Count - 1];
+            }
+        }
+    }
     
     #region Checks
     public bool TriggerPressed()

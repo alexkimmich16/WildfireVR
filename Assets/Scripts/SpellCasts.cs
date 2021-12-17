@@ -27,11 +27,10 @@ public class SpellCasts : MonoBehaviour
     public void FireballShoot(int Hand)
     {
         //undue fireball change
-        
-        Vector3 VelDirection = HM.Controllers[Hand].transform.GetComponent<Rigidbody>().velocity.normalized;
+        Vector3 VelDirection = HM.Controllers[Hand].PastFrames[0] - HM.Controllers[Hand].PastFrames[HandActions.PastFrameCount - 1];
+        VelDirection = VelDirection.normalized;
         GameObject FireBall = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
         FireBall.GetComponent<Fireball>().Speed = HM.Speed;
-        //direction of hand velocity
     }
     #endregion
     #region Shield
