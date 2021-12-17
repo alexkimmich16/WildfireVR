@@ -149,9 +149,6 @@ public class HandActions : MonoBehaviour
                 return;
             }
             Count = PastFrameCount - i - 1;
-            //2 == 1
-            //1 == 0
-            //0 is newest
             if (Count == 0)
             {
                 PastFrames[0] = transform.position;

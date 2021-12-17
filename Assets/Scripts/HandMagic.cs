@@ -224,8 +224,8 @@ public class HandMagic : MonoBehaviour
             for (int j = 0; j < Spells[i].Sides.Count; j++)
             {
                 int Current = Spells[i].Controllers[j].Current;
-                SpellType Type = Spells[i].Type;
-                int TypeNum = (int)Type;
+                //SpellType Type = Spells[i].Type;
+                //int TypeNum = (int)Type;
                 if (Current > HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1)
                 {
                     Current -= 1;
@@ -233,11 +233,11 @@ public class HandMagic : MonoBehaviour
                 Vector3 Local = Vector3.zero;
                 if (j == 0)
                 {
-                    Local = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
+                    Local = HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
                 }
                 else
                 {
-                    Local = HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
+                    Local = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
                 }
                 Vector3 Final = ConvertDataToPoint(Local);
                 Spells[i].Sides[j].transform.position = Final;
