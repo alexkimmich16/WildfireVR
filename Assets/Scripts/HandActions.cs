@@ -106,18 +106,15 @@ public class HandActions : MonoBehaviour
             int Current = HM.Spells[i].Controllers[SideNum].Current;
             if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
             {
-                Vector3 UnConverted;
-                if (side == Side.Left)
-                    UnConverted = HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
-                else
-                    UnConverted = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
+                //int Side, bool Invert, int i, int Current
+                Vector3 UnConverted = HM.GetSide(SideNum, false, i, Current);
+                
                 Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
                 float distance = Vector3.Distance(Converted, transform.position); 
                 
-                if (SideNum == 1 && i == 2)
-                    Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
+                //if (SideNum == 1 && i == 1)
+                   // Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
                 
-                //is it close enough, if not restart
                 if (HM.Spells[i].Leanience > distance)
                     HM.Spells[i].Controllers[SideNum].Current += 1;
                 else
@@ -125,12 +122,10 @@ public class HandActions : MonoBehaviour
             }
         }
     }
-
     void Update()
     {
         SetRemoteStats();
         CheckColliders();
-        int SideNum = (int)side;
         if(HandDebug.instance.EngineStats == true)
         {
             CheckAll();
