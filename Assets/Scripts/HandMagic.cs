@@ -31,6 +31,7 @@ public class HandMagic : MonoBehaviour
         public string Name;
         public SpellType Type;
         public float Cost;
+        //public List<ControllerInfo> Steps = new List<ControllerInfo>();
         public float Leanience;
         public List<bool> Finished = new List<bool>();
         
@@ -104,7 +105,7 @@ public class HandMagic : MonoBehaviour
 
     [Header("Other")]
     public List<MagicInfo> Spells = new List<MagicInfo>();
-
+    
     //public List<FollowInfo> Follows = new List<FollowInfo>();
     public void BothSpellManager()
     {
@@ -114,41 +115,18 @@ public class HandMagic : MonoBehaviour
             int TypeNum = (int)type;
             if (type == SpellType.Both)
             {
-                //only right use
-                FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
-                if (Spells[i].Controllers[0].Current != info.LeftLocalPos.Count)
-                {
-                    for (int j = 0; j < Spells[i].Sides.Count; j++)
-                    {
-                        int Current = Spells[i].Controllers[j].Current;
-                        if (info.LeftLocalPos.Count > 1)
-                        {
-                            //int Side, bool Invert, int i, int Current
-                            Vector3 UnConverted = GetSide(j, false, i, Current);
-                            Vector3 Converted = ConvertDataToPoint(UnConverted);
-                            float distance = Vector3.Distance(Converted, Controllers[j].transform.position);
+                //if hand motion 0 and 1 complete
+                //if trigger on both
+                //if both are now not a trigger
 
-                            if (Spells[i].Leanience > distance)
-                            {
-                                Spells[i].Controllers[j].Current += 1;
-                            }
-
-                            else
-                            {
-                                Spells[i].Controllers[0].Current = 0;
-                                Spells[i].Controllers[1].Current = 0;
-                            }
-                        }
-
-                    }
-                }
-                else
+                //both controllers finished animation
+                if (Spells[i].Controllers[0].ControllerFinished[0] == true && Spells[i].Controllers[1].ControllerFinished[0] == true)
                 {
                     Spells[i].Finished[0] = true;
                 }
 
-                //both animation finished, and both trigger pressed
-                if (Spells[i].Finished[0] == true && Controllers[0].TriggerPressed() == true && Controllers[1].TriggerPressed())
+                //both animation finished, and either trigger pressed
+                if (Spells[i].Finished[0] == true && Controllers[0].TriggerPressed() == true || Controllers[1].TriggerPressed())
                 {
                     Spells[i].Finished[1] = true;
                 }
@@ -238,83 +216,33 @@ public class HandMagic : MonoBehaviour
         }
     }
     //inumerator should be the one handactions sends to saying it should start sequence
-    public Vector3 GetSide(int Side, bool Invert, int i, int Current)
-    {
-        if (Invert == false)
-        {
-            if (Side == 0)
-            {
-                return HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
-            }
-            else
-            {
-                return HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
-            }
-        }
-        else
-        {
-            if (Side == 0)
-            {
-                return HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
-            }
-            else
-            {
-                return HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
-            }
-        }
-    }
+
     public void FollowMotion()
     {
         for (int i = 0; i < Spells.Count; i++)
         {
-            SpellType type = Spells[i].Type;
-            if (type == SpellType.Both)
+            for (int j = 0; j < Spells[i].Sides.Count; j++)
             {
-<<<<<<< Updated upstream
                 int Current = Spells[i].Controllers[j].Current;
                 //SpellType Type = Spells[i].Type;
                 //int TypeNum = (int)Type;
-=======
-                int Current = Mathf.Min(Spells[i].Controllers[0].Current, Spells[i].Controllers[1].Current);
->>>>>>> Stashed changes
                 if (Current > HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1)
                 {
                     Current -= 1;
                 }
-                
-                for (int j = 0; j < Spells[i].Sides.Count; j++)
+                Vector3 Local = Vector3.zero;
+                if (j == 0)
                 {
-<<<<<<< Updated upstream
                     Local = HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
-=======
-                    Vector3 Local = GetSide(j, false, i, Current);
-                    Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
->>>>>>> Stashed changes
                 }
-            }
-            else
-            {
-                for (int j = 0; j < Spells[i].Sides.Count; j++)
+                else
                 {
-<<<<<<< Updated upstream
                     Local = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
-=======
-
-                    //j0 is left
-                    //both isn't seperate hands and together at end, change this
-                    int Current = Spells[i].Controllers[j].Current;
-                    if (Current > HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1)
-                    {
-                        Current -= 1;
-                    }
-                    Vector3 Local = GetSide(j, false, i, Current);
-                    Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
->>>>>>> Stashed changes
                 }
+                Vector3 Final = ConvertDataToPoint(Local);
+                Spells[i].Sides[j].transform.position = Final;
             }
-            
         }
-        
     }
 
 
@@ -411,6 +339,36 @@ public class HandMagic : MonoBehaviour
             return Vector3.zero;
         }
     }
+
+    /*
+    public void CheckFlying()
+    {
+        //check for flying
+        for (int i = 0; i < 2; i++)
+        {
+            //bool Flying = SC.CheckFlying(Controllers[i]);
+            // trigger is held and has enough magic
+            if (Flying == true)
+            {
+                //UsingMagic = true;
+                if (Controllers[i].Playing == false)
+                {
+                    Controllers[i].Playing = true;
+                    //Controllers[i].PS.Play();
+                }
+            }
+            else
+            {
+                if (Controllers[i].Playing == true)
+                {
+                    Controllers[i].Playing = false;
+                    // Controllers[i].PS.Stop();
+                }
+            }
+        }
+
+    }
+    */
     public void OpenURL()
     {
         string URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley";

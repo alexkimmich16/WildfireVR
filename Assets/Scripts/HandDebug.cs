@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 public enum Movements
 {
     Spike = 0,
@@ -92,132 +91,45 @@ public class HandDebug : MonoBehaviour
     public float Leanience;
 
     public bool EngineStats = false;
+
+    [Header("Angle")]
+    public int Angle;
+    public TextMeshProUGUI AngleType;
     
     [Header("Lerp")]
     public float EndLerp; // 10
     public float StartLerp; // 1
     public TextMeshProUGUI Max;
     public TextMeshProUGUI Min;
-    public bool InvertAngle;
-    public Toggle InvertedToggle;
 
-    [Header("Frames")]
-    public TextMeshProUGUI CurrentFrames;
-    public int Frames;
-    
-
-    public void InvertAng()
-    {
-        InvertAngle = InvertedToggle.isOn;
-    }
-
-    public void ChangeFrame(int Change)
-    {
-        int Positive = Mathf.Abs(Change);
-        MovementData data = DataFolders[(int)CurrentMove].Storage[PackageNum];
-        for (var t = 0; t < Positive; t++)
-        {
-            int Count = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Count;
-            if (Mathf.Sign(Change) == 1)
-            {
-                data.RightLocalPos.Add(data.RightLocalPos[Count - 1]);
-                data.LeftLocalPos.Add(data.LeftLocalPos[Count - 1]);
-            }
-            else
-            {
-                data.RightLocalPos[Count - 2] = data.RightLocalPos[Count - 1];
-                data.LeftLocalPos[Count - 2] = data.LeftLocalPos[Count - 1];
-                data.RightLocalPos.RemoveAt(Count - 1);
-                data.LeftLocalPos.RemoveAt(Count - 1);
-            }
-        }
-        int FinCount = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Count - 1;
-
-        float StartX = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos[0].x;
-        float EndX = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos[FinCount].x;
-        //Debug.Log("startx:  " + StartX + "  End:  " + EndX);
-        Lerp(0, StartX, EndX);
-
-        float StartY = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos[0].y;
-        float EndY = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos[FinCount].y;
-        //Debug.Log("starty:  " + StartY + "  End:  " + EndY);
-        Lerp(1, StartY, EndY);
-
-        float StartZ = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos[0].z;
-        float EndZ = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos[FinCount].z;
-        //Debug.Log("startz:  " + StartZ + "  End:  " + EndZ);
-        Lerp(2, StartZ, EndZ);
-        //stretch out motion to final frame
-    }
     #region Lerp
-    public void ButtonLerp(int Type)
+    public void Lerp(int Type)
     {
-        Lerp(Type, StartLerp, EndLerp);
-    }
-
-    
-
-    public void Lerp(int Type, float Start, float End)
-    {
-        //HandMagic HM = HandMagic.instance;
-        //start 0.1
-        //end 0.6
-        int Inside = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Count - 1; //26
-        float Difference = End - Start; //0.5
+        int Inside = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Count;
+        float Difference = EndLerp - StartLerp;
         float StepAdd = Difference / Inside;
-        float Current = Start;
+        float Current = StartLerp;
         MovementData data = DataFolders[(int)CurrentMove].Storage[PackageNum];
-        //Debug.Log("inside:  " + Inside + "  diff:  " + Difference + "   step:  " + StepAdd.ToString("F3") + "  AveragePos:  " + Current.ToString("F3"));
         for (var t = 0; t < Inside; t++)
         {
             if (Type == 0)
             {
                 data.RightLocalPos[t] = new Vector3(Current, data.RightLocalPos[t].y, data.RightLocalPos[t].z);
                 data.LeftLocalPos[t] = new Vector3(Current, data.LeftLocalPos[t].y, data.LeftLocalPos[t].z);
-                if (t == Inside)
-                {
-                    //Debug.Log("touched");
-                    data.RightLocalPos[t + 1] = new Vector3(End, data.RightLocalPos[t].y, data.RightLocalPos[t].z);
-                    data.LeftLocalPos[t + 1] = new Vector3(End, data.LeftLocalPos[t].y, data.LeftLocalPos[t].z);
-                }
             }
             else if (Type == 1)
             {
-                if (InvertAngle == false)
-                {
-                    data.RightLocalPos[t] = new Vector3(data.RightLocalPos[t].x, Current, data.RightLocalPos[t].z);
-                    data.LeftLocalPos[t] = new Vector3(data.LeftLocalPos[t].x, 360f - Current, data.LeftLocalPos[t].z);
-                    if (t == Inside)
-                    {
-                        data.RightLocalPos[t + 1] = new Vector3(data.RightLocalPos[t].x, End, data.RightLocalPos[t].z);
-                        data.LeftLocalPos[t + 1] = new Vector3(data.LeftLocalPos[t].x, 360f - End, data.LeftLocalPos[t].z);
-                    }
-                }
-                else
-                {
-                    data.RightLocalPos[t] = new Vector3(data.RightLocalPos[t].x, 360f - Current, data.RightLocalPos[t].z);
-                    data.LeftLocalPos[t] = new Vector3(data.LeftLocalPos[t].x, Current, data.LeftLocalPos[t].z);
-                    if (t == Inside)
-                    {
-                        data.RightLocalPos[t + 1] = new Vector3(data.RightLocalPos[t].x, 360f - End, data.RightLocalPos[t].z);
-                        data.LeftLocalPos[t + 1] = new Vector3(data.LeftLocalPos[t].x, End, data.LeftLocalPos[t].z);
-                    }
-                }
-                
+                data.RightLocalPos[t] = new Vector3(data.RightLocalPos[t].x, 360f - Current, data.RightLocalPos[t].z);
+                data.LeftLocalPos[t] = new Vector3(data.LeftLocalPos[t].x, Current, data.LeftLocalPos[t].z);
             }
             else if (Type == 2)
             {
                 data.RightLocalPos[t] = new Vector3(data.RightLocalPos[t].x, data.RightLocalPos[t].y, Current);
                 data.LeftLocalPos[t] = new Vector3(data.LeftLocalPos[t].x, data.LeftLocalPos[t].y, Current);
-                if (t == Inside)
-                {
-                    data.RightLocalPos[t + 1] = new Vector3(data.RightLocalPos[t].x, data.RightLocalPos[t].y, End);
-                    data.LeftLocalPos[t + 1] = new Vector3(data.LeftLocalPos[t].x, data.LeftLocalPos[t].y, End);
-                }
             }
             Current += StepAdd;
         }
-        
+
     }
     public void ChangeMax(float Add)
     {
@@ -226,6 +138,33 @@ public class HandDebug : MonoBehaviour
     public void ChangeMin(float Add)
     {
         StartLerp += Add;
+    }
+    #endregion
+
+    #region Angle
+    public void SetAngle()
+    {
+        for (var t = 0; t < DataFolders[(int)CurrentMove].Storage[PackageNum].LeftLocalPos.Count; t++)
+        {
+            //left small
+            Vector3 Right = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos[t];
+            DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos[t] = new Vector3(Right.x, 360f - Angle, Right.z);
+
+            Vector3 Left = DataFolders[(int)CurrentMove].Storage[PackageNum].LeftLocalPos[t];
+            DataFolders[(int)CurrentMove].Storage[PackageNum].LeftLocalPos[t] = new Vector3(Left.x, Angle, Left.z);
+        }
+    }
+    public void ChangeAngle(int Change)
+    {
+        Angle += Change;
+        if (Angle > 360)
+        {
+            Angle -= 360;
+        }
+        if (Angle < 0)
+        {
+            Angle += 360;
+        }
     }
     #endregion
 
@@ -256,16 +195,6 @@ public class HandDebug : MonoBehaviour
                 {
                     //track both seperately
                     //individual so mirror on right for left
-
-                    Vector3 ZPlacementController = new Vector3(Right.transform.position.x, Player.position.y, Right.transform.position.z);
-                    float YChange = Right.transform.position.y - Player.position.y;
-                    float Dist = Vector3.Distance(ZPlacementController, Player.position);
-                    Vector3 targetDir = ZPlacementController + Player.transform.position;
-                    float angle = Vector3.Angle(targetDir, Player.transform.forward);
-                    RightLocalPos.Add(new Vector3(Dist, angle + 180, YChange));
-                    LeftLocalPos.Add(new Vector3(Dist, -angle + 180, YChange));
-
-                    /*
                     Vector3 RightPlacement = new Vector3(Right.transform.position.x, Player.position.y, Right.transform.position.z);
                     Vector3 LeftPlacement = new Vector3(Left.transform.position.x, Player.position.y, Left.transform.position.z);
                     float YChangeRight = Right.transform.position.y - Player.position.y;
@@ -278,7 +207,6 @@ public class HandDebug : MonoBehaviour
                     float Rightangle = Vector3.Angle(RightTargetDir, Player.transform.forward);
                     RightLocalPos.Add(new Vector3(RightDist, Rightangle + 180, YChangeRight));
                     LeftLocalPos.Add(new Vector3(LeftDist, -Leftangle + 180, YChangeLeft));
-                    */
                 }
                 
             }
@@ -308,13 +236,12 @@ public class HandDebug : MonoBehaviour
     void Update()
     {
         int num = (int)CurrentMove;
-        Frames = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Count;
-        CurrentFrames.text = "Frames:  " + Frames;
         ScriptableNum.text = "Current Scriptable:  " + PackageNum;
         Set.text = "Is Set: " + DataFolders[num].Storage[PackageNum].Set;
         Type.text = "Testing: " + DataFolders[num].Name;
-        Max.text = "End: " + EndLerp.ToString("F1");
-        Min.text = "Start: " + StartLerp.ToString("F1");
+        AngleType.text = "Angle: " + Angle;
+        Max.text = "Max: " + EndLerp.ToString("F1");
+        Min.text = "Min: " + StartLerp.ToString("F1");
 
         CreateInfo();
     }
@@ -593,15 +520,3 @@ else
     RightDifferencePos.Add(Vector3.zero);
 }
 */
-
-/*
-        Angle += Change;
-        if (Angle > 360)
-        {
-            Angle -= 360;
-        }
-        if (Angle < 0)
-        {
-            Angle += 360;
-        }
-        */
