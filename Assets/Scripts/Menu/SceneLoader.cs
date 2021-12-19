@@ -5,32 +5,33 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    #region Singleton + Classes
+    #region Singleton
     public static SceneLoader instance;
-    void Awake() { instance = this; }
-
-    [System.Serializable]
-    public class SceneInfo
+    void Awake()
     {
-        public string SceneName;
+        if ((int)priority > (int)HighestPriority)
+        {
+            HighestPriority = priority;
+            instance = this;
+        }
+        else
+            Destroy(this);
     }
     #endregion
 
     public List<SceneInfo> Scenes = new List<SceneInfo>();
+    public Priority priority;
+    public static Priority HighestPriority = Priority.None;
 
     public void LoadScene(int Num)
     {
         DontDestroyOnLoad(gameObject);
         SceneManager.LoadScene(Scenes[Num].SceneName);
     }
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    [System.Serializable]
+    public class SceneInfo
     {
-        
+        public string SceneName;
     }
 }

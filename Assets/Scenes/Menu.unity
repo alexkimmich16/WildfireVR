@@ -1831,6 +1831,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SceneState: 0
+  priority: 2
 --- !u!114 &334491280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1844,8 +1845,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Scenes:
-  - SceneName: Menu
   - SceneName: First
+  - SceneName: Menu
+  priority: 2
 --- !u!4 &334491281
 Transform:
   m_ObjectHideFlags: 0

@@ -6,7 +6,11 @@ public class MenuController : MonoBehaviour
 {
     #region Singleton + Classes
     public static MenuController instance;
-    void Awake() { instance = this; }
+    void Awake()
+    {
+        instance = this;
+    }
+
 
     [System.Serializable]
     public class SceneInfo
