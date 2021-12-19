@@ -14,7 +14,8 @@ public static class SaveScript
             Debug.Log("save");
         }
         BinaryFormatter formatter = new BinaryFormatter();
-        string path = Application.persistentDataPath + "/player.fun";
+        //Application.dataPath;
+        string path = Application.dataPath + "/player.fun";
         FileStream stream = new FileStream(path, FileMode.Create);
         AllData data = new AllData();
 
@@ -38,7 +39,8 @@ public static class SaveScript
 
     public static AllData LoadGame()
     {
-        string path = Application.persistentDataPath + "/player.fun";
+        //Application.dataPath;
+        string path = Application.dataPath + "/player.fun";
         FileStream stream = new FileStream(path, FileMode.Open);
         if (File.Exists(path) && stream.Length > 0)
         {

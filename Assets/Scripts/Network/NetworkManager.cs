@@ -10,7 +10,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        ConnectToServer();
+        if(InfoSave.instance.SceneState == SceneSettings.Public)
+        {
+            ConnectToServer();
+        }
+        
     }
     void ConnectToServer()
     {

@@ -270,13 +270,7 @@ public class HandMagic : MonoBehaviour
             SpellType type = Spells[i].Type;
             if (type == SpellType.Both)
             {
-<<<<<<< Updated upstream
-                int Current = Spells[i].Controllers[j].Current;
-                //SpellType Type = Spells[i].Type;
-                //int TypeNum = (int)Type;
-=======
                 int Current = Mathf.Min(Spells[i].Controllers[0].Current, Spells[i].Controllers[1].Current);
->>>>>>> Stashed changes
                 if (Current > HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1)
                 {
                     Current -= 1;
@@ -284,22 +278,14 @@ public class HandMagic : MonoBehaviour
                 
                 for (int j = 0; j < Spells[i].Sides.Count; j++)
                 {
-<<<<<<< Updated upstream
-                    Local = HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
-=======
                     Vector3 Local = GetSide(j, false, i, Current);
                     Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
->>>>>>> Stashed changes
                 }
             }
             else
             {
                 for (int j = 0; j < Spells[i].Sides.Count; j++)
                 {
-<<<<<<< Updated upstream
-                    Local = HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
-=======
-
                     //j0 is left
                     //both isn't seperate hands and together at end, change this
                     int Current = Spells[i].Controllers[j].Current;
@@ -309,7 +295,6 @@ public class HandMagic : MonoBehaviour
                     }
                     Vector3 Local = GetSide(j, false, i, Current);
                     Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
->>>>>>> Stashed changes
                 }
             }
             

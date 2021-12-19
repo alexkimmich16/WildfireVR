@@ -19,15 +19,4 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
         base.OnLeftRoom();
         PhotonNetwork.Destroy(SpawnedPlayerPrefab);
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
