@@ -5,6 +5,14 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Container/TODO")]
 public class TODO : ScriptableObject
 {
-    public List<string> ToDo;
-    public List<string> ToDoActive;
+    public List<SubList> ToDoActive;
+
+    [System.Serializable]
+    public class SubList
+    {
+        public string Sub;
+        public List<string> ToDo;
+    }
+    
+    
 }

@@ -7,7 +7,6 @@ using Photon.Realtime;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public bool DebugScript = false;
-    // Start is called before the first frame update
     void Start()
     {
         if(InfoSave.instance.SceneState == SceneSettings.Public)

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Fireball : MonoBehaviour
 {
     public float Speed;
+    public int Damage;
     public GameObject Explosion, Flash, DestoryAudio;
     public AudioSource FireSound; 
     public AudioClip ExplosionSound; 
@@ -31,6 +32,21 @@ public class Fireball : MonoBehaviour
             GameObject Audio = (GameObject)GameObject.Instantiate(DestoryAudio, this.transform.position, this.transform.rotation);
             Audio.GetComponent<AudioSource>().clip = ExplosionSound;
             Audio.GetComponent<AudioSource>().Play();
+        }
+        if (col.transform.tag == "Shield")
+        {
+            int Side = (int)col.transform.parent.GetComponent<HandActions>().side;
+            HandMagic.instance.SC.ShieldDamage(Damage, Side);
+        }
+        else if (col.transform.tag == "Player")
+        {
+            col.transform.GetComponent<PlayerControl>().ChangeHealth(Damage);
+        }
+        if (InfoSave.instance.SceneState == SceneSettings.Public)
+        {
+            //HandMagic.instance.SC.RemoveObjectFromNetwork(gameObject);
+            //HandMagic.instance.SC.Fireballs.Remove(gameObject);
+
         }
         Destroy(gameObject);
     }

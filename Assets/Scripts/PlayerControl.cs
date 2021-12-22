@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public int Health;
 
-    // Update is called once per frame
-    void Update()
+    public void ChangeHealth(int Change)
     {
-        
+        Health -= Change;
+        if (Health < 1)
+        {
+            Death();
+        }
+    }
+    public void Death()
+    {
+
     }
 }

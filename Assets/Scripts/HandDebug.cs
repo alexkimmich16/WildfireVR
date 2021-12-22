@@ -104,7 +104,6 @@ public class HandDebug : MonoBehaviour
     [Header("Frames")]
     public TextMeshProUGUI CurrentFrames;
     public int Frames;
-    
 
     public void InvertAng()
     {
@@ -154,8 +153,6 @@ public class HandDebug : MonoBehaviour
     {
         Lerp(Type, StartLerp, EndLerp);
     }
-
-    
 
     public void Lerp(int Type, float Start, float End)
     {

@@ -12,8 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 133b87fee7dbc8848a84282fedacc615, type: 3}
   m_Name: ToDo
   m_EditorClassIdentifier: 
-  ToDo:
-  - shield effects
   ToDoActive:
-  - individual tracking mirrors right hand
-  - individual tracking mirrors right hand
+  - Sub: Multiplayer
+    ToDo:
+    - Spawn Magic/Destory Sync
+    - Partical effect syncs
+    - Objects Sync
+    - Deaths
+    - Movement Sync
+    - Able To Damage Others
+    - Able To Speak
+    - (potential) ragdoll physics
+  - Sub: Motions
+    ToDo:
+    - Adjust Motions
+    - Add Dragons Breath
+  - Sub: Models
+    ToDo:
+    - Create Wall
+    - Create Levels
+    - Hand Model
+    - Character Model
+    - Potetial Arms
+    - Inverse kinematics for arms
+  - Sub: Menu
+    ToDo:
+    - intermission menu
+    - Options Menu

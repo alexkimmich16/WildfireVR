@@ -98,7 +98,8 @@ public class HandMagic : MonoBehaviour
     public Transform empty;
 
     private static bool Rickroll = false;
-    public static bool AllSounds = false;
+    public static bool AllSounds = true;
+    public static bool TrackWithCubes = true;
     //public static bool DebugMot
 
 
@@ -110,9 +111,7 @@ public class HandMagic : MonoBehaviour
     {
         for (int i = 0; i < Spells.Count; i++)
         {
-            SpellType type = Spells[i].Type;
-            int TypeNum = (int)type;
-            if (type == SpellType.Both)
+            if (Spells[i].Type == SpellType.Both)
             {
                 //only right use
                 FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
@@ -123,16 +122,18 @@ public class HandMagic : MonoBehaviour
                         int Current = Spells[i].Controllers[j].Current;
                         if (info.LeftLocalPos.Count > 1)
                         {
-                            //int Side, bool Invert, int i, int Current
+                            if (Current > info.RightLocalPos.Count - 1)
+                            {
+                                Debug.Log("before:  " + Current);
+                                Current = info.RightLocalPos.Count - 1;
+                                Debug.Log("after:  " + Current);
+                            }
                             Vector3 UnConverted = GetSide(j, false, i, Current);
                             Vector3 Converted = ConvertDataToPoint(UnConverted);
                             float distance = Vector3.Distance(Converted, Controllers[j].transform.position);
-
+                            
                             if (Spells[i].Leanience > distance)
-                            {
                                 Spells[i].Controllers[j].Current += 1;
-                            }
-
                             else
                             {
                                 Spells[i].Controllers[0].Current = 0;
@@ -144,18 +145,23 @@ public class HandMagic : MonoBehaviour
                 }
                 else
                 {
+                    if (Spells[i].Finished[0] == false)
+                        Behaviour(i, 0, 0);
                     Spells[i].Finished[0] = true;
+                    
                 }
 
                 //both animation finished, and both trigger pressed
                 if (Spells[i].Finished[0] == true && Controllers[0].TriggerPressed() == true && Controllers[1].TriggerPressed())
                 {
                     Spells[i].Finished[1] = true;
+                    Behaviour(i, 1, 0);
                 }
 
                 //all of last, and both triggers released
                 if (Spells[i].Finished[1] == true && Controllers[0].TriggerPressed() == false && Controllers[1].TriggerPressed() == false)
                 {
+                    Behaviour(i, 2, 0);
                     Spells[i].Finished[0] = false;
                     Spells[i].Finished[1] = false;
 
@@ -282,12 +288,10 @@ public class HandMagic : MonoBehaviour
                     Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
                 }
             }
-            else
+            else if(type == SpellType.Individual)
             {
                 for (int j = 0; j < Spells[i].Sides.Count; j++)
                 {
-                    //j0 is left
-                    //both isn't seperate hands and together at end, change this
                     int Current = Spells[i].Controllers[j].Current;
                     if (Current > HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1)
                     {
@@ -311,17 +315,20 @@ public class HandMagic : MonoBehaviour
             OpenURL();
         }
         MagicSlider.maxValue = MaxMagic;
+        if (TrackWithCubes == false)
+        {
+
+        }
     }
 
     void Update()
     {
         BothSpellManager();
-        FollowMotion();
+        if(TrackWithCubes == true)
+            FollowMotion();
         if (ShouldCharge == true)
-        {
             Charge();
-        }
-        if(InfiniteMagic == false)
+        if (InfiniteMagic == false)
             MagicSlider.value = CurrentMagic;
         else
             MagicSlider.value = MaxMagic;
@@ -393,7 +400,7 @@ public class HandMagic : MonoBehaviour
         else
         {
             //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-            return Vector3.zero;
+            return Vector3.positiveInfinity;
         }
     }
     public void OpenURL()

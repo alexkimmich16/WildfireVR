@@ -37,11 +37,7 @@ public class HandActions : MonoBehaviour
 
     public static int PastFrameCount = 20;
 
-    //[HideInInspector]
     public List<Vector3> PastFrames = new List<Vector3>();
-    //a motion, then press trigger to confirm, hold trigger to control it, release to activate
-    //left is 0
-    //supllies handmagic with info
     public void WaitFrames()
     {
         for (int i = 0; i < HM.Spells.Count; i++)
@@ -56,12 +52,12 @@ public class HandActions : MonoBehaviour
             {
                 if (type == SpellType.Individual)
                 {
-                    HM.Behaviour(i, 0, (int)side);
+                    if(HM.Spells[i].Controllers[(int)side].ControllerFinished[0] == false)
+                        HM.Behaviour(i, 0, (int)side);
                     HM.Spells[i].Controllers[(int)side].ControllerFinished[0] = true;
                     if (TriggerPressed() == true && HM.Spells[i].Controllers[(int)side].ControllerFinished[1] == false)
                     {
                         HM.Behaviour(i, 1, (int)side);
-
                         HM.Spells[i].Controllers[(int)side].ControllerFinished[1] = true;
                     }
                     if (HM.Spells[i].Controllers[(int)side].ControllerFinished[1] == true && TriggerPressed() == false)
@@ -72,28 +68,7 @@ public class HandActions : MonoBehaviour
                         HM.Spells[i].Controllers[(int)side].Current = 0;
                     }
                 }
-                else if (type == SpellType.Both)
-                {
-                    //handmagic handles this
-                    /*
-                    HM.Spells[i].Controllers[(int)side].ControllerFinished[0] = true;
-                    if (TriggerPressed() == true && HM.Spells[i].Controllers[(int)side].ControllerFinished[1] == false)
-                    {
-                        //HM.Behaviour(i, 1, (int)side);
-                        HM.Spells[i].Controllers[(int)side].ControllerFinished[1] = true;
-                    }
-                    if (HM.Spells[i].Controllers[(int)side].ControllerFinished[1] == true && TriggerPressed() == false)
-                    {
-                        //HM.Behaviour(i, 2, (int)side);
-                        HM.Spells[i].Controllers[(int)side].ControllerFinished[0] = true;
-                        HM.Spells[i].Controllers[(int)side].ControllerFinished[1] = true;
-                        //HM.Spells[i].Controllers[(int)side].Current = 0;
-                    }
-                    */
-                }
-                
             }
-            
         }
     }
 
@@ -106,9 +81,7 @@ public class HandActions : MonoBehaviour
             int Current = HM.Spells[i].Controllers[SideNum].Current;
             if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
             {
-                //int Side, bool Invert, int i, int Current
                 Vector3 UnConverted = HM.GetSide(SideNum, false, i, Current);
-                
                 Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
                 float distance = Vector3.Distance(Converted, transform.position); 
                 

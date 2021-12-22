@@ -1,10 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class SpellCasts : MonoBehaviour
 {
     public HandMagic HM;
+    private GameObject MultiplayerLeftShield;
+    private GameObject MultiplayerRightShield;
+    //public List<GameObject> Fireballs = new List<GameObject>();
+
+    public void RemoveObjectFromNetwork(GameObject obj)
+    {
+        PhotonNetwork.Destroy(obj);
+    }
+
     #region Spike
     public void UseSpike(Vector3 Position)
     {
@@ -29,8 +40,13 @@ public class SpellCasts : MonoBehaviour
         //undue fireball change
         Vector3 VelDirection = HM.Controllers[Hand].PastFrames[0] - HM.Controllers[Hand].PastFrames[HandActions.PastFrameCount - 1];
         VelDirection = VelDirection.normalized;
-        GameObject FireBall = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
-        FireBall.GetComponent<Fireball>().Speed = HM.Speed;
+        //GameObject FireBall = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
+        //FireBall.GetComponent<Fireball>().Speed = HM.Speed;
+        if (InfoSave.instance.SceneState == SceneSettings.Public)
+        {
+            GameObject fireball = PhotonNetwork.Instantiate("FireballMultiplayer", HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
+            fireball.GetComponent<Fireball>().Speed = HM.Speed;
+        }
     }
     #endregion
     #region Shield
@@ -39,11 +55,39 @@ public class SpellCasts : MonoBehaviour
         HM.ChangeMagic(-HM.Spells[2].Cost);
         HM.Shields[Left].Health = HM.MaxShield;
         ChangeShield(Left, true);
+        if (InfoSave.instance.SceneState == SceneSettings.Public)
+        {
+            if(Left == 0)
+            {
+                MultiplayerLeftShield = PhotonNetwork.Instantiate("ShieldMultiplayer", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
+            }
+            else if(Left == 1)
+            {
+                MultiplayerRightShield = PhotonNetwork.Instantiate("ShieldMultiplayer", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
+            }
+                
+            //way to track like hands
+        }
     }
     public void EndShield(int Left)
     {
         HM.Shields[Left].Health = 0;
         ChangeShield(Left, false);
+        if (InfoSave.instance.SceneState == SceneSettings.Public)
+        {
+            if (Left == 0)
+            {
+                RemoveObjectFromNetwork(MultiplayerLeftShield);
+                MultiplayerLeftShield = null;
+            }
+            else if (Left == 1)
+            {
+                RemoveObjectFromNetwork(MultiplayerRightShield);
+                MultiplayerRightShield = null;
+            }
+        }
+            
+            
     }
     public void ShieldDamage(int Damage, int Side)
     {
@@ -62,6 +106,7 @@ public class SpellCasts : MonoBehaviour
     #region ForcePush
     public void UseForcePush()
     {
+        //Debug.Log("push");
         Vector3 pos = HM.Cam.transform.position;
         if (HandMagic.AllSounds == true)
         {
