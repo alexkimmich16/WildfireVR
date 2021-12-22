@@ -26,8 +26,8 @@ public class NetworkPlayer : MonoBehaviour
         RigLeft = rig.transform.Find("Camera Offset/LeftHand Controller");
         RigRight = rig.transform.Find("Camera Offset/RightHand Controller");
 
-        Hashtable props = new Hashtable { { "rank", 1 } }; // replace '1' with the actual rank
-        PhotonNetwork.player.SetCustomProperties(props);
+        //Hashtable props = new Hashtable { { "rank", 1 } }; replace '1' with the actual rank
+        //PhotonNetwork.player.SetCustomProperties(props);
         //3:30
     }
 

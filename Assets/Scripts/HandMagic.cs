@@ -91,8 +91,7 @@ public class HandMagic : MonoBehaviour
     [Header("ForcePush")]
     public float PushAmount;
     public float PushRadius;
-    public float DistanceCheck;
-
+    public float AngleMax;
     public AudioSource Force;
 
     public Transform empty;
@@ -100,7 +99,6 @@ public class HandMagic : MonoBehaviour
     private static bool Rickroll = false;
     public static bool AllSounds = true;
     public static bool TrackWithCubes = true;
-    //public static bool DebugMot
 
 
     [Header("Other")]
@@ -124,9 +122,9 @@ public class HandMagic : MonoBehaviour
                         {
                             if (Current > info.RightLocalPos.Count - 1)
                             {
-                                Debug.Log("before:  " + Current);
+                                //Debug.Log("before:  " + Current);
                                 Current = info.RightLocalPos.Count - 1;
-                                Debug.Log("after:  " + Current);
+                                //Debug.Log("after:  " + Current);
                             }
                             Vector3 UnConverted = GetSide(j, false, i, Current);
                             Vector3 Converted = ConvertDataToPoint(UnConverted);
@@ -305,8 +303,6 @@ public class HandMagic : MonoBehaviour
         }
         
     }
-
-
     void Start()
     {
         CurrentMagic = MaxMagic;
@@ -317,7 +313,7 @@ public class HandMagic : MonoBehaviour
         MagicSlider.maxValue = MaxMagic;
         if (TrackWithCubes == false)
         {
-
+            //delete cubes
         }
     }
 
@@ -338,7 +334,6 @@ public class HandMagic : MonoBehaviour
     {
         ChangeMagic(MagicRecharge);
     }
-
     public void ChangeMagic(float BaseChange)
     {
         if (InfiniteMagic == true)
@@ -373,8 +368,6 @@ public class HandMagic : MonoBehaviour
             }
         }
     }
-
-    
     public Vector3 ConvertDataToPoint(Vector3 Local)
     {
         float Distance = Local.x;

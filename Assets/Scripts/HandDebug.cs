@@ -156,9 +156,6 @@ public class HandDebug : MonoBehaviour
 
     public void Lerp(int Type, float Start, float End)
     {
-        //HandMagic HM = HandMagic.instance;
-        //start 0.1
-        //end 0.6
         int Inside = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Count - 1; //26
         float Difference = End - Start; //0.5
         float StepAdd = Difference / Inside;
@@ -173,7 +170,6 @@ public class HandDebug : MonoBehaviour
                 data.LeftLocalPos[t] = new Vector3(Current, data.LeftLocalPos[t].y, data.LeftLocalPos[t].z);
                 if (t == Inside)
                 {
-                    //Debug.Log("touched");
                     data.RightLocalPos[t + 1] = new Vector3(End, data.RightLocalPos[t].y, data.RightLocalPos[t].z);
                     data.LeftLocalPos[t + 1] = new Vector3(End, data.LeftLocalPos[t].y, data.LeftLocalPos[t].z);
                 }
@@ -251,9 +247,6 @@ public class HandDebug : MonoBehaviour
                 }
                 else if (CastType == SpellType.Both)
                 {
-                    //track both seperately
-                    //individual so mirror on right for left
-
                     Vector3 ZPlacementController = new Vector3(Right.transform.position.x, Player.position.y, Right.transform.position.z);
                     float YChange = Right.transform.position.y - Player.position.y;
                     float Dist = Vector3.Distance(ZPlacementController, Player.position);
@@ -261,21 +254,7 @@ public class HandDebug : MonoBehaviour
                     float angle = Vector3.Angle(targetDir, Player.transform.forward);
                     RightLocalPos.Add(new Vector3(Dist, angle + 180, YChange));
                     LeftLocalPos.Add(new Vector3(Dist, -angle + 180, YChange));
-
-                    /*
-                    Vector3 RightPlacement = new Vector3(Right.transform.position.x, Player.position.y, Right.transform.position.z);
-                    Vector3 LeftPlacement = new Vector3(Left.transform.position.x, Player.position.y, Left.transform.position.z);
-                    float YChangeRight = Right.transform.position.y - Player.position.y;
-                    float YChangeLeft = Left.transform.position.y - Player.position.y;
-                    float LeftDist = Vector3.Distance(LeftPlacement, Player.position);
-                    float RightDist = Vector3.Distance(RightPlacement, Player.position);
-                    Vector3 LeftTargetDir = LeftPlacement + Player.transform.position;
-                    Vector3 RightTargetDir = RightPlacement + Player.transform.position;
-                    float Leftangle = Vector3.Angle(LeftTargetDir, Player.transform.forward);
-                    float Rightangle = Vector3.Angle(RightTargetDir, Player.transform.forward);
-                    RightLocalPos.Add(new Vector3(RightDist, Rightangle + 180, YChangeRight));
-                    LeftLocalPos.Add(new Vector3(LeftDist, -Leftangle + 180, YChangeLeft));
-                    */
+                    
                 }
                 
             }
@@ -558,6 +537,16 @@ public class HandDebug : MonoBehaviour
     {
         SaveScript.SaveStats();
     }
+
+    public void InvertSides()
+    {
+        int Inside = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Count - 1;
+        List<Vector3> LeftSide = DataFolders[(int)CurrentMove].Storage[PackageNum].LeftLocalPos;
+        List<Vector3> RightSide = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos;
+        DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos = LeftSide;
+        DataFolders[(int)CurrentMove].Storage[PackageNum].LeftLocalPos = RightSide;
+
+    }
 }
 
 public enum DirectionShip
@@ -569,36 +558,3 @@ public enum DirectionShip
     Right = 4,
     Up = 5,
 }
-//LeftWorldPos.Add(new Vector3(Left.transform.position.x, Right.transform.position.y, Right.transform.position.z));
-//RightWorldPos.Add(Right.transform.position);
-/*
-if (LeftLocalPos.Count > 1)
-{
-    LeftDifferencePos.Add(LeftLocalPos[LeftLocalPos.Count - 1] - LeftLocalPos[LeftLocalPos.Count - 2]);
-}
-else
-{
-    LeftDifferencePos.Add(Vector3.zero);
-}
-
-if (RightLocalPos.Count > 1)
-{
-    RightDifferencePos.Add(RightLocalPos[RightLocalPos.Count - 1] - RightLocalPos[RightLocalPos.Count - 2]);
-}
-else
-{
-    RightDifferencePos.Add(Vector3.zero);
-}
-*/
-
-/*
-        Angle += Change;
-        if (Angle > 360)
-        {
-            Angle -= 360;
-        }
-        if (Angle < 0)
-        {
-            Angle += 360;
-        }
-        */

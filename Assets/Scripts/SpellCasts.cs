@@ -9,8 +9,10 @@ public class SpellCasts : MonoBehaviour
     public HandMagic HM;
     private GameObject MultiplayerLeftShield;
     private GameObject MultiplayerRightShield;
-    //public List<GameObject> Fireballs = new List<GameObject>();
-
+    private void Update()
+    {
+        UpdateShieldMultiplayerPosition();
+    }
     public void RemoveObjectFromNetwork(GameObject obj)
     {
         PhotonNetwork.Destroy(obj);
@@ -19,8 +21,13 @@ public class SpellCasts : MonoBehaviour
     #region Spike
     public void UseSpike(Vector3 Position)
     {
-        GameObject spike = Instantiate(HM.Spike, Position, Quaternion.identity);
+        //Vector3 Direction = new Vector3(0,,0).normalized;
+        GameObject spike = Instantiate(HM.Spike, Position, Quaternion.LookRotation(new Vector3(0, HM.Cam.transform.rotation.y, 0).normalized));
+        var particleSystemMainModule = spike.GetComponent<ParticleSystem>().main;
         spike.GetComponent<ParticleSystem>().Play();
+        particleSystemMainModule.startRotation3D = true;
+
+        particleSystemMainModule.startRotation = new Vector3(0, HM.Cam.transform.rotation.y, 0);
         Destroy(spike, HM.SpikeTimeDelete);
 
         //eventually check for people and do damage
@@ -65,8 +72,19 @@ public class SpellCasts : MonoBehaviour
             {
                 MultiplayerRightShield = PhotonNetwork.Instantiate("ShieldMultiplayer", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
             }
-                
-            //way to track like hands
+        }
+    }
+    public void UpdateShieldMultiplayerPosition()
+    {
+        if (MultiplayerLeftShield != null)
+        {
+            MultiplayerLeftShield.transform.position = HM.Controllers[0].transform.position;
+            MultiplayerLeftShield.transform.rotation = HM.Controllers[0].transform.rotation;
+        }
+        if (MultiplayerRightShield != null)
+        {
+            MultiplayerRightShield.transform.position = HM.Controllers[1].transform.position;
+            MultiplayerRightShield.transform.rotation = HM.Controllers[1].transform.rotation;
         }
     }
     public void EndShield(int Left)
@@ -85,16 +103,15 @@ public class SpellCasts : MonoBehaviour
                 RemoveObjectFromNetwork(MultiplayerRightShield);
                 MultiplayerRightShield = null;
             }
-        }
-            
-            
+        } 
     }
+
     public void ShieldDamage(int Damage, int Side)
     {
         HM.Shields[Side].Health -= Damage;
         if (HM.Shields[Side].Health < 1)
         {
-            HM.Shields[Side].Health = 0;
+            EndShield(Side);
             ChangeShield(Side, false);
         }
     }
@@ -119,20 +136,19 @@ public class SpellCasts : MonoBehaviour
             if (pushedOBJ.tag != "Player" && pushedOBJ.gameObject.GetComponent<Rigidbody>() != null)
             {
                 Vector3 directionToTarget = pos - pushedOBJ.transform.position;
-                //float angle = Vector3.Angle(dir, directionToTarget);
-                //float distance = directionToTarget.magnitude;
-                //Debug.Log(angle + " " + pushedOBJ);
-
-                Rigidbody pushed = pushedOBJ.GetComponent<Rigidbody>();
-                pushed.AddExplosionForce(HM.PushAmount, pos, HM.PushRadius);
-                /*
-                if (Mathf.Abs(angle) < 90 && distance < 10)
+                Vector3 ZPlacementObj = new Vector3(pushedOBJ.transform.position.x, HM.Cam.position.y, pushedOBJ.transform.position.z);
+                Vector3 targetDir = ZPlacementObj + HM.Cam.transform.position;
+                float ObjectAngle = Vector3.Angle(targetDir, HM.Cam.transform.forward);
+                float PlayerAngle = HM.Cam.rotation.eulerAngles.y;
+                float Difference = (ObjectAngle - PlayerAngle + 180);
+                //Debug.Log("ObjectAngle:  " + ObjectAngle + "  PlayerAngle:  " + PlayerAngle + "  Difference:  " + Difference);
+                
+                if (Difference < HM.AngleMax && Difference > -HM.AngleMax)
                 {
-                    //Debug.Log("target is in front of me");
-                    //Rigidbody pushed = pushedOBJ.GetComponent<Rigidbody>();
-                    //pushed.AddExplosionForce(PushAmount, pos, PushRadius);
+                    Rigidbody pushed = pushedOBJ.GetComponent<Rigidbody>();
+                    pushed.AddExplosionForce(HM.PushAmount, pos, HM.PushRadius);
                 }
-                */
+               
             }
         }
     }
