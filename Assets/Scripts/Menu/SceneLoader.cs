@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
+    public static int SingletonNum = 1;
+    public Priority priority;
+    public static Priority HighestPriority = Priority.None;
     #region Singleton
     public static SceneLoader instance;
     void Awake()
@@ -18,10 +21,9 @@ public class SceneLoader : MonoBehaviour
             Destroy(this);
     }
     #endregion
-
+    
     public List<SceneInfo> Scenes = new List<SceneInfo>();
-    public Priority priority;
-    public static Priority HighestPriority = Priority.None;
+    
 
     public void LoadScene(int Num)
     {

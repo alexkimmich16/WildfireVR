@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
+using UnityEngine.XR.Interaction.Toolkit;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Fireball : MonoBehaviour
 {
@@ -40,13 +44,16 @@ public class Fireball : MonoBehaviour
         }
         else if (col.transform.tag == "Player")
         {
-            col.transform.GetComponent<PlayerControl>().ChangeHealth(Damage);
-        }
-        if (InfoSave.instance.SceneState == SceneSettings.Public)
-        {
-            //HandMagic.instance.SC.RemoveObjectFromNetwork(gameObject);
-            //HandMagic.instance.SC.Fireballs.Remove(gameObject);
-
+            //photonView.isMine
+            //int MainNum =
+            for (int i = 0; i < NetworkManager.instance.Players.Count; i++)
+            {
+                PhotonView photonView = NetworkManager.instance.Players[i].gameObject.GetComponent<PhotonView>();
+                if (photonView.IsMine)
+                {
+                    photonView.transform.GetComponent<PlayerControl>().ChangeHealth(Damage);
+                }
+            }
         }
         Destroy(gameObject);
     }

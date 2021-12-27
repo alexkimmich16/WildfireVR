@@ -137,7 +137,8 @@ AudioSource:
   m_GameObject: {fileID: 5429687461142774806}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 11a05e0b6065db244b02b05f4ca605e9,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -349,9 +350,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7406859743030960495}
+  - component: {fileID: -6124826727804211691}
   - component: {fileID: 2883858983786084664}
   - component: {fileID: 5272293459400824933}
   - component: {fileID: 802789730534011270}
+  - component: {fileID: 2099352641000150228}
   m_Layer: 0
   m_Name: Network Player
   m_TagString: Untagged
@@ -377,6 +380,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-6124826727804211691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105980944445082301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 187b9101e83540b4eb9b525227e054ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: 100
+  MaxHealth: 100
 --- !u!114 &2883858983786084664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -396,6 +413,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
+  - {fileID: -6124826727804211691}
   - {fileID: 6359478552010303087}
   - {fileID: 5517840750537734012}
   - {fileID: 1815082408940387097}
@@ -437,6 +455,24 @@ MonoBehaviour:
   AutoCreateRecorderIfNotFound: 0
   UsePrimaryRecorder: 1
   SetupDebugSpeaker: 0
+--- !u!114 &2099352641000150228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105980944445082301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 541a76f9c03874323b5154b14ac00427, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spline: {fileID: 0}
+  Speed: 0
+  lookForward: 0
+  reverse: 0
+  currentDistance: 0
+  currentClampedDistance: 0
 --- !u!1 &8461358418908909968
 GameObject:
   m_ObjectHideFlags: 0

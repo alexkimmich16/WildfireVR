@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5519194657968090369}
   - component: {fileID: 5519194657982244929}
   - component: {fileID: 5519194657983914465}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Fire_Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4733,7 +4733,7 @@ GameObject:
   - component: {fileID: 5519194657968090371}
   - component: {fileID: 5519194657982244931}
   - component: {fileID: 5519194657983914467}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Fire_flak
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9454,7 +9454,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5519194657968090381}
   - component: {fileID: 5519194657974270977}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Point light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9554,7 +9554,7 @@ GameObject:
   - component: {fileID: 1030488221340371712}
   - component: {fileID: 8240538117969904122}
   - component: {fileID: 1107581580397487978}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: FireballMultiplayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14340,10 +14340,11 @@ AudioSource:
   m_GameObject: {fileID: 5519194657968289975}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: f10da8d1d5fc5664c94715cf193621a0,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: f82a47654b9aa044e939a805eca3c224, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.388
   m_Pitch: 1
   Loop: 1
   Mute: 0

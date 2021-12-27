@@ -27,7 +27,9 @@ public class SpellCasts : MonoBehaviour
         spike.GetComponent<ParticleSystem>().Play();
         particleSystemMainModule.startRotation3D = true;
 
-        particleSystemMainModule.startRotation = new Vector3(0, HM.Cam.transform.rotation.y, 0);
+        particleSystemMainModule.startRotationX = new ParticleSystem.MinMaxCurve(0);
+        particleSystemMainModule.startRotationY = new ParticleSystem.MinMaxCurve(HM.Cam.transform.rotation.y);
+        particleSystemMainModule.startRotationZ = new ParticleSystem.MinMaxCurve(0);
         Destroy(spike, HM.SpikeTimeDelete);
 
         //eventually check for people and do damage
@@ -67,10 +69,12 @@ public class SpellCasts : MonoBehaviour
             if(Left == 0)
             {
                 MultiplayerLeftShield = PhotonNetwork.Instantiate("ShieldMultiplayer", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
+                MultiplayerLeftShield.GetComponent<Shield>().side = Side.Left;
             }
             else if(Left == 1)
             {
                 MultiplayerRightShield = PhotonNetwork.Instantiate("ShieldMultiplayer", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
+                MultiplayerLeftShield.GetComponent<Shield>().side = Side.Right;
             }
         }
     }
@@ -105,14 +109,12 @@ public class SpellCasts : MonoBehaviour
             }
         } 
     }
-
     public void ShieldDamage(int Damage, int Side)
     {
         HM.Shields[Side].Health -= Damage;
         if (HM.Shields[Side].Health < 1)
         {
             EndShield(Side);
-            ChangeShield(Side, false);
         }
     }
     public void ChangeShield(int Side, bool On)

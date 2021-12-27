@@ -85,7 +85,6 @@ public class HandMagic : MonoBehaviour
 
     [Header("Shield")]
     public int MaxShield;
-    public GameObject Fireball;
     public List<ShieldName> Shields = new List<ShieldName>();
 
     [Header("ForcePush")]
@@ -100,11 +99,9 @@ public class HandMagic : MonoBehaviour
     public static bool AllSounds = true;
     public static bool TrackWithCubes = true;
 
-
     [Header("Other")]
     public List<MagicInfo> Spells = new List<MagicInfo>();
 
-    //public List<FollowInfo> Follows = new List<FollowInfo>();
     public void BothSpellManager()
     {
         for (int i = 0; i < Spells.Count; i++)

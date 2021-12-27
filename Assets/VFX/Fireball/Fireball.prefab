@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8251094843468970332}
   - component: {fileID: 4815783823996089493}
   - component: {fileID: 4522840594011520623}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Fireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4770,7 +4770,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 1.9
-  Damage: 2
+  Damage: 11
   Explosion: {fileID: 166318, guid: 6f813a83ace7f354794a0c8f4721d934, type: 3}
   Flash: {fileID: 142254, guid: 7203052176ec71a4ca8280b5a9aa3668, type: 3}
   DestoryAudio: {fileID: 5218909405383510193, guid: 3e608b69b416aaa4595d19f861b65f7e,
@@ -4900,7 +4900,7 @@ GameObject:
   - component: {fileID: 496276}
   - component: {fileID: 19896276}
   - component: {fileID: 19996276}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Fire_Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9622,7 +9622,7 @@ GameObject:
   - component: {fileID: 496278}
   - component: {fileID: 19896278}
   - component: {fileID: 19996278}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Fire_flak
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14343,7 +14343,7 @@ GameObject:
   m_Component:
   - component: {fileID: 496280}
   - component: {fileID: 10896276}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Point light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.XR;
 using Photon.Pun;
 using UnityEngine.XR.Interaction.Toolkit;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class NetworkPlayer : MonoBehaviour
 {
-    //https://www.youtube.com/watch?v=uM89bDIrmZ0&ab_channel=RugbugRedfern
     public Transform Head;
     public Transform Left;
     public Transform Right;
@@ -17,7 +17,12 @@ public class NetworkPlayer : MonoBehaviour
     private Transform RigLeft;
     private Transform RigRight;
 
-    // Start is called before the first frame update
+    public Hashtable Info;
+    public void UpdateHealth(int newHealth)
+    {
+        //Info.Add("Health", newHealth);
+        //PhotonNetwork.LocalPlayer.SetCustomProperties(Info);
+    }
     void Start()
     {
         photonView = GetComponent<PhotonView>();
@@ -26,12 +31,12 @@ public class NetworkPlayer : MonoBehaviour
         RigLeft = rig.transform.Find("Camera Offset/LeftHand Controller");
         RigRight = rig.transform.Find("Camera Offset/RightHand Controller");
 
+        
         //Hashtable props = new Hashtable { { "rank", 1 } }; replace '1' with the actual rank
         //PhotonNetwork.player.SetCustomProperties(props);
         //3:30
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (photonView.IsMine)
