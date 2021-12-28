@@ -15,27 +15,37 @@ MonoBehaviour:
   ToDoActive:
   - Sub: Multiplayer
     ToDo:
+    - Deaths
+    - (potential) ragdoll physics
+    - Sync Audio
+    Done:
     - Spawn Magic/Destory Sync
     - Partical effect syncs
     - Objects Sync
-    - Deaths
     - Movement Sync
-    - Able To Damage Others
     - Able To Speak
-    - (potential) ragdoll physics
+    - Able To Damage Others
   - Sub: Motions
     ToDo:
     - Adjust Motions
     - Add Dragons Breath
+    - Better way to show player proper motion
+    Done: []
   - Sub: Models
     ToDo:
     - Create Wall
     - Create Levels
     - Hand Model
     - Character Model
+    Done:
     - Potetial Arms
     - Inverse kinematics for arms
   - Sub: Menu
     ToDo:
     - intermission menu
     - Options Menu
+    Done: []
+  - Sub: Tomorrow
+    ToDo:
+    - (at Assets/Scripts/HandMagic.cs:2
+    Done: []

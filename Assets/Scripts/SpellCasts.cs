@@ -9,10 +9,7 @@ public class SpellCasts : MonoBehaviour
     public HandMagic HM;
     private GameObject MultiplayerLeftShield;
     private GameObject MultiplayerRightShield;
-    private void Update()
-    {
-        UpdateShieldMultiplayerPosition();
-    }
+    public static bool DirectionalPush = false;
     public void RemoveObjectFromNetwork(GameObject obj)
     {
         PhotonNetwork.Destroy(obj);
@@ -22,16 +19,17 @@ public class SpellCasts : MonoBehaviour
     public void UseSpike(Vector3 Position)
     {
         //Vector3 Direction = new Vector3(0,,0).normalized;
-        GameObject spike = Instantiate(HM.Spike, Position, Quaternion.LookRotation(new Vector3(0, HM.Cam.transform.rotation.y, 0).normalized));
+        GameObject spike = PhotonNetwork.Instantiate("MultiplayerWall", Position, Quaternion.LookRotation(new Vector3(0, HM.Cam.transform.rotation.y, 0).normalized));
         var particleSystemMainModule = spike.GetComponent<ParticleSystem>().main;
         spike.GetComponent<ParticleSystem>().Play();
         particleSystemMainModule.startRotation3D = true;
 
         particleSystemMainModule.startRotationX = new ParticleSystem.MinMaxCurve(0);
-        particleSystemMainModule.startRotationY = new ParticleSystem.MinMaxCurve(HM.Cam.transform.rotation.y);
+        particleSystemMainModule.startRotationY = new ParticleSystem.MinMaxCurve(HM.Cam.transform.rotation.y + 90f);
         particleSystemMainModule.startRotationZ = new ParticleSystem.MinMaxCurve(0);
-        Destroy(spike, HM.SpikeTimeDelete);
-
+        spike.GetComponent<RemoveInTime>().MaxTime = spike.GetComponent<ParticleSystem>().main.duration;
+        SoundManager.instance.PlayAudio("Spike", null);
+        //HM.SpikeTimeDelete
         //eventually check for people and do damage
     }
     #endregion
@@ -47,6 +45,7 @@ public class SpellCasts : MonoBehaviour
     public void FireballShoot(int Hand)
     {
         //undue fireball change
+        
         Vector3 VelDirection = HM.Controllers[Hand].PastFrames[0] - HM.Controllers[Hand].PastFrames[HandActions.PastFrameCount - 1];
         VelDirection = VelDirection.normalized;
         //GameObject FireBall = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
@@ -54,6 +53,7 @@ public class SpellCasts : MonoBehaviour
         if (InfoSave.instance.SceneState == SceneSettings.Public)
         {
             GameObject fireball = PhotonNetwork.Instantiate("FireballMultiplayer", HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
+            SoundManager.instance.PlayAudio("Fireball", fireball);
             fireball.GetComponent<Fireball>().Speed = HM.Speed;
         }
     }
@@ -63,21 +63,26 @@ public class SpellCasts : MonoBehaviour
     {
         HM.ChangeMagic(-HM.Spells[2].Cost);
         HM.Shields[Left].Health = HM.MaxShield;
-        ChangeShield(Left, true);
+        SoundManager.instance.PlayAudio("Shield", null);
+        //ChangeShield(Left, true);
         if (InfoSave.instance.SceneState == SceneSettings.Public)
         {
             if(Left == 0)
             {
                 MultiplayerLeftShield = PhotonNetwork.Instantiate("ShieldMultiplayer", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
-                MultiplayerLeftShield.GetComponent<Shield>().side = Side.Left;
+                MultiplayerLeftShield.SetActive(false);
+                HM.Shields[0].Shield.SetActive(true);
+                //MultiplayerLeftShield.GetComponent<Shield>().side = Side.Left;
             }
             else if(Left == 1)
             {
                 MultiplayerRightShield = PhotonNetwork.Instantiate("ShieldMultiplayer", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
-                MultiplayerLeftShield.GetComponent<Shield>().side = Side.Right;
+                MultiplayerRightShield.SetActive(false);
+                HM.Shields[1].Shield.SetActive(true);
             }
         }
     }
+    
     public void UpdateShieldMultiplayerPosition()
     {
         if (MultiplayerLeftShield != null)
@@ -94,18 +99,29 @@ public class SpellCasts : MonoBehaviour
     public void EndShield(int Left)
     {
         HM.Shields[Left].Health = 0;
-        ChangeShield(Left, false);
+        //ChangeShield(Left, false);
         if (InfoSave.instance.SceneState == SceneSettings.Public)
         {
+            
             if (Left == 0)
             {
-                RemoveObjectFromNetwork(MultiplayerLeftShield);
+                
+                if (MultiplayerLeftShield != null)
+                {
+                    RemoveObjectFromNetwork(MultiplayerLeftShield);
+
+                }
                 MultiplayerLeftShield = null;
+                HM.Shields[0].Shield.SetActive(false);
             }
             else if (Left == 1)
             {
-                RemoveObjectFromNetwork(MultiplayerRightShield);
+                if (MultiplayerRightShield != null)
+                {
+                    RemoveObjectFromNetwork(MultiplayerRightShield);
+                }  
                 MultiplayerRightShield = null;
+                HM.Shields[1].Shield.SetActive(false);
             }
         } 
     }
@@ -117,41 +133,50 @@ public class SpellCasts : MonoBehaviour
             EndShield(Side);
         }
     }
-    public void ChangeShield(int Side, bool On)
-    {
-        HM.Shields[Side].Shield.SetActive(On);
-    }
     #endregion
     #region ForcePush
     public void UseForcePush()
     {
-        //Debug.Log("push");
         Vector3 pos = HM.Cam.transform.position;
-        if (HandMagic.AllSounds == true)
-        {
-            HM.Force.Play();
-        }
-
+        SoundManager.instance.PlayAudio("Force", null);
         Collider[] colliders = Physics.OverlapSphere(pos, HM.PushRadius);
         foreach (Collider pushedOBJ in colliders)
         {
+            //Debug.Log("PT1");
             if (pushedOBJ.tag != "Player" && pushedOBJ.gameObject.GetComponent<Rigidbody>() != null)
             {
-                Vector3 directionToTarget = pos - pushedOBJ.transform.position;
+                
                 Vector3 ZPlacementObj = new Vector3(pushedOBJ.transform.position.x, HM.Cam.position.y, pushedOBJ.transform.position.z);
                 Vector3 targetDir = ZPlacementObj + HM.Cam.transform.position;
                 float ObjectAngle = Vector3.Angle(targetDir, HM.Cam.transform.forward);
                 float PlayerAngle = HM.Cam.rotation.eulerAngles.y;
-                float Difference = (ObjectAngle - PlayerAngle + 180);
-                //Debug.Log("ObjectAngle:  " + ObjectAngle + "  PlayerAngle:  " + PlayerAngle + "  Difference:  " + Difference);
-                
-                if (Difference < HM.AngleMax && Difference > -HM.AngleMax)
+                float Difference = (ObjectAngle - PlayerAngle + 90);
+                //Debug.Log("PT1.1  " + "Difference:  " + Difference + "  HM.AngleMax:  " + HM.AngleMax);
+                if (DirectionalPush == true)
                 {
-                    Rigidbody pushed = pushedOBJ.GetComponent<Rigidbody>();
-                    pushed.AddExplosionForce(HM.PushAmount, pos, HM.PushRadius);
+                    if (Difference < HM.AngleMax && Difference > -HM.AngleMax)
+                    {
+                        //Debug.Log("PT2");
+                        
+                    }
                 }
-               
+                else if (DirectionalPush == false)
+                {
+                    if (pushedOBJ.GetComponent<Fireball>())
+                    {
+                        //Debug.Log("PT3");
+                        Vector3 difference = pushedOBJ.transform.position - HM.Cam.position;
+                        pushedOBJ.GetComponent<Fireball>().Bounce(difference);
+                    }
+                    else
+                    {
+                        //Debug.Log("PT4");
+                        pushedOBJ.GetComponent<Rigidbody>().AddExplosionForce(HM.PushAmount, pos, HM.PushRadius);
+                    }
+                }
+                
             }
+            
         }
     }
     #endregion
@@ -192,4 +217,9 @@ public class SpellCasts : MonoBehaviour
     }
     */
     #endregion
+
+    private void Update()
+    {
+        UpdateShieldMultiplayerPosition();
+    }
 }

@@ -35,20 +35,6 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     {
         yield return new WaitForSeconds(1);
         Health = MaxHealth;
-        transform.position = NetworkManager.Spawn.position;
+        HandMagic.instance.Cam.parent.parent.position = NetworkManager.instance.Spawn.position;
     }
 }
-/*
-        //int InRoom = PhotonNetwork.CountOfPlayers;
-        int MyNum = transform.GetComponent<PhotonView>().ControllerActorNr;
-        Transform mainPlayer = PhotonView.Find(MyNum).gameObject.transform;
-        mainPlayer.
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-        {
-            //PhotonNetwork.PlayerList[i].ActorNumber;
-            if (NetworkManager.instance.Players[i].photonView.IsMine)
-            {
-                NetworkManager.instance.Players[i].UpdateHealth(Health);
-            }
-        }
-        */

@@ -12,6 +12,7 @@ public class TODO : ScriptableObject
     {
         public string Sub;
         public List<string> ToDo;
+        public List<string> Done;
     }
     
     

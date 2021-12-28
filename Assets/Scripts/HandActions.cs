@@ -77,22 +77,26 @@ public class HandActions : MonoBehaviour
         int SideNum = (int)side;
         for (int i = 0; i < HandDebug.instance.DataFolders.Count; i++)
         {
-            FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
-            int Current = HM.Spells[i].Controllers[SideNum].Current;
-            if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
+            if (HM.Spells[i].Type == SpellType.Individual)
             {
-                Vector3 UnConverted = HM.GetSide(SideNum, false, i, Current);
-                Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
-                float distance = Vector3.Distance(Converted, transform.position); 
-                
-                //if (SideNum == 1 && i == 1)
-                   // Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
-                
-                if (HM.Spells[i].Leanience > distance)
-                    HM.Spells[i].Controllers[SideNum].Current += 1;
-                else
-                    HM.Spells[i].Controllers[SideNum].Current = 0;
+                FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
+                int Current = HM.Spells[i].Controllers[SideNum].Current;
+                if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
+                {
+                    Vector3 UnConverted = HM.GetSide(SideNum, i, Current);
+                    Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
+                    float distance = Vector3.Distance(Converted, transform.position);
+
+                    //if (SideNum == 1 && i == 1)
+                    // Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
+
+                    if (HM.Spells[i].Leanience > distance)
+                        HM.Spells[i].Controllers[SideNum].Current += 1;
+                    else
+                        HM.Spells[i].Controllers[SideNum].Current = 0;
+                }
             }
+                
         }
     }
     void Update()

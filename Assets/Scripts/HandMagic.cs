@@ -76,7 +76,6 @@ public class HandMagic : MonoBehaviour
 
     [Header("Spike")]
     public float SpikeTimeDelete;
-    public GameObject Spike;
     public float YRise;
     private bool UseSpikePlacement = false;
 
@@ -91,7 +90,6 @@ public class HandMagic : MonoBehaviour
     public float PushAmount;
     public float PushRadius;
     public float AngleMax;
-    public AudioSource Force;
 
     public Transform empty;
 
@@ -123,7 +121,7 @@ public class HandMagic : MonoBehaviour
                                 Current = info.RightLocalPos.Count - 1;
                                 //Debug.Log("after:  " + Current);
                             }
-                            Vector3 UnConverted = GetSide(j, false, i, Current);
+                            Vector3 UnConverted = GetSide(j, i, Current);
                             Vector3 Converted = ConvertDataToPoint(UnConverted);
                             float distance = Vector3.Distance(Converted, Controllers[j].transform.position);
                             
@@ -168,6 +166,10 @@ public class HandMagic : MonoBehaviour
     }
     public void Behaviour(int Spell, int Part, int Side)
     {
+        if (CurrentMagic - Spells[Spell].Cost < 0)
+        {
+            return;
+        }
         if (Spell == 0)
         {
             if (Part == 0)
@@ -239,29 +241,17 @@ public class HandMagic : MonoBehaviour
         }
     }
     //inumerator should be the one handactions sends to saying it should start sequence
-    public Vector3 GetSide(int Side, bool Invert, int i, int Current)
+    public Vector3 GetSide(int Side, int i, int Current)
     {
-        if (Invert == false)
+        if(i > HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count)
+            Debug.Log("Side:  " + Side + "   i:  " + i + "   Current:  " + Current + "   Count:  " + HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count);
+        if (Side == 0)
         {
-            if (Side == 0)
-            {
-                return HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
-            }
-            else
-            {
-                return HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
-            }
+            return HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
         }
         else
         {
-            if (Side == 0)
-            {
-                return HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
-            }
-            else
-            {
-                return HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
-            }
+            return HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
         }
     }
     public void FollowMotion()
@@ -279,7 +269,7 @@ public class HandMagic : MonoBehaviour
                 
                 for (int j = 0; j < Spells[i].Sides.Count; j++)
                 {
-                    Vector3 Local = GetSide(j, false, i, Current);
+                    Vector3 Local = GetSide(j, i, Current);
                     Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
                 }
             }
@@ -292,7 +282,7 @@ public class HandMagic : MonoBehaviour
                     {
                         Current -= 1;
                     }
-                    Vector3 Local = GetSide(j, false, i, Current);
+                    Vector3 Local = GetSide(j, i, Current);
                     Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
                 }
             }

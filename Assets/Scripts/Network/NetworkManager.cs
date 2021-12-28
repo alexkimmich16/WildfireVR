@@ -22,7 +22,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    public static Transform Spawn;
+    public Transform Spawn;
     public bool DebugScript = false;
     public List<NetworkPlayer> Players = new List<NetworkPlayer>();
     public List<PlayerInfo> info = new List<PlayerInfo>();

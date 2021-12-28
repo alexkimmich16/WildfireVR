@@ -23,11 +23,11 @@ public class MenuController : MonoBehaviour
     public void JoinPublicLobby()
     {
         InfoSave.instance.SceneState = SceneSettings.Public;
-        SceneLoader.instance.LoadScene(0);
+        SceneLoader.instance.LoadScene(1);
     }
     public void JoinPrivateLobby()
     {
         InfoSave.instance.SceneState = SceneSettings.Private;
-        SceneLoader.instance.LoadScene(0);
+        SceneLoader.instance.LoadScene(1);
     }
 }

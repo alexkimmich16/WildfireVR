@@ -13,6 +13,7 @@ public class FireballGenerator : MonoBehaviour
     void Update()
     {
         Timer += Time.deltaTime;
+        Spawn.LookAt(HandMagic.instance.Cam);
         if (Timer > MaxTime)
         {
             SpawnFireball();

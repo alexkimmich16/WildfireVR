@@ -22,13 +22,11 @@ public class SceneLoader : MonoBehaviour
     }
     #endregion
     
-    public List<SceneInfo> Scenes = new List<SceneInfo>();
-    
 
     public void LoadScene(int Num)
     {
         DontDestroyOnLoad(gameObject);
-        SceneManager.LoadScene(Scenes[Num].SceneName);
+        SceneManager.LoadScene(Num);
     }
 
     [System.Serializable]
