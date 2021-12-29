@@ -96,6 +96,8 @@ public class HandMagic : MonoBehaviour
     private static bool Rickroll = false;
     public static bool AllSounds = true;
     public static bool TrackWithCubes = true;
+    public static bool Respawn = false;
+
 
     [Header("Other")]
     public List<MagicInfo> Spells = new List<MagicInfo>();

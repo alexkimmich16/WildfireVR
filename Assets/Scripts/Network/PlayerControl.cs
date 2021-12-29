@@ -35,6 +35,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     {
         yield return new WaitForSeconds(1);
         Health = MaxHealth;
-        HandMagic.instance.Cam.parent.parent.position = NetworkManager.instance.Spawn.position;
+        if(HandMagic.Respawn == true)
+            HandMagic.instance.Cam.parent.parent.position = NetworkManager.instance.Spawn.position;
     }
 }
