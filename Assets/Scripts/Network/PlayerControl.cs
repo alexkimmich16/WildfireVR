@@ -8,6 +8,9 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
 {
     public int Health;
     public int MaxHealth;
+    public static float DeathTime = 3f;
+    public delegate void DisolveAll();
+    public static event DisolveAll disolveEvent;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         //sync health
@@ -33,7 +36,8 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
 
     IEnumerator Respawn()
     {
-        yield return new WaitForSeconds(1);
+        disolveEvent();
+        yield return new WaitForSeconds(DeathTime);
         Health = MaxHealth;
         if(HandMagic.Respawn == true)
             HandMagic.instance.Cam.parent.parent.position = NetworkManager.instance.Spawn.position;
