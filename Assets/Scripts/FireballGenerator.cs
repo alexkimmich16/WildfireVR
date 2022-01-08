@@ -9,16 +9,20 @@ public class FireballGenerator : MonoBehaviour
     public GameObject Fireball;
     public Transform Spawn;
     private float Timer;
-
+    public bool Active;
     void Update()
     {
-        Timer += Time.deltaTime;
-        Spawn.LookAt(HandMagic.instance.Cam);
-        if (Timer > MaxTime)
+        if(Active == true)
         {
-            SpawnFireball();
-            Timer = 0;
+            Timer += Time.deltaTime;
+            Spawn.LookAt(HandMagic.instance.Cam);
+            if (Timer > MaxTime)
+            {
+                SpawnFireball();
+                Timer = 0;
+            }
         }
+        
     }
 
     public void SpawnFireball()

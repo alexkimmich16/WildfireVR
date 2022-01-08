@@ -15,12 +15,13 @@ public class MovementData : ScriptableObject
     public float Interval;
 
     public List<Vector3> LeftLocalPos;
-    public List<Vector3> LeftWorldPos;
-    public List<Vector3> LeftDifferencePos;
+    //public List<Vector3> LeftDifferencePos;
 
     public List<Vector3> RightLocalPos;
-    public List<Vector3> RightWorldPos;
-    public List<Vector3> RightDifferencePos;
+    //public List<Vector3> RightDifferencePos;
+
+    public List<Vector3> LeftRotation;
+    public List<Vector3> RightRotation;
 
     public bool Set = false;
 }

@@ -1,10 +1,8 @@
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using TMPro;
-
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -14,28 +12,31 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     [System.Serializable]
     public class PlayerInfo
     {
-        //public Side side;
-        //public int actorNum;
         public int InsideNum;
         public int Health;
         public Transform Player;
     }
+    [System.Serializable]
+    public class PlayerStats
+    {
+        public NetworkPlayer networkPlayer;
+        public PlayerControl Control;
+        public Transform ObjectReference;
+    }
+
     #endregion
 
-    public Transform Spawn;
+ 
     public bool DebugScript = false;
-    public List<NetworkPlayer> Players = new List<NetworkPlayer>();
     public List<PlayerInfo> info = new List<PlayerInfo>();
+    public List<PlayerStats> Players = new List<PlayerStats>();
     public int InGame;
 
-    public List<TextMeshProUGUI> Health = new List<TextMeshProUGUI>();
+    //public List<TextMeshProUGUI> Health = new List<TextMeshProUGUI>();
+
     void Start()
     {
-        if(InfoSave.instance.SceneState == SceneSettings.Public)
-        {
-            ConnectToServer();
-        }
-        Spawn = GameObject.Find("/Objects/Emptys/Spawn").transform;
+        ConnectToServer();
     }
     void ConnectToServer()
     {
@@ -81,14 +82,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     private void Update()
     {
-        InGame = PhotonNetwork.PlayerList.Length;
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
             info[i].InsideNum = i;
-            info[i].Player = Players[i].transform;
+            info[i].Player = Players[i].networkPlayer.transform;
             info[i].Health = info[i].Player.GetComponent<PlayerControl>().Health;
             int PlayerNum = i + 1;
-            Health[i].text = "Player " + PlayerNum + ": " + info[i].Player.GetComponent<PlayerControl>().Health + "/" + info[i].Player.GetComponent<PlayerControl>().MaxHealth;
+            if (HandDebug.instance != null)
+                HandDebug.instance.Health[i].text = "Player " + PlayerNum + ": " + info[i].Player.GetComponent<PlayerControl>().Health + "/" + info[i].Player.GetComponent<PlayerControl>().MaxHealth;
         }
+        InGame = PhotonNetwork.PlayerList.Length;
+        
     }
 }

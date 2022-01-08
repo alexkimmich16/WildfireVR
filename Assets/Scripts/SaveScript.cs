@@ -7,6 +7,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 public static class SaveScript
 {
     static bool DoDebug = false;
+    public static string Path()
+    {
+        return Application.dataPath + "/player.fun";
+    }
     public static void SaveStats()
     {
         if(DoDebug == true)
@@ -15,8 +19,7 @@ public static class SaveScript
         }
         BinaryFormatter formatter = new BinaryFormatter();
         //Application.dataPath;
-        string path = Application.dataPath + "/player.fun";
-        FileStream stream = new FileStream(path, FileMode.Create);
+        FileStream stream = new FileStream(Path(), FileMode.Create);
         AllData data = new AllData();
 
         formatter.Serialize(stream, data);
@@ -34,15 +37,15 @@ public static class SaveScript
             }
             return;
         }
-        HandDebug.instance.LoadScriptableObjects(CurrentData);
+
+        HandDebug.instance.LoadChildScriptableObjects(CurrentData);
+        HandMagic.instance.LoadMainScriptableObjects(CurrentData);
     }
 
     public static AllData LoadGame()
     {
-        //Application.dataPath;
-        string path = Application.dataPath + "/player.fun";
-        FileStream stream = new FileStream(path, FileMode.Open);
-        if (File.Exists(path) && stream.Length > 0)
+        FileStream stream = new FileStream(Path(), FileMode.Open);
+        if (File.Exists(Path()) && stream.Length > 0)
         {
             if (DoDebug == true)
             {
@@ -57,7 +60,7 @@ public static class SaveScript
         {
             if (DoDebug == true)
             {
-                Debug.Log("NotFound in" + path);
+                Debug.Log("NotFound in" + Path());
             }
             return null;
         }

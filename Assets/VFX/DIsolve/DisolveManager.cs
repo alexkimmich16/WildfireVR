@@ -1,7 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum DisolveType
+{
+    MainPlayer = 0,
+    NetworkPlayer = 1,
+}
 public class DisolveManager : MonoBehaviour
 {
     public Material Mat;
@@ -11,27 +15,53 @@ public class DisolveManager : MonoBehaviour
     private float CurrentTime;
     private float DivideNum;
     private float SinNum;
-    public bool IsPlayer;
-    //public event  disolveEvent;
+    public bool ShouldRegenerate;
+    public DisolveType disolveType;
+    public PlayerControl SubscribeDisolve;
+    private bool Started = false;
+
+    public void LookForSubscribe()
+    {
+        for (int i = 0; i < NetworkManager.instance.Players.Count; i++)
+        {
+            if (NetworkManager.instance.Players[i].ObjectReference.transform.GetComponent<NetworkPlayer>().photonView.IsMine)
+            {
+                SubscribeDisolve = NetworkManager.instance.Players[i].ObjectReference.transform.GetComponent<PlayerControl>();
+                return;
+            }
+        }
+    }
+    public void TryInitialize()
+    {
+        if (SubscribeDisolve != null)
+        {
+            Started = true;
+            SubscribeDisolve.disolveEvent += DisolveThis;
+            DivideNum = 2 / PlayerControl.DeathTime;
+            NewMat = new Material(Mat);
+            NewMat.SetFloat("Time", -1);
+            if (gameObject.GetComponent<SkinnedMeshRenderer>())
+            {
+                gameObject.GetComponent<SkinnedMeshRenderer>().sharedMaterial = NewMat;
+            }
+            else if (gameObject.GetComponent<MeshRenderer>())
+            {
+                gameObject.GetComponent<MeshRenderer>().sharedMaterial = NewMat;
+            }
+        }
+    }
     void Start()
     {
-        
-        DivideNum = 2 / PlayerControl.DeathTime;
-        PlayerControl.disolveEvent += DisolveThis;
-        NewMat = new Material(Mat);
-        NewMat.SetFloat("Time", -1);
-        if (gameObject.GetComponent<SkinnedMeshRenderer>())
-        {
-            gameObject.GetComponent<SkinnedMeshRenderer>().sharedMaterial = NewMat;
-        }
-        else if (gameObject.GetComponent<MeshRenderer>())
-        {
-            gameObject.GetComponent<MeshRenderer>().sharedMaterial = NewMat;
-        }
+        TryInitialize();
     }
     void Update()
     {
-        if (ShouldDisolve == true)
+        if(Started == false)
+        {
+            LookForSubscribe();
+            TryInitialize();
+        }
+        if (ShouldDisolve == true && Started == true)
         {
             if(DisolveSpare == true)
             {
@@ -46,7 +76,7 @@ public class DisolveManager : MonoBehaviour
             {
                 ShouldDisolve = false;
                 DisolveSpare = true;
-                if(IsPlayer == true)
+                if(ShouldRegenerate == true)
                     NewMat.SetFloat("Time", -1);
             }
         }

@@ -8,9 +8,9 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
 {
     public int Health;
     public int MaxHealth;
-    public static float DeathTime = 3f;
+    public static float DeathTime = 1f;
     public delegate void DisolveAll();
-    public static event DisolveAll disolveEvent;
+    public event DisolveAll disolveEvent;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         //sync health
@@ -39,7 +39,11 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         disolveEvent();
         yield return new WaitForSeconds(DeathTime);
         Health = MaxHealth;
-        if(HandMagic.Respawn == true)
-            HandMagic.instance.Cam.parent.parent.position = NetworkManager.instance.Spawn.position;
+        if(HandMagic.Respawn == true && SceneLoader.instance.CurrentSetting == CurrentGame.Testing)
+            HandMagic.instance.Cam.parent.parent.position = HandDebug.instance.Spawn.position;
+        else if (HandMagic.Respawn == true && SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
+        {
+            SpectatorSpawns
+        }
     }
 }

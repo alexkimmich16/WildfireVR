@@ -11,7 +11,6 @@ public class Fireball : MonoBehaviour
     public float Speed;
     public int Damage;
     public GameObject Explosion, Flash, DestoryAudio;
-    public AudioSource FireSound; 
     public AudioClip ExplosionSound;
 
     //public float LifeTime = 3;
@@ -25,24 +24,36 @@ public class Fireball : MonoBehaviour
     void Update()
     {
         transform.Translate(Vector3.forward * Time.deltaTime * Speed);
-        //lastFrameVelocity = Vector3.forward * Speed;
-
     }
     void OnCollisionEnter(Collision col)
     {
         GameObject Ex = (GameObject)GameObject.Instantiate(Explosion, this.transform.position, this.transform.rotation);
         GameObject Fl = (GameObject)GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
-        SoundManager.instance.PlayAudio("Fireball", gameObject);
+        SoundManager.instance.PlayAudio("FireballExplosion", null);
         if (col.collider.tag == "Shield")
         {
-            int Side = (int)col.collider.transform.parent.GetComponent<HandActions>().side;
-            HandMagic.instance.SC.ShieldDamage(Damage, Side);
+            if(HandMagic.instance.SC.Stats[0].Shield != null)
+            {
+                if (col.collider.transform == HandMagic.instance.SC.Stats[0].Shield.transform)
+                {
+                    HandMagic.instance.SC.ShieldDamage(Damage, 0);
+                }
+            }
+            else if (HandMagic.instance.SC.Stats[1].Shield != null)
+            {
+                if (col.collider.transform == HandMagic.instance.SC.Stats[1].Shield.transform)
+                {
+                    HandMagic.instance.SC.ShieldDamage(Damage, 1);
+                }
+            }
+            
+            
         }
         else if (col.collider.tag == "HitBox")
         {
             for (int i = 0; i < NetworkManager.instance.Players.Count; i++)
             {
-                PhotonView photonView = NetworkManager.instance.Players[i].gameObject.GetComponent<PhotonView>();
+                PhotonView photonView = NetworkManager.instance.Players[i].networkPlayer.transform.GetComponent<PhotonView>();
                 if (photonView.IsMine)
                 {
                     photonView.transform.GetComponent<PlayerControl>().ChangeHealth(Damage);

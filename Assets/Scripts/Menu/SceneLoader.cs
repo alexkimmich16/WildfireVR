@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using System.Linq;
+public enum CurrentGame
+{
+    StartMenu = 0,
+    Testing = 1,
+    Battle = 2,
+}
 public class SceneLoader : MonoBehaviour
 {
-    public static int SingletonNum = 1;
-    public Priority priority;
-    public static Priority HighestPriority = Priority.None;
     #region Singleton
     public static SceneLoader instance;
     void Awake()
@@ -21,17 +24,39 @@ public class SceneLoader : MonoBehaviour
             Destroy(this);
     }
     #endregion
-    
+    public static int SingletonNum = 1;
+    public Priority priority;
+    public static Priority HighestPriority = Priority.None;
+    public List<GameObject> DestroyList = new List<GameObject>();
 
+    public CurrentGame CurrentSetting;
+    //final and unchangeable on this scene
+
+    
+    private void Start()
+    {
+        CurrentSetting = (CurrentGame)SceneManager.GetActiveScene().buildIndex;
+        SearchForInstance();
+    }
+    public void SearchForInstance()
+    {
+        if(InfoSave.instance != null)
+            DestroyList.Add(InfoSave.instance.gameObject);
+        if (SoundManager.instance != null)
+            DestroyList.Add(SoundManager.instance.gameObject);
+        if (HandMagic.instance != null)
+            DestroyList.Add(HandMagic.instance.gameObject);
+        if (SceneLoader.instance != null)
+            DestroyList.Add(SceneLoader.instance.gameObject);
+        
+    }
     public void LoadScene(int Num)
     {
-        DontDestroyOnLoad(gameObject);
+        for (int i = 0; i < DestroyList.Count; i++)
+        {
+            DontDestroyOnLoad(DestroyList[i]);
+        }
+        CurrentSetting = (CurrentGame)Num;
         SceneManager.LoadScene(Num);
-    }
-
-    [System.Serializable]
-    public class SceneInfo
-    {
-        public string SceneName;
     }
 }

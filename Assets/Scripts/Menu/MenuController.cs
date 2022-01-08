@@ -10,24 +10,18 @@ public class MenuController : MonoBehaviour
     {
         instance = this;
     }
-
-
-    [System.Serializable]
-    public class SceneInfo
-    {
-        public string SceneName;
-        public bool FinalInfo;
-    }
     #endregion
-
-    public void JoinPublicLobby()
+    
+    public void JoinAttack()
     {
-        InfoSave.instance.SceneState = SceneSettings.Public;
-        SceneLoader.instance.LoadScene(1);
+        InfoSave.instance.team = Team.Attack;
+        Debug.Log(SceneLoader.instance.gameObject);
+        SceneLoader.instance.LoadScene(2);
     }
-    public void JoinPrivateLobby()
+    public void JoinDefense()
     {
-        InfoSave.instance.SceneState = SceneSettings.Private;
-        SceneLoader.instance.LoadScene(1);
+        InfoSave.instance.team = Team.Defense;
+        SceneLoader.instance.LoadScene(2);
     }
+    
 }

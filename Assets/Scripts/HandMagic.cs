@@ -1,8 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
+public enum Movements
+{
+    Spike = 0,
+    Fireball = 1,
+    Shield = 2,
+    Push = 3,
+    Telekinetic = 4,
+    Flight = 5,
+    Slice = 6,
+}
 public enum SpellType
 {
     Individual = 0,
@@ -17,24 +25,31 @@ public class HandMagic : MonoBehaviour
 {
     #region Singleton + classes
     public static HandMagic instance;
-    void Awake() { instance = this; }
-    [System.Serializable]
-    public class ShieldName
+    void Awake()
     {
-        public Side side;
-        public int Health;
-        public GameObject Shield;
+        if (InfoSave.Changeable == true)
+        {
+            if ((int)priority > (int)HighestPriority)
+            {
+                HighestPriority = priority;
+                instance = this;
+            }
+            else
+                Destroy(this);
+        }
     }
     [System.Serializable]
     public class MagicInfo
     {
         public string Name;
         public SpellType Type;
+        public FinalMovement FinalInfo;
         public float Cost;
         public float Leanience;
         public List<bool> Finished = new List<bool>();
-        
+        public bool Active;
         //public Vector3 Leanience;
+        public float Time;
         public List<ControllerInfo> Controllers = new List<ControllerInfo>();
 
         public List<GameObject> Sides = new List<GameObject>();
@@ -46,11 +61,18 @@ public class HandMagic : MonoBehaviour
         //public Side side;
         public int Current;
         public List<bool> ControllerFinished = new List<bool>();
+        public float Time;
+        public GameObject Trail;
     }
     #endregion
-
+    public Priority priority;
+    public static Priority HighestPriority = Priority.None;
+    [HideInInspector]
     public List<HandActions> Controllers = new List<HandActions>();
+
+    [HideInInspector]
     public Transform Cam;
+    [HideInInspector]
     public SpellCasts SC;
 
     [Range(0f, 1f)]
@@ -61,19 +83,13 @@ public class HandMagic : MonoBehaviour
     public float CurrentMagic;
     public float MagicRecharge;
     public int MaxMagic;
-
-    public Slider MagicSlider;
-
-    [Header("Flying")]
-    [Range(0f, 1f)]
-    public float FlyingCost;
     
     [Header("Misc")]
-    public Material Active;
-    public Material DeActive;
     
     public List<Collider> AroundColliders = new List<Collider>();
 
+    public float UnusedResetTime;
+    
     [Header("Spike")]
     public float SpikeTimeDelete;
     public float YRise;
@@ -84,99 +100,127 @@ public class HandMagic : MonoBehaviour
 
     [Header("Shield")]
     public int MaxShield;
-    public List<ShieldName> Shields = new List<ShieldName>();
 
     [Header("ForcePush")]
     public float PushAmount;
     public float PushRadius;
     public float AngleMax;
 
-    public Transform empty;
+    [Header("Telekinesis")]
+
+    [Header("Flight")]
+    public float FlightPower;
+
+    [Header("Slash")]
+    public float SlashSize;
 
     private static bool Rickroll = false;
     public static bool AllSounds = true;
     public static bool TrackWithCubes = true;
     public static bool Respawn = true;
-
+    public static bool UseMaxTime = true;
 
     [Header("Other")]
     public List<MagicInfo> Spells = new List<MagicInfo>();
-
+    //public Transform empty;
+    [HideInInspector]
+    public Rigidbody RB;
+    public void ChangeTrail(Movements type, bool Set, Side side)
+    {
+        if (Spells[(int)type].Controllers[(int)side].Trail != null)
+        {
+            if (Spells[(int)type].Type == SpellType.Both)
+            {
+                Spells[(int)type].Controllers[0].Trail.SetActive(Set);
+                Spells[(int)type].Controllers[1].Trail.SetActive(Set);
+            }
+            else if (Spells[(int)type].Type == SpellType.Individual)
+            {
+                Spells[(int)type].Controllers[(int)side].Trail.SetActive(Set);
+            }
+        }
+        
+    }
     public void BothSpellManager()
     {
         for (int i = 0; i < Spells.Count; i++)
         {
-            if (Spells[i].Type == SpellType.Both)
+            if(Spells[i].Active == true)
             {
-                //only right use
-                FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
-                if (Spells[i].Controllers[0].Current != info.LeftLocalPos.Count)
+                if (Spells[i].Type == SpellType.Both)
                 {
-                    for (int j = 0; j < Spells[i].Sides.Count; j++)
+                    //only right use
+                    FinalMovement info = Spells[i].FinalInfo;
+                    if (Spells[i].Controllers[0].Current != info.LeftLocalPos.Count)
                     {
-                        int Current = Spells[i].Controllers[j].Current;
-                        if (info.LeftLocalPos.Count > 1)
+                        for (int j = 0; j < Spells[i].Sides.Count; j++)
                         {
-                            if (Current > info.RightLocalPos.Count - 1)
+                            int Current = Spells[i].Controllers[j].Current;
+                            if (info.LeftLocalPos.Count > 1)
                             {
-                                //Debug.Log("before:  " + Current);
-                                Current = info.RightLocalPos.Count - 1;
-                                //Debug.Log("after:  " + Current);
+                                if (Current > info.RightLocalPos.Count - 1)
+                                {
+                                    //Debug.Log("before:  " + Current);
+                                    Current = info.RightLocalPos.Count - 1;
+                                    //Debug.Log("after:  " + Current);
+                                }
+                                Vector3 UnConverted = GetSide(j, i, Current);
+                                Vector3 Converted = ConvertDataToPoint(UnConverted);
+                                float distance = Vector3.Distance(Converted, Controllers[j].transform.position);
+
+                                if (Spells[i].Leanience > distance)
+                                    Spells[i].Controllers[j].Current += 1;
+                                else
+                                {
+                                    Spells[i].Controllers[0].Current = 0;
+                                    Spells[i].Controllers[1].Current = 0;
+                                }
                             }
-                            Vector3 UnConverted = GetSide(j, i, Current);
-                            Vector3 Converted = ConvertDataToPoint(UnConverted);
-                            float distance = Vector3.Distance(Converted, Controllers[j].transform.position);
-                            
-                            if (Spells[i].Leanience > distance)
-                                Spells[i].Controllers[j].Current += 1;
-                            else
-                            {
-                                Spells[i].Controllers[0].Current = 0;
-                                Spells[i].Controllers[1].Current = 0;
-                            }
+
                         }
+                    }
+                    else
+                    {
+                        if (Spells[i].Finished[0] == false)
+                            Behaviour(i, 0, 0);
+                        Spells[i].Finished[0] = true;
 
                     }
-                }
-                else
-                {
-                    if (Spells[i].Finished[0] == false)
-                        Behaviour(i, 0, 0);
-                    Spells[i].Finished[0] = true;
-                    
-                }
 
-                //both animation finished, and both trigger pressed
-                if (Spells[i].Finished[0] == true && Controllers[0].TriggerPressed() == true && Controllers[1].TriggerPressed())
-                {
-                    Spells[i].Finished[1] = true;
-                    Behaviour(i, 1, 0);
-                }
+                    //both animation finished, and both trigger pressed
+                    if (Spells[i].Finished[0] == true && Controllers[0].TriggerPressed() == true && Controllers[1].TriggerPressed())
+                    {
+                        Spells[i].Finished[1] = true;
+                        Behaviour(i, 1, 0);
+                    }
 
-                //all of last, and both triggers released
-                if (Spells[i].Finished[1] == true && Controllers[0].TriggerPressed() == false && Controllers[1].TriggerPressed() == false)
-                {
-                    Behaviour(i, 2, 0);
-                    Spells[i].Finished[0] = false;
-                    Spells[i].Finished[1] = false;
+                    //all of last, and both triggers released
+                    if (Spells[i].Finished[1] == true && Controllers[0].TriggerPressed() == false && Controllers[1].TriggerPressed() == false)
+                    {
+                        Behaviour(i, 2, 0);
+                        Spells[i].Finished[0] = false;
+                        Spells[i].Finished[1] = false;
 
-                    Spells[i].Controllers[0].Current = 0;
-                    Spells[i].Controllers[1].Current = 0;
+                        Spells[i].Controllers[0].Current = 0;
+                        Spells[i].Controllers[1].Current = 0;
+                    }
                 }
             }
         }
     }
+
     public void Behaviour(int Spell, int Part, int Side)
     {
         if (CurrentMagic - Spells[Spell].Cost < 0)
         {
             return;
         }
-        if (Spell == 0)
+        Movements move = (Movements)Spell;
+        if (move == Movements.Spike)
         {
             if (Part == 0)
             {
-                //motion
+                ChangeTrail(move, true, (Side)Side);
             }
             else if (Part == 1)
             {
@@ -187,14 +231,14 @@ public class HandMagic : MonoBehaviour
             {
                 ChangeMagic(-Spells[Spell].Cost);
                 SC.UseSpike(RaycastGround());
+                ChangeTrail(move, false, (Side)Side);
             }
         }
-        if (Spell == 1)
+        else if (move == Movements.Fireball)
         {
             if (Part == 0)
             {
-                //motion
-                //fireball
+                ChangeTrail(move, true, (Side)Side);
             }
             else if (Part == 1)
             {
@@ -204,18 +248,19 @@ public class HandMagic : MonoBehaviour
             {
                 ChangeMagic(-Spells[Spell].Cost);
                 SC.FireballShoot(Side);
+                ChangeTrail(move, false, (Side)Side);
             }
         }
-        if (Spell == 2)
+        else if (move == Movements.Shield)
         {
             if (Part == 0)
             {
-                //motion
-                //shield
+                ChangeTrail(move, true, (Side)Side);
             }
             else if (Part == 1)
             {
                 //pressedCost
+                ChangeTrail(move, false, (Side)Side);
                 ChangeMagic(-Spells[Spell].Cost);
                 SC.StartShield(Side);
             }
@@ -224,12 +269,11 @@ public class HandMagic : MonoBehaviour
                 SC.EndShield(Side);
             }
         }
-        if (Spell == 3)
+        else if (move == Movements.Push)
         {
             if (Part == 0)
             {
-                //motion
-                //forceblast
+                ChangeTrail(move, true, (Side)Side);
             }
             else if (Part == 1)
             {
@@ -239,73 +283,200 @@ public class HandMagic : MonoBehaviour
             {
                 ChangeMagic(-Spells[Spell].Cost);
                 SC.UseForcePush();
+                ChangeTrail(move, false, (Side)Side);
+            }
+        }
+        else if (move == Movements.Telekinetic)
+        {
+            if (Part == 0)
+            {
+                ChangeTrail(move, true, (Side)Side);
+            }
+            else if (Part == 1)
+            {
+                SC.SetTelekinesisActive(Side, true);
+                ChangeMagic(-Spells[Spell].Cost);
+            }
+            else if (Part == 2)
+            {
+                SC.SetTelekinesisActive(Side, false);
+                ChangeTrail(move, false, (Side)Side);
+            }
+        }
+        else if (move == Movements.Flight)
+        {
+            if (Part == 0)
+            {
+                ChangeTrail(move, true, (Side)Side);
+            }
+            else if (Part == 1)
+            {
+                SC.SetFlyingActive(Side, true);
+                ChangeTrail(move, false, (Side)Side);
+            }
+            else if (Part == 2)
+            {
+                SC.SetFlyingActive(Side, false);
+            }
+        }
+        else if (move == Movements.Slice)
+        {
+            if (Part == 0)
+            {
+                ChangeTrail(move, true, (Side)Side);
+            }
+            else if (Part == 1)
+            {
+                SC.SetSlashingActive(Side, true);
+            }
+            else if (Part == 2)
+            {
+                SC.SetSlashingActive(Side, false);
+                ChangeTrail(move, false, (Side)Side);
             }
         }
     }
-    //inumerator should be the one handactions sends to saying it should start sequence
     public Vector3 GetSide(int Side, int i, int Current)
     {
-        if(i > HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count)
-            Debug.Log("Side:  " + Side + "   i:  " + i + "   Current:  " + Current + "   Count:  " + HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count);
+        //if(i > HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count)
+            //Debug.Log("Side:  " + Side + "   i:  " + i + "   Current:  " + Current + "   Count:  " + HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count);
         if (Side == 0)
         {
-            return HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos[Current];
+            
+            return Spells[i].FinalInfo.LeftLocalPos[Current];
         }
         else
         {
-            return HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos[Current];
+            return Spells[i].FinalInfo.RightLocalPos[Current];
         }
     }
     public void FollowMotion()
     {
         for (int i = 0; i < Spells.Count; i++)
         {
-            SpellType type = Spells[i].Type;
-            if (type == SpellType.Both)
+            if (TrackWithCubes == true && Spells[i].Active == true)
             {
-                int Current = Mathf.Min(Spells[i].Controllers[0].Current, Spells[i].Controllers[1].Current);
-                if (Current > HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1)
+                SpellType type = Spells[i].Type;
+                if (type == SpellType.Both)
                 {
-                    Current -= 1;
-                }
-                
-                for (int j = 0; j < Spells[i].Sides.Count; j++)
-                {
-                    Vector3 Local = GetSide(j, i, Current);
-                    Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
-                }
-            }
-            else if(type == SpellType.Individual)
-            {
-                for (int j = 0; j < Spells[i].Sides.Count; j++)
-                {
-                    int Current = Spells[i].Controllers[j].Current;
-                    if (Current > HandDebug.instance.DataFolders[i].FinalInfo.RightLocalPos.Count - 1)
+                    int Current = Mathf.Min(Spells[i].Controllers[0].Current, Spells[i].Controllers[1].Current);
+                    if (Current > Spells[i].FinalInfo.RightLocalPos.Count - 1)
                     {
                         Current -= 1;
                     }
-                    Vector3 Local = GetSide(j, i, Current);
-                    Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
+
+                    for (int j = 0; j < Spells[i].Sides.Count; j++)
+                    {
+                        Vector3 Local = GetSide(j, i, Current);
+                        Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
+                    }
+                }
+                else if (type == SpellType.Individual)
+                {
+                    for (int j = 0; j < Spells[i].Sides.Count; j++)
+                    {
+                        int Current = Spells[i].Controllers[j].Current;
+                        if (Current > Spells[i].FinalInfo.RightLocalPos.Count - 1)
+                        {
+                            Current -= 1;
+                        }
+                        Vector3 Local = GetSide(j, i, Current);
+                        Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
+                    }
                 }
             }
             
+
         }
-        
+    }
+    public void CheckUnused()
+    {
+        for (int i = 0; i < Spells.Count; i++)
+        {
+            if (Spells[i].Type == SpellType.Both)
+            {
+                if(Spells[i].Finished[1] == true)
+                {
+                    if (Spells[i].Time > UnusedResetTime)
+                    {
+                        Spells[i].Time = 0;
+                        ResetWithoutMotion((Movements)i, 0);
+                    }
+                    else
+                        Spells[i].Time = 0;
+                    Spells[i].Time += Time.deltaTime;
+                }
+            }
+            else if (Spells[i].Type == SpellType.Individual)
+            {
+                for (int j = 0; j < Spells[i].Controllers.Count; j++)
+                {
+                    if (Spells[i].Finished[1] == true)
+                    {
+                        if (Spells[i].Controllers[j].Time > UnusedResetTime)
+                        {
+                            Spells[i].Controllers[j].Time = 0;
+                            ResetWithoutMotion((Movements)i, (Side)j);
+                        }
+                        Spells[i].Controllers[j].Time += Time.deltaTime;
+                    }
+                    else
+                        Spells[i].Controllers[j].Time = 0;
+                }
+            }
+            
+
+        }
+    }
+    public void ResetWithoutMotion(Movements move, Side side)
+    {
+        SpellType type = Spells[(int)move].Type;
+        if (type == SpellType.Individual)
+        {
+            Spells[(int)move].Controllers[(int)side].Current = 0;
+            Spells[(int)move].Controllers[(int)side].ControllerFinished[0] = false;
+            Spells[(int)move].Controllers[(int)side].ControllerFinished[1] = false;
+        }
+        else if (type == SpellType.Both)
+        {
+            Spells[(int)move].Finished[0] = false;
+            Spells[(int)move].Finished[1] = false;
+            Spells[(int)move].Controllers[0].Current = 0;
+            Spells[(int)move].Controllers[1].Current = 0;
+        }
     }
     void Start()
     {
+        SC = transform.GetComponent<SpellCasts>();
+        Cam = GameObject.Find("XR Rig/Camera Offset/Main Camera").transform;
+        RB = GameObject.Find("XR Rig").GetComponent<Rigidbody>();
+        Controllers.Clear();
+        Controllers.Add(GameObject.Find("Camera Offset/LeftHand Controller").GetComponent<HandActions>());
+        Controllers.Add(GameObject.Find("Camera Offset/RightHand Controller").GetComponent<HandActions>());
+
         CurrentMagic = MaxMagic;
         if (Rickroll == true)
         {
             OpenURL();
         }
-        MagicSlider.maxValue = MaxMagic;
-        if (TrackWithCubes == false)
+        
+
+        //initialise trails
+        for (int i = 0; i < Spells.Count; i++)
         {
-            //delete cubes
+            ChangeTrail((Movements)i, false, (Side)0);
+            ChangeTrail((Movements)i, false, (Side)1);
+        }
+        //initialise tracking
+        for (int i = 0; i < Spells.Count; i++)
+        {
+            if (TrackWithCubes == false || Spells[i].Active == false)
+            {
+                Destroy(Spells[i].Sides[0]);
+                Destroy(Spells[i].Sides[1]);
+            }
         }
     }
-
     void Update()
     {
         BothSpellManager();
@@ -313,12 +484,10 @@ public class HandMagic : MonoBehaviour
             FollowMotion();
         if (ShouldCharge == true)
             Charge();
-        if (InfiniteMagic == false)
-            MagicSlider.value = CurrentMagic;
-        else
-            MagicSlider.value = MaxMagic;
+        
+        if (UseMaxTime == true)
+            CheckUnused();
     }
-    
     void Charge()
     {
         ChangeMagic(MagicRecharge);
@@ -363,12 +532,13 @@ public class HandMagic : MonoBehaviour
         float RotationOffset = Local.y;
         float HorizonalOffset = Local.z;
 
-        empty.rotation = Quaternion.Euler(0, Cam.rotation.eulerAngles.y + RotationOffset, 0);
-        Ray r = new Ray(Cam.position, empty.forward);
+        Quaternion rotation = Quaternion.Euler(0, Cam.rotation.eulerAngles.y + RotationOffset, 0);
+        Vector3 Forward = rotation * Vector3.forward;
+        //Vector3 downVector = transform.TransformDirection(Forward);
+        Ray r = new Ray(Cam.position, Forward);
         Vector3 YPosition = r.GetPoint(Distance);
         return new Vector3(YPosition.x, HorizonalOffset + Cam.position.y, YPosition.z);
     }
-
     public Vector3 RaycastGround()
     {
         RaycastHit hit;
@@ -393,5 +563,70 @@ public class HandMagic : MonoBehaviour
         Application.OpenURL(URL);
         Application.OpenURL(URL);
         Application.OpenURL(URL);
+    }
+    public void LoadMainScriptableObjects(AllData Load)
+    {
+        HandMagic HM = HandMagic.instance;
+        for (var t = 0; t < Load.allTypes.TotalTypes.Length; t++)//for each type
+        {
+            FinalMovement FinalData = HM.Spells[t].FinalInfo;
+            List<Vector3> LocalLeftFinal = new List<Vector3>();
+            List<Vector3> WorldLeftFinal = new List<Vector3>();
+            List<Vector3> DifferenceLeftFinal = new List<Vector3>();
+            for (var j = 0; j < Load.allTypes.TotalTypes[t].Final.LocalLeft.Length / 3; j++)//for each localdata in unit
+            {
+                int ArrayNum = j * 3;
+                Vector3 leftLocal = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum + 2]);
+                LocalLeftFinal.Add(leftLocal);
+
+                Vector3 leftWorld = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum + 2]);
+                WorldLeftFinal.Add(leftWorld);
+
+                Vector3 leftDifference = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum + 2]);
+                DifferenceLeftFinal.Add(leftDifference);
+            }
+
+            List<Vector3> LocalRightFinal = new List<Vector3>();
+            List<Vector3> WorldRightFinal = new List<Vector3>();
+            List<Vector3> DifferenceRightFinal = new List<Vector3>();
+            for (var j = 0; j < Load.allTypes.TotalTypes[t].Final.LocalRight.Length / 3; j++)
+            {
+                int ArrayNum = j * 3;
+                Vector3 right = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.LocalRight[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.LocalRight[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.LocalRight[ArrayNum + 2]);
+                LocalRightFinal.Add(right);
+
+                Vector3 rightWorld = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.WorldRight[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.WorldRight[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.WorldRight[ArrayNum + 2]);
+                WorldRightFinal.Add(rightWorld);
+
+                Vector3 rightDifference = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.DifferenceRight[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.DifferenceRight[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.DifferenceRight[ArrayNum + 2]);
+                DifferenceRightFinal.Add(rightDifference);
+            }
+            FinalData.RightLocalPos = new List<Vector3>(LocalRightFinal);
+            FinalData.LeftLocalPos = new List<Vector3>(LocalLeftFinal);
+            FinalData.RightWorldPos = new List<Vector3>(WorldRightFinal);
+            FinalData.LeftWorldPos = new List<Vector3>(WorldLeftFinal);
+            FinalData.RightDifferencePos = new List<Vector3>(DifferenceRightFinal);
+            FinalData.LeftDifferencePos = new List<Vector3>(DifferenceLeftFinal);
+            FinalData.TotalTime = Load.allTypes.TotalTypes[t].Final.Time;
+            FinalData.MoveType = (Movements)t;
+        }
     }
 }

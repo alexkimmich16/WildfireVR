@@ -47,7 +47,7 @@ public class HandActions : MonoBehaviour
             SpellType type = HM.Spells[i].Type;
             int TypeNum = (int)type;
             int Current = HM.Spells[i].Controllers[(int)side].Current;
-            FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
+            FinalMovement info = HandMagic.instance.Spells[i].FinalInfo;
             if (info.RightLocalPos.Count == Current)
             {
                 if (type == SpellType.Individual)
@@ -77,32 +77,36 @@ public class HandActions : MonoBehaviour
         int SideNum = (int)side;
         for (int i = 0; i < HandDebug.instance.DataFolders.Count; i++)
         {
-            if (HM.Spells[i].Type == SpellType.Individual)
+            if (HM.Spells[i].Active == true)
             {
-                FinalMovement info = HandDebug.instance.DataFolders[i].FinalInfo;
-                int Current = HM.Spells[i].Controllers[SideNum].Current;
-                if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
+                if (HM.Spells[i].Type == SpellType.Individual)
                 {
-                    Vector3 UnConverted = HM.GetSide(SideNum, i, Current);
-                    Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
-                    float distance = Vector3.Distance(Converted, transform.position);
+                    FinalMovement info = HandMagic.instance.Spells[i].FinalInfo;
+                    int Current = HM.Spells[i].Controllers[SideNum].Current;
+                    if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
+                    {
+                        Vector3 UnConverted = HM.GetSide(SideNum, i, Current);
+                        Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
+                        float distance = Vector3.Distance(Converted, transform.position);
 
-                    //if (SideNum == 1 && i == 1)
-                    // Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
+                        //if (SideNum == 1 && i == 1)
+                        // Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
 
-                    if (HM.Spells[i].Leanience > distance)
-                        HM.Spells[i].Controllers[SideNum].Current += 1;
-                    else
-                        HM.Spells[i].Controllers[SideNum].Current = 0;
+                        if (HM.Spells[i].Leanience > distance)
+                            HM.Spells[i].Controllers[SideNum].Current += 1;
+                        else
+                            HM.Spells[i].Controllers[SideNum].Current = 0;
+                    }
                 }
             }
+            
                 
         }
     }
     void Update()
     {
         SetRemoteStats();
-        CheckColliders();
+        //CheckColliders();
         if(HandDebug.instance.EngineStats == true)
         {
             CheckAll();

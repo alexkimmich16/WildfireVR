@@ -8,20 +8,11 @@ using TMPro;
 public class AudioController : MonoBehaviour
 {
     public static int SingletonNum = 2;
-    public Priority priority;
-    public static Priority HighestPriority = Priority.None;
     #region Singleton
-
     public static AudioController instance;
     void Awake()
     {
-        if ((int)priority > (int)HighestPriority)
-        {
-            HighestPriority = priority;
-            instance = this;
-        }
-        else
-            Destroy(this);
+        instance = this;
     }
     [System.Serializable]
     public class AudioType

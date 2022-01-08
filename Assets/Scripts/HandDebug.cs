@@ -3,13 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-public enum Movements
-{
-    Spike = 0,
-    Fireball = 1,
-    Shield = 2,
-    Push = 3,
-}
+
 public class HandDebug : MonoBehaviour
 {
     //check all motions through list
@@ -22,7 +16,6 @@ public class HandDebug : MonoBehaviour
     public class DataSubscript
     {
         public string Name;
-        public FinalMovement FinalInfo;
         public List<MovementData> Storage = new List<MovementData>();
     }
     [System.Serializable]
@@ -57,11 +50,6 @@ public class HandDebug : MonoBehaviour
     private float Timer;
     private bool CurrentMovement = false;
 
-    public Transform Player;
-
-    public HandActions Left;
-    public HandActions Right;
-
     public TextMeshProUGUI ScriptableNum;
     public TextMeshProUGUI Set;
     public TextMeshProUGUI Type;
@@ -80,10 +68,13 @@ public class HandDebug : MonoBehaviour
     private List<Vector3> LeftDifferencePos = new List<Vector3>();
     private List<Vector3> RightDifferencePos = new List<Vector3>();
 
+    private List<Vector3> LeftRotation = new List<Vector3>();
+    private List<Vector3> RightRotation = new List<Vector3>();
+
     public List<DataSubscript> DataFolders = new List<DataSubscript>();
 
-    //predetermined, and works for everyone
-    public List<StaticFinalMovements> StaticFolders = new List<StaticFinalMovements>();
+    private HandMagic HM;
+    //predetermined, and works for everyone 
 
     private float TotalTime;
 
@@ -106,14 +97,16 @@ public class HandDebug : MonoBehaviour
     public TextMeshProUGUI CurrentFrames;
     public int Frames;
 
-    
-    
+    [Header("Health")]
+    public List<TextMeshProUGUI> Health = new List<TextMeshProUGUI>();
+    public Slider MagicSlider;
+
+    public Transform Spawn;
 
     public void InvertAng()
     {
         InvertAngle = InvertedToggle.isOn;
     }
-
     public void ChangeFrame(int Change)
     {
         int Positive = Mathf.Abs(Change);
@@ -157,7 +150,6 @@ public class HandDebug : MonoBehaviour
     {
         Lerp(Type, StartLerp, EndLerp);
     }
-
     public void Lerp(int Type, float Start, float End)
     {
         int Inside = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Count - 1; //26
@@ -225,39 +217,37 @@ public class HandDebug : MonoBehaviour
         StartLerp += Add;
     }
     #endregion
-
     public void CreateInfo()
     {
-        if (Right.TriggerPressed() == true && Right.GripPressed() == true)
+        if (HM.Controllers[1].TriggerPressed() == true && HM.Controllers[1].GripPressed() == true)
         {
-            Left.SettingStats = true;
-            Right.SettingStats = true;
+            HM.Controllers[0].SettingStats = true;
+            HM.Controllers[1].SettingStats = true;
             TotalTime += Time.deltaTime;
             CurrentMovement = true;
             Timer += Time.deltaTime;
             
             if (Timer > MaxTime)
             {
+                
+                Vector3 ZPlacementController = new Vector3(HM.Controllers[1].transform.position.x, HM.Cam.position.y, HM.Controllers[1].transform.position.z);
+                float YChange = HM.Controllers[1].transform.position.y - HM.Cam.position.y;
+                float Dist = Vector3.Distance(ZPlacementController, HM.Cam.position);
+                Vector3 targetDir = ZPlacementController + HM.Cam.transform.position;
+                float angle = Vector3.Angle(targetDir, HM.Cam.transform.forward);
+                RightLocalPos.Add(new Vector3(Dist, angle + 180, YChange));
+                LeftLocalPos.Add(new Vector3(Dist, -angle + 180, YChange));
+                LeftRotation.Add(new Vector3(HM.Controllers[0].transform.rotation.x, HM.Controllers[0].transform.rotation.y, HM.Controllers[0].transform.rotation.z));
+                RightRotation.Add(new Vector3(HM.Controllers[1].transform.rotation.x, HM.Controllers[1].transform.rotation.y, HM.Controllers[1].transform.rotation.z));
+
                 SpellType CastType = HandMagic.instance.Spells[(int)CurrentMove].Type;
                 if (CastType == SpellType.Individual)
-                {            
-                    Vector3 ZPlacementController = new Vector3(Right.transform.position.x, Player.position.y, Right.transform.position.z);
-                    float YChange = Right.transform.position.y - Player.position.y;
-                    float Dist = Vector3.Distance(ZPlacementController, Player.position);
-                    Vector3 targetDir = ZPlacementController + Player.transform.position;
-                    float angle = Vector3.Angle(targetDir, Player.transform.forward);
-                    RightLocalPos.Add(new Vector3(Dist, angle + 180, YChange));
-                    LeftLocalPos.Add(new Vector3(Dist, -angle + 180, YChange));
+                {
+                    
                 }
                 else if (CastType == SpellType.Both)
                 {
-                    Vector3 ZPlacementController = new Vector3(Right.transform.position.x, Player.position.y, Right.transform.position.z);
-                    float YChange = Right.transform.position.y - Player.position.y;
-                    float Dist = Vector3.Distance(ZPlacementController, Player.position);
-                    Vector3 targetDir = ZPlacementController + Player.transform.position;
-                    float angle = Vector3.Angle(targetDir, Player.transform.forward);
-                    RightLocalPos.Add(new Vector3(Dist, angle + 180, YChange));
-                    LeftLocalPos.Add(new Vector3(Dist, -angle + 180, YChange));
+                    
                     
                 }
                 
@@ -265,8 +255,8 @@ public class HandDebug : MonoBehaviour
         }
         else
         {
-            Left.SettingStats = false;
-            Right.SettingStats = false;
+            HM.Controllers[0].SettingStats = false;
+            HM.Controllers[1].SettingStats = false;
             if (CurrentMovement == true)
             {
                 SetScriptableObject(PackageNum);
@@ -296,11 +286,17 @@ public class HandDebug : MonoBehaviour
         Max.text = "End: " + EndLerp.ToString("F1");
         Min.text = "Start: " + StartLerp.ToString("F1");
         RecordingEnum.text = "State: " + RockVR.Video.VideoCaptureCtrl.instance.status.ToString();
+
+        if (HM.InfiniteMagic == false)
+            MagicSlider.value = HM.CurrentMagic;
+        else
+            MagicSlider.value = HM.MaxMagic;
+
         CreateInfo();
     }
-    public void LoadScriptableObjects(AllData Load)
+    public void LoadChildScriptableObjects(AllData Load)
     {
-        //Debug.Log(Load.allTypes.TotalTypes[0].InsideType[0].Interval);
+        HandMagic HM = HandMagic.instance;
         for (var t = 0; t < Load.allTypes.TotalTypes.Length; t++)//for each type
         {
             for (var i = 0; i < Load.allTypes.TotalTypes[t].InsideType.Length; i++)//for all the units in the type type
@@ -364,85 +360,22 @@ public class HandDebug : MonoBehaviour
 
                     data.RightLocalPos = new List<Vector3>(LocalRight);
                     data.LeftLocalPos = new List<Vector3>(LocalLeft);
-                    data.RightWorldPos = new List<Vector3>(WorldRight);
-                    data.LeftWorldPos = new List<Vector3>(WorldLeft);
-                    data.RightDifferencePos = new List<Vector3>(DifferenceRight);
-                    data.LeftDifferencePos = new List<Vector3>(DifferenceLeft);
 
                     data.Set = Load.allTypes.TotalTypes[t].InsideType[i].Set;
                 }
             }
-            FinalMovement FinalData = DataFolders[t].FinalInfo;
-            //Load.allTypes.TotalTypes[t].Final
-            List<Vector3> LocalLeftFinal = new List<Vector3>();
-            List<Vector3> WorldLeftFinal = new List<Vector3>();
-            List<Vector3> DifferenceLeftFinal = new List<Vector3>();
-            for (var j = 0; j < Load.allTypes.TotalTypes[t].Final.LocalLeft.Length / 3; j++)//for each localdata in unit
-            {
-                int ArrayNum = j * 3;
-                Vector3 leftLocal = new Vector3(
-                    Load.allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum],
-                    Load.allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum + 1],
-                    Load.allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum + 2]);
-                LocalLeftFinal.Add(leftLocal);
-
-                Vector3 leftWorld = new Vector3(
-                    Load.allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum],
-                    Load.allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum + 1],
-                    Load.allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum + 2]);
-                WorldLeftFinal.Add(leftWorld);
-
-                Vector3 leftDifference = new Vector3(
-                    Load.allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum],
-                    Load.allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum + 1],
-                    Load.allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum + 2]);
-                DifferenceLeftFinal.Add(leftDifference);
-            }
-
-            List<Vector3> LocalRightFinal = new List<Vector3>();
-            List<Vector3> WorldRightFinal = new List<Vector3>();
-            List<Vector3> DifferenceRightFinal = new List<Vector3>();
-            for (var j = 0; j < Load.allTypes.TotalTypes[t].Final.LocalRight.Length / 3; j++)
-            {
-                int ArrayNum = j * 3;
-                Vector3 right = new Vector3(
-                    Load.allTypes.TotalTypes[t].Final.LocalRight[ArrayNum],
-                    Load.allTypes.TotalTypes[t].Final.LocalRight[ArrayNum + 1],
-                    Load.allTypes.TotalTypes[t].Final.LocalRight[ArrayNum + 2]);
-                LocalRightFinal.Add(right);
-
-                Vector3 rightWorld = new Vector3(
-                    Load.allTypes.TotalTypes[t].Final.WorldRight[ArrayNum],
-                    Load.allTypes.TotalTypes[t].Final.WorldRight[ArrayNum + 1],
-                    Load.allTypes.TotalTypes[t].Final.WorldRight[ArrayNum + 2]);
-                WorldRightFinal.Add(rightWorld);
-
-                Vector3 rightDifference = new Vector3(
-                    Load.allTypes.TotalTypes[t].Final.DifferenceRight[ArrayNum],
-                    Load.allTypes.TotalTypes[t].Final.DifferenceRight[ArrayNum + 1],
-                    Load.allTypes.TotalTypes[t].Final.DifferenceRight[ArrayNum + 2]);
-                DifferenceRightFinal.Add(rightDifference);
-            }
-            FinalData.RightLocalPos = new List<Vector3>(LocalRightFinal);
-            FinalData.LeftLocalPos = new List<Vector3>(LocalLeftFinal);
-            FinalData.RightWorldPos = new List<Vector3>(WorldRightFinal);
-            FinalData.LeftWorldPos = new List<Vector3>(WorldLeftFinal);
-            FinalData.RightDifferencePos = new List<Vector3>(DifferenceRightFinal);
-            FinalData.LeftDifferencePos = new List<Vector3>(DifferenceLeftFinal);
-            FinalData.TotalTime = Load.allTypes.TotalTypes[t].Final.Time;
-            FinalData.MoveType = (Movements)t;
         }
     }
     void SetScriptableObject(int Num)
     {
         int Type = (int)CurrentMove;
-        DataFolders[Type].Storage[Num].RightWorldPos = new List<Vector3>(RightWorldPos);
+        //DataFolders[Type].Storage[Num].RightWorldPos = new List<Vector3>(RightWorldPos);
         DataFolders[Type].Storage[Num].RightLocalPos = new List<Vector3>(RightLocalPos);
-        DataFolders[Type].Storage[Num].RightDifferencePos = new List<Vector3>(RightDifferencePos);
+        //DataFolders[Type].Storage[Num].RightDifferencePos = new List<Vector3>(RightDifferencePos);
 
-        DataFolders[Type].Storage[Num].LeftWorldPos = new List<Vector3>(LeftWorldPos);
+        //DataFolders[Type].Storage[Num].LeftWorldPos = new List<Vector3>(LeftWorldPos);
         DataFolders[Type].Storage[Num].LeftLocalPos = new List<Vector3>(LeftLocalPos);
-        DataFolders[Type].Storage[Num].LeftDifferencePos = new List<Vector3>(LeftDifferencePos);
+        //DataFolders[Type].Storage[Num].LeftDifferencePos = new List<Vector3>(LeftDifferencePos);
 
         DataFolders[Type].Storage[Num].Time = TotalTime;
         DataFolders[Type].Storage[Num].Interval = MaxTime;
@@ -455,26 +388,29 @@ public class HandDebug : MonoBehaviour
             PackageNum += Add;
         }
     }
-
     public void Reset()
     {
-        Debug.Log("reset");
-        DataFolders[(int)CurrentMove].Storage[PackageNum].RightWorldPos.Clear();
+        //Debug.Log("reset");
         DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Clear();
-        DataFolders[(int)CurrentMove].Storage[PackageNum].RightDifferencePos.Clear();
+        DataFolders[(int)CurrentMove].Storage[PackageNum].LeftLocalPos.Clear();
+
+        DataFolders[(int)CurrentMove].Storage[PackageNum].LeftRotation.Clear();
+        DataFolders[(int)CurrentMove].Storage[PackageNum].RightRotation.Clear();
         DataFolders[(int)CurrentMove].Storage[PackageNum].Time = 0f;
         DataFolders[(int)CurrentMove].Storage[PackageNum].Interval = 0f;
         DataFolders[(int)CurrentMove].Storage[PackageNum].Set = false;
-    }
 
+        //DataFolders[(int)CurrentMove].Storage[PackageNum].RightDifferencePos.Clear();
+        //DataFolders[(int)CurrentMove].Storage[PackageNum].LeftDifferencePos.Clear();
+    }
     void Start()
     {
+        HM = HandMagic.instance;
+        Spawn = GameObject.Find("/Objects/Emptys/Spawn").transform;
         MaxTime = 1f / CountEverySecond;
         SaveScript.LoadGameLarge();
-        //MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-        //meshRenderer.material = Normal;
+        MagicSlider.maxValue = HM.MaxMagic;
     }
-
     public void ChangeType()
     {
         int Current = (int)CurrentMove;
@@ -489,7 +425,6 @@ public class HandDebug : MonoBehaviour
         }
         CurrentMove = (Movements)Current;
     }
-
     public void GetAverage()
     {
         //Debug.Log("getaverage1");
@@ -530,18 +465,15 @@ public class HandDebug : MonoBehaviour
             AverageLocalLeft.Add(new Vector3(LocalLeft[i].x / Count, LocalLeft[i].y / Count, LocalLeft[i].z / Count));
             AverageLocalRight.Add(new Vector3(LocalRight[i].x / Count, LocalRight[i].y / Count, LocalRight[i].z / Count));
         }
-
-        DataFolders[(int)CurrentMove].FinalInfo.LeftLocalPos = new List<Vector3>(AverageLocalLeft);
-        DataFolders[(int)CurrentMove].FinalInfo.RightLocalPos = new List<Vector3>(AverageLocalRight);
-        DataFolders[(int)CurrentMove].FinalInfo.Set = true;
+        HandMagic.instance.Spells[(int)CurrentMove].FinalInfo.LeftLocalPos = new List<Vector3>(AverageLocalLeft);
+        HandMagic.instance.Spells[(int)CurrentMove].FinalInfo.RightLocalPos = new List<Vector3>(AverageLocalRight);
+        HandMagic.instance.Spells[(int)CurrentMove].FinalInfo.Set = true;
         //
     }
-
     public void SaveStats()
     {
         SaveScript.SaveStats();
     }
-
     public void InvertSides()
     {
         int Inside = DataFolders[(int)CurrentMove].Storage[PackageNum].RightLocalPos.Count - 1;
@@ -551,14 +483,4 @@ public class HandDebug : MonoBehaviour
         DataFolders[(int)CurrentMove].Storage[PackageNum].LeftLocalPos = RightSide;
 
     }
-}
-
-public enum DirectionShip
-{
-    Down = 0,
-    Forward = 1,
-    Back = 2,
-    Left = 3,
-    Right = 4,
-    Up = 5,
 }

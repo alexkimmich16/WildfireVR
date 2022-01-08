@@ -147,7 +147,7 @@ public class AllData
                 }
             }
             //Debug.Log("Test6");
-            FinalMovement FinalData = HandDebug.instance.DataFolders[t].FinalInfo;
+            FinalMovement FinalData = HandMagic.instance.Spells[t].FinalInfo;
 
             //Debug.Log(FinalData.LeftLocalPos.Count);
             allTypes.TotalTypes[t].Final = new Final();

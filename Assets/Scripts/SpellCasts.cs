@@ -7,23 +7,30 @@ using Photon.Realtime;
 public class SpellCasts : MonoBehaviour
 {
     public HandMagic HM;
-    private GameObject MultiplayerLeftShield;
-    private GameObject MultiplayerRightShield;
     public static bool DirectionalPush = false;
-    public void RemoveObjectFromNetwork(GameObject obj)
+    [System.Serializable]
+    public class SidesStats
     {
-        PhotonNetwork.Destroy(obj);
-    }
+        public Side side;
+        public Transform HeldObject;
+        public bool TelekinesisActive;
+        public int ShieldHealth;
+        public GameObject Shield;
+        
+        public bool Flying;
 
+        public bool Slashing;
+        public Vector3 Start;
+        public Vector3 End;
+    }
+    public List<SidesStats> Stats = new List<SidesStats>();
     #region Spike
     public void UseSpike(Vector3 Position)
     {
-        //Vector3 Direction = new Vector3(0,,0).normalized;
         GameObject spike = PhotonNetwork.Instantiate("MultiplayerWall", Position, Quaternion.LookRotation(new Vector3(0, HM.Cam.transform.rotation.y, 0).normalized));
         var particleSystemMainModule = spike.GetComponent<ParticleSystem>().main;
         spike.GetComponent<ParticleSystem>().Play();
         particleSystemMainModule.startRotation3D = true;
-
         particleSystemMainModule.startRotationX = new ParticleSystem.MinMaxCurve(0);
         particleSystemMainModule.startRotationY = new ParticleSystem.MinMaxCurve(HM.Cam.transform.rotation.y + 90f);
         particleSystemMainModule.startRotationZ = new ParticleSystem.MinMaxCurve(0);
@@ -50,85 +57,48 @@ public class SpellCasts : MonoBehaviour
         VelDirection = VelDirection.normalized;
         //GameObject FireBall = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
         //FireBall.GetComponent<Fireball>().Speed = HM.Speed;
-        if (InfoSave.instance.SceneState == SceneSettings.Public)
-        {
-            GameObject fireball = PhotonNetwork.Instantiate("FireballMultiplayer", HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
-            SoundManager.instance.PlayAudio("Fireball", fireball);
-            fireball.GetComponent<Fireball>().Speed = HM.Speed;
-        }
+        GameObject fireball = PhotonNetwork.Instantiate("FireballMultiplayer", HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
+        SoundManager.instance.PlayAudio("Fireball", fireball);
+        fireball.GetComponent<Fireball>().Speed = HM.Speed;
     }
     #endregion
     #region Shield
     public void StartShield(int Left)
     {
         HM.ChangeMagic(-HM.Spells[2].Cost);
-        HM.Shields[Left].Health = HM.MaxShield;
+        Stats[Left].ShieldHealth = HM.MaxShield;
         SoundManager.instance.PlayAudio("Shield", null);
         //ChangeShield(Left, true);
-        if (InfoSave.instance.SceneState == SceneSettings.Public)
-        {
-            if(Left == 0)
-            {
-                MultiplayerLeftShield = PhotonNetwork.Instantiate("ShieldMultiplayer", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
-                MultiplayerLeftShield.SetActive(false);
-                HM.Shields[0].Shield.SetActive(true);
-                //MultiplayerLeftShield.GetComponent<Shield>().side = Side.Left;
-            }
-            else if(Left == 1)
-            {
-                MultiplayerRightShield = PhotonNetwork.Instantiate("ShieldMultiplayer", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
-                MultiplayerRightShield.SetActive(false);
-                HM.Shields[1].Shield.SetActive(true);
-            }
-        }
+        Stats[Left].Shield = PhotonNetwork.Instantiate("ShieldMultiplayer", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
     }
     
     public void UpdateShieldMultiplayerPosition()
     {
-        if (MultiplayerLeftShield != null)
+        if (Stats[0].Shield != null)
         {
-            MultiplayerLeftShield.transform.position = HM.Controllers[0].transform.position;
-            MultiplayerLeftShield.transform.rotation = HM.Controllers[0].transform.rotation;
+            Stats[0].Shield.transform.position = HM.Controllers[0].transform.position;
+            Stats[0].Shield.transform.rotation = HM.Controllers[0].transform.rotation;
         }
-        if (MultiplayerRightShield != null)
+        if (Stats[1].Shield != null)
         {
-            MultiplayerRightShield.transform.position = HM.Controllers[1].transform.position;
-            MultiplayerRightShield.transform.rotation = HM.Controllers[1].transform.rotation;
+            Stats[1].Shield.transform.position = HM.Controllers[1].transform.position;
+            Stats[1].Shield.transform.rotation = HM.Controllers[1].transform.rotation;
         }
     }
     public void EndShield(int Left)
     {
-        HM.Shields[Left].Health = 0;
+        Stats[Left].ShieldHealth = 0;
         //ChangeShield(Left, false);
-        if (InfoSave.instance.SceneState == SceneSettings.Public)
+        if (Stats[Left].Shield != null)
         {
-            
-            if (Left == 0)
-            {
-                
-                if (MultiplayerLeftShield != null)
-                {
-                    RemoveObjectFromNetwork(MultiplayerLeftShield);
-
-                }
-                MultiplayerLeftShield = null;
-                HM.Shields[0].Shield.SetActive(false);
-            }
-            else if (Left == 1)
-            {
-                if (MultiplayerRightShield != null)
-                {
-                    RemoveObjectFromNetwork(MultiplayerRightShield);
-                }  
-                MultiplayerRightShield = null;
-                HM.Shields[1].Shield.SetActive(false);
-            }
-        } 
+            RemoveObjectFromNetwork(Stats[Left].Shield);
+        }
+        Stats[Left].Shield = null;
     }
     public void ShieldDamage(int Damage, int Side)
     {
-        HM.Shields[Side].Health -= Damage;
-        if (HM.Shields[Side].Health < 1)
+        Stats[Side].ShieldHealth -= Damage;
+        if (Stats[Side].ShieldHealth < 1)
         {
             EndShield(Side);
         }
@@ -180,46 +150,135 @@ public class SpellCasts : MonoBehaviour
         }
     }
     #endregion
-    #region Fly
-    /*
-    public bool CheckFlying(HandActions Hand)
+    #region Telekinesis
+    public void SetTelekinesisActive(int side, bool Active)
     {
-        if (Hand.Trigger > HM.TriggerThreshold)
+        Stats[side].TelekinesisActive = Active;
+    }
+    public void SetTelekineticToNull(int Side)
+    {
+        if (Stats[Side].HeldObject != null)
         {
-            if (HM.CurrentMagic > 1)
+            Stats[Side].HeldObject.GetComponent<telekinetic>().Touched = false;
+            Stats[Side].HeldObject.GetComponent<Renderer>().material = Stats[Side].HeldObject.GetComponent<telekinetic>().Spare;
+        }
+        Stats[Side].HeldObject = null;
+    }
+    public void CheckTelekinesis()
+    {
+        for (int i = 0; i < Stats.Count; i++)
+        {
+            Transform BasePos = HM.Controllers[i].transform;
+            if (Stats[i].TelekinesisActive == true)
             {
-                //Controllers[i].Fly();
-                HM.ChangeMagic(-HM.FlyingCost);
-                return true;
+                //raycast object has telekinesis object
+                RaycastHit hit = new RaycastHit();
+                Ray ray = new Ray(HM.Controllers[i].transform.position, HM.Controllers[i].transform.forward);
+                if (Physics.Raycast(ray, out hit))
+                    if (hit.transform.GetComponent<telekinetic>())
+                    {
+                        hit.transform.GetComponent<telekinetic>().Touched = true;
+                        Stats[i].HeldObject = hit.transform;
+                        hit.transform.GetComponent<Renderer>().material = hit.transform.GetComponent<telekinetic>().Active;
+                    }
+                    else
+                    {
+                        SetTelekineticToNull(i);
+                    }
+                else
+                    SetTelekineticToNull(i);
             }
             else
+                SetTelekineticToNull(i);
+
+            if (Stats[i].HeldObject != null)
             {
-                return false;
+                Ray r = new Ray(BasePos.position, BasePos.forward);
+                Vector3 Position = r.GetPoint(3);
+                Stats[i].HeldObject.position = Position;
             }
         }
-        else
-        {
-            return false;
-        }
     }
-    public void Fly()
-    {
-        Side side = HM.
-        int SideNum = (int)side;
-        if (SideNum == 0)
-        {
-            RB.AddForce(-transform.right * Power, ForceMode.Impulse);
-        }
-        else
-        {
-            RB.AddForce(transform.right * Power, ForceMode.Impulse);
-        }
-    }
-    */
+    //trigger, than grip to use as given
     #endregion
+    #region Fly
+    public void SetFlyingActive(int side, bool Active)
+    {
+        Stats[side].TelekinesisActive = Active;
+    }
+    public void CheckFlying()
+    {
+        for (int i = 0; i < Stats.Count; i++)
+        {
+            if(Stats[i].Flying == true)
+            {
+                HM.ChangeMagic(-HM.Spells[5].Cost);
+                Fly(i);
+            }
+        }
+            
+    }
+    public void Fly(int side)
+    {
+        if (side == 0)
+        {
+            HandMagic.instance.RB.AddForce(-transform.right * HM.FlightPower, ForceMode.Impulse);
+        }
+        else
+        {
+            HandMagic.instance.RB.AddForce(transform.right * HM.FlightPower, ForceMode.Impulse);
+        }
+    }
+    
+    #endregion
+    #region Slash
+    public void PerformSlash(Vector3 Start, Vector3 End, Vector3 Direction)
+    {
+        //draw curved line from points
+        //go in direction of points
 
+    }
+    public void AddSlashPosList()
+    {
+        for (int i = 0; i < Stats.Count; i++)
+        {
+            if(Stats[i].Start == Vector3.zero)
+            {
+                if (Stats[i].Slashing == true)
+                {
+                    if (Stats[i].Start == Vector3.zero)
+                    {
+                        //zero and slashing
+                        Stats[i].Start = HM.Controllers[i].transform.position;
+                    }
+                }
+                else
+                {
+                    //end
+                    Stats[i].End = HM.Controllers[i].transform.position;
+                    //PerformSlash()
+                    Stats[i].Start = Vector3.zero;
+                    Stats[i].End = Vector3.zero;
+                }
+            }
+            
+        }
+    }
+    public void SetSlashingActive(int side, bool Active)
+    {
+        Stats[side].Slashing = Active;
+    }
+    #endregion
     private void Update()
     {
         UpdateShieldMultiplayerPosition();
+        CheckTelekinesis();
+        CheckFlying();
+        AddSlashPosList();
+    }
+    
+    public void RemoveObjectFromNetwork(GameObject obj)
+    {
+        PhotonNetwork.Destroy(obj);
     }
 }
