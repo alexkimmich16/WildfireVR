@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 public enum GameState
 {
-    Unstarted = 0,
-    Started = 1,
-    WallBroken = 2,
+    Waiting = 0,
+    CountDown = 1,
+    Active = 2,
     Finished = 3,
 }
 public enum Result
@@ -26,49 +26,60 @@ public class InGameManager : MonoBehaviour
         public Transform Point;
         public bool Taken = false;
     }
+
+    [System.Serializable]
+    public class TeamInfo
+    {
+        public string Side;
+        public int TeamSize;
+        public int Alive;
+        public List<SpawnPoint> Spawns = new List<SpawnPoint>();
+    }
     #endregion
     //timer
+    
     public static float WarmupTime = 5f;
-    private float WarmupTimer;
+    [HideInInspector]
+    public float WarmupTimer;
     public static float FinishTime = 50f;
     private float FinishTimer;
     public static float AfterCooldownTime;
 
     //sides
-    public static int SideMax = 3;
-    public int AttackTeam;
-    public int DefenseTeam;
+    public static int MaxPlayers = 3;
+    public static int MinPlayers = 1;
 
     //state + spawns
-    public GameState currentState = GameState.Unstarted;
-    public List<SpawnPoint> AttackSpawns = new List<SpawnPoint>();
-    public List<SpawnPoint> DefenseSpawns = new List<SpawnPoint>();
-    public List<Transform> SpectatorSpawns = new List<Transform>();
+    public GameState currentState = GameState.Waiting;
 
+    //attack first
+    public List<TeamInfo> Teams = new List<TeamInfo>();
+    public List<Transform> SpectatorSpawns = new List<Transform>();
+    public bool CanMove;
+
+    public Result result;
+    public void StartGame()
+    {
+        CanMove = true;
+        //play go audio
+    }
     public SpawnPoint FindSpawn()
     {
+        int Side = 0;
         if (InfoSave.instance.team == Team.Attack)
-        {
-            AttackTeam += 1;
-            for (int i = 0; i < AttackSpawns.Count; i++)
-            {
-                if (AttackSpawns[i].Taken == false)
-                {
-                    AttackSpawns[i].Taken = true;
-                    return AttackSpawns[i];
-                }
-            }
-        }
+            Side = 0;
         else if (InfoSave.instance.team == Team.Defense)
+            Side = 1;
+        if (Side != 1 && Side != 0)
+            return null;
+
+        Teams[Side].TeamSize += 1;
+        for (int i = 0; i < Teams[Side].Spawns.Count; i++)
         {
-            DefenseTeam += 1;
-            for (int i = 0; i < DefenseSpawns.Count; i++)
+            if (Teams[Side].Spawns[i].Taken == false)
             {
-                if (DefenseSpawns[i].Taken == false)
-                {
-                    DefenseSpawns[i].Taken = true;
-                    return DefenseSpawns[i];
-                }
+                Teams[Side].Spawns[i].Taken = true;
+                return Teams[Side].Spawns[i];
             }
         }
         return null;
@@ -76,19 +87,40 @@ public class InGameManager : MonoBehaviour
 
     public void ProgressTime()
     {
-        if (WarmupTimer > WarmupTime)
-        {
-            currentState = GameState.Started;
-        }
-        else if(currentState == GameState.Unstarted)
-            WarmupTimer += Time.deltaTime;
+        if(currentState == GameState.Waiting)
+            if (Teams[0].TeamSize >= MinPlayers && Teams[1].TeamSize >= MinPlayers)
+            {
+                currentState = GameState.CountDown;
 
-        if (FinishTimer > FinishTime)
+            }
+            else if (Teams[0].TeamSize + Teams[1].TeamSize >= MinPlayers * 2)
+            {
+                //start game but adjust sides
+            }
+        if (currentState == GameState.CountDown)
         {
-            currentState = GameState.Finished;
+            if (WarmupTimer > WarmupTime)
+            {
+                currentState = GameState.Active;
+                WarmupTimer = 0;
+                StartGame();
+            }
+            else
+                WarmupTimer += Time.deltaTime;
         }
-        else if(currentState == GameState.Started)
-            FinishTimer += Time.deltaTime;
+        if (currentState == GameState.Active)
+        {
+            if (FinishTimer > FinishTime || Teams[0].Alive == 0 || Teams[1].Alive == 0)
+            {
+                currentState = GameState.Finished;
+                FinishTimer = 0;
+                Finish();
+            }
+            else
+                FinishTimer += Time.deltaTime;
+        }
+        //if finish logic
+        
     }
     void Update()
     {
@@ -96,14 +128,12 @@ public class InGameManager : MonoBehaviour
     }
     public Result EndResult()
     {
-        if (FinishTimer < FinishTime)
-        {
+        if(Teams[0].Alive > Teams[1].Alive)
             return Result.AttackWon;
-        }
+        else if(Teams[1].Alive > Teams[0].Alive)
+            return Result.AttackWon;
         else
-        {
-            return Result.DefenseWon;
-        }
+            return Result.Tie;
     }
     
     public void Finish()
@@ -116,6 +146,9 @@ public class InGameManager : MonoBehaviour
         {
 
         }
+        result = EndResult();
+        //BillBoardManager.instance.OnWin(EndResult());
+        //stop game
     }
 
     public void Start()

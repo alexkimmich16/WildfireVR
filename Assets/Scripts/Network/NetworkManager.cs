@@ -82,16 +82,24 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     private void Update()
     {
+        InGame = PhotonNetwork.PlayerList.Length;
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
             info[i].InsideNum = i;
             info[i].Player = Players[i].networkPlayer.transform;
             info[i].Health = info[i].Player.GetComponent<PlayerControl>().Health;
             int PlayerNum = i + 1;
-            if (HandDebug.instance != null)
+            if (SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
+            {
+                BillBoardManager.instance.Health[i].text = "Player " + PlayerNum + ": " + info[i].Player.GetComponent<PlayerControl>().Health + "/" + info[i].Player.GetComponent<PlayerControl>().MaxHealth;
+            }
+            else if(SceneLoader.instance.CurrentSetting == CurrentGame.Testing)
+            {
                 HandDebug.instance.Health[i].text = "Player " + PlayerNum + ": " + info[i].Player.GetComponent<PlayerControl>().Health + "/" + info[i].Player.GetComponent<PlayerControl>().MaxHealth;
+            }
         }
-        InGame = PhotonNetwork.PlayerList.Length;
         
+
+
     }
 }

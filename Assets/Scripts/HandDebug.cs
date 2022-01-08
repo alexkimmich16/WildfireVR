@@ -82,8 +82,6 @@ public class HandDebug : MonoBehaviour
     public Movements CurrentMove;
 
     public float Leanience;
-
-    public bool EngineStats = false;
     
     [Header("Lerp")]
     public float EndLerp; // 10

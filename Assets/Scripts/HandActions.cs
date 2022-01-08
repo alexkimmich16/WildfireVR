@@ -75,7 +75,7 @@ public class HandActions : MonoBehaviour
     public void CheckAll()
     {
         int SideNum = (int)side;
-        for (int i = 0; i < HandDebug.instance.DataFolders.Count; i++)
+        for (int i = 0; i < HandMagic.instance.Spells.Count; i++)
         {
             if (HM.Spells[i].Active == true)
             {
@@ -107,10 +107,7 @@ public class HandActions : MonoBehaviour
     {
         SetRemoteStats();
         //CheckColliders();
-        if(HandDebug.instance.EngineStats == true)
-        {
-            CheckAll();
-        }
+        CheckAll();
         WaitFrames();
         LastFrameSave();
     }

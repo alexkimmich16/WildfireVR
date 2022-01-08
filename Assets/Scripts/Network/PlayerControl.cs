@@ -40,10 +40,11 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         yield return new WaitForSeconds(DeathTime);
         Health = MaxHealth;
         if(HandMagic.Respawn == true && SceneLoader.instance.CurrentSetting == CurrentGame.Testing)
-            HandMagic.instance.Cam.parent.parent.position = HandDebug.instance.Spawn.position;
+            HandMagic.instance.RB.transform.position = HandDebug.instance.Spawn.position;
         else if (HandMagic.Respawn == true && SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
         {
-            SpectatorSpawns
+            Transform Spawn = InGameManager.instance.SpectatorSpawns[Random.Range(0, InGameManager.instance.SpectatorSpawns.Count)];
+            HandMagic.instance.RB.transform.position = Spawn.position;
         }
     }
 }

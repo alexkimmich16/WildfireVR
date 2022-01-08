@@ -17,6 +17,11 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
         NetworkManager.instance.Players[Count].networkPlayer = SpawnedPlayerPrefab.GetComponent<NetworkPlayer>();
         NetworkManager.instance.Players[Count].Control = SpawnedPlayerPrefab.GetComponent<PlayerControl>();
         NetworkManager.instance.Players[Count].ObjectReference = SpawnedPlayerPrefab.transform;
+
+        if (SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
+        {
+
+        }
     }
 
     public override void OnLeftRoom()
