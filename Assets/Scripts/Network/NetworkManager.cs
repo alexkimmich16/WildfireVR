@@ -32,8 +32,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public List<PlayerStats> Players = new List<PlayerStats>();
     public int InGame;
 
-    //public List<TextMeshProUGUI> Health = new List<TextMeshProUGUI>();
-
     void Start()
     {
         ConnectToServer();
@@ -98,8 +96,5 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 HandDebug.instance.Health[i].text = "Player " + PlayerNum + ": " + info[i].Player.GetComponent<PlayerControl>().Health + "/" + info[i].Player.GetComponent<PlayerControl>().MaxHealth;
             }
         }
-        
-
-
     }
 }
