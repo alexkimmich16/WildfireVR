@@ -32,7 +32,17 @@ public class SceneLoader : MonoBehaviour
     public CurrentGame CurrentSetting;
     //final and unchangeable on this scene
 
-    
+    public static bool BattleScene()
+    {
+        if (SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     private void Start()
     {
         CurrentSetting = (CurrentGame)SceneManager.GetActiveScene().buildIndex;

@@ -74,12 +74,26 @@ public class MovementProvider : MonoBehaviour
     }
 
      */
-    private void FixedUpdate()
+    public void Move()
     {
         Quaternion headYaw = Quaternion.Euler(0, rig.cameraGameObject.transform.eulerAngles.y, 0);
         directionAdd = headYaw * new Vector3(inputAxis.x, 0, inputAxis.y);
-
         RB.AddForce(directionAdd * Time.fixedDeltaTime * speed);
+    }
+    private void FixedUpdate()
+    {
+        if(SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
+        {
+            if (InGameManager.CanMove == true)
+            {
+                Move();
+            }
+        }
+        else
+        {
+            Move();
+        }
+        
         /*
          * CapsuleFollowHeadset();
         //gravity

@@ -49,18 +49,21 @@ public class InGameManager : MonoBehaviour
     public static int MaxPlayers = 3;
     public static int MinPlayers = 1;
 
+    public static bool MagicCasting = false;
+    public static bool CanMove = false;
+
     //state + spawns
     public GameState currentState = GameState.Waiting;
 
     //attack first
     public List<TeamInfo> Teams = new List<TeamInfo>();
     public List<Transform> SpectatorSpawns = new List<Transform>();
-    public bool CanMove;
 
     public Result result;
     public void StartGame()
     {
         CanMove = true;
+        MagicCasting = true;
         //play go audio
     }
     public SpawnPoint FindSpawn()
@@ -138,6 +141,8 @@ public class InGameManager : MonoBehaviour
     
     public void Finish()
     {
+        CanMove = false;
+        MagicCasting = false;
         if (EndResult() == Result.AttackWon)
         {
 

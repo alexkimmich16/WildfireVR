@@ -479,9 +479,23 @@ public class HandMagic : MonoBehaviour
     }
     void Update()
     {
-        BothSpellManager();
-        if(TrackWithCubes == true)
-            FollowMotion();
+        if (SceneLoader.BattleScene() == true)
+        {
+            if (InGameManager.MagicCasting == true)
+            {
+                BothSpellManager();
+                if (TrackWithCubes == true)
+                    FollowMotion();
+            }
+        }
+        else
+        {
+            BothSpellManager();
+            if (TrackWithCubes == true)
+                FollowMotion();
+        }
+
+        
         if (ShouldCharge == true)
             Charge();
         
