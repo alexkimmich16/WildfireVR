@@ -2247,25 +2247,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5493128a9191ad34e9237e5de8b700ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Spawn: {fileID: 0}
   DebugScript: 0
-  info:
-  - InsideNum: 0
-    Health: 0
-    Player: {fileID: 0}
-  - InsideNum: 0
-    Health: 0
-    Player: {fileID: 0}
-  - InsideNum: 0
-    Health: 0
-    Player: {fileID: 0}
-  - InsideNum: 0
-    Health: 0
-    Player: {fileID: 0}
-  - InsideNum: 0
-    Health: 0
-    Player: {fileID: 0}
-  Players: []
+  Players:
+  - Num: 0
+    networkPlayer: {fileID: 0}
+    Control: {fileID: 0}
+    ObjectReference: {fileID: 0}
+  - Num: 0
+    networkPlayer: {fileID: 0}
+    Control: {fileID: 0}
+    ObjectReference: {fileID: 0}
   InGame: 0
 --- !u!4 &132483561
 Transform:
@@ -14394,7 +14385,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: e2016bb6558e2294296398fb82c90363, type: 2}
   CurrentMove: 0
   Leanience: 0.7
-  EngineStats: 1
   EndLerp: 0
   StartLerp: 0
   Max: {fileID: 1351990737}
@@ -14409,6 +14399,7 @@ MonoBehaviour:
   - {fileID: 1011859810}
   - {fileID: 976403575}
   MagicSlider: {fileID: 1821188787}
+  Spawn: {fileID: 0}
 --- !u!4 &707218234
 Transform:
   m_ObjectHideFlags: 0
@@ -28790,7 +28781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priority: 1
-  SceneState: 0
+  team: 0
 --- !u!4 &1465162379
 Transform:
   m_ObjectHideFlags: 0
@@ -28818,6 +28809,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   priority: 1
+  DestroyList: []
+  CurrentSetting: 0
 --- !u!114 &1465162381
 MonoBehaviour:
   m_ObjectHideFlags: 0

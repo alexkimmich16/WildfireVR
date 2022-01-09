@@ -2213,7 +2213,6 @@ MonoBehaviour:
   - {fileID: 1364388177}
   - {fileID: 28329469}
   - {fileID: 1044136599}
-  CanMove: 0
   result: 2
 --- !u!4 &633604290
 Transform:
@@ -3985,23 +3984,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DebugScript: 0
-  info:
-  - InsideNum: 0
-    Health: 0
-    Player: {fileID: 0}
-  - InsideNum: 0
-    Health: 0
-    Player: {fileID: 0}
-  - InsideNum: 0
-    Health: 0
-    Player: {fileID: 0}
-  - InsideNum: 0
-    Health: 0
-    Player: {fileID: 0}
-  - InsideNum: 0
-    Health: 0
-    Player: {fileID: 0}
-  Players: []
+  Players:
+  - Num: 0
+    networkPlayer: {fileID: 0}
+    Control: {fileID: 0}
+    ObjectReference: {fileID: 0}
+  - Num: 0
+    networkPlayer: {fileID: 0}
+    Control: {fileID: 0}
+    ObjectReference: {fileID: 0}
+  - Num: 0
+    networkPlayer: {fileID: 0}
+    Control: {fileID: 0}
+    ObjectReference: {fileID: 0}
   InGame: 0
 --- !u!4 &924804818
 Transform:

@@ -1,16 +1,17 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
 
 public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
 {
     public int Health;
+    public int ListNum;
     public int MaxHealth;
+    public int PlayerNum;
     public static float DeathTime = 1f;
     public delegate void DisolveAll();
     public event DisolveAll disolveEvent;
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         //sync health
@@ -26,12 +27,21 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     }
     public void ChangeHealth(int Change)
     {
-        Health -= Change;
         
-        if (Health < 1)
+        if (NetworkManager.instance.getPlayer(ListNum).CustomProperties.ContainsKey("HEALTH"))
         {
-            StartCoroutine(Respawn());
+            Hashtable hash = new Hashtable();
+            var oldHealthVAR = NetworkManager.instance.getPlayer(ListNum).CustomProperties["HEALTH"];
+            int oldHealth = (int)oldHealthVAR;
+            int newHealth = oldHealth - Change;
+            hash.Add("HEALTH", MaxHealth);
+            if (newHealth < 1)
+            {
+                StartCoroutine(Respawn());
+            }
+            
         }
+        
     }
 
     IEnumerator Respawn()
