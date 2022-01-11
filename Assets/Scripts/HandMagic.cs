@@ -385,8 +385,6 @@ public class HandMagic : MonoBehaviour
                     }
                 }
             }
-            
-
         }
     }
     public void CheckUnused()

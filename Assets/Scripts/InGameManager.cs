@@ -46,7 +46,7 @@ public class InGameManager : MonoBehaviour
     [HideInInspector]
     public float WarmupTimer;
     public static float FinishTime = 50f;
-    private float FinishTimer;
+    public float FinishTimer;
     public static float AfterCooldownTime;
 
     //sides
@@ -110,10 +110,11 @@ public class InGameManager : MonoBehaviour
     }
     public void ProgressTime()
     {
+        int Attack = SideCount(Team.Attack);
+        int Defense = SideCount(Team.Defense);
         if (currentState == GameState.Waiting)
         {
-            int Attack = SideCount(Team.Attack);
-            int Defense = SideCount(Team.Defense);
+            
             if (Attack >= MinPlayers && Defense >= MinPlayers)
             {
                 currentState = GameState.CountDown;
@@ -136,7 +137,7 @@ public class InGameManager : MonoBehaviour
         }
         if (currentState == GameState.Active)
         {
-            if (FinishTimer > FinishTime || Teams[0].Alive == 0 || Teams[1].Alive == 0)
+            if (FinishTimer > FinishTime || Attack == 0 || Defense == 0)
             {
                 currentState = GameState.Finished;
                 FinishTimer = 0;

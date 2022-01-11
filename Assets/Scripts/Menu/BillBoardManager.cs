@@ -46,7 +46,8 @@ public class BillBoardManager : MonoBehaviour
         }
         else if (InGameManager.instance.currentState == GameState.Active)
         {
-            DisplayVictory.text = "Started";
+            float Left = InGameManager.FinishTime - InGameManager.instance.FinishTimer;
+            DisplayVictory.text = "Started!  Time Left: " + Left; 
         }
         else if (InGameManager.instance.currentState == GameState.Finished)
         {
