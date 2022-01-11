@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 public enum DisolveType
 {
     MainPlayer = 0,
@@ -22,13 +23,17 @@ public class DisolveManager : MonoBehaviour
 
     public void LookForSubscribe()
     {
-        for (int i = 0; i < NetworkManager.instance.Players.Count; i++)
+        try
         {
-            if (NetworkManager.instance.Players[i].ObjectReference.transform.GetComponent<NetworkPlayer>().photonView.IsMine)
+            Transform Myobject = GameObject.Find("My Player").transform;
+            if (Myobject != null)
             {
-                SubscribeDisolve = NetworkManager.instance.Players[i].ObjectReference.transform.GetComponent<PlayerControl>();
-                return;
+                SubscribeDisolve = Myobject.GetComponent<PlayerControl>();
             }
+        }
+        catch
+        {
+
         }
     }
     public void TryInitialize()

@@ -21,7 +21,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public class PlayerStats
     {
         public Player player;
-        public int Num;
+        //public int Num;
         public NetworkPlayer networkPlayer;
         public PlayerControl Control;
         public Transform ObjectReference;
@@ -33,18 +33,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //public List<PlayerInfo> info = new List<PlayerInfo>();
     public List<PlayerStats> Players = new List<PlayerStats>();
     public int InGame;
-
-    public Player getPlayer(int num)
-    {
-        for (int i = 0; i < Players.Count; i++)
-        {
-            if(Players[i].Num == num)
-            {
-                return Players[i].player;
-            }
-        }
-        return null;
-    }
     void Start()
     {
         ConnectToServer();
@@ -52,66 +40,77 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void ConnectToServer()
     {
         PhotonNetwork.ConnectUsingSettings();
-        if(DebugScript == true)
+        if (DebugScript == true)
         {
             Debug.Log("try connect to server");
         }
     }
+    public void InitializeRoom()
+    {
+        object temp;
+        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("Attack0", out temp))
+        {
+            if (temp is bool)
+            {
+                bool activeGame = (bool)temp;
+                //Debug.Log(activeGame);
+            }
+        }
+        if (DebugScript == true)
+            Debug.Log("2set");
+    }
+
     public override void OnConnectedToMaster()
     {
         if (DebugScript == true)
-        {
             Debug.Log("connected to server");
-        }
-        
         base.OnConnectedToMaster();
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 10;
         roomOptions.IsVisible = true;
         roomOptions.IsOpen = true;
 
+        Hashtable hash = new Hashtable();
+        hash.Add("Attack0", false);
+        hash.Add("Attack1", false);
+        hash.Add("Attack2", false);
+        hash.Add("Defense0", false);
+        hash.Add("Defense1", false);
+        hash.Add("Defense2", false);
+
+        hash.Add("AttackTeam", 0);
+        hash.Add("DefenseTeam", 0);
+
+        roomOptions.CustomRoomProperties = hash;
 
         PhotonNetwork.JoinOrCreateRoom("Room 1", roomOptions, TypedLobby.Default);
+
     }
     public override void OnJoinedRoom()
     {
-        Debug.Log(PhotonNetwork.PlayerList.Length);
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length - 1; i++)
-        {
-            Players[i].player = PhotonNetwork.CurrentRoom.GetPlayer(i);
-            Debug.Log("1found + " + i);
-            Players[i].Num = PhotonNetwork.CurrentRoom.GetPlayer(i).ActorNumber;
-            Debug.Log("2found + " + i);
-        }
         Team team = InfoSave.instance.team;
         Hashtable hash = new Hashtable();
         hash.Add("TEAM", team);
         hash.Add("HEALTH", MaxHealth);
+        hash.Add("SpawnNum", 4);
         PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
-
         if (DebugScript == true)
-        {
             Debug.Log("joined a room");
-        }
+        InitializeRoom();
+        InGameManager.instance.Initialise();
         base.OnJoinedRoom();
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         if (DebugScript == true)
-        {
             Debug.Log("a new player joined");
-        }
         base.OnPlayerEnteredRoom(newPlayer);
     }
     private void Update()
     {
         InGame = PhotonNetwork.PlayerList.Length;
-
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
-            //info[i].InsideNum = i;
-            //info[i].Player = Players[i].networkPlayer.transform;
-            //info[i].Health = info[i].Player.GetComponent<PlayerControl>().Health;
             int PlayerNum = i + 1;
             if (SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
             {

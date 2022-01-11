@@ -11,12 +11,7 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
     {
         base.OnJoinedRoom();
         SpawnedPlayerPrefab = PhotonNetwork.Instantiate("Network Player", transform.position, transform.rotation);
-        SpawnedPlayerPrefab.name = "My Player ";
-        //NetworkManager.instance.Players.Add(new NetworkManager.PlayerStats());
-        //int Count = NetworkManager.instance.Players.Count - 1;
-        //NetworkManager.instance.Players[Count].networkPlayer = SpawnedPlayerPrefab.GetComponent<NetworkPlayer>();
-        //NetworkManager.instance.Players[Count].Control = SpawnedPlayerPrefab.GetComponent<PlayerControl>();
-        //NetworkManager.instance.Players[Count].ObjectReference = SpawnedPlayerPrefab.transform;
+        SpawnedPlayerPrefab.name = "My Player";
         if (SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
         {
 
@@ -25,16 +20,6 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         base.OnLeftRoom();
-        
-        /*
-        for (int i = 0; i < NetworkManager.instance.Players.Count; i++)
-        {
-            if (NetworkManager.instance.Players[i].networkPlayer == SpawnedPlayerPrefab.GetComponent<NetworkPlayer>())
-            {
-                NetworkManager.instance.Players.Remove(NetworkManager.instance.Players[i]);
-            }
-        }
-        */
         PhotonNetwork.Destroy(SpawnedPlayerPrefab);
     }
 }

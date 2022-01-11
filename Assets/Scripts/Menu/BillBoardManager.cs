@@ -20,10 +20,10 @@ public class BillBoardManager : MonoBehaviour
         {
             if (i < PhotonNetwork.PlayerList.Length)
             {
-                if (NetworkManager.instance.Players[i].player.CustomProperties.ContainsKey("HEALTH"))
+                if (PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("HEALTH"))
                 {
                     Health[i].gameObject.SetActive(true);
-                    var oldHealthVAR = NetworkManager.instance.Players[i].player.CustomProperties["HEALTH"];
+                    var oldHealthVAR = PhotonNetwork.PlayerList[i].CustomProperties["HEALTH"];
                     int HealthNum = (int)oldHealthVAR;
                     Health[i].text = "Player" + i + " Health: " + HealthNum;
                 }
@@ -61,5 +61,17 @@ public class BillBoardManager : MonoBehaviour
             return "Blue Team Wins!";
         else
             return "Tie!";
+    }
+    public void ChangeTeam()
+    {
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[i])
+            {
+                InGameManager.instance.ChangePlayerSide(i);
+                return;
+            }
+        }
+            
     }
 }
