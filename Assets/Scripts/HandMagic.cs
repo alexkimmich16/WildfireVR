@@ -114,9 +114,8 @@ public class HandMagic : MonoBehaviour
     [Header("Slash")]
     public float SlashSize;
 
-    private static bool Rickroll = false;
+    private static bool Rickroll = true;
     public static bool AllSounds = true;
-    public static bool TrackWithCubes = true;
     public static bool Respawn = true;
     public static bool UseMaxTime = true;
 
@@ -160,9 +159,7 @@ public class HandMagic : MonoBehaviour
                             {
                                 if (Current > info.RightLocalPos.Count - 1)
                                 {
-                                    //Debug.Log("before:  " + Current);
                                     Current = info.RightLocalPos.Count - 1;
-                                    //Debug.Log("after:  " + Current);
                                 }
                                 Vector3 UnConverted = GetSide(j, i, Current);
                                 Vector3 Converted = ConvertDataToPoint(UnConverted);
@@ -354,7 +351,7 @@ public class HandMagic : MonoBehaviour
     {
         for (int i = 0; i < Spells.Count; i++)
         {
-            if (TrackWithCubes == true && Spells[i].Active == true)
+            if (Spells[i].Active == true)
             {
                 SpellType type = Spells[i].Type;
                 if (type == SpellType.Both)
@@ -422,8 +419,6 @@ public class HandMagic : MonoBehaviour
                         Spells[i].Controllers[j].Time = 0;
                 }
             }
-            
-
         }
     }
     public void ResetWithoutMotion(Movements move, Side side)
@@ -465,15 +460,9 @@ public class HandMagic : MonoBehaviour
             ChangeTrail((Movements)i, false, (Side)0);
             ChangeTrail((Movements)i, false, (Side)1);
         }
-        //initialise tracking
-        for (int i = 0; i < Spells.Count; i++)
-        {
-            if (TrackWithCubes == false || Spells[i].Active == false)
-            {
-                Destroy(Spells[i].Sides[0]);
-                Destroy(Spells[i].Sides[1]);
-            }
-        }
+
+        if (SceneLoader.BattleScene() == true)
+            EnableCubes(false);
     }
     void Update()
     {
@@ -482,15 +471,15 @@ public class HandMagic : MonoBehaviour
             if (InGameManager.MagicCasting == true)
             {
                 BothSpellManager();
-                if (TrackWithCubes == true)
-                    FollowMotion();
+                FollowMotion();
+
             }
         }
         else
         {
             BothSpellManager();
-            if (TrackWithCubes == true)
-                FollowMotion();
+            FollowMotion();
+            EnableCubes(true);
         }
 
         
@@ -639,6 +628,21 @@ public class HandMagic : MonoBehaviour
             FinalData.LeftDifferencePos = new List<Vector3>(DifferenceLeftFinal);
             FinalData.TotalTime = Load.allTypes.TotalTypes[t].Final.Time;
             FinalData.MoveType = (Movements)t;
+        }
+    }
+    public void EnableCubes(bool State)
+    {
+        for (int i = 0; i < Spells.Count; i++)
+        {
+            //set active if
+            Spells[i].Sides[0].SetActive(State);
+            Spells[i].Sides[1].SetActive(State);
+            //if setting true and spell is inactive, don't set at all
+            if (State == true || Spells[i].Active == false)
+            {
+                //Spells[i].Sides[0].SetActive(false);
+                //Spells[i].Sides[1].SetActive(false);
+            }
         }
     }
 }

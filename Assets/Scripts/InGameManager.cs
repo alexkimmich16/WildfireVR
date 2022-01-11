@@ -82,7 +82,9 @@ public class InGameManager : MonoBehaviour
                     //bool activeGame = (bool)temp;
                     if ((bool)temp == false)
                     {
-                        PhotonNetwork.CurrentRoom.CustomProperties[TakenText] = true;
+                        Hashtable BoolHash = new Hashtable();
+                        BoolHash.Add(TakenText, true);
+                        PhotonNetwork.CurrentRoom.SetCustomProperties(BoolHash);
                         return Teams[Side].Spawns[i];
                     }
                 }
@@ -258,12 +260,14 @@ public class InGameManager : MonoBehaviour
     {
         CanMove = true;
         MagicCasting = true;
+        HandMagic.instance.EnableCubes(true);
         //play go audio
     }
     public void Finish()
     {
         CanMove = false;
         MagicCasting = false;
+        HandMagic.instance.EnableCubes(false);
         if (EndResult() == Result.AttackWon)
         {
 

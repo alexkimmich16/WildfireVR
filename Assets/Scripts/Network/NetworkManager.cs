@@ -97,7 +97,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (DebugScript == true)
             Debug.Log("joined a room");
         InitializeRoom();
-        InGameManager.instance.Initialise();
+        if (SceneLoader.BattleScene() == true)
+            InGameManager.instance.Initialise();
         base.OnJoinedRoom();
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
