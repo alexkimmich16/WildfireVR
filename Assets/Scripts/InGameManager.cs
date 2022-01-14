@@ -17,6 +17,7 @@ public enum Result
     DefenseWon = 1,
     Tie = 2,
 }
+
 public class InGameManager : MonoBehaviour
 {
     #region Singleton + classes
@@ -246,6 +247,130 @@ public class InGameManager : MonoBehaviour
         TeamCountHash.Add(Name, NewCount);
         PhotonNetwork.CurrentRoom.SetCustomProperties(TeamCountHash);
     }
+    
+
+    //change to rbc
+
+    public void RestartGame()
+    {
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            PhotonNetwork.PlayerList[i].photonView.RPC("changeColour", RpcTarget.AllBuffered, r, g, b);
+        }
+            
+
+    }
+
+
+    #region NetworkGetSet
+    public void GetHash(string text)
+    {
+        void GetInt()
+        {
+            int OfRoom()
+            {
+                if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
+                    return (int)temp;
+                else
+                {
+                    Debug.LogError("GetHash.GetInt.OfRoom with string: " + text + "has not been set");
+                    return 100;
+                }
+            }
+            int OfPlayer(int i)
+            {
+                if (PhotonNetwork.PlayerList[i].CustomProperties.TryGetValue(text, out object temp))
+                    return (int)temp;
+                else
+                {
+                    Debug.LogError("GetHash.GetInt.OfPlayer with string: " + text + "has not been set");
+                    return 100;
+                }
+            }
+            int OfLocalPlayer()
+            {
+                if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(text, out object temp))
+                    return (int)temp;
+                else
+                {
+                    Debug.LogError("GetHash.GetInt.OfLocalPlayer with string: " + text + "has not been set");
+                    return 100;
+                }
+            }
+        }
+        void GetBool()
+        {
+            bool OfRoom()
+            {
+                if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
+                    return (bool)temp;
+                else
+                {
+                    Debug.LogError("GetHash.GetBool with string: " + text + "has not been set");
+                    return true;
+                }
+            }
+            bool OfPlayer(int i)
+            {
+                if (PhotonNetwork.PlayerList[i].CustomProperties.TryGetValue(text, out object temp))
+                    return (bool)temp;
+                else
+                {
+                    Debug.LogError("GetHash.GetBool with string: " + text + "has not been set");
+                    return true;
+                }
+            }
+            bool OfLocalPlayer()
+            {
+                if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(text, out object temp))
+                    return (bool)temp;
+                else
+                {
+                    Debug.LogError("GetHash.GetBool with string: " + text + "has not been set");
+                    return true;
+                }
+            }
+        }
+    }
+    public void SetHash(string text)
+    {
+        void OfBool(bool State)
+        {
+            Hashtable HealthHash = new Hashtable();
+            HealthHash.Add(text, State);
+            void ToRoom()
+            {
+                PhotonNetwork.CurrentRoom.SetCustomProperties(HealthHash);
+            }
+            void ToPlayer(int i)
+            {
+                PhotonNetwork.PlayerList[i].SetCustomProperties(HealthHash);
+            }
+            void ToLocalPlayer()
+            {
+                PhotonNetwork.LocalPlayer.SetCustomProperties(HealthHash);
+            }
+        }
+        void OfInt(int Num)
+        {
+            Hashtable HealthHash = new Hashtable();
+            HealthHash.Add(text, Num);
+            void ToRoom()
+            {
+                PhotonNetwork.CurrentRoom.SetCustomProperties(HealthHash);
+            }
+            void ToPlayer(int i)
+            {
+                PhotonNetwork.PlayerList[i].SetCustomProperties(HealthHash);
+            }
+            void ToLocalPlayer()
+            {
+                PhotonNetwork.LocalPlayer.SetCustomProperties(HealthHash);
+            }
+        }
+    }
+    #endregion
+
     #region LessUse
     public Result EndResult()
     {

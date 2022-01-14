@@ -114,7 +114,7 @@ public class HandMagic : MonoBehaviour
     [Header("Slash")]
     public float SlashSize;
 
-    private static bool Rickroll = true;
+    private static bool Rickroll = false;
     public static bool AllSounds = true;
     public static bool Respawn = true;
     public static bool UseMaxTime = true;

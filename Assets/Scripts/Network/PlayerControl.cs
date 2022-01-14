@@ -7,7 +7,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
 {
     public int Health;
-    public int MaxHealth;
+    public static int MaxHealth = 100;
     public static float DeathTime = 1f;
     public delegate void DisolveAll();
     public event DisolveAll disolveEvent;
@@ -28,6 +28,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         int newHealth = oldHealth - Change;
         Hashtable HealthHash = new Hashtable();
         HealthHash.Add("HEALTH", newHealth);
+        //InGameManager.instance.SetHash("HEALTH").OfBool()
         PhotonNetwork.LocalPlayer.SetCustomProperties(HealthHash);
         if (newHealth < 1)
             StartCoroutine(Respawn());
@@ -44,5 +45,22 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
             Transform Spawn = InGameManager.instance.SpectatorSpawns[Random.Range(0, InGameManager.instance.SpectatorSpawns.Count)];
             HandMagic.instance.RB.transform.position = Spawn.position;
         }
+    }
+
+    [PunRPC]
+    public void RestartForAll()
+    {
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            //get all health full
+            int newHealth = MaxHealth;
+            Hashtable HealthHash = new Hashtable();
+            HealthHash.Add("HEALTH", newHealth);
+            //remove button
+            //set all spawns to false
+
+        }
+        //reset spawns
+        //se
     }
 }

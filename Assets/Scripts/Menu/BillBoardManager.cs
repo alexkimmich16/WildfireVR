@@ -20,6 +20,7 @@ public class BillBoardManager : MonoBehaviour
         {
             if (i < PhotonNetwork.PlayerList.Length)
             {
+                //InGameManager.instance.
                 if (PhotonNetwork.PlayerList[i].CustomProperties.ContainsKey("HEALTH"))
                 {
                     Health[i].gameObject.SetActive(true);
