@@ -89,11 +89,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Team team = InfoSave.instance.team;
-        Hashtable hash = new Hashtable();
-        hash.Add("TEAM", team);
-        hash.Add("HEALTH", MaxHealth);
-        hash.Add("SpawnNum", 4);
-        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+        Player local = PhotonNetwork.LocalPlayer;
+
+        SetPlayerTeam("TEAM", team, local);
+        SetPlayerInt("HEALTH", MaxHealth, local);
+        SetPlayerInt("SpawnNum", 4, local);
+
         if (DebugScript == true)
             Debug.Log("joined a room");
         InitializeRoom();
@@ -125,5 +126,93 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         
     }
 
-    
+    public int GetLocal()
+    {
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[i])
+            {
+                return i;
+            }
+        }
+        Debug.LogError("Get Local Failure");
+        return 100;
+    }
+
+    #region NetworkGet
+    public static int GetRoomInt(string text)
+    {
+        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
+            return (int)temp;
+        else
+        {
+            Debug.LogError("GetHash.GetInt.OfRoom with string: " + text + "has not been set");
+            return 100;
+        }
+    }
+    public static int GetPlayerInt(string text, Player player)
+    {
+        if (player.CustomProperties.TryGetValue(text, out object temp))
+            return (int)temp;
+        else
+        {
+            Debug.LogError("GetHash.GetInt.OfPlayer with string: " + text + "has not been set");
+            return 100;
+        }
+    }
+    public static bool GetRoomBool(string text)
+    {
+        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
+            return (bool)temp;
+        else
+        {
+            Debug.LogError("GetHash.GetBool with string: " + text + "has not been set");
+            return true;
+        }
+    }
+
+    public static bool GetPlayerBool(string text, Player player)
+    {
+        if (player.CustomProperties.TryGetValue(text, out object temp))
+            return (bool)temp;
+        else
+        {
+            Debug.LogError("GetHash.GetBool with string: " + text + "has not been set");
+            return true;
+        }
+    }
+    #endregion
+
+    #region NetworkSet
+    public static void SetPlayerTeam(string text, Team team, Player player)
+    {
+        Hashtable TeamHash = new Hashtable();
+        TeamHash.Add(text, team);
+        player.SetCustomProperties(TeamHash);
+    }
+    public static void SetPlayerBool(string text, bool State, Player player)
+    {
+        Hashtable HealthHash = new Hashtable();
+        HealthHash.Add(text, State);
+        player.SetCustomProperties(HealthHash);
+    }
+    public static void SetRoomBool(string text, bool State)
+    {
+        Hashtable HealthHash = new Hashtable();
+        HealthHash.Add(text, State);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(HealthHash);
+    }
+    public static void SetPlayerInt(string text, int SetNum, Player player)
+    {
+        Hashtable HealthHash = new Hashtable();
+        HealthHash.Add(text, SetNum);
+        player.SetCustomProperties(HealthHash);
+    }
+    public static void SetRoomInt(string text, int SetNum)
+    {
+        Hashtable HealthHash = new Hashtable();
+        HealthHash.Add(text, SetNum);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(HealthHash);
+    }
+    #endregion
 }

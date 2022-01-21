@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public enum GameState
@@ -76,19 +77,10 @@ public class InGameManager : MonoBehaviour
         for (int i = 0; i < Teams[Side].Spawns.Count; i++)
         {
             string TakenText = TeamName + i;
-            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(TakenText, out object temp))
+            if (NetworkManager.GetRoomBool(TakenText) == false)
             {
-                if (temp is bool)
-                {
-                    //bool activeGame = (bool)temp;
-                    if ((bool)temp == false)
-                    {
-                        Hashtable BoolHash = new Hashtable();
-                        BoolHash.Add(TakenText, true);
-                        PhotonNetwork.CurrentRoom.SetCustomProperties(BoolHash);
-                        return Teams[Side].Spawns[i];
-                    }
-                }
+                NetworkManager.SetRoomBool(TakenText, true);
+                return Teams[Side].Spawns[i];
             }
             
         }
@@ -173,9 +165,7 @@ public class InGameManager : MonoBehaviour
         Transform spawn = SpawnInfo.Point;
 
         //change listnum
-        Hashtable SpawnHash = new Hashtable();
-        SpawnHash.Add("SpawnNum", SpawnInfo.ListNum);
-        PhotonNetwork.LocalPlayer.SetCustomProperties(SpawnHash);
+        NetworkManager.SetPlayerInt("SpawnNum", SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
 
         PhotonNetwork.LocalPlayer.CustomProperties["SpawnNum"] = SpawnInfo.ListNum;
         Rig.transform.position = spawn.position;
@@ -236,16 +226,9 @@ public class InGameManager : MonoBehaviour
     public void ChangeTeamCount(Team team, int Change)
     {
         Debug.Log(team.ToString() + "  " + Change);
-        Hashtable TeamCountHash = new Hashtable();
-        string Name = "";
-        if (team == Team.Attack)
-            Name = "AttackTeam";
-        else if (team == Team.Defense)
-            Name = "DefenseTeam";
-        int BeforeCount = SideCount(team);
-        int NewCount = BeforeCount + Change;
-        TeamCountHash.Add(Name, NewCount);
-        PhotonNetwork.CurrentRoom.SetCustomProperties(TeamCountHash);
+        string Name = team.ToString();
+        int NewCount = SideCount(team) + Change;
+        NetworkManager.SetRoomInt(Name, NewCount);
     }
     
 
@@ -255,121 +238,13 @@ public class InGameManager : MonoBehaviour
     {
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
-            PhotonNetwork.PlayerList[i].photonView.RPC("changeColour", RpcTarget.AllBuffered, r, g, b);
+            //PhotonNetwork.PlayerList[i].photonView.RPC("changeColour", RpcTarget.AllBuffered, r, g, b);
         }
-            
-
     }
 
 
-    #region NetworkGetSet
-    public void GetHash(string text)
-    {
-        void GetInt()
-        {
-            int OfRoom()
-            {
-                if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
-                    return (int)temp;
-                else
-                {
-                    Debug.LogError("GetHash.GetInt.OfRoom with string: " + text + "has not been set");
-                    return 100;
-                }
-            }
-            int OfPlayer(int i)
-            {
-                if (PhotonNetwork.PlayerList[i].CustomProperties.TryGetValue(text, out object temp))
-                    return (int)temp;
-                else
-                {
-                    Debug.LogError("GetHash.GetInt.OfPlayer with string: " + text + "has not been set");
-                    return 100;
-                }
-            }
-            int OfLocalPlayer()
-            {
-                if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(text, out object temp))
-                    return (int)temp;
-                else
-                {
-                    Debug.LogError("GetHash.GetInt.OfLocalPlayer with string: " + text + "has not been set");
-                    return 100;
-                }
-            }
-        }
-        void GetBool()
-        {
-            bool OfRoom()
-            {
-                if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
-                    return (bool)temp;
-                else
-                {
-                    Debug.LogError("GetHash.GetBool with string: " + text + "has not been set");
-                    return true;
-                }
-            }
-            bool OfPlayer(int i)
-            {
-                if (PhotonNetwork.PlayerList[i].CustomProperties.TryGetValue(text, out object temp))
-                    return (bool)temp;
-                else
-                {
-                    Debug.LogError("GetHash.GetBool with string: " + text + "has not been set");
-                    return true;
-                }
-            }
-            bool OfLocalPlayer()
-            {
-                if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(text, out object temp))
-                    return (bool)temp;
-                else
-                {
-                    Debug.LogError("GetHash.GetBool with string: " + text + "has not been set");
-                    return true;
-                }
-            }
-        }
-    }
-    public void SetHash(string text)
-    {
-        void OfBool(bool State)
-        {
-            Hashtable HealthHash = new Hashtable();
-            HealthHash.Add(text, State);
-            void ToRoom()
-            {
-                PhotonNetwork.CurrentRoom.SetCustomProperties(HealthHash);
-            }
-            void ToPlayer(int i)
-            {
-                PhotonNetwork.PlayerList[i].SetCustomProperties(HealthHash);
-            }
-            void ToLocalPlayer()
-            {
-                PhotonNetwork.LocalPlayer.SetCustomProperties(HealthHash);
-            }
-        }
-        void OfInt(int Num)
-        {
-            Hashtable HealthHash = new Hashtable();
-            HealthHash.Add(text, Num);
-            void ToRoom()
-            {
-                PhotonNetwork.CurrentRoom.SetCustomProperties(HealthHash);
-            }
-            void ToPlayer(int i)
-            {
-                PhotonNetwork.PlayerList[i].SetCustomProperties(HealthHash);
-            }
-            void ToLocalPlayer()
-            {
-                PhotonNetwork.LocalPlayer.SetCustomProperties(HealthHash);
-            }
-        }
-    }
-    #endregion
+
+    
 
     #region LessUse
     public Result EndResult()

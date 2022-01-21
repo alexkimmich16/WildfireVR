@@ -66,14 +66,7 @@ public class BillBoardManager : MonoBehaviour
     }
     public void ChangeTeam()
     {
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-        {
-            if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[i])
-            {
-                InGameManager.instance.ChangePlayerSide(i);
-                return;
-            }
-        }
-            
+        int LocalNum = NetworkManager.instance.GetLocal();
+        InGameManager.instance.ChangePlayerSide(LocalNum);
     }
 }
