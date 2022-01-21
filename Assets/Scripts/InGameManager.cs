@@ -166,8 +166,6 @@ public class InGameManager : MonoBehaviour
 
         //change listnum
         NetworkManager.SetPlayerInt("SpawnNum", SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
-
-        PhotonNetwork.LocalPlayer.CustomProperties["SpawnNum"] = SpawnInfo.ListNum;
         Rig.transform.position = spawn.position;
     }
     public void ManageTeam()
@@ -282,4 +280,6 @@ public class InGameManager : MonoBehaviour
     }
     #endregion
 
+
+    
 }
