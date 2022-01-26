@@ -45,20 +45,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log("try connect to server");
         }
     }
-    public void InitializeRoom()
-    {
-        object temp;
-        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("Attack0", out temp))
-        {
-            if (temp is bool)
-            {
-                bool activeGame = (bool)temp;
-                //Debug.Log(activeGame);
-            }
-        }
-        if (DebugScript == true)
-            Debug.Log("2set");
-    }
 
     public override void OnConnectedToMaster()
     {
@@ -88,16 +74,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
-        Team team = InfoSave.instance.team;
-        Player local = PhotonNetwork.LocalPlayer;
-
-        SetPlayerTeam("TEAM", team, local);
-        SetPlayerInt("HEALTH", MaxHealth, local);
-        SetPlayerInt("SpawnNum", 4, local);
-
         if (DebugScript == true)
             Debug.Log("joined a room");
-        InitializeRoom();
         if (SceneLoader.BattleScene() == true)
             InGameManager.instance.Initialise();
         base.OnJoinedRoom();
@@ -126,7 +104,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         
     }
 
-    public int GetLocal()
+    public static int GetLocal()
     {
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
@@ -140,6 +118,36 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     #region NetworkGet
+    public static float GetGameFloat(string text)
+    {
+        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
+            return (float)temp;
+        else
+        {
+            Debug.LogError("GetGameFloat.main with string: " + text + "has not been set");
+            return 0f;
+        }
+    }
+    public static GameState GetGameState()
+    {
+        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("State", out object temp))
+            return (GameState)temp;
+        else
+        {
+            Debug.LogError("GetHash.GetInt.OfPlayer with string: " + "TEAM" + "has not been set");
+            return GameState.Finished;
+        }
+    }
+    public static Team GetPlayerTeam(Player player)
+    {
+        if (player.CustomProperties.TryGetValue("TEAM", out object temp))
+            return (Team)temp;
+        else
+        {
+            Debug.LogError("GetInt.GetPlayerTeam with string: " + "TEAM" + "has not been set");
+            return Team.Attack;
+        }
+    }
     public static int GetRoomInt(string text)
     {
         if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
@@ -184,10 +192,23 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region NetworkSet
-    public static void SetPlayerTeam(string text, Team team, Player player)
+
+    public static void SetGameFloat(string text, float Num)
     {
         Hashtable TeamHash = new Hashtable();
-        TeamHash.Add(text, team);
+        TeamHash.Add(text, Num);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(TeamHash);
+    }
+    public static void SetGameState(GameState state)
+    {
+        Hashtable TeamHash = new Hashtable();
+        TeamHash.Add("State", state);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(TeamHash);
+    }
+    public static void SetPlayerTeam(Team team, Player player)
+    {
+        Hashtable TeamHash = new Hashtable();
+        TeamHash.Add("TEAM", team);
         player.SetCustomProperties(TeamHash);
     }
     public static void SetPlayerBool(string text, bool State, Player player)

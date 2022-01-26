@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
+//using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 
 public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
@@ -26,12 +26,13 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
             oldHealth = (int)temp;
         }
         int newHealth = oldHealth - Change;
-        Hashtable HealthHash = new Hashtable();
-        HealthHash.Add("HEALTH", newHealth);
-        //InGameManager.instance.SetHash("HEALTH").OfBool()
-        PhotonNetwork.LocalPlayer.SetCustomProperties(HealthHash);
+        NetworkManager.SetPlayerInt("HEALTH", newHealth, PhotonNetwork.LocalPlayer);
         if (newHealth < 1)
+        {
             StartCoroutine(Respawn());
+            NetworkManager.SetPlayerBool("Dead", true, PhotonNetwork.LocalPlayer);
+        }
+            
     }
     IEnumerator Respawn()
     {
@@ -48,19 +49,13 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     [PunRPC]
-    public void RestartForAll()
+    public void FindSpotRPC()
     {
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-        {
-            //get all health full
-            int newHealth = MaxHealth;
-            Hashtable HealthHash = new Hashtable();
-            HealthHash.Add("HEALTH", newHealth);
-            //remove button
-            //set all spawns to false
+        FindSpot();
+    }
 
-        }
-        //reset spawns
-        //se
+    public void FindSpot()
+    {
+        Debug.Log("findSpot");
     }
 }

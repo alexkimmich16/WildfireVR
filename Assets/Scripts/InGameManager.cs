@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
+//using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public enum GameState
 {
@@ -42,14 +42,12 @@ public class InGameManager : MonoBehaviour
         public List<SpawnPoint> Spawns = new List<SpawnPoint>();
     }
     #endregion
+
     //timer
     public static bool BalenceTeams = false;
     public static float WarmupTime = 5f;
     [HideInInspector]
-    public float WarmupTimer;
     public static float FinishTime = 50f;
-    public float FinishTimer;
-    public static float AfterCooldownTime;
 
     //sides
     public static int MaxPlayers = 3;
@@ -59,7 +57,7 @@ public class InGameManager : MonoBehaviour
     public static bool CanMove = false;
 
     //state + spawns
-    public GameState currentState = GameState.Waiting;
+    //public GameState currentState = GameState.Waiting;
 
     private Transform Rig;
 
@@ -105,52 +103,55 @@ public class InGameManager : MonoBehaviour
     }
     public void ProgressTime()
     {
+        float WarmupTimer = NetworkManager.GetGameFloat("WarmupTimer");
+        float FinishTimer = NetworkManager.GetGameFloat("FinishTimer");
         int Attack = SideCount(Team.Attack);
         int Defense = SideCount(Team.Defense);
-        if (currentState == GameState.Waiting)
+        GameState state = NetworkManager.GetGameState();
+        if (state == GameState.Waiting)
         {
-            
             if (Attack >= MinPlayers && Defense >= MinPlayers)
             {
-                currentState = GameState.CountDown;
+                NetworkManager.SetGameState(GameState.CountDown);
             }
             else if (Attack + Defense >= MinPlayers * 2 && BalenceTeams == true)
             {
                 ManageTeam();
             }
-        } 
-        if (currentState == GameState.CountDown)
+        }
+        if (state == GameState.CountDown)
         {
+            BillBoardManager.instance.SetChangeButton(true);
             if (WarmupTimer > WarmupTime)
             {
-                currentState = GameState.Active;
-                WarmupTimer = 0;
+                NetworkManager.SetGameState(GameState.Active);
+                NetworkManager.SetGameFloat("WarmupTimer", 0f);
                 StartGame();
+                BillBoardManager.instance.SetChangeButton(false);
             }
             else
-                WarmupTimer += Time.deltaTime;
+                NetworkManager.SetGameFloat("WarmupTimer", WarmupTimer + Time.deltaTime);
         }
-        if (currentState == GameState.Active)
+        if (state == GameState.Active)
         {
             if (FinishTimer > FinishTime || Attack == 0 || Defense == 0)
             {
-                currentState = GameState.Finished;
-                FinishTimer = 0;
+                NetworkManager.SetGameState(GameState.Finished);
+                NetworkManager.SetGameFloat("FinishTimer", 0f);
                 Finish();
             }
             else
-                FinishTimer += Time.deltaTime;
+                NetworkManager.SetGameFloat("FinishTimer", FinishTimer + Time.deltaTime);
         }
-        //if finish logic
-        
     }
     void Update()
     {
-        if (PhotonNetwork.InRoom == true)
+        if (PhotonNetwork.InRoom == true && PhotonNetwork.IsMasterClient)
         {
             ProgressTime();
             //Debug.Log(SideCount(Team.Attack) + "  Attack");
             //Debug.Log(SideCount(Team.Defense) + "  Defense");
+            
         }
         
     }
@@ -159,6 +160,28 @@ public class InGameManager : MonoBehaviour
         Rig = GameObject.Find("XR Rig").transform;
         SpawnPoint SpawnInfo = FindSpawn(InfoSave.instance.team);
         SetNewPosition(SpawnInfo);
+        Player local = PhotonNetwork.LocalPlayer;
+        Team team = InfoSave.instance.team;
+
+        NetworkManager.SetPlayerTeam(team, local);
+        NetworkManager.SetPlayerInt("HEALTH", PlayerControl.MaxHealth, local);
+        NetworkManager.SetPlayerInt("SpawnNum", 4, local);
+        NetworkManager.SetPlayerBool("Dead", false, local);
+
+        if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("WarmupTimer"))
+        {
+            Debug.Log("hit");
+            NetworkManager.SetGameFloat("WarmupTimer", 0f);
+        }
+        if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("WarmupTimer"))
+        {
+            Debug.Log("hit1");
+            NetworkManager.SetGameFloat("WarmupTimer", 0f);
+        }
+        if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("FinishTimer"))
+        {
+            NetworkManager.SetGameFloat("FinishTimer", 0f);
+        }
     }
     public void SetNewPosition(SpawnPoint SpawnInfo)
     {
@@ -194,17 +217,14 @@ public class InGameManager : MonoBehaviour
     }
     public void ChangePlayerSide(int PlayerNum)
     {
-        var OldTeamVAR = PhotonNetwork.PlayerList[PlayerNum].CustomProperties["TEAM"];
-        Team oldTeam = (Team)OldTeamVAR;
+        Team oldTeam = NetworkManager.GetPlayerTeam(PhotonNetwork.PlayerList[PlayerNum]);
         Team NewTeam;
         if (oldTeam == Team.Attack)
             NewTeam = Team.Defense;
         else
             NewTeam = Team.Attack;
 
-        Hashtable TeamHash = new Hashtable();
-        TeamHash.Add("TEAM", NewTeam);
-        PhotonNetwork.PlayerList[PlayerNum].SetCustomProperties(TeamHash);
+        NetworkManager.SetPlayerTeam(NewTeam, PhotonNetwork.PlayerList[PlayerNum]);
 
         ChangeTeamCount(oldTeam, -1);
 
@@ -214,35 +234,58 @@ public class InGameManager : MonoBehaviour
         int OldSpawnNum = (int)OldSpawnNumVAR;
         string FinalOldSpawn = TeamName + OldSpawnNum;
 
-        Hashtable SpawnActiveHash = new Hashtable();
-        SpawnActiveHash.Add(FinalOldSpawn, false);
-        PhotonNetwork.CurrentRoom.SetCustomProperties(SpawnActiveHash);
+        NetworkManager.SetRoomBool(FinalOldSpawn, false);
 
         SpawnPoint SpawnInfo = FindSpawn(NewTeam);
         SetNewPosition(SpawnInfo);
     }
     public void ChangeTeamCount(Team team, int Change)
     {
-        Debug.Log(team.ToString() + "  " + Change);
+        //Debug.Log(team.ToString() + "  " + Change);
         string Name = team.ToString();
         int NewCount = SideCount(team) + Change;
         NetworkManager.SetRoomInt(Name, NewCount);
     }
-    
-
-    //change to rbc
 
     public void RestartGame()
     {
+        BillBoardManager.instance.SetResetButton(false);
+        NetworkManager.SetGameState(GameState.CountDown);
+
+        //reset spawn stats
+        for (int i = 0; i < MaxPlayers; i++)
+        {
+            string AttackText = "Attack" + i;
+            string DefenseText = "Defense" + i;
+            NetworkManager.SetRoomBool(AttackText, false);
+            NetworkManager.SetRoomBool(DefenseText, false);
+        }
+
+        
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            //set all alive
+            NetworkManager.SetPlayerBool("Dead", false, PhotonNetwork.PlayerList[i]);
+            NetworkManager.SetPlayerInt("HEALTH", PlayerControl.MaxHealth, PhotonNetwork.PlayerList[i]);
+        }
+        PhotonView[] photonViews = FindObjectsOfType<PhotonView>();
+        for (int i = 0; i < photonViews.Length; i++)
+        {
+            photonViews[i].RPC("FindSpotRPC", RpcTarget.All);
+        }
+        //get phototonview of other
+        
+
+
+        //set everything
+        //than playerset
+        //for all players in stand, assign random team, and teleport, and allow them to switch in cooldown
+
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
             //PhotonNetwork.PlayerList[i].photonView.RPC("changeColour", RpcTarget.AllBuffered, r, g, b);
         }
     }
-
-
-
-    
 
     #region LessUse
     public Result EndResult()
@@ -275,7 +318,11 @@ public class InGameManager : MonoBehaviour
 
         }
         result = EndResult();
+        //set board
+
         //BillBoardManager.instance.OnWin(EndResult());
+        BillBoardManager.instance.SetResetButton(true);
+        BillBoardManager.instance.SetChangeButton(false);
         //stop game
     }
     #endregion
