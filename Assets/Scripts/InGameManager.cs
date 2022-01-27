@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using static NetworkFunctionsAndInfo.Net;
 //using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public enum GameState
@@ -75,9 +76,9 @@ public class InGameManager : MonoBehaviour
         for (int i = 0; i < Teams[Side].Spawns.Count; i++)
         {
             string TakenText = TeamName + i;
-            if (NetworkManager.GetRoomBool(TakenText) == false)
+            if (GetRoomBool(TakenText) == false)
             {
-                NetworkManager.SetRoomBool(TakenText, true);
+                SetRoomBool(TakenText, true);
                 return Teams[Side].Spawns[i];
             }
             
@@ -103,46 +104,51 @@ public class InGameManager : MonoBehaviour
     }
     public void ProgressTime()
     {
-        float WarmupTimer = NetworkManager.GetGameFloat("WarmupTimer");
-        float FinishTimer = NetworkManager.GetGameFloat("FinishTimer");
-        int Attack = SideCount(Team.Attack);
-        int Defense = SideCount(Team.Defense);
-        GameState state = NetworkManager.GetGameState();
-        if (state == GameState.Waiting)
+        if(Exists(GameWarmupTimer, null) == true)
         {
-            if (Attack >= MinPlayers && Defense >= MinPlayers)
+            float WarmupTimer = GetGameFloat("WarmupTimer");
+            float FinishTimer = GetGameFloat("FinishTimer");
+            int Attack = SideCount(Team.Attack);
+            int Defense = SideCount(Team.Defense);
+            GameState state = GetGameState();
+            if (state == GameState.Waiting)
             {
-                NetworkManager.SetGameState(GameState.CountDown);
+                if (Attack >= MinPlayers && Defense >= MinPlayers)
+                {
+                    SetGameState(GameState.CountDown);
+                }
+                else if (Attack + Defense >= MinPlayers * 2 && BalenceTeams == true)
+                {
+                    ManageTeam();
+                }
             }
-            else if (Attack + Defense >= MinPlayers * 2 && BalenceTeams == true)
+            if (state == GameState.CountDown)
             {
-                ManageTeam();
+                BillBoardManager.instance.SetChangeButton(true);
+                if (WarmupTimer > WarmupTime)
+                {
+                    SetGameState(GameState.Active);
+                    SetGameFloat("WarmupTimer", 0f);
+                    StartGame();
+                    BillBoardManager.instance.SetChangeButton(false);
+                }
+                else
+                    SetGameFloat("WarmupTimer", WarmupTimer + Time.deltaTime);
+            }
+            if (state == GameState.Active)
+            {
+                if (FinishTimer > FinishTime || Attack == 0 || Defense == 0)
+                {
+                    SetGameState(GameState.Finished);
+                    SetGameFloat("FinishTimer", 0f);
+                    Finish();
+                }
+                else
+                    SetGameFloat("FinishTimer", FinishTimer + Time.deltaTime);
             }
         }
-        if (state == GameState.CountDown)
-        {
-            BillBoardManager.instance.SetChangeButton(true);
-            if (WarmupTimer > WarmupTime)
-            {
-                NetworkManager.SetGameState(GameState.Active);
-                NetworkManager.SetGameFloat("WarmupTimer", 0f);
-                StartGame();
-                BillBoardManager.instance.SetChangeButton(false);
-            }
-            else
-                NetworkManager.SetGameFloat("WarmupTimer", WarmupTimer + Time.deltaTime);
-        }
-        if (state == GameState.Active)
-        {
-            if (FinishTimer > FinishTime || Attack == 0 || Defense == 0)
-            {
-                NetworkManager.SetGameState(GameState.Finished);
-                NetworkManager.SetGameFloat("FinishTimer", 0f);
-                Finish();
-            }
-            else
-                NetworkManager.SetGameFloat("FinishTimer", FinishTimer + Time.deltaTime);
-        }
+        
+        
     }
     void Update()
     {
@@ -153,42 +159,34 @@ public class InGameManager : MonoBehaviour
             //Debug.Log(SideCount(Team.Defense) + "  Defense");
             
         }
-        
     }
     public void Initialise()
     {
         Rig = GameObject.Find("XR Rig").transform;
         SpawnPoint SpawnInfo = FindSpawn(InfoSave.instance.team);
         SetNewPosition(SpawnInfo);
-        Player local = PhotonNetwork.LocalPlayer;
-        Team team = InfoSave.instance.team;
 
-        NetworkManager.SetPlayerTeam(team, local);
-        NetworkManager.SetPlayerInt("HEALTH", PlayerControl.MaxHealth, local);
-        NetworkManager.SetPlayerInt("SpawnNum", 4, local);
-        NetworkManager.SetPlayerBool("Dead", false, local);
+        SetPlayerTeam(InfoSave.instance.team, PhotonNetwork.LocalPlayer);
+        SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);
 
-        if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("WarmupTimer"))
+        SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
+        SetPlayerBool(PlayerAlive, true, PhotonNetwork.LocalPlayer);
+
+        if (Exists(GameWarmupTimer, null) == false)
         {
-            Debug.Log("hit");
-            NetworkManager.SetGameFloat("WarmupTimer", 0f);
+            SetGameFloat(GameWarmupTimer, 0f);
+            SetGameFloat(GameFinishTimer, 0f);
+            SetGameState(GameState.Waiting);
+            //Debug.Log("SetGame");
         }
-        if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("WarmupTimer"))
-        {
-            Debug.Log("hit1");
-            NetworkManager.SetGameFloat("WarmupTimer", 0f);
-        }
-        if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("FinishTimer"))
-        {
-            NetworkManager.SetGameFloat("FinishTimer", 0f);
-        }
+        
     }
     public void SetNewPosition(SpawnPoint SpawnInfo)
     {
         Transform spawn = SpawnInfo.Point;
 
         //change listnum
-        NetworkManager.SetPlayerInt("SpawnNum", SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
+        SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
         Rig.transform.position = spawn.position;
     }
     public void ManageTeam()
@@ -217,14 +215,14 @@ public class InGameManager : MonoBehaviour
     }
     public void ChangePlayerSide(int PlayerNum)
     {
-        Team oldTeam = NetworkManager.GetPlayerTeam(PhotonNetwork.PlayerList[PlayerNum]);
+        Team oldTeam = GetPlayerTeam(PhotonNetwork.PlayerList[PlayerNum]);
         Team NewTeam;
         if (oldTeam == Team.Attack)
             NewTeam = Team.Defense;
         else
             NewTeam = Team.Attack;
 
-        NetworkManager.SetPlayerTeam(NewTeam, PhotonNetwork.PlayerList[PlayerNum]);
+        SetPlayerTeam(NewTeam, PhotonNetwork.PlayerList[PlayerNum]);
 
         ChangeTeamCount(oldTeam, -1);
 
@@ -234,7 +232,7 @@ public class InGameManager : MonoBehaviour
         int OldSpawnNum = (int)OldSpawnNumVAR;
         string FinalOldSpawn = TeamName + OldSpawnNum;
 
-        NetworkManager.SetRoomBool(FinalOldSpawn, false);
+        SetRoomBool(FinalOldSpawn, false);
 
         SpawnPoint SpawnInfo = FindSpawn(NewTeam);
         SetNewPosition(SpawnInfo);
@@ -244,29 +242,29 @@ public class InGameManager : MonoBehaviour
         //Debug.Log(team.ToString() + "  " + Change);
         string Name = team.ToString();
         int NewCount = SideCount(team) + Change;
-        NetworkManager.SetRoomInt(Name, NewCount);
+        SetRoomInt(Name, NewCount);
     }
 
     public void RestartGame()
     {
         BillBoardManager.instance.SetResetButton(false);
-        NetworkManager.SetGameState(GameState.CountDown);
+        SetGameState(GameState.CountDown);
 
         //reset spawn stats
         for (int i = 0; i < MaxPlayers; i++)
         {
             string AttackText = "Attack" + i;
             string DefenseText = "Defense" + i;
-            NetworkManager.SetRoomBool(AttackText, false);
-            NetworkManager.SetRoomBool(DefenseText, false);
+            SetRoomBool(AttackText, false);
+            SetRoomBool(DefenseText, false);
         }
 
         
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
             //set all alive
-            NetworkManager.SetPlayerBool("Dead", false, PhotonNetwork.PlayerList[i]);
-            NetworkManager.SetPlayerInt("HEALTH", PlayerControl.MaxHealth, PhotonNetwork.PlayerList[i]);
+            SetPlayerBool(PlayerAlive, true, PhotonNetwork.PlayerList[i]);
+            SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.PlayerList[i]);
         }
         PhotonView[] photonViews = FindObjectsOfType<PhotonView>();
         for (int i = 0; i < photonViews.Length; i++)

@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
+using static NetworkFunctionsAndInfo.Net;
 //using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 
@@ -21,16 +22,16 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     public void ChangeHealth(int Change)
     {
         int oldHealth = 0;
-        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("HEALTH", out object temp))
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(PlayerHealth, out object temp))
         {
             oldHealth = (int)temp;
         }
         int newHealth = oldHealth - Change;
-        NetworkManager.SetPlayerInt("HEALTH", newHealth, PhotonNetwork.LocalPlayer);
+        SetPlayerInt(PlayerHealth, newHealth, PhotonNetwork.LocalPlayer);
         if (newHealth < 1)
         {
             StartCoroutine(Respawn());
-            NetworkManager.SetPlayerBool("Dead", true, PhotonNetwork.LocalPlayer);
+            SetPlayerBool(PlayerAlive, false, PhotonNetwork.LocalPlayer);
         }
             
     }
