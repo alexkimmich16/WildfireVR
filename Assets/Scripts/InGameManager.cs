@@ -38,8 +38,6 @@ public class InGameManager : MonoBehaviour
     public class TeamInfo
     {
         public string Side;
-        public int TeamSize;
-        public int Alive;
         public List<SpawnPoint> Spawns = new List<SpawnPoint>();
     }
     #endregion
@@ -57,6 +55,8 @@ public class InGameManager : MonoBehaviour
     public static bool MagicCasting = false;
     public static bool CanMove = false;
 
+    public float TimeMultiplier = 3f;
+
     //state + spawns
     //public GameState currentState = GameState.Waiting;
 
@@ -67,22 +67,32 @@ public class InGameManager : MonoBehaviour
     public List<Transform> SpectatorSpawns = new List<Transform>();
 
     public Result result;
+
+    private bool FoundSpawn = false;
+
     public SpawnPoint FindSpawn(Team team)
     {
-        ChangeTeamCount(team, 1);
-
         int Side = (int)team;
-        string TeamName = team.ToString();
         for (int i = 0; i < Teams[Side].Spawns.Count; i++)
         {
-            string TakenText = TeamName + i;
-            if (GetRoomBool(TakenText) == false)
+            string SpawnString;
+            if (team == Team.Attack)
             {
-                SetRoomBool(TakenText, true);
+                SpawnString = AttackSpawns[i];
+            }
+            else
+            {
+                SpawnString = DefenseSpawns[i];
+            }
+            if (GetGameBool(SpawnString) == false)
+            {
+                ChangeTeamCount(team, 1);
+                SetGameBool(SpawnString, true);
                 return Teams[Side].Spawns[i];
             }
             
         }
+        Debug.LogError("Could not find spawn of type: " + team.ToString());
         return null;
     }
     public int SideCount(Team team)
@@ -106,8 +116,8 @@ public class InGameManager : MonoBehaviour
     {
         if(Exists(GameWarmupTimer, null) == true)
         {
-            float WarmupTimer = GetGameFloat("WarmupTimer");
-            float FinishTimer = GetGameFloat("FinishTimer");
+            float WarmupTimer = GetGameFloat(GameWarmupTimer);
+            float FinishTimer = GetGameFloat(GameFinishTimer);
             int Attack = SideCount(Team.Attack);
             int Defense = SideCount(Team.Defense);
             GameState state = GetGameState();
@@ -128,23 +138,23 @@ public class InGameManager : MonoBehaviour
                 if (WarmupTimer > WarmupTime)
                 {
                     SetGameState(GameState.Active);
-                    SetGameFloat("WarmupTimer", 0f);
+                    SetGameFloat(GameWarmupTimer, 0f);
                     StartGame();
                     BillBoardManager.instance.SetChangeButton(false);
                 }
                 else
-                    SetGameFloat("WarmupTimer", WarmupTimer + Time.deltaTime);
+                    SetGameFloat(GameWarmupTimer, WarmupTimer + Time.deltaTime * TimeMultiplier);
             }
             if (state == GameState.Active)
             {
                 if (FinishTimer > FinishTime || Attack == 0 || Defense == 0)
                 {
                     SetGameState(GameState.Finished);
-                    SetGameFloat("FinishTimer", 0f);
+                    SetGameFloat(GameFinishTimer, 0f);
                     Finish();
                 }
                 else
-                    SetGameFloat("FinishTimer", FinishTimer + Time.deltaTime);
+                    SetGameFloat(GameFinishTimer, FinishTimer + Time.deltaTime * TimeMultiplier);
             }
         }
         
@@ -152,34 +162,34 @@ public class InGameManager : MonoBehaviour
     }
     void Update()
     {
-        if (PhotonNetwork.InRoom == true && PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.InRoom == true)
         {
-            ProgressTime();
-            //Debug.Log(SideCount(Team.Attack) + "  Attack");
-            //Debug.Log(SideCount(Team.Defense) + "  Defense");
+            if (FoundSpawn == false)
+            {
+                if (Exists(AttackSpawns[0], null))
+                {
+                    SpawnPoint SpawnInfo = FindSpawn(InfoSave.instance.team);
+                    //Debug.Log(SpawnInfo.ListNum);
+                    SetNewPosition(SpawnInfo);
+                    SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
+                    FoundSpawn = true;
+                }
+
+            }
+            if (PhotonNetwork.IsMasterClient)
+            {
+                ProgressTime();
+            }
             
         }
     }
-    public void Initialise()
+    public void InitialisePlayer()
     {
         Rig = GameObject.Find("XR Rig").transform;
-        SpawnPoint SpawnInfo = FindSpawn(InfoSave.instance.team);
-        SetNewPosition(SpawnInfo);
 
         SetPlayerTeam(InfoSave.instance.team, PhotonNetwork.LocalPlayer);
         SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);
-
-        SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
         SetPlayerBool(PlayerAlive, true, PhotonNetwork.LocalPlayer);
-
-        if (Exists(GameWarmupTimer, null) == false)
-        {
-            SetGameFloat(GameWarmupTimer, 0f);
-            SetGameFloat(GameFinishTimer, 0f);
-            SetGameState(GameState.Waiting);
-            //Debug.Log("SetGame");
-        }
-        
     }
     public void SetNewPosition(SpawnPoint SpawnInfo)
     {
@@ -232,7 +242,7 @@ public class InGameManager : MonoBehaviour
         int OldSpawnNum = (int)OldSpawnNumVAR;
         string FinalOldSpawn = TeamName + OldSpawnNum;
 
-        SetRoomBool(FinalOldSpawn, false);
+        SetGameBool(FinalOldSpawn, false);
 
         SpawnPoint SpawnInfo = FindSpawn(NewTeam);
         SetNewPosition(SpawnInfo);
@@ -242,7 +252,7 @@ public class InGameManager : MonoBehaviour
         //Debug.Log(team.ToString() + "  " + Change);
         string Name = team.ToString();
         int NewCount = SideCount(team) + Change;
-        SetRoomInt(Name, NewCount);
+        SetGameInt(Name, NewCount);
     }
 
     public void RestartGame()
@@ -255,8 +265,8 @@ public class InGameManager : MonoBehaviour
         {
             string AttackText = "Attack" + i;
             string DefenseText = "Defense" + i;
-            SetRoomBool(AttackText, false);
-            SetRoomBool(DefenseText, false);
+            SetGameBool(AttackText, false);
+            SetGameBool(DefenseText, false);
         }
 
         
@@ -288,10 +298,12 @@ public class InGameManager : MonoBehaviour
     #region LessUse
     public Result EndResult()
     {
-        if (Teams[0].Alive > Teams[1].Alive)
+        int AttackTeamAlive = GetGameInt(AttackTeamCount);
+        int DefenseTeamAlive = GetGameInt(DefenseTeamCount);
+        if (AttackTeamAlive > DefenseTeamAlive)
             return Result.AttackWon;
-        else if (Teams[1].Alive > Teams[0].Alive)
-            return Result.AttackWon;
+        else if (DefenseTeamAlive > AttackTeamAlive)
+            return Result.DefenseWon;
         else
             return Result.Tie;
     }

@@ -22,6 +22,9 @@ public class BillBoardManager : MonoBehaviour
     public TextMeshProUGUI MyTeamText;
     public TextMeshProUGUI AliveText;
 
+    public List<TextMeshProUGUI> DefenseSpawnText = new List<TextMeshProUGUI>();
+    public List<TextMeshProUGUI> AttackSpawnsText = new List<TextMeshProUGUI>();
+
     public void UpdateWall()
     {
         if (Exists(GameStateText, null))
@@ -50,6 +53,16 @@ public class BillBoardManager : MonoBehaviour
         {
             AliveText.text = "Alive: " + GetPlayerBool(PlayerAlive, local).ToString();
         }
+        if (Exists(DefenseSpawns[2], null))
+        {
+            for (int i = 0; i < DefenseSpawns.Count; i++)
+            {
+                DefenseSpawnText[i].text = DefenseSpawns[i] + ":  " + GetGameBool(DefenseSpawns[i]);
+                AttackSpawnsText[i].text = AttackSpawns[i] + ":  " + GetGameBool(AttackSpawns[i]);
+
+            }
+        }
+        
     }
 
     #region Singleton + Classes
@@ -60,6 +73,7 @@ public class BillBoardManager : MonoBehaviour
     {
         if(PhotonNetwork.InRoom == true)
         {
+            UpdateWall();
             for (int i = 0; i < Health.Count; i++)
             {
                 if (i < PhotonNetwork.PlayerList.Length && Exists(PlayerHealth, PhotonNetwork.PlayerList[i]) == true)
@@ -99,7 +113,7 @@ public class BillBoardManager : MonoBehaviour
             
             
         }
-        UpdateWall();
+        
     }
     public string OnWin(Result result)
     {

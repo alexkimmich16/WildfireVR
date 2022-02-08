@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
+using static NetworkFunctionsAndInfo.Net;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     #region Singleton + classes
@@ -33,6 +33,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //public List<PlayerInfo> info = new List<PlayerInfo>();
     public List<PlayerStats> Players = new List<PlayerStats>();
     public int InGame;
+    
     void Start()
     {
         ConnectToServer();
@@ -56,21 +57,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         roomOptions.IsVisible = true;
         roomOptions.IsOpen = true;
 
-        Hashtable hash = new Hashtable();
-        hash.Add("Attack0", false);
-        hash.Add("Attack1", false);
-        hash.Add("Attack2", false);
-        hash.Add("Defense0", false);
-        hash.Add("Defense1", false);
-        hash.Add("Defense2", false);
-
-        hash.Add("AttackTeam", 0);
-        hash.Add("DefenseTeam", 0);
-
-        Debug.Log("Initialized room and reset or created all stats");
-
-        roomOptions.CustomRoomProperties = hash;
-
         PhotonNetwork.JoinOrCreateRoom("Room 1", roomOptions, TypedLobby.Default);
 
     }
@@ -79,7 +65,31 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (DebugScript == true)
             Debug.Log("joined a room");
         if (SceneLoader.BattleScene() == true)
-            InGameManager.instance.Initialise();
+        {
+            if (Exists(GameWarmupTimer, null) == false)
+            {
+                SetGameFloat(GameWarmupTimer, 0f);
+                SetGameFloat(GameFinishTimer, 0f);
+                SetGameState(GameState.Waiting);
+
+                SetGameBool(AttackSpawns[0], false);
+                SetGameBool(AttackSpawns[1], false);
+                SetGameBool(AttackSpawns[2], false);
+                SetGameBool(DefenseSpawns[0], false);
+                SetGameBool(DefenseSpawns[1], false);
+                SetGameBool(DefenseSpawns[2], false);
+
+                SetGameInt(AttackTeamCount, 0);
+                SetGameInt(DefenseTeamCount, 0);
+
+                Debug.Log("Initialized room and reset or created all stats");
+                InGameManager.instance.InitialisePlayer();
+            }
+
+            
+
+        }
+            
         base.OnJoinedRoom();
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)

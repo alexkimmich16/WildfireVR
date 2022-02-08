@@ -85,22 +85,43 @@ public class HandActions : MonoBehaviour
                     int Current = HM.Spells[i].Controllers[SideNum].Current;
                     if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
                     {
-                        Vector3 UnConverted = HM.GetSide(SideNum, i, Current);
-                        Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
-                        float distance = Vector3.Distance(Converted, transform.position);
+                        if (DistanceWorks(Current) == true && RotationWorks() == true)
+                            HM.Spells[i].Controllers[SideNum].Current += 1;
+                        else
+                            HM.Spells[i].Controllers[SideNum].Current = 0;
+                        
 
                         //if (SideNum == 1 && i == 1)
                         // Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
 
-                        if (HM.Spells[i].Leanience > distance)
-                            HM.Spells[i].Controllers[SideNum].Current += 1;
-                        else
-                            HM.Spells[i].Controllers[SideNum].Current = 0;
+                        
                     }
                 }
             }
-            
+            bool DistanceWorks(int Current)
+            {
+                Vector3 UnConverted = HM.GetSide(SideNum, i, Current);
+                Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
+                float distance = Vector3.Distance(Converted, transform.position);
+                if (HM.Spells[i].Leanience > distance)
+                    return true;
+                else
+                    return false;
+                Debug.Log(i);
+            }
+
+            bool RotationWorks(int Current)
+            {
                 
+                Vector3 UnConverted = HM.GetSide(SideNum, i, Current);
+                Vector3 Converted = HandMagic.instance.ConvertDataToPoint(UnConverted);
+                float distance = Vector3.Distance(Converted, transform.position);
+                if (HM.Spells[i].Leanience > distance)
+                    return true;
+                else
+                    return false;
+                Debug.Log(i);
+            }
         }
     }
     void Update()

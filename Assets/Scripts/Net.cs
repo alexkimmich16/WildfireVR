@@ -17,6 +17,12 @@ namespace NetworkFunctionsAndInfo
         public static string GameFinishTimer = "FinishTimer";
         public static string GameStateText = "State";
 
+        public static List<string> AttackSpawns = new List<string>() { "Attack0", "Attack1", "Attack2" };
+        public static List<string> DefenseSpawns = new List<string>() { "Defense0", "Defense1", "Defense2" };
+
+        public static string AttackTeamCount = "AttackTeam";
+        public static string DefenseTeamCount = "DefenseTeam";
+
         public static int GetLocal()
         {
             for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
@@ -63,7 +69,7 @@ namespace NetworkFunctionsAndInfo
                 return Team.Attack;
             }
         }
-        public static int GetRoomInt(string text)
+        public static int GetGameInt(string text)
         {
             if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
                 return (int)temp;
@@ -83,7 +89,7 @@ namespace NetworkFunctionsAndInfo
                 return 100;
             }
         }
-        public static bool GetRoomBool(string text)
+        public static bool GetGameBool(string text)
         {
             if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
                 return (bool)temp;
@@ -110,7 +116,7 @@ namespace NetworkFunctionsAndInfo
         {
             if (player == null)
             {
-                if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
+                if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(text))
                     return true;
                 else
                 {
@@ -119,7 +125,7 @@ namespace NetworkFunctionsAndInfo
             }
             else
             {
-                if (player.CustomProperties.TryGetValue(text, out object temp))
+                if (player.CustomProperties.ContainsKey(text))
                     return true;
                 else
                 {
@@ -157,9 +163,10 @@ namespace NetworkFunctionsAndInfo
             HealthHash.Add(text, State);
             player.SetCustomProperties(HealthHash);
         }
-        public static void SetRoomBool(string text, bool State)
+        public static void SetGameBool(string text, bool State)
         {
             Hashtable HealthHash = new Hashtable();
+            //Debug.Log("set");
             HealthHash.Add(text, State);
             PhotonNetwork.CurrentRoom.SetCustomProperties(HealthHash);
         }
@@ -169,7 +176,7 @@ namespace NetworkFunctionsAndInfo
             HealthHash.Add(text, SetNum);
             player.SetCustomProperties(HealthHash);
         }
-        public static void SetRoomInt(string text, int SetNum)
+        public static void SetGameInt(string text, int SetNum)
         {
             Hashtable HealthHash = new Hashtable();
             HealthHash.Add(text, SetNum);
