@@ -21,5 +21,8 @@ public class FinalMovement : ScriptableObject
     public List<Vector3> RightLocalPos;
     public List<Vector3> RightDifferencePos;
 
+    public List<Vector3> LeftRotation;
+    public List<Vector3> RightRotation;
+
     public bool Set = false;
 }

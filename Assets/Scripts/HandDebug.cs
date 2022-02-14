@@ -227,7 +227,6 @@ public class HandDebug : MonoBehaviour
             
             if (Timer > MaxTime)
             {
-                
                 Vector3 ZPlacementController = new Vector3(HM.Controllers[1].transform.position.x, HM.Cam.position.y, HM.Controllers[1].transform.position.z);
                 float YChange = HM.Controllers[1].transform.position.y - HM.Cam.position.y;
                 float Dist = Vector3.Distance(ZPlacementController, HM.Cam.position);

@@ -161,8 +161,7 @@ public class HandMagic : MonoBehaviour
                                 {
                                     Current = info.RightLocalPos.Count - 1;
                                 }
-                                Vector3 UnConverted = GetSide(j, i, Current);
-                                Vector3 Converted = ConvertDataToPoint(UnConverted);
+                                Vector3 Converted = GetLocalPosSide(j, i, Current);
                                 float distance = Vector3.Distance(Converted, Controllers[j].transform.position);
 
                                 if (Spells[i].Leanience > distance)
@@ -333,20 +332,26 @@ public class HandMagic : MonoBehaviour
             }
         }
     }
-    public Vector3 GetSide(int Side, int i, int Current)
+    public Vector3 GetLocalPosSide(int Side, int i, int Current)
     {
         //if(i > HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count)
             //Debug.Log("Side:  " + Side + "   i:  " + i + "   Current:  " + Current + "   Count:  " + HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count);
         if (Side == 0)
-        {
-            
-            return Spells[i].FinalInfo.LeftLocalPos[Current];
-        }
+            return ConvertDataToPoint(Spells[i].FinalInfo.LeftLocalPos[Current]);
         else
-        {
-            return Spells[i].FinalInfo.RightLocalPos[Current];
-        }
+            return ConvertDataToPoint(Spells[i].FinalInfo.RightLocalPos[Current]);
     }
+
+    public Vector3 GetRotationSide(int Side, int i, int Current)
+    {
+        //if(i > HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count)
+        //Debug.Log("Side:  " + Side + "   i:  " + i + "   Current:  " + Current + "   Count:  " + HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count);
+        if (Side == 0)
+            return Spells[i].FinalInfo.LeftRotation[Current];
+        else
+            return Spells[i].FinalInfo.RightRotation[Current];
+    }
+
     public void FollowMotion()
     {
         for (int i = 0; i < Spells.Count; i++)
@@ -364,8 +369,7 @@ public class HandMagic : MonoBehaviour
 
                     for (int j = 0; j < Spells[i].Sides.Count; j++)
                     {
-                        Vector3 Local = GetSide(j, i, Current);
-                        Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
+                        Spells[i].Sides[j].transform.position = GetLocalPosSide(j, i, Current);
                     }
                 }
                 else if (type == SpellType.Individual)
@@ -377,8 +381,7 @@ public class HandMagic : MonoBehaviour
                         {
                             Current -= 1;
                         }
-                        Vector3 Local = GetSide(j, i, Current);
-                        Spells[i].Sides[j].transform.position = ConvertDataToPoint(Local);
+                        Spells[i].Sides[j].transform.position = GetLocalPosSide(j, i, Current);
                     }
                 }
             }
@@ -574,6 +577,29 @@ public class HandMagic : MonoBehaviour
             List<Vector3> LocalLeftFinal = new List<Vector3>();
             List<Vector3> WorldLeftFinal = new List<Vector3>();
             List<Vector3> DifferenceLeftFinal = new List<Vector3>();
+
+            for (var j = 0; j < Load.allTypes.TotalTypes[t].Final.LocalLeft.Length / 3; j++)//for each localdata in unit
+            {
+                int ArrayNum = j * 3;
+                Vector3 leftLocal = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.LocalLeft[ArrayNum + 2]);
+                LocalLeftFinal.Add(leftLocal);
+
+                Vector3 leftWorld = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.WorldLeft[ArrayNum + 2]);
+                WorldLeftFinal.Add(leftWorld);
+
+                Vector3 leftDifference = new Vector3(
+                    Load.allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum],
+                    Load.allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum + 1],
+                    Load.allTypes.TotalTypes[t].Final.DifferenceLeft[ArrayNum + 2]);
+                DifferenceLeftFinal.Add(leftDifference);
+            }
+
             for (var j = 0; j < Load.allTypes.TotalTypes[t].Final.LocalLeft.Length / 3; j++)//for each localdata in unit
             {
                 int ArrayNum = j * 3;
@@ -626,6 +652,8 @@ public class HandMagic : MonoBehaviour
             FinalData.LeftWorldPos = new List<Vector3>(WorldLeftFinal);
             FinalData.RightDifferencePos = new List<Vector3>(DifferenceRightFinal);
             FinalData.LeftDifferencePos = new List<Vector3>(DifferenceLeftFinal);
+            FinalData.LeftRotation = new List<Vector3>(LocalLeftFinal);
+            FinalData.RightRotation = new List<Vector3>(LocalLeftFinal);
             FinalData.TotalTime = Load.allTypes.TotalTypes[t].Final.Time;
             FinalData.MoveType = (Movements)t;
         }
