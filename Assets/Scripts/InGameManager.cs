@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using static NetworkFunctionsAndInfo.Net;
+using static Odin.Net;
 //using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public enum GameState

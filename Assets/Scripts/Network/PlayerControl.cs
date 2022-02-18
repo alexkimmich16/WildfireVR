@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
-using static NetworkFunctionsAndInfo.Net;
+using static Odin.Net;
 //using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 

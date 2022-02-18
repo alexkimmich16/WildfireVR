@@ -291,8 +291,10 @@ public class HandDebug : MonoBehaviour
 
         CreateInfo();
     }
+
     public void LoadChildScriptableObjects(AllData Load)
     {
+        /*
         HandMagic HM = HandMagic.instance;
         for (var t = 0; t < Load.allTypes.TotalTypes.Length; t++)//for each type
         {
@@ -301,56 +303,22 @@ public class HandDebug : MonoBehaviour
                 MovementData data = DataFolders[t].Storage[i];
                 if (Load.allTypes.TotalTypes[t].InsideType[i].Set == true)
                 {
+                    FinalMovement FinalData = HM.Spells[t].FinalInfo;
                     List<Vector3> LocalLeft = new List<Vector3>();
-                    List<Vector3> WorldLeft = new List<Vector3>();
-                    List<Vector3> DifferenceLeft = new List<Vector3>();
-                    for (var j = 0; j < Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft.Length / 3; j++)//for each localdata in unit
-                    {
-                        int ArrayNum = j * 3;
-                        Vector3 leftLocal = new Vector3(
-                            Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum],
-                            Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum + 1],
-                            Load.allTypes.TotalTypes[t].InsideType[i].LocalLeft[ArrayNum + 2]);
-                        LocalLeft.Add(leftLocal);
-
-                        Vector3 leftWorld = new Vector3(
-                            Load.allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum],
-                            Load.allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum + 1],
-                            Load.allTypes.TotalTypes[t].InsideType[i].WorldLeft[ArrayNum + 2]);
-                        WorldLeft.Add(leftWorld);
-
-                        Vector3 leftDifference = new Vector3(
-                            Load.allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum],
-                            Load.allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum + 1],
-                            Load.allTypes.TotalTypes[t].InsideType[i].DifferenceLeft[ArrayNum + 2]);
-                        DifferenceLeft.Add(leftDifference);
-                    }
+                    List<Vector3> RotationLeft = new List<Vector3>();
 
                     List<Vector3> LocalRight = new List<Vector3>();
-                    List<Vector3> WorldRight = new List<Vector3>();
-                    List<Vector3> DifferenceRight = new List<Vector3>();
-                    for (var j = 0; j < Load.allTypes.TotalTypes[t].InsideType[i].LocalRight.Length / 3; j++)
+                    List<Vector3> RotationRight = new List<Vector3>();
+
+                    for (var j = 0; j < Load.allTypes.TotalTypes[t].Final.LocalLeft.Length / 3; j++)//for each localdata in unit
                     {
-                        int ArrayNum = j * 3;
-                        Vector3 right = new Vector3(
-                            Load.allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum],
-                            Load.allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum + 1],
-                            Load.allTypes.TotalTypes[t].InsideType[i].LocalRight[ArrayNum + 2]);
-                        LocalRight.Add(right);
+                        AllData.Final Final = Load.allTypes.TotalTypes[t].Final;
+                        LocalLeft.Add(GetVector3(Final.LocalLeft, j));
+                        RotationLeft.Add(GetVector3(Final.LeftRot, j));
 
-                        Vector3 rightWorld = new Vector3(
-                            Load.allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum],
-                            Load.allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum + 1],
-                            Load.allTypes.TotalTypes[t].InsideType[i].WorldRight[ArrayNum + 2]);
-                        WorldRight.Add(rightWorld);
-
-                        Vector3 rightDifference = new Vector3(
-                            Load.allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum],
-                            Load.allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum + 1],
-                            Load.allTypes.TotalTypes[t].InsideType[i].DifferenceRight[ArrayNum + 2]);
-                        DifferenceRight.Add(rightDifference);
+                        LocalRight.Add(GetVector3(Final.LocalRight, j));
+                        RotationRight.Add(GetVector3(Final.RightRot, j));
                     }
-                    //Debug.Log(LocalRight.Count);
                     data.Time = Load.allTypes.TotalTypes[t].InsideType[i].Time;
                     data.Interval = Load.allTypes.TotalTypes[t].InsideType[i].Interval;
                     data.MoveType = (Movements)i;
@@ -359,9 +327,20 @@ public class HandDebug : MonoBehaviour
                     data.LeftLocalPos = new List<Vector3>(LocalLeft);
 
                     data.Set = Load.allTypes.TotalTypes[t].InsideType[i].Set;
+
+                    Vector3 GetVector3(float[] NumList, int ArrayNum)
+                    {
+                        int VecConvert = ArrayNum * 3;
+                        Debug.Log(NumList.Length + " " + VecConvert);
+                        return new Vector3(
+                            NumList[VecConvert],
+                            NumList[VecConvert + 1],
+                            NumList[VecConvert + 2]);
+                    }
                 }
             }
         }
+        */
     }
     void SetScriptableObject(int Num)
     {

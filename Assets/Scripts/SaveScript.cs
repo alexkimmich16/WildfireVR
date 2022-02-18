@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using static Odin.MagicHelp;
 
 public static class SaveScript
 {
@@ -39,7 +40,7 @@ public static class SaveScript
         }
 
         HandDebug.instance.LoadChildScriptableObjects(CurrentData);
-        HandMagic.instance.LoadMainScriptableObjects(CurrentData);
+        LoadMainScriptableObjects(CurrentData);
     }
 
     public static AllData LoadGame()

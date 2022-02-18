@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using static NetworkFunctionsAndInfo.Net;
+using static Odin.Net;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     #region Singleton + classes

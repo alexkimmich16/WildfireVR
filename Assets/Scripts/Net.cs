@@ -4,7 +4,8 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
-namespace NetworkFunctionsAndInfo
+
+namespace Odin
 {
     public static class Net
     {
@@ -35,8 +36,6 @@ namespace NetworkFunctionsAndInfo
             Debug.LogError("Get Local Failure");
             return 100;
         }
-
-
         #region NetworkGet
         public static float GetGameFloat(string text)
         {

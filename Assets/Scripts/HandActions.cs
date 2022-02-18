@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using static Odin.MagicHelp;
 
 public class HandActions : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class HandActions : MonoBehaviour
     public static int PastFrameCount = 20;
 
     public List<Vector3> PastFrames = new List<Vector3>();
+
     public void WaitFrames()
     {
         for (int i = 0; i < HM.Spells.Count; i++)
@@ -83,21 +85,28 @@ public class HandActions : MonoBehaviour
                 {
                     FinalMovement info = HandMagic.instance.Spells[i].FinalInfo;
                     int Current = HM.Spells[i].Controllers[SideNum].Current;
-
+                    
                     if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
                     {
-                        if (DistanceWorks() == true && RotationWorks(transform.rotation) == true)
+                        if (RotationWorks(transform.rotation) == true && DistanceWorks() == true)
                             HM.Spells[i].Controllers[SideNum].Current += 1;
                         else
+                        {
+                            DistanceWorks();
                             HM.Spells[i].Controllers[SideNum].Current = 0;
+                        }
+                           
                         //if (SideNum == 1 && i == 1)
                         // Debug.Log("current:  " + Current + "  distance:  " + distance + "   local:  " + transform.position.ToString("F3") + "   AveragePos:  " + Converted.ToString("F3"));
                     }
 
                     bool DistanceWorks()
                     {
-                        Vector3 Converted = HM.GetLocalPosSide(SideNum, i, Current);
+                        //Debug.Log("i: " + i + "  SideNum: " + SideNum);
+                        Vector3 Converted = GetLocalPosSide(SideNum, i, Current);
                         float distance = Vector3.Distance(Converted, transform.position);
+                        HM.Spells[i].Controllers[SideNum].Distance = distance;
+                        
                         if (HM.Spells[i].Leanience > distance)
                             return true;
                         else
@@ -107,12 +116,13 @@ public class HandActions : MonoBehaviour
 
                     bool RotationWorks(Quaternion Rotation)
                     {
-                        Vector3 rot = HM.GetRotationSide(SideNum, i, Current);
+                        Vector3 rot = GetRotationSide(SideNum, i, Current);
+                        //Debug.Log("i: " + i + "  SideNum: " + SideNum);
                         float AngleDiff = Quaternion.Angle(Quaternion.Euler(rot), Rotation);
-                        if (i == 0 && SideNum == 0)
-                            Debug.Log("RotDif: " + AngleDiff);
-
-                        if (HM.Spells[i].Leanience > AngleDiff)
+                        //if (i == 0 && SideNum == 0)
+                        //Debug.Log("RotDif: " + AngleDiff);
+                        HM.Spells[i].Controllers[SideNum].RotDifference = AngleDiff;
+                        if (HM.Spells[i].RotLeanience > AngleDiff)
                             return true;
                         else
                             return false;
@@ -210,4 +220,5 @@ public class HandActions : MonoBehaviour
         HM = HandMagic.instance;
         //PS.Stop();
     }
+
 }

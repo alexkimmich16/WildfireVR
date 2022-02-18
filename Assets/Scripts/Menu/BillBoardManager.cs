@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
-using static NetworkFunctionsAndInfo.Net;
+using static Odin.Net;
 
 public class BillBoardManager : MonoBehaviour
 {
