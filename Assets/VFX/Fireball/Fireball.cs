@@ -11,7 +11,6 @@ public class Fireball : MonoBehaviour
     public float Speed;
     public int Damage;
     public GameObject Explosion, Flash, DestoryAudio;
-    public AudioClip ExplosionSound;
 
     //public float LifeTime = 3;
     void Start()
