@@ -2756,11 +2756,11 @@ MonoBehaviour:
       ListNum: 2
   - Side: Defense
     Spawns:
-    - Point: {fileID: 1267074363}
+    - Point: {fileID: 1573171258}
       ListNum: 3
     - Point: {fileID: 201726677}
       ListNum: 4
-    - Point: {fileID: 1573171258}
+    - Point: {fileID: 1267074363}
       ListNum: 5
   SpectatorSpawns:
   - {fileID: 1378956852}
@@ -4979,16 +4979,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DebugScript: 0
-  Players:
-  - networkPlayer: {fileID: 0}
-    Control: {fileID: 0}
-    ObjectReference: {fileID: 0}
-  - networkPlayer: {fileID: 0}
-    Control: {fileID: 0}
-    ObjectReference: {fileID: 0}
-  - networkPlayer: {fileID: 0}
-    Control: {fileID: 0}
-    ObjectReference: {fileID: 0}
+  Players: []
   InGame: 0
 --- !u!4 &924804818
 Transform:
@@ -7841,16 +7832,21 @@ MonoBehaviour:
     Time: 0
     Controllers:
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 0}
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 0}
     Sides:
     - {fileID: 1853940099}
     - {fileID: 1969801092}
+    RotLeanience: 0
   - Name: Fireball
     Type: 0
     FinalInfo: {fileID: 11400000, guid: 6fa8331387cd46044afea7fdcb429582, type: 2}
@@ -7861,16 +7857,21 @@ MonoBehaviour:
     Time: 0
     Controllers:
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 737577331}
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 2016258288}
     Sides:
     - {fileID: 330967696}
     - {fileID: 56179343}
+    RotLeanience: 0
   - Name: Shield
     Type: 0
     FinalInfo: {fileID: 11400000, guid: aa3fabadeec7d15418423ecd2fbbe5ab, type: 2}
@@ -7881,16 +7882,21 @@ MonoBehaviour:
     Time: 0
     Controllers:
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 0}
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 0}
     Sides:
     - {fileID: 1423424240}
     - {fileID: 71279524}
+    RotLeanience: 0
   - Name: ForcePush
     Type: 1
     FinalInfo: {fileID: 11400000, guid: 710b03c2d6545884e808b806e6f8b10b, type: 2}
@@ -7901,16 +7907,21 @@ MonoBehaviour:
     Time: 0
     Controllers:
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 0}
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 0}
     Sides:
     - {fileID: 922978344}
     - {fileID: 687525120}
+    RotLeanience: 0
   - Name: Telekinetic
     Type: 0
     FinalInfo: {fileID: 11400000, guid: 839e64e3da874064e8d3d474dd3334e0, type: 2}
@@ -7921,16 +7932,21 @@ MonoBehaviour:
     Time: 0
     Controllers:
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 0}
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 0}
     Sides:
     - {fileID: 165785229}
     - {fileID: 1763392049}
+    RotLeanience: 0
   - Name: Flight
     Type: 0
     FinalInfo: {fileID: 11400000, guid: f1457c4c0b78f954987aa53bb1fc5127, type: 2}
@@ -7941,16 +7957,21 @@ MonoBehaviour:
     Time: 0
     Controllers:
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 0}
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 0}
     Sides:
     - {fileID: 704191879}
     - {fileID: 1298226907}
+    RotLeanience: 0
   - Name: Slice
     Type: 0
     FinalInfo: {fileID: 11400000, guid: 7b25609b2ce661648b5fdc68f80c56a7, type: 2}
@@ -7961,16 +7982,21 @@ MonoBehaviour:
     Time: 0
     Controllers:
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 0}
     - Current: 0
+      RotDifference: 0
+      Distance: 0
       ControllerFinished: 0000
       Time: 0
       Trail: {fileID: 0}
     Sides:
     - {fileID: 161450527}
     - {fileID: 965715844}
+    RotLeanience: 0
   RB: {fileID: 0}
 --- !u!4 &1388871734
 Transform:
