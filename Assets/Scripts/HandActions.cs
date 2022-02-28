@@ -21,24 +21,26 @@ public class HandActions : MonoBehaviour
     public bool BottomButtonTouched;
 
     public Side side;
-
+    [HideInInspector]
     public bool Playing = false;
-    
+    [HideInInspector]
     public Vector2 Direction;
     //private float Speed;
 
     public bool Test;
 
     public Collider MyCollider;
-
+    [HideInInspector]
     public List<bool> Around = new List<bool>();
 
     public SkinnedMeshRenderer meshRenderer;
     public bool SettingStats = false;
 
     public static int PastFrameCount = 20;
-
+    [HideInInspector]
     public List<Vector3> PastFrames = new List<Vector3>();
+
+    public Vector3 LocalRotation;
 
     public void WaitFrames()
     {
@@ -73,7 +75,6 @@ public class HandActions : MonoBehaviour
             }
         }
     }
-
     public void CheckAll()
     {
         int SideNum = (int)side;
@@ -88,7 +89,7 @@ public class HandActions : MonoBehaviour
                     
                     if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
                     {
-                        if (RotationWorks(transform.rotation) == true && DistanceWorks() == true)
+                        if (RotationWorks(transform.localRotation) == true && DistanceWorks() == true)
                             HM.Spells[i].Controllers[SideNum].Current += 1;
                         else
                         {
@@ -111,22 +112,52 @@ public class HandActions : MonoBehaviour
                             return true;
                         else
                             return false;
-                        //Debug.Log(i);
                     }
 
-                    bool RotationWorks(Quaternion Rotation)
+                    bool RotationWorks(Quaternion MyRotation)
                     {
-                        Vector3 rot = GetRotationSide(SideNum, i, Current);
-                        //Debug.Log("i: " + i + "  SideNum: " + SideNum);
-                        float AngleDiff = Quaternion.Angle(Quaternion.Euler(rot), Rotation);
-                        //if (i == 0 && SideNum == 0)
-                        //Debug.Log("RotDif: " + AngleDiff);
+                        Vector3 ObjectiveRotation = GetRotationSide(SideNum, i, Current);
+                        Vector3 MyRotationVector = MyRotation.ToEulerAngles();
+                        if (info.RotationLock[0] != Vector2.zero)
+                        {
+                            //check for limit reached
+                            if (MyRotation.x > HM.Spells[i].FinalInfo.RotationLock[0].x && MyRotation.x < HM.Spells[i].FinalInfo.RotationLock[0].y)
+                            {
+                                ObjectiveRotation.x = MyRotation.x;
+                            }
+                            else
+                                return false;
+                        }
+                        if (info.RotationLock[1] != Vector2.zero)
+                        {
+                            //check for limit reached
+                            if (MyRotation.y > HM.Spells[i].FinalInfo.RotationLock[1].x && MyRotation.y < HM.Spells[i].FinalInfo.RotationLock[1].y)
+                            {
+                                ObjectiveRotation.y = MyRotation.y;
+                            }
+                            else
+                                return false;
+                        }
+                        if (info.RotationLock[2] != Vector2.zero)
+                        {
+                            //check for limit reached
+                            if (MyRotation.z > HM.Spells[i].FinalInfo.RotationLock[2].x && MyRotation.z < HM.Spells[i].FinalInfo.RotationLock[2].y)
+                            {
+                                ObjectiveRotation.z = MyRotation.z;
+                            }
+                            else
+                                return false;
+                        }
+
+                        float AngleDiff = Quaternion.Angle(Quaternion.Euler(ObjectiveRotation), MyRotation);
                         HM.Spells[i].Controllers[SideNum].RotDifference = AngleDiff;
                         if (HM.Spells[i].RotLeanience > AngleDiff)
                             return true;
                         else
                             return false;
-                        //Debug.Log(i);
+
+                        //Debug.Log("i: " + i + "  SideNum: " + SideNum);
+
                     }
                 }
             }
@@ -140,6 +171,8 @@ public class HandActions : MonoBehaviour
         CheckAll();
         WaitFrames();
         LastFrameSave();
+        Vector3 Local = transform.localEulerAngles;
+        LocalRotation = new Vector3(Local.x, Local.y + RB.transform.localEulerAngles.y, Local.z);
     }
     public void LastFrameSave()
     {
@@ -162,7 +195,6 @@ public class HandActions : MonoBehaviour
             }
         }
     }
-    
     #region Checks
     public bool TriggerPressed()
     {
@@ -214,7 +246,6 @@ public class HandActions : MonoBehaviour
         }
     }
     #endregion
-
     void Start()
     {
         HM = HandMagic.instance;

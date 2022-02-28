@@ -340,7 +340,6 @@ public class HandMagic : MonoBehaviour
             }
         }
     }
-    
     public void FollowMotion()
     {
         for (int i = 0; i < Spells.Count; i++)
@@ -513,7 +512,6 @@ public class HandMagic : MonoBehaviour
             }
         }
     }
-   
     public Vector3 RaycastGround()
     {
         RaycastHit hit;
@@ -539,7 +537,6 @@ public class HandMagic : MonoBehaviour
         Application.OpenURL(URL);
         Application.OpenURL(URL);
     }
-    
     public void EnableCubes(bool State)
     {
         for (int i = 0; i < Spells.Count; i++)

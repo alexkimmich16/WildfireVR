@@ -46,6 +46,8 @@ public class AllData
 
         public int MoveType;
 
+        public float[] RotationLock;
+
         public bool Set;
     }
 
@@ -88,16 +90,10 @@ public class AllData
                 {
                     //Debug.Log("Test3.3");
                     allTypes.TotalTypes[t].InsideType[i].LocalLeft = GetList(data.LeftLocalPos);
-                    //allTypes.TotalTypes[t].InsideType[i].WorldLeft = new float[data.LeftLocalPos.Count * 3];
-                    //allTypes.TotalTypes[t].InsideType[i].DifferenceLeft = new float[data.LeftLocalPos.Count * 3];
                     allTypes.TotalTypes[t].InsideType[i].LeftRot = GetList(data.LeftRotation);
                     
                     allTypes.TotalTypes[t].InsideType[i].LocalRight = GetList(data.RightLocalPos);
-                    //allTypes.TotalTypes[t].InsideType[i].WorldRight = new float[data.RightLocalPos.Count * 3];
-                    //allTypes.TotalTypes[t].InsideType[i].DifferenceRight = new float[data.RightLocalPos.Count * 3];
                     allTypes.TotalTypes[t].InsideType[i].RightRot = GetList(data.RightRotation);
-                    
-
                     
                     allTypes.TotalTypes[t].InsideType[i].Time = data.Time;
                     allTypes.TotalTypes[t].InsideType[i].Interval = data.Interval;
@@ -109,19 +105,22 @@ public class AllData
             allTypes.TotalTypes[t].Final = new Final();
 
             allTypes.TotalTypes[t].Final.LocalLeft = GetList(FinalData.LeftLocalPos);
-            //allTypes.TotalTypes[t].InsideType[i].WorldLeft = new float[data.LeftLocalPos.Count * 3];
-            //allTypes.TotalTypes[t].InsideType[i].DifferenceLeft = new float[data.LeftLocalPos.Count * 3];
             allTypes.TotalTypes[t].Final.LeftRot = GetList(FinalData.LeftRotation);
 
             allTypes.TotalTypes[t].Final.LocalRight = GetList(FinalData.RightLocalPos);
-            //allTypes.TotalTypes[t].InsideType[i].WorldRight = new float[data.RightLocalPos.Count * 3];
-            //allTypes.TotalTypes[t].InsideType[i].DifferenceRight = new float[data.RightLocalPos.Count * 3];
             allTypes.TotalTypes[t].Final.RightRot = GetList(FinalData.RightRotation);
 
             allTypes.TotalTypes[t].Final.Time = FinalData.TotalTime;
             allTypes.TotalTypes[t].Final.MoveType = t;
-            //allTypes.TotalTypes[t].Final.Interval = FinalData.Interval;
-            //problem inside set
+            float[] RotationLock = new float[6];
+            for (var j = 0; j < 3; j++)
+            {
+                int True = j * 2;
+                RotationLock[True] = FinalData.RotationLock[j].x;
+                RotationLock[True + 1] = FinalData.RotationLock[j].y;
+            }
+            allTypes.TotalTypes[t].Final.RotationLock = RotationLock;
+
             float[] GetList(List<Vector3> Stat)
             {
                 float[] FloatList = new float[Stat.Count * 3];

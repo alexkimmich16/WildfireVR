@@ -40,7 +40,7 @@ namespace Odin
         public static void LoadMainScriptableObjects(AllData Load)
         {
             HandMagic HM = HandMagic.instance;
-            int TypeCount = 0;
+            int TypeCount;
             if (HandMagic.LoadOnly3 == true)
                 TypeCount = 4;
             else
@@ -49,13 +49,9 @@ namespace Odin
             {
                 FinalMovement FinalData = HM.Spells[t].FinalInfo;
                 List<Vector3> LocalLeftFinal = new List<Vector3>();
-                List<Vector3> WorldLeftFinal = new List<Vector3>();
-                List<Vector3> DifferenceLeftFinal = new List<Vector3>();
                 List<Vector3> RotationLeftFinal = new List<Vector3>();
 
                 List<Vector3> LocalRightFinal = new List<Vector3>();
-                List<Vector3> WorldRightFinal = new List<Vector3>();
-                List<Vector3> DifferenceRightFinal = new List<Vector3>();
                 List<Vector3> RotationRightFinal = new List<Vector3>();
 
                 for (var j = 0; j < Load.allTypes.TotalTypes[t].Final.LocalLeft.Length / 3; j++)//for each localdata in unit
@@ -70,17 +66,19 @@ namespace Odin
                     //Debug.Log("RightRot T: " + t + "  J:  " + j);
                     RotationRightFinal.Add(GetVector3(Final.RightRot, j));
                 }
-
+                
                 FinalData.RightLocalPos = new List<Vector3>(LocalRightFinal);
                 FinalData.LeftLocalPos = new List<Vector3>(LocalLeftFinal);
-                FinalData.RightWorldPos = new List<Vector3>(WorldRightFinal);
-                FinalData.LeftWorldPos = new List<Vector3>(WorldLeftFinal);
-                FinalData.RightDifferencePos = new List<Vector3>(DifferenceRightFinal);
-                FinalData.LeftDifferencePos = new List<Vector3>(DifferenceLeftFinal);
                 FinalData.LeftRotation = new List<Vector3>(RotationLeftFinal);
                 FinalData.RightRotation = new List<Vector3>(RotationRightFinal);
                 FinalData.TotalTime = Load.allTypes.TotalTypes[t].Final.Time;
                 FinalData.MoveType = (Movements)t;
+                FinalData.RotationLock.Clear();
+                for (var j = 0; j < 3; j++)
+                {
+                    int True = j * 2;
+                    FinalData.RotationLock.Add(new Vector2(Load.allTypes.TotalTypes[t].Final.RotationLock[True], Load.allTypes.TotalTypes[t].Final.RotationLock[True + 1]));
+                }
 
                 Vector3 GetVector3(float[] NumList, int ArrayNum)
                 {
