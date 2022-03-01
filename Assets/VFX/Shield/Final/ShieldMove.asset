@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveType: 2
   TotalTime: 0
-  LeftWorldPos: []
   LeftLocalPos:
   - {x: 0.5, y: 330, z: -0.09999999}
   - {x: 0.5, y: 329.03226, z: -0.09999999}
@@ -47,8 +46,6 @@ MonoBehaviour:
   - {x: 0.5, y: 302.9032, z: -0.09999999}
   - {x: 0.5, y: 301.93546, z: -0.09999999}
   - {x: 0.5, y: 300.9677, z: -0.09999999}
-  LeftDifferencePos: []
-  RightWorldPos: []
   RightLocalPos:
   - {x: 0.5, y: 30, z: -0.09999999}
   - {x: 0.5, y: 30.967741, z: -0.09999999}
@@ -81,7 +78,6 @@ MonoBehaviour:
   - {x: 0.5, y: 57.096798, z: -0.09999999}
   - {x: 0.5, y: 58.06454, z: -0.09999999}
   - {x: 0.5, y: 59.032284, z: -0.09999999}
-  RightDifferencePos: []
   LeftRotation:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
@@ -147,3 +143,7 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   Set: 1
+  RotationLock:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}

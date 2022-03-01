@@ -444,7 +444,6 @@ public class HandDebug : MonoBehaviour
         HandMagic.instance.Spells[(int)CurrentMove].FinalInfo.LeftLocalPos = new List<Vector3>(AverageLocalLeft);
         HandMagic.instance.Spells[(int)CurrentMove].FinalInfo.RightLocalPos = new List<Vector3>(AverageLocalRight);
         HandMagic.instance.Spells[(int)CurrentMove].FinalInfo.Set = true;
-        //
     }
     public void SaveStats()
     {

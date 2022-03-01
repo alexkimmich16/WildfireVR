@@ -113,12 +113,35 @@ public class AllData
             allTypes.TotalTypes[t].Final.Time = FinalData.TotalTime;
             allTypes.TotalTypes[t].Final.MoveType = t;
             float[] RotationLock = new float[6];
+            //Debug.Log("1");
             for (var j = 0; j < 3; j++)
             {
                 int True = j * 2;
-                RotationLock[True] = FinalData.RotationLock[j].x;
-                RotationLock[True + 1] = FinalData.RotationLock[j].y;
+                //Debug.Log("2");
+                if (FinalData.RotationLock != null)
+                {
+                    //Debug.Log("3");
+                    if (FinalData.RotationLock.Count > j)
+                    {
+                        RotationLock[True] = FinalData.RotationLock[j].x;
+                        RotationLock[True + 1] = FinalData.RotationLock[j].y;
+                    }
+                    else
+                    {
+                        //Debug.Log("3.1");
+                        RotationLock[True] = 0;
+                        RotationLock[True + 1] = 0;
+                    }
+                }
+                else
+                {
+                    //Debug.Log("4");
+                    RotationLock[True] = 0;
+                    RotationLock[True + 1] = 0;
+                }
+                
             }
+            //Debug.Log("Check2");
             allTypes.TotalTypes[t].Final.RotationLock = RotationLock;
 
             float[] GetList(List<Vector3> Stat)

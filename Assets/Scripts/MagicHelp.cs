@@ -54,6 +54,20 @@ namespace Odin
                 List<Vector3> LocalRightFinal = new List<Vector3>();
                 List<Vector3> RotationRightFinal = new List<Vector3>();
 
+                List<Vector2> RotationLocks = new List<Vector2>();
+                RotationLocks.Clear();
+                
+                for (var j = 0; j < 3; j++)
+                {
+                    //Debug.Log("t: " + t + "  j:  " + j);
+                    int True = j * 2;
+                    if (Load.allTypes.TotalTypes[t].Final.RotationLock[True] != 0 || Load.allTypes.TotalTypes[t].Final.RotationLock[True + 1] != 0)
+                        RotationLocks.Add(new Vector2(Load.allTypes.TotalTypes[t].Final.RotationLock[True], Load.allTypes.TotalTypes[t].Final.RotationLock[True + 1]));
+                    else
+                        RotationLocks.Add(Vector2.zero);
+                }
+                FinalData.RotationLock = RotationLocks;
+
                 for (var j = 0; j < Load.allTypes.TotalTypes[t].Final.LocalLeft.Length / 3; j++)//for each localdata in unit
                 {
                     AllData.Final Final = Load.allTypes.TotalTypes[t].Final;
@@ -73,12 +87,6 @@ namespace Odin
                 FinalData.RightRotation = new List<Vector3>(RotationRightFinal);
                 FinalData.TotalTime = Load.allTypes.TotalTypes[t].Final.Time;
                 FinalData.MoveType = (Movements)t;
-                FinalData.RotationLock.Clear();
-                for (var j = 0; j < 3; j++)
-                {
-                    int True = j * 2;
-                    FinalData.RotationLock.Add(new Vector2(Load.allTypes.TotalTypes[t].Final.RotationLock[True], Load.allTypes.TotalTypes[t].Final.RotationLock[True + 1]));
-                }
 
                 Vector3 GetVector3(float[] NumList, int ArrayNum)
                 {

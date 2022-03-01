@@ -28772,7 +28772,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1403439320}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.85, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1289353370837374474}
@@ -28898,6 +28898,7 @@ MonoBehaviour:
   meshRenderer: {fileID: 2059561745}
   SettingStats: 0
   PastFrames: []
+  LocalRotation: {x: 0, y: 0, z: 0}
 --- !u!114 &1403439325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31650,7 +31651,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1590860895}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.728327, y: 0.4518044, z: -5.0446057}
+  m_LocalPosition: {x: 1.0400009, y: -0.26892614, z: -7.869999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1271941127}
@@ -38085,7 +38086,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh75524
+  m_Name: pb_Mesh34972
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -41211,7 +41212,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2139675060}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.01, y: 0, z: 0}
+  m_LocalPosition: {x: 1.01, y: -0.85, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1663750909}
@@ -41337,6 +41338,7 @@ MonoBehaviour:
   meshRenderer: {fileID: 363798639}
   SettingStats: 0
   PastFrames: []
+  LocalRotation: {x: 0, y: 0, z: 0}
 --- !u!114 &2139675065
 MonoBehaviour:
   m_ObjectHideFlags: 0
