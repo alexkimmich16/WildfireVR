@@ -39,7 +39,10 @@ public class HandActions : MonoBehaviour
     public static int PastFrameCount = 20;
     [HideInInspector]
     public List<Vector3> PastFrames = new List<Vector3>();
-
+   // public Vector3 MyEuler;
+    public Vector3 Child;
+    //public Vector3 BeforeLocal;
+    public Vector3 CamLocal;
     public Vector3 LocalRotation;
 
     public void WaitFrames()
@@ -89,7 +92,7 @@ public class HandActions : MonoBehaviour
                     
                     if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
                     {
-                        if (RotationWorks(transform.localRotation) == true && DistanceWorks() == true)
+                        if (RotationWorks(LocalRotation) == true && DistanceWorks() == true)
                             HM.Spells[i].Controllers[SideNum].Current += 1;
                         else
                         {
@@ -114,10 +117,11 @@ public class HandActions : MonoBehaviour
                             return false;
                     }
 
-                    bool RotationWorks(Quaternion MyRotation)
+                    bool RotationWorks(Vector3 MyRotation)
                     {
                         Vector3 ObjectiveRotation = GetRotationSide(SideNum, i, Current);
-                        Vector3 MyRotationVector = MyRotation.ToEulerAngles();
+                        //Vector3 MyRotationVector = MyRotation.eulerAngles - transform.parent.parent.rotation.eulerAngles;
+                        
                         if (info.RotationLock[0] != Vector2.zero)
                         {
                             //check for limit reached
@@ -148,10 +152,10 @@ public class HandActions : MonoBehaviour
                             else
                                 return false;
                         }
-
-                        float AngleDiff = Quaternion.Angle(Quaternion.Euler(ObjectiveRotation), MyRotation);
-                        HM.Spells[i].Controllers[SideNum].RotDifference = AngleDiff;
-                        if (HM.Spells[i].RotLeanience > AngleDiff)
+                        float Diff = Vector3.Angle(ObjectiveRotation, MyRotation);
+                        //float AngleDiff = Quaternion.Angle(Quaternion.Euler(ObjectiveRotation), MyRotation);
+                        HM.Spells[i].Controllers[SideNum].RotDifference = Diff;
+                        if (HM.Spells[i].RotLeanience > Diff)
                             return true;
                         else
                             return false;
@@ -170,10 +174,19 @@ public class HandActions : MonoBehaviour
         //CheckColliders();
         CheckAll();
         WaitFrames();
-        LastFrameSave();
-        Vector3 Local = transform.localEulerAngles;
-        LocalRotation = new Vector3(Local.x, Local.y + RB.transform.localEulerAngles.y, Local.z);
+        LastFrameSave(); 
+
+        Child = transform.GetChild(1).eulerAngles;
+        //MyEuler = transform.eulerAngles;
+       // BeforeLocal = MyEuler - Child;
+        CamLocal = Camera.main.transform.eulerAngles;
+        if (CamLocal.y > 270)
+            CamLocal.y -= 360;
+        if (Child.y > 270)
+            Child.y -= 360;
+        LocalRotation = new Vector3(Child.x, CamLocal.y - Child.y, Child.z);
     }
+
     public void LastFrameSave()
     {
         int Count = 0;
