@@ -5,8 +5,6 @@ using UnityEngine.VFX;
 
 public class BlockMimic : MonoBehaviour
 {
-    public GameObject Display;
-    public GameObject Real;
     public VisualEffect effect;
     public bool UseDisplay;
     public List<Transform> Shields;
@@ -16,7 +14,6 @@ public class BlockMimic : MonoBehaviour
     //trigger instead
     void Start()
     {
-        Display.SetActive(UseDisplay);
         StartCoroutine(Wait());
     }
     public IEnumerator Wait()
@@ -74,9 +71,5 @@ public class BlockMimic : MonoBehaviour
     Vector3 AbsurdValue()
     {
         return new Vector3(1000, 1000, 1000);
-    }
-    Vector3 GetCenter(Vector3 pos)
-    {
-        return pos - transform.position;
     }
 }

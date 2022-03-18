@@ -36,7 +36,7 @@ public class FireController : MonoBehaviour
         StartCoroutine(Wait());
 
         StartFire();
-        Active = false;
+        Active = true;
 
         Spread = fire.GetFloat("Spread") * 180;
     }

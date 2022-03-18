@@ -11,6 +11,9 @@ public class ShieldManager : MonoBehaviour
     public float StartWaitTime;
 
     public bool ShieldActive;
+
+    
+
     private void Start()
     {
         Boarder.Stop();

@@ -15,6 +15,7 @@ public class SpellCasts : MonoBehaviour
         public Transform HeldObject;
         public bool TelekinesisActive;
         public int ShieldHealth;
+        public GameObject Fire;
         public GameObject Shield;
         
         public bool Flying;
@@ -44,20 +45,22 @@ public class SpellCasts : MonoBehaviour
 
     public void FireballStart(int Hand)
     {
-        ///flame animation on hand
-        ///OR
-        ///fireball in palm of hand
         //StartFire()
+        //HM.Controllers[Hand].transform.GetComponent<FireController>().StartFire();
+        Stats[Hand].Fire = PhotonNetwork.Instantiate("NewFire", HM.Controllers[Hand].transform.position, HM.Controllers[Hand].transform.rotation);
         StartCoroutine(FireballMagic());
-        HM.Controllers[Hand].transform.GetComponent<FireController>().StartFire();
     }
 
     public void FireballEnd(int Hand)
     {
         //undue fireball change
-        HM.Controllers[Hand].transform.GetComponent<FireController>().StopFire();
+        //HM.Controllers[Hand].transform.GetComponent<FireController>().StopFire();
         StopCoroutine(FireballMagic());
-
+        if (Stats[Hand].Fire != null)
+        {
+            RemoveObjectFromNetwork(Stats[Hand].Fire);
+        }
+        Stats[Hand].Fire = null;
 
         /*
         Vector3 VelDirection = HM.Controllers[Hand].PastFrames[0] - HM.Controllers[Hand].PastFrames[HandActions.PastFrameCount - 1];
