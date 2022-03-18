@@ -41,18 +41,25 @@ public class SpellCasts : MonoBehaviour
     }
     #endregion
     #region Fireball
-    public void FireballCharge(int Hand)
+
+    public void FireballStart(int Hand)
     {
         ///flame animation on hand
         ///OR
         ///fireball in palm of hand
-
+        //StartFire()
+        StartCoroutine(FireballMagic());
+        HM.Controllers[Hand].transform.GetComponent<FireController>().StartFire();
     }
 
-    public void FireballShoot(int Hand)
+    public void FireballEnd(int Hand)
     {
         //undue fireball change
-        
+        HM.Controllers[Hand].transform.GetComponent<FireController>().StopFire();
+        StopCoroutine(FireballMagic());
+
+
+        /*
         Vector3 VelDirection = HM.Controllers[Hand].PastFrames[0] - HM.Controllers[Hand].PastFrames[HandActions.PastFrameCount - 1];
         VelDirection = VelDirection.normalized;
         //GameObject FireBall = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
@@ -60,16 +67,44 @@ public class SpellCasts : MonoBehaviour
         GameObject fireball = PhotonNetwork.Instantiate("FireballMultiplayer", HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
         SoundManager.instance.PlayAudio("Fireball", fireball);
         fireball.GetComponent<Fireball>().Speed = HM.Speed;
+        */
     }
+
+
+
     #endregion
+    public IEnumerator FireballMagic()
+    {
+        yield return new WaitForSeconds(1);
+        HM.ChangeMagic(HM.Spells[1].Cost);    
+    }
+
     #region Shield
     public void StartShield(int Left)
     {
         HM.ChangeMagic(-HM.Spells[2].Cost);
+        transform.GetComponentInChildren<ShieldManager>().StartShield();
+        
         Stats[Left].ShieldHealth = HM.MaxShield;
         SoundManager.instance.PlayAudio("Shield", null);
+
+        Stats[Left].Shield = PhotonNetwork.Instantiate("NewShield", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
+        
         //ChangeShield(Left, true);
-        Stats[Left].Shield = PhotonNetwork.Instantiate("ShieldMultiplayer", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
+    }
+
+    public void EndShield(int Left)
+    {
+        transform.GetComponentInChildren<ShieldManager>().StopShield();
+        
+        Stats[Left].ShieldHealth = 0;
+        if (Stats[Left].Shield != null)
+        {
+            RemoveObjectFromNetwork(Stats[Left].Shield);
+        }
+        Stats[Left].Shield = null;
+        
+        //ChangeShield(Left, false);
     }
     
     public void UpdateShieldMultiplayerPosition()
@@ -85,16 +120,8 @@ public class SpellCasts : MonoBehaviour
             Stats[1].Shield.transform.rotation = HM.Controllers[1].transform.rotation;
         }
     }
-    public void EndShield(int Left)
-    {
-        Stats[Left].ShieldHealth = 0;
-        //ChangeShield(Left, false);
-        if (Stats[Left].Shield != null)
-        {
-            RemoveObjectFromNetwork(Stats[Left].Shield);
-        }
-        Stats[Left].Shield = null;
-    }
+    
+
     public void ShieldDamage(int Damage, int Side)
     {
         Stats[Side].ShieldHealth -= Damage;
@@ -271,7 +298,7 @@ public class SpellCasts : MonoBehaviour
     #endregion
     private void Update()
     {
-        UpdateShieldMultiplayerPosition();
+        //UpdateShieldMultiplayerPosition();
         CheckTelekinesis();
         CheckFlying();
         AddSlashPosList();

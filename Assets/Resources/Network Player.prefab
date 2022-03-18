@@ -407,9 +407,10 @@ GameObject:
   - component: {fileID: 5272293459400824933}
   - component: {fileID: 802789730534011270}
   - component: {fileID: 2099352641000150228}
+  - component: {fileID: 6503580198935645730}
   m_Layer: 0
   m_Name: Network Player
-  m_TagString: Untagged
+  m_TagString: VRPerson
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -524,6 +525,19 @@ MonoBehaviour:
   reverse: 0
   currentDistance: 0
   currentClampedDistance: 0
+--- !u!135 &6503580198935645730
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105980944445082301}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8461358418908909968
 GameObject:
   m_ObjectHideFlags: 0
@@ -732,15 +746,15 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: ad358717fc5fead48bb13a226a9d1ee7, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1fd3a7c43c8190f4d8c167ebde694364, type: 3}
---- !u!4 &2813771403708050205 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5686134208185136530, guid: 1fd3a7c43c8190f4d8c167ebde694364,
-    type: 3}
-  m_PrefabInstance: {fileID: 7630701683990453903}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2813771403708086143 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5686134208185362928, guid: 1fd3a7c43c8190f4d8c167ebde694364,
+    type: 3}
+  m_PrefabInstance: {fileID: 7630701683990453903}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2813771403708050205 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5686134208185136530, guid: 1fd3a7c43c8190f4d8c167ebde694364,
     type: 3}
   m_PrefabInstance: {fileID: 7630701683990453903}
   m_PrefabAsset: {fileID: 0}

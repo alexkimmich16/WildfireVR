@@ -242,17 +242,19 @@ public class HandMagic : MonoBehaviour
         {
             if (Part == 0)
             {
-                ChangeTrail(move, true, (Side)Side);
+                //ChangeTrail(move, true, (Side)Side);
             }
             else if (Part == 1)
             {
-                SC.FireballCharge(Side);
+                //SC.FireballCharge(Side);
+                SC.FireballStart(Side);
             }
             else if (Part == 2)
             {
-                ChangeMagic(-Spells[Spell].Cost);
-                SC.FireballShoot(Side);
-                ChangeTrail(move, false, (Side)Side);
+
+                SC.FireballEnd(Side);
+                //SC.FireballShoot(Side);
+                //ChangeTrail(move, false, (Side)Side);
             }
         }
         else if (move == Movements.Shield)
