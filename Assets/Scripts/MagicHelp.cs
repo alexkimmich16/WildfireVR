@@ -36,7 +36,6 @@ namespace Odin
             Vector3 YPosition = r.GetPoint(Distance);
             return new Vector3(YPosition.x, HorizonalOffset + Camera.main.transform.position.y, YPosition.z);
         }
-
         public static void LoadMainScriptableObjects(AllData Load)
         {
             HandMagic HM = HandMagic.instance;

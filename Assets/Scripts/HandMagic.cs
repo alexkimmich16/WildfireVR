@@ -360,6 +360,7 @@ public class HandMagic : MonoBehaviour
                     for (int j = 0; j < Spells[i].Sides.Count; j++)
                     {
                         Spells[i].Sides[j].transform.position = GetLocalPosSide(j, i, Current);
+                        Spells[i].Sides[j].transform.eulerAngles = GetRotationSide(j, i, Current);
                     }
                 }
                 else if (type == SpellType.Individual)
@@ -372,6 +373,7 @@ public class HandMagic : MonoBehaviour
                             Current -= 1;
                         }
                         Spells[i].Sides[j].transform.position = GetLocalPosSide(j, i, Current);
+                        Spells[i].Sides[j].transform.eulerAngles = GetRotationSide(j, i, Current);
                     }
                 }
             }
