@@ -132,6 +132,7 @@ public class HandMagic : MonoBehaviour
     [HideInInspector]
     public Rigidbody RB;
 
+    public List<Material> Materials = new List<Material>(0);
 
     public void ChangeTrail(Movements type, bool Set, Side side)
     {

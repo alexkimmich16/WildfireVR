@@ -87,9 +87,6 @@ public class FireController : MonoBehaviour
                 }
             }
         }
-            
-
-
 
         void CheckArriveTimes()
         {
