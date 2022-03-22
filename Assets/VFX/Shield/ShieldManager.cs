@@ -19,7 +19,7 @@ public class ShieldManager : MonoBehaviour
         Boarder.Stop();
         Interior.Stop();
         //StartCoroutine(Wait(4f));
-        StartShield();
+        //StartShield();
     }
 
     public IEnumerator Wait(float time)

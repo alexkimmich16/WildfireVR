@@ -18,15 +18,16 @@ public class MovementDisplay : MonoBehaviour
     private GameObject SpawnedObject;
 
     public static float CastTime = 5f;
-    private bool ShouldCountFrames;
+    private bool ShouldCountFrames = true;
 
     private void Start()
     {
+        ShouldCountFrames = true;
         Sides = new List<GameObject>(2);
         //0 is left
         //hands:hands_geom
-        Sides[0] = transform.Find("LeftHand").gameObject;
-        Sides[1] = transform.Find("RightHand").gameObject;
+        Sides.Add(transform.Find("LeftHand").gameObject);
+        Sides.Add(transform.Find("RightHand").gameObject);
 
         HM = HandMagic.instance;
         for (int i = 0; i < Sides.Count; i++)
@@ -62,7 +63,7 @@ public class MovementDisplay : MonoBehaviour
         }
         else if((int)movement == 1)
         {
-            SpawnedObject = Instantiate(Resources.Load("Resources/NewFire") as GameObject, Sides[0].transform.position, Sides[0].transform.rotation);
+            SpawnedObject = Instantiate(Resources.Load("NewFire") as GameObject, Sides[0].transform.position, Sides[0].transform.rotation);
         }
         else if ((int)movement == 2)
         {

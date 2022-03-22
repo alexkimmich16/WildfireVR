@@ -134,6 +134,8 @@ public class HandMagic : MonoBehaviour
 
     public List<Material> Materials = new List<Material>(0);
 
+    public Vector3 Offset;
+
     public void ChangeTrail(Movements type, bool Set, Side side)
     {
         if (Spells[(int)type].Controllers[(int)side].Trail != null)
@@ -361,7 +363,7 @@ public class HandMagic : MonoBehaviour
                     for (int j = 0; j < Spells[i].Sides.Count; j++)
                     {
                         Spells[i].Sides[j].transform.position = GetLocalPosSide(j, i, Current);
-                        Spells[i].Sides[j].transform.eulerAngles = GetRotationSide(j, i, Current);
+                        Spells[i].Sides[j].transform.eulerAngles = GetRotationSide(j, i, Current) + Offset;
                     }
                 }
                 else if (type == SpellType.Individual)
@@ -374,7 +376,11 @@ public class HandMagic : MonoBehaviour
                             Current -= 1;
                         }
                         Spells[i].Sides[j].transform.position = GetLocalPosSide(j, i, Current);
-                        Spells[i].Sides[j].transform.eulerAngles = GetRotationSide(j, i, Current);
+                        Vector3 Rotation = GetRotationSide(j, i, Current) + Offset;
+                        Rotation.y = Rotation.y + Camera.main.transform.rotation.eulerAngles.y;
+                        if (j == 1)
+                            Rotation.z = Rotation.z + 180;
+                        Spells[i].Sides[j].transform.eulerAngles = Rotation;
                     }
                 }
             }
