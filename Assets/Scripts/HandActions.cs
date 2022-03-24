@@ -55,7 +55,7 @@ public class HandActions : MonoBehaviour
             int TypeNum = (int)type;
             int Current = HM.Spells[i].Controllers[(int)side].Current;
             FinalMovement info = HandMagic.instance.Spells[i].FinalInfo;
-            if (info.RightLocalPos.Count == Current)
+            if (info.Frames == Current)
             {
                 if (type == SpellType.Individual)
                 {
@@ -90,8 +90,9 @@ public class HandActions : MonoBehaviour
                     FinalMovement info = HandMagic.instance.Spells[i].FinalInfo;
                     int Current = HM.Spells[i].Controllers[SideNum].Current;
                     
-                    if (info.RightLocalPos.Count != Current && info.LeftLocalPos.Count > 1)
+                    if (info.Frames != Current && info.Frames > 1)
                     {
+                        //Debug.Log("Rotation: " + RotationWorks(LocalRotation) + "  Distance: " + DistanceWorks() + "  Current: " + Current);
                         if (RotationWorks(LocalRotation) == true && DistanceWorks() == true)
                             HM.Spells[i].Controllers[SideNum].Current += 1;
                         else
@@ -108,6 +109,8 @@ public class HandActions : MonoBehaviour
                     {
                         //Debug.Log("i: " + i + "  SideNum: " + SideNum);
                         Vector3 Converted = GetLocalPosSide(SideNum, i, Current);
+                        if (SideNum == 1 && i == 1)
+                            Debug.Log("Converted: " + Converted + "  Current: " + Current);
                         float distance = Vector3.Distance(Converted, transform.position);
                         HM.Spells[i].Controllers[SideNum].Distance = distance;
                         
@@ -115,13 +118,13 @@ public class HandActions : MonoBehaviour
                             return true;
                         else
                             return false;
+
+                        
                     }
 
                     bool RotationWorks(Vector3 MyRotation)
                     {
                         Vector3 ObjectiveRotation = GetRotationSide(SideNum, i, Current);
-                        //Vector3 MyRotationVector = MyRotation.eulerAngles - transform.parent.parent.rotation.eulerAngles;
-                        
                         if (info.RotationLock[0] != Vector2.zero)
                         {
                             //check for limit reached
@@ -152,10 +155,15 @@ public class HandActions : MonoBehaviour
                             else
                                 return false;
                         }
-                        float Diff = Vector3.Angle(ObjectiveRotation, MyRotation);
+                        Quaternion a = Quaternion.Euler(ObjectiveRotation);
+                        Quaternion b = Quaternion.Euler(MyRotation);
+                        float angle = Quaternion.Angle(a, b);
+
+                        //if (side == Side.Right && i == 1)
+                            //Debug.Log("Diff: " + angle + "  ControlerAngle: " + a + "  ObjectiveAngle: " + b);
                         //float AngleDiff = Quaternion.Angle(Quaternion.Euler(ObjectiveRotation), MyRotation);
-                        HM.Spells[i].Controllers[SideNum].RotDifference = Diff;
-                        if (HM.Spells[i].RotLeanience > Diff)
+                        HM.Spells[i].Controllers[SideNum].RotDifference = angle;
+                        if (HM.Spells[i].RotLeanience > angle)
                             return true;
                         else
                             return false;

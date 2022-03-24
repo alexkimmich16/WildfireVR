@@ -42,8 +42,8 @@ public class MovementDisplay : MonoBehaviour
             return;
         
         int move = (int)movement;
-        Debug.Log("Count: " + HM.Spells[move].FinalInfo.LeftLocalPos.Count + "Current: " + Current);
-        if (Current > HM.Spells[move].FinalInfo.LeftLocalPos.Count - 2)
+        //Debug.Log("Count: " + HM.Spells[move].FinalInfo.LeftLocalPos.Count + "Current: " + Current);
+        if (Current > HM.Spells[move].FinalInfo.Frames - 2)
             CastSpell();
         else if(ShouldCountFrames == true)
         {
@@ -53,9 +53,9 @@ public class MovementDisplay : MonoBehaviour
             {
                 Vector3 CurrentPos;
                 if (i == 0)
-                    CurrentPos = HandMagic.instance.Spells[move].FinalInfo.LeftLocalPos[Current];
+                    CurrentPos = HandMagic.instance.Spells[move].FinalInfo.GetLeftLocal(Current);
                 else
-                    CurrentPos = HandMagic.instance.Spells[move].FinalInfo.RightLocalPos[Current];
+                    CurrentPos = HandMagic.instance.Spells[move].FinalInfo.GetRightLocal(Current);
                 Sides[i].transform.position = ConvertPoint(CurrentPos) + Offset;
                 Sides[i].transform.eulerAngles = GetRotationSide(i, move, Current);
             }

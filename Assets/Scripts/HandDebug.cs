@@ -401,6 +401,7 @@ public class HandDebug : MonoBehaviour
         }
         CurrentMove = (Movements)Current;
     }
+
     public void GetAverage()
     {
         //Debug.Log("getaverage1");
@@ -441,9 +442,9 @@ public class HandDebug : MonoBehaviour
             AverageLocalLeft.Add(new Vector3(LocalLeft[i].x / Count, LocalLeft[i].y / Count, LocalLeft[i].z / Count));
             AverageLocalRight.Add(new Vector3(LocalRight[i].x / Count, LocalRight[i].y / Count, LocalRight[i].z / Count));
         }
-        HandMagic.instance.Spells[(int)CurrentMove].FinalInfo.LeftLocalPos = new List<Vector3>(AverageLocalLeft);
-        HandMagic.instance.Spells[(int)CurrentMove].FinalInfo.RightLocalPos = new List<Vector3>(AverageLocalRight);
-        HandMagic.instance.Spells[(int)CurrentMove].FinalInfo.Set = true;
+        ///HandMagic.instance.Spells[(int)CurrentMove].FinalInfo.LeftLocalPos = new List<Vector3>(AverageLocalLeft);
+        ///HandMagic.instance.Spells[(int)CurrentMove].FinalInfo.RightLocalPos = new List<Vector3>(AverageLocalRight);
+        ///HandMagic.instance.Spells[(int)CurrentMove].FinalInfo.Set = true;
     }
     public void SaveStats()
     {

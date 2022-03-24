@@ -21,11 +21,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     }
     public void ChangeHealth(int Change)
     {
-        int oldHealth = 0;
-        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(PlayerHealth, out object temp))
-        {
-            oldHealth = (int)temp;
-        }
+        int oldHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
         int newHealth = oldHealth - Change;
         SetPlayerInt(PlayerHealth, newHealth, PhotonNetwork.LocalPlayer);
         if (newHealth < 1)

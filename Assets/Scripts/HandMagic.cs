@@ -58,7 +58,7 @@ public class HandMagic : MonoBehaviour
         
         public float RotLeanience;
     }
-
+    //Spells[i].Controllers[j].RotDifference
     [System.Serializable]
     public class ControllerInfo
     {
@@ -162,16 +162,16 @@ public class HandMagic : MonoBehaviour
                 {
                     //only right use
                     FinalMovement info = Spells[i].FinalInfo;
-                    if (Spells[i].Controllers[0].Current != info.LeftLocalPos.Count)
+                    if (Spells[i].Controllers[0].Current != info.Frames)
                     {
                         for (int j = 0; j < Spells[i].Sides.Count; j++)
                         {
                             int Current = Spells[i].Controllers[j].Current;
-                            if (info.LeftLocalPos.Count > 1)
+                            if (info.Frames > 1)
                             {
-                                if (Current > info.RightLocalPos.Count - 1)
+                                if (Current > info.Frames - 1)
                                 {
-                                    Current = info.RightLocalPos.Count - 1;
+                                    Current = info.Frames - 1;
                                 }
                                 Vector3 Converted = ConvertDataToPoint(GetLocalPosSide(j,i,Current));
                                 float distance = Vector3.Distance(Converted, Controllers[j].transform.position);
@@ -255,7 +255,7 @@ public class HandMagic : MonoBehaviour
             else if (Part == 2)
             {
 
-                SC.FireballEnd(Side);
+                SC.StartFireballEnd(Side);
                 //SC.FireballShoot(Side);
                 //ChangeTrail(move, false, (Side)Side);
             }
@@ -355,7 +355,7 @@ public class HandMagic : MonoBehaviour
                 if (type == SpellType.Both)
                 {
                     int Current = Mathf.Min(Spells[i].Controllers[0].Current, Spells[i].Controllers[1].Current);
-                    if (Current > Spells[i].FinalInfo.RightLocalPos.Count - 1)
+                    if (Current > Spells[i].FinalInfo.Frames - 1)
                     {
                         Current -= 1;
                     }
@@ -363,7 +363,11 @@ public class HandMagic : MonoBehaviour
                     for (int j = 0; j < Spells[i].Sides.Count; j++)
                     {
                         Spells[i].Sides[j].transform.position = GetLocalPosSide(j, i, Current);
-                        Spells[i].Sides[j].transform.eulerAngles = GetRotationSide(j, i, Current) + Offset;
+                        Vector3 Rotation = GetRotationSide(j, i, Current) + Offset;
+                        Rotation.y = Rotation.y + Camera.main.transform.eulerAngles.y;
+                        if (j == 1)
+                            Rotation.z = Rotation.z + 180;
+                        Spells[i].Sides[j].transform.rotation = Quaternion.Euler(Rotation);
                     }
                 }
                 else if (type == SpellType.Individual)
@@ -371,15 +375,19 @@ public class HandMagic : MonoBehaviour
                     for (int j = 0; j < Spells[i].Sides.Count; j++)
                     {
                         int Current = Spells[i].Controllers[j].Current;
-                        if (Current > Spells[i].FinalInfo.RightLocalPos.Count - 1)
+                        if (Current > Spells[i].FinalInfo.Frames - 1)
                         {
                             Current -= 1;
-                        }
+                        } 
+                        
                         Spells[i].Sides[j].transform.position = GetLocalPosSide(j, i, Current);
                         Vector3 Rotation = GetRotationSide(j, i, Current) + Offset;
-                        Rotation.y = Rotation.y + Camera.main.transform.rotation.eulerAngles.y;
-                        if (j == 1)
-                            Rotation.z = Rotation.z + 180;
+                        //if (i == 1 && j == 1)
+                            //Debug.Log(Rotation);
+                        Rotation.y = Rotation.y + Camera.main.transform.eulerAngles.y;
+                        
+                        //if (j == 1)
+                            //Rotation.z = Rotation.z + 180;
                         Spells[i].Sides[j].transform.eulerAngles = Rotation;
                     }
                 }
@@ -488,6 +496,9 @@ public class HandMagic : MonoBehaviour
 
         if (UseMaxTime == true)
             CheckUnused();
+        //Debug.Log(Spells[0].FinalInfo.curves.X.Evaluate(5));
+        //Spells[0].FinalInfo.curves.X.Evaluate(5);
+            //
     }
     public void ChangeMagic(float BaseChange)
     {

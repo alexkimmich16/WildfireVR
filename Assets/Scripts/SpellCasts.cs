@@ -42,7 +42,11 @@ public class SpellCasts : MonoBehaviour
     }
     #endregion
     #region Fireball
-
+    public IEnumerator FireballMagic()
+    {
+        yield return new WaitForSeconds(1);
+        HM.ChangeMagic(HM.Spells[1].Cost);
+    }
     public void FireballStart(int Hand)
     {
         //StartFire()
@@ -50,17 +54,11 @@ public class SpellCasts : MonoBehaviour
         Stats[Hand].Fire = PhotonNetwork.Instantiate("NewFire", HM.Controllers[Hand].transform.position, HM.Controllers[Hand].transform.rotation);
         StartCoroutine(FireballMagic());
     }
-
-    public void FireballEnd(int Hand)
+    public void StartFireballEnd(int Hand)
     {
-        //undue fireball change
+        Stats[Hand].Fire.GetComponent<FireController>().StopFire();
         //HM.Controllers[Hand].transform.GetComponent<FireController>().StopFire();
         StopCoroutine(FireballMagic());
-        if (Stats[Hand].Fire != null)
-        {
-            RemoveObjectFromNetwork(Stats[Hand].Fire);
-        }
-        Stats[Hand].Fire = null;
 
         /*
         Vector3 VelDirection = HM.Controllers[Hand].PastFrames[0] - HM.Controllers[Hand].PastFrames[HandActions.PastFrameCount - 1];
@@ -72,34 +70,31 @@ public class SpellCasts : MonoBehaviour
         fireball.GetComponent<Fireball>().Speed = HM.Speed;
         */
     }
-
-
-
-    #endregion
-    public IEnumerator FireballMagic()
+    public void RemoveFireball(GameObject Fire)
     {
-        yield return new WaitForSeconds(1);
-        HM.ChangeMagic(HM.Spells[1].Cost);    
+        for (int i = 0; i < 2; i++)
+            if (Stats[i].Fire != null)
+                if (Stats[i].Fire == Fire)
+                {
+                    RemoveObjectFromNetwork(Stats[i].Fire);
+                    Stats[i].Fire = null;
+                }
     }
-
+    #endregion
     #region Shield
     public void StartShield(int Left)
     {
         HM.ChangeMagic(-HM.Spells[2].Cost);
-        transform.GetComponentInChildren<ShieldManager>().StartShield();
+        Stats[Left].Shield = PhotonNetwork.Instantiate("NewShield", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
+        Stats[Left].Shield.GetComponent<ShieldManager>().StartShield();
         
         Stats[Left].ShieldHealth = HM.MaxShield;
         SoundManager.instance.PlayAudio("Shield", null);
-
-        Stats[Left].Shield = PhotonNetwork.Instantiate("NewShield", HM.Controllers[Left].transform.position, HM.Controllers[Left].transform.rotation);
-        
-        //ChangeShield(Left, true);
     }
 
     public void EndShield(int Left)
     {
-        transform.GetComponentInChildren<ShieldManager>().StopShield();
-        
+        Stats[Left].Shield.GetComponent<ShieldManager>().StopShield();
         Stats[Left].ShieldHealth = 0;
         if (Stats[Left].Shield != null)
         {
@@ -123,8 +118,6 @@ public class SpellCasts : MonoBehaviour
             Stats[1].Shield.transform.rotation = HM.Controllers[1].transform.rotation;
         }
     }
-    
-
     public void ShieldDamage(int Damage, int Side)
     {
         Stats[Side].ShieldHealth -= Damage;
@@ -302,11 +295,28 @@ public class SpellCasts : MonoBehaviour
     private void Update()
     {
         //UpdateShieldMultiplayerPosition();
+        UpdatePositions();
         CheckTelekinesis();
         CheckFlying();
         AddSlashPosList();
     }
-    
+    private void UpdatePositions()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            if (Stats[i].Fire != null)
+            {
+                Stats[i].Fire.transform.position = HM.Controllers[i].transform.position;
+                Stats[i].Fire.transform.rotation = HM.Controllers[i].transform.rotation;
+            }
+                
+            if (Stats[i].Shield != null)
+            {
+                Stats[i].Shield.transform.position = HM.Controllers[i].transform.position;
+                Stats[i].Shield.transform.rotation = HM.Controllers[i].transform.rotation;
+            }
+        }
+    }
     public void RemoveObjectFromNetwork(GameObject obj)
     {
         PhotonNetwork.Destroy(obj);

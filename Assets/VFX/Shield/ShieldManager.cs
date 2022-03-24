@@ -12,14 +12,12 @@ public class ShieldManager : MonoBehaviour
 
     public bool ShieldActive;
 
-    
-
     private void Start()
     {
         Boarder.Stop();
         Interior.Stop();
         //StartCoroutine(Wait(4f));
-        //StartShield();
+        StartShield();
     }
 
     public IEnumerator Wait(float time)

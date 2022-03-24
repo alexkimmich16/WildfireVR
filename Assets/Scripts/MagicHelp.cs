@@ -11,18 +11,18 @@ namespace Odin
             //if(i > HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count)
 
             if (Side == 0)
-                return ConvertDataToPoint(HandMagic.instance.Spells[i].FinalInfo.LeftLocalPos[Current]);
+                return ConvertDataToPoint(HandMagic.instance.Spells[i].FinalInfo.GetLeftLocal(Current));
             else
-                return ConvertDataToPoint(HandMagic.instance.Spells[i].FinalInfo.RightLocalPos[Current]);
+                return ConvertDataToPoint(HandMagic.instance.Spells[i].FinalInfo.GetRightLocal(Current));
         }
         public static Vector3 GetRotationSide(int Side, int i, int Current)
         {
             //if(i > HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count)
             //Debug.Log("Side:  " + Side + "   i:  " + i + "   Current:  " + Current + "   Count:  " + HandDebug.instance.DataFolders[i].FinalInfo.LeftLocalPos.Count);
             if (Side == 0)
-                return HandMagic.instance.Spells[i].FinalInfo.LeftRotation[Current];
+                return HandMagic.instance.Spells[i].FinalInfo.GetLeftRot(Current);
             else
-                return HandMagic.instance.Spells[i].FinalInfo.RightRotation[Current];
+                return HandMagic.instance.Spells[i].FinalInfo.GetRightRot(Current);
         }
         public static Vector3 ConvertDataToPoint(Vector3 Local)
         {
@@ -66,7 +66,7 @@ namespace Odin
                         RotationLocks.Add(Vector2.zero);
                 }
                 FinalData.RotationLock = RotationLocks;
-
+                /*
                 for (var j = 0; j < Load.allTypes.TotalTypes[t].Final.LocalLeft.Length / 3; j++)//for each localdata in unit
                 {
                     AllData.Final Final = Load.allTypes.TotalTypes[t].Final;
@@ -84,6 +84,7 @@ namespace Odin
                 FinalData.LeftLocalPos = new List<Vector3>(LocalLeftFinal);
                 FinalData.LeftRotation = new List<Vector3>(RotationLeftFinal);
                 FinalData.RightRotation = new List<Vector3>(RotationRightFinal);
+                */
                 FinalData.TotalTime = Load.allTypes.TotalTypes[t].Final.Time;
                 FinalData.MoveType = (Movements)t;
 

@@ -65,8 +65,11 @@ MonoBehaviour:
     - (at Assets/Scripts/HandMagic.cs:2
   - Sub: Next
     ToDo:
-    - check build and only one sets room stats
-    - try rbc call and test if it can be seen by all by using new build
-    - 
+    - check multiplayer
+    - make walls block fire
+    - make forcepush pass position of user through rbc call
+    - make forcepush destory walls
+    - make forcepush deflect active sparks
+    - fix back collision of shield
     Done:
     - (at Assets/Scripts/HandMagic.cs:2

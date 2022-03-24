@@ -22,14 +22,16 @@ public class BlockMimic : MonoBehaviour
         CheckForShields();
         StartCoroutine(Wait());
     }
-
     private void Update()
     {
         int Max = 2;
         for (int i = 0; i < Shields.Count; i++)
         {
             string CenterString = "Center" + i;
-            effect.SetVector3(CenterString, Shields[i].position);
+            if(Shields[i] != null)
+                effect.SetVector3(CenterString, Shields[i].position);
+            else
+                effect.SetVector3(CenterString, AbsurdValue());
         }
         int Left = Max - Shields.Count;
         for (int i = 0; i < Left; i++)
@@ -60,13 +62,8 @@ public class BlockMimic : MonoBehaviour
                         Shields.Add(Colliders[i].transform);
                     }
                 }
-            }
-                
-                
-                    
-                    
-        }
-            
+            }    
+        } 
     }
     Vector3 AbsurdValue()
     {

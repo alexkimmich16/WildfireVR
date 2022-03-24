@@ -104,11 +104,11 @@ public class AllData
 
             allTypes.TotalTypes[t].Final = new Final();
 
-            allTypes.TotalTypes[t].Final.LocalLeft = GetList(FinalData.LeftLocalPos);
-            allTypes.TotalTypes[t].Final.LeftRot = GetList(FinalData.LeftRotation);
+            ///allTypes.TotalTypes[t].Final.LocalLeft = GetList(FinalData.LeftLocalPos);
+            ///allTypes.TotalTypes[t].Final.LeftRot = GetList(FinalData.LeftRotation);
 
-            allTypes.TotalTypes[t].Final.LocalRight = GetList(FinalData.RightLocalPos);
-            allTypes.TotalTypes[t].Final.RightRot = GetList(FinalData.RightRotation);
+            ///allTypes.TotalTypes[t].Final.LocalRight = GetList(FinalData.RightLocalPos);
+            ///allTypes.TotalTypes[t].Final.RightRot = GetList(FinalData.RightRotation);
 
             allTypes.TotalTypes[t].Final.Time = FinalData.TotalTime;
             allTypes.TotalTypes[t].Final.MoveType = t;

@@ -21,6 +21,8 @@ public class DisolveManager : MonoBehaviour
     public PlayerControl SubscribeDisolve;
     private bool Started = false;
 
+    public Color color;
+
     public void LookForSubscribe()
     {
         try
@@ -45,6 +47,8 @@ public class DisolveManager : MonoBehaviour
             DivideNum = 2 / PlayerControl.DeathTime;
             NewMat = new Material(Mat);
             NewMat.SetFloat("Time", -1);
+            NewMat.color = color;
+            NewMat.SetColor("Base", color);
             if (gameObject.GetComponent<SkinnedMeshRenderer>())
             {
                 gameObject.GetComponent<SkinnedMeshRenderer>().sharedMaterial = NewMat;
