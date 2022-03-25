@@ -189,12 +189,17 @@ public class FireController : MonoBehaviour
                         RaycastHit hit;
                         Vector3 Direction = Times[i].SentPos - Times[i].Target.position;
                         int WallCollision = 1 << 9;
+                        int MagicWallCollision = 1 << 15;
                         if (Physics.Raycast(Times[i].SentPos, Direction, out hit, Mathf.Infinity, WallCollision))
                         {
                             shield = hit.transform.gameObject;
                             return true;
                         }
-                            
+                        else if (Physics.Raycast(Times[i].SentPos, Direction, out hit, Mathf.Infinity, MagicWallCollision))
+                        {
+                            shield = null;
+                            return false;
+                        }
                         else
                         {
                             shield = null;

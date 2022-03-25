@@ -28,6 +28,7 @@ public class FinalMovement : ScriptableObject
 
     public Vector3 GetRightLocal(float Num)
     {
+        //Debug.Log("Num: " + Num + "   RightLocal:  " + new Vector3(RightLocal.X.Evaluate(Num), RightLocal.Y.Evaluate(Num), RightLocal.Z.Evaluate(Num)));
         return new Vector3(RightLocal.X.Evaluate(Num), RightLocal.Y.Evaluate(Num), RightLocal.Z.Evaluate(Num));
     }
     

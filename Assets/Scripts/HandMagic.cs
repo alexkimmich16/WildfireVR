@@ -134,7 +134,9 @@ public class HandMagic : MonoBehaviour
 
     public List<Material> Materials = new List<Material>(0);
 
-    public Vector3 Offset;
+    //public Vector3 Offset;
+    public float SpellCheckTime;
+    private float SpellCheckTimer;
 
     public void ChangeTrail(Movements type, bool Set, Side side)
     {
@@ -169,6 +171,17 @@ public class HandMagic : MonoBehaviour
                             int Current = Spells[i].Controllers[j].Current;
                             if (info.Frames > 1)
                             {
+                                
+                                if (RotationWorks(Controllers[j].LocalRotation) == true && DistanceWorks() == true)
+                                    Spells[i].Controllers[j].Current += 1;
+                                else
+                                {
+                                    DistanceWorks();
+                                    Spells[i].Controllers[0].Current = 0;
+                                    Spells[i].Controllers[1].Current = 0;
+                                }
+
+
                                 if (Current > info.Frames - 1)
                                 {
                                     Current = info.Frames - 1;
@@ -178,13 +191,66 @@ public class HandMagic : MonoBehaviour
 
                                 if (Spells[i].Leanience > distance)
                                     Spells[i].Controllers[j].Current += 1;
+                            }
+                            bool DistanceWorks()
+                            {
+                                //Debug.Log("i: " + i + "  SideNum: " + SideNum);
+                                Vector3 Converted = GetLocalPosSide(j, i, Current);
+                                float distance = Vector3.Distance(Converted, transform.position);
+                                Spells[i].Controllers[j].Distance = distance;
+
+                                if (Spells[i].Leanience > distance)
+                                    return true;
                                 else
-                                {
-                                    Spells[i].Controllers[0].Current = 0;
-                                    Spells[i].Controllers[1].Current = 0;
-                                }
+                                    return false;
                             }
 
+                            bool RotationWorks(Vector3 MyRotation)
+                            {
+                                Vector3 ObjectiveRotation = GetRotationSide(j, i, Current);
+                                if (info.RotationLock[0] != Vector2.zero)
+                                {
+                                    //check for limit reached
+                                    if (MyRotation.x > Spells[i].FinalInfo.RotationLock[0].x && MyRotation.x < Spells[i].FinalInfo.RotationLock[0].y)
+                                    {
+                                        ObjectiveRotation.x = MyRotation.x;
+                                    }
+                                    else
+                                        return false;
+                                }
+                                if (info.RotationLock[1] != Vector2.zero)
+                                {
+                                    //check for limit reached
+                                    if (MyRotation.y > Spells[i].FinalInfo.RotationLock[1].x && MyRotation.y < Spells[i].FinalInfo.RotationLock[1].y)
+                                    {
+                                        ObjectiveRotation.y = MyRotation.y;
+                                    }
+                                    else
+                                        return false;
+                                }
+                                if (info.RotationLock[2] != Vector2.zero)
+                                {
+                                    //check for limit reached
+                                    if (MyRotation.z > Spells[i].FinalInfo.RotationLock[2].x && MyRotation.z < Spells[i].FinalInfo.RotationLock[2].y)
+                                    {
+                                        ObjectiveRotation.z = MyRotation.z;
+                                    }
+                                    else
+                                        return false;
+                                }
+                                Quaternion a = Quaternion.Euler(ObjectiveRotation);
+                                Quaternion b = Quaternion.Euler(MyRotation);
+                                float angle = Quaternion.Angle(a, b);
+
+                                Spells[i].Controllers[j].RotDifference = angle;
+                                if (Spells[i].RotLeanience > angle)
+                                    return true;
+                                else
+                                    return false;
+
+                                //Debug.Log("i: " + i + "  SideNum: " + SideNum);
+
+                            }
                         }
                     }
                     else
@@ -213,6 +279,8 @@ public class HandMagic : MonoBehaviour
                         Spells[i].Controllers[1].Current = 0;
                     }
                 }
+
+                
             }
         }
     }
@@ -356,17 +424,12 @@ public class HandMagic : MonoBehaviour
                 {
                     int Current = Mathf.Min(Spells[i].Controllers[0].Current, Spells[i].Controllers[1].Current);
                     if (Current > Spells[i].FinalInfo.Frames - 1)
-                    {
                         Current -= 1;
-                    }
-
                     for (int j = 0; j < Spells[i].Sides.Count; j++)
                     {
                         Spells[i].Sides[j].transform.position = GetLocalPosSide(j, i, Current);
-                        Vector3 Rotation = GetRotationSide(j, i, Current) + Offset;
+                        Vector3 Rotation = GetRotationSide(j, i, Current);
                         Rotation.y = Rotation.y + Camera.main.transform.eulerAngles.y;
-                        if (j == 1)
-                            Rotation.z = Rotation.z + 180;
                         Spells[i].Sides[j].transform.rotation = Quaternion.Euler(Rotation);
                     }
                 }
@@ -376,18 +439,10 @@ public class HandMagic : MonoBehaviour
                     {
                         int Current = Spells[i].Controllers[j].Current;
                         if (Current > Spells[i].FinalInfo.Frames - 1)
-                        {
                             Current -= 1;
-                        } 
-                        
                         Spells[i].Sides[j].transform.position = GetLocalPosSide(j, i, Current);
-                        Vector3 Rotation = GetRotationSide(j, i, Current) + Offset;
-                        //if (i == 1 && j == 1)
-                            //Debug.Log(Rotation);
+                        Vector3 Rotation = GetRotationSide(j, i, Current);
                         Rotation.y = Rotation.y + Camera.main.transform.eulerAngles.y;
-                        
-                        //if (j == 1)
-                            //Rotation.z = Rotation.z + 180;
                         Spells[i].Sides[j].transform.eulerAngles = Rotation;
                     }
                 }
@@ -490,7 +545,7 @@ public class HandMagic : MonoBehaviour
             FollowMotion();
             EnableCubes(true);
         }
-        
+
         if (ShouldCharge == true)
             ChangeMagic(MagicRecharge);
 

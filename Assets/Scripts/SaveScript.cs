@@ -7,7 +7,7 @@ using static Odin.MagicHelp;
 
 public static class SaveScript
 {
-    static bool DoDebug = true;
+    static bool DoDebug = false;
     public static string Path()
     {
         return Application.dataPath + "/player.fun";

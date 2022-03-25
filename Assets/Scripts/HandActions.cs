@@ -45,6 +45,8 @@ public class HandActions : MonoBehaviour
     public Vector3 CamLocal;
     public Vector3 LocalRotation;
 
+    private float SpellCheckTimer;
+
     public void WaitFrames()
     {
         for (int i = 0; i < HM.Spells.Count; i++)
@@ -109,17 +111,21 @@ public class HandActions : MonoBehaviour
                     {
                         //Debug.Log("i: " + i + "  SideNum: " + SideNum);
                         Vector3 Converted = GetLocalPosSide(SideNum, i, Current);
-                        if (SideNum == 1 && i == 1)
-                            Debug.Log("Converted: " + Converted + "  Current: " + Current);
+                        
+                            
                         float distance = Vector3.Distance(Converted, transform.position);
+
+                        if (SideNum == 1 && i == 1)
+                        {
+                            //Debug.Log("Converted: " + GetLocalPosSide(SideNum, i, Current) + "  Current: " + Current + "  distance: " + distance + "  transform.position: " + transform.position);
+                            //Debug.Log("Converted: " + GetLocalPosSide(SideNum, i, 1) + "  Current: " + 1);
+                        }
                         HM.Spells[i].Controllers[SideNum].Distance = distance;
                         
                         if (HM.Spells[i].Leanience > distance)
                             return true;
                         else
                             return false;
-
-                        
                     }
 
                     bool RotationWorks(Vector3 MyRotation)
@@ -180,10 +186,15 @@ public class HandActions : MonoBehaviour
     {
         SetRemoteStats();
         //CheckColliders();
-        CheckAll();
+        
         WaitFrames();
-        LastFrameSave(); 
-
+        LastFrameSave();
+        SpellCheckTimer += Time.deltaTime;
+        if (SpellCheckTimer > HM.SpellCheckTime)
+        {
+            SpellCheckTimer = 0;
+            CheckAll();
+        }
         Child = transform.GetChild(1).eulerAngles;
         //MyEuler = transform.eulerAngles;
        // BeforeLocal = MyEuler - Child;
