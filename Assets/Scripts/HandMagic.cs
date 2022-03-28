@@ -171,12 +171,11 @@ public class HandMagic : MonoBehaviour
                             int Current = Spells[i].Controllers[j].Current;
                             if (info.Frames > 1)
                             {
-                                
-                                if (RotationWorks(Controllers[j].LocalRotation) == true && DistanceWorks() == true)
+                                if (RotationWorks(Controllers[j].LocalRotation) == true && DistanceWorks(Controllers[j].transform.position) == true)
                                     Spells[i].Controllers[j].Current += 1;
                                 else
                                 {
-                                    DistanceWorks();
+                                    DistanceWorks(Controllers[j].transform.position);
                                     Spells[i].Controllers[0].Current = 0;
                                     Spells[i].Controllers[1].Current = 0;
                                 }
@@ -192,11 +191,11 @@ public class HandMagic : MonoBehaviour
                                 if (Spells[i].Leanience > distance)
                                     Spells[i].Controllers[j].Current += 1;
                             }
-                            bool DistanceWorks()
+                            bool DistanceWorks(Vector3 ControllerPos)
                             {
                                 //Debug.Log("i: " + i + "  SideNum: " + SideNum);
                                 Vector3 Converted = GetLocalPosSide(j, i, Current);
-                                float distance = Vector3.Distance(Converted, transform.position);
+                                float distance = Vector3.Distance(Converted, ControllerPos);
                                 Spells[i].Controllers[j].Distance = distance;
 
                                 if (Spells[i].Leanience > distance)
