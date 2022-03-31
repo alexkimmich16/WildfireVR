@@ -254,7 +254,6 @@ public class InGameManager : MonoBehaviour
         int NewCount = SideCount(team) + Change;
         SetGameInt(Name, NewCount);
     }
-
     public void RestartGame()
     {
         BillBoardManager.instance.SetResetButton(false);
