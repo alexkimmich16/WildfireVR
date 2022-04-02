@@ -336,7 +336,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh37542
+  m_Name: pb_Mesh39306
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -24012,7 +24012,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh35236
+  m_Name: pb_Mesh37004
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -25193,7 +25193,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh34852
+  m_Name: pb_Mesh36620
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -39642,7 +39642,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh34774
+  m_Name: pb_Mesh36544
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -42970,6 +42970,36 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4269558594845584224, guid: 8718326052472894cabb06461b60fcf4,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Int.m_Array.Array.data[0].m_Value
+      value: 280
+      objectReference: {fileID: 0}
+    - target: {fileID: 4269558594845584224, guid: 8718326052472894cabb06461b60fcf4,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4269558594845584224, guid: 8718326052472894cabb06461b60fcf4,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4269558594845584224, guid: 8718326052472894cabb06461b60fcf4,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4269558594845584224, guid: 8718326052472894cabb06461b60fcf4,
+        type: 3}
+      propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[1].m_Value.m_Curve.Array.data[1].time
+      value: 0.78481174
+      objectReference: {fileID: 0}
+    - target: {fileID: 4269558594845584224, guid: 8718326052472894cabb06461b60fcf4,
+        type: 3}
+      propertyPath: m_PropertySheet.m_AnimationCurve.m_Array.Array.data[1].m_Value.m_Curve.Array.data[1].value
+      value: 0.11373013
+      objectReference: {fileID: 0}
     - target: {fileID: 4269558594845584225, guid: 8718326052472894cabb06461b60fcf4,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -42988,7 +43018,7 @@ PrefabInstance:
     - target: {fileID: 4269558594845584227, guid: 8718326052472894cabb06461b60fcf4,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.41
+      value: 2.064
       objectReference: {fileID: 0}
     - target: {fileID: 4269558594845584227, guid: 8718326052472894cabb06461b60fcf4,
         type: 3}
