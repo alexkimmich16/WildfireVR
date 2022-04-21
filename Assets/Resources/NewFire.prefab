@@ -107,17 +107,20 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 4.84
+      - m_Value: 2.67
         m_Name: Speed
         m_Overridden: 1
-      - m_Value: 0.23
+      - m_Value: 0.219
         m_Name: Spread
         m_Overridden: 1
       - m_Value: -180
         m_Name: Add
         m_Overridden: 1
-      - m_Value: 0.4
+      - m_Value: 0.47
         m_Name: Drag
+        m_Overridden: 1
+      - m_Value: 4.44
+        m_Name: TrueSize
         m_Overridden: 1
     m_Vector2f:
       m_Array: []
@@ -126,7 +129,7 @@ VisualEffect:
       - m_Value: {x: 0, y: 0, z: 0}
         m_Name: Center
         m_Overridden: 1
-      - m_Value: {x: 4.5, y: 13.46, z: 66.93}
+      - m_Value: {x: 3, y: 3, z: 3}
         m_Name: Size
         m_Overridden: 1
       - m_Value: {x: 1.03, y: 0, z: 0}
@@ -153,7 +156,7 @@ VisualEffect:
       m_Array: []
     m_Int:
       m_Array:
-      - m_Value: 5737
+      - m_Value: 678
         m_Name: Rate
         m_Overridden: 1
     m_Matrix4x4f:
@@ -190,8 +193,8 @@ VisualEffect:
           serializedVersion: 2
           m_Curve:
           - serializedVersion: 3
-            time: -0.13604246
-            value: 1.0000645
+            time: -0.12360655
+            value: 0.8859898
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -199,17 +202,8 @@ VisualEffect:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.40759918
-            value: 0.3307101
-            inSlope: -0.07251893
-            outSlope: -0.07251893
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0.1641388
-          - serializedVersion: 3
-            time: 0.8587799
-            value: 0.05078125
+            time: 0.5023294
+            value: 0.19683512
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -220,6 +214,32 @@ VisualEffect:
           m_PostInfinity: 2
           m_RotationOrder: 4
         m_Name: SizeOverTime
+        m_Overridden: 1
+      - m_Value:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 2
+            inSlope: 0.123563915
+            outSlope: 0.123563915
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0.07149436
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0.011022763
+            outSlope: 0.011022763
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0.07201594
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        m_Name: AlphaTime
         m_Overridden: 1
     m_Gradient:
       m_Array: []
