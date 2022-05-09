@@ -97,16 +97,21 @@ Material:
     m_Floats:
     - AO: 0
     - Alpha: 81.89
-    - AlphaIncrease: 1.5
+    - AlphaIncrease: 3.85
     - BaseScale: 0.248
+    - BlackTolerance: 0
     - BoarderSize: 0.37
-    - FireSize: 0
+    - FireSize: 0.86
+    - FirstSize: 0.119
     - IncreaseSecond: -0.56
     - Scale: 6.77
     - Smooth: -17.12
     - Speed: -0.47
     - Speed1: 0
+    - ThirdSize: 0.15
     - Time: -0.1
+    - XRot: 3.43
+    - YRot: 0
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -140,7 +145,10 @@ Material:
     - BoarderColor: {r: 1, g: 0.9013664, b: 0, a: 1}
     - FirstColor: {r: 0.95283014, g: 0.876424, b: 0.8795772, a: 1}
     - FrontColor: {r: 1, g: 1, b: 1, a: 0}
+    - LastColor: {r: 1, g: 0, b: 0, a: 0}
     - LeftoverColor: {r: 0.9150943, g: 0.5275867, b: 0, a: 1}
+    - SecondColor: {r: 1, g: 1, b: 1, a: 1}
+    - ThirdColor: {r: 2, g: 0.101960786, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

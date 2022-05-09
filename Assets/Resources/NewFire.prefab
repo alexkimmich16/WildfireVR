@@ -107,19 +107,19 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 2.67
+      - m_Value: 7.45
         m_Name: Speed
         m_Overridden: 1
-      - m_Value: 0.219
+      - m_Value: 0.232
         m_Name: Spread
         m_Overridden: 1
       - m_Value: -180
         m_Name: Add
         m_Overridden: 1
-      - m_Value: 0.47
+      - m_Value: 1.89
         m_Name: Drag
         m_Overridden: 1
-      - m_Value: 4.44
+      - m_Value: 4.95
         m_Name: TrueSize
         m_Overridden: 1
     m_Vector2f:
@@ -150,13 +150,22 @@ VisualEffect:
       - m_Value: {x: 5.08, y: 10.71, z: 7.79}
         m_Name: ParticalSize
         m_Overridden: 1
+      - m_Value: {x: 1000, y: 1000, z: 1000}
+        m_Name: Center0
+        m_Overridden: 1
+      - m_Value: {x: 1000, y: 1000, z: 1000}
+        m_Name: Center1
+        m_Overridden: 1
+      - m_Value: {x: 0, y: 0, z: 0}
+        m_Name: Angle
+        m_Overridden: 1
     m_Vector4f:
       m_Array: []
     m_Uint:
       m_Array: []
     m_Int:
       m_Array:
-      - m_Value: 678
+      - m_Value: 600
         m_Name: Rate
         m_Overridden: 1
     m_Matrix4x4f:
@@ -202,13 +211,22 @@ VisualEffect:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.5023294
-            value: 0.19683512
-            inSlope: 0
-            outSlope: 0
+            time: 0.25931448
+            value: 0.88502306
+            inSlope: -0.0010995215
+            outSlope: -0.0010995215
             tangentMode: 0
             weightedMode: 0
-            inWeight: 0
+            inWeight: 0.33333334
+            outWeight: 0.5277863
+          - serializedVersion: 3
+            time: 0.5023294
+            value: 0.19683512
+            inSlope: -2.8967733
+            outSlope: -2.8967733
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0.22537486
             outWeight: 0
           m_PreInfinity: 2
           m_PostInfinity: 2

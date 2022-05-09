@@ -133,12 +133,13 @@ public class SpellCasts : MonoBehaviour
         Vector3 pos = HM.Cam.transform.position;
         SoundManager.instance.PlayAudio("Force", null);
         Collider[] colliders = Physics.OverlapSphere(pos, HM.PushRadius);
+
+        //push everyone  back
         foreach (Collider pushedOBJ in colliders)
         {
             //Debug.Log("PT1");
             if (pushedOBJ.tag != "Player" && pushedOBJ.gameObject.GetComponent<Rigidbody>() != null)
             {
-                
                 Vector3 ZPlacementObj = new Vector3(pushedOBJ.transform.position.x, HM.Cam.position.y, pushedOBJ.transform.position.z);
                 Vector3 targetDir = ZPlacementObj + HM.Cam.transform.position;
                 float ObjectAngle = Vector3.Angle(targetDir, HM.Cam.transform.forward);
@@ -161,10 +162,16 @@ public class SpellCasts : MonoBehaviour
                         Vector3 difference = pushedOBJ.transform.position - HM.Cam.position;
                         pushedOBJ.GetComponent<Fireball>().Bounce(difference);
                     }
-                    else
+                    else if(pushedOBJ.GetComponent<Rigidbody>())
                     {
                         //Debug.Log("PT4");
                         pushedOBJ.GetComponent<Rigidbody>().AddExplosionForce(HM.PushAmount, pos, HM.PushRadius);
+                    }
+
+
+                    if (pushedOBJ.gameObject.tag == "Player")
+                    {
+                        //launch
                     }
                 }
                 
