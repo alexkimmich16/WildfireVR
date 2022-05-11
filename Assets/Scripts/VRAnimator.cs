@@ -30,7 +30,7 @@ public class VRAnimator : MonoBehaviour
     public Vector3 headBodyOffset;
     void Start()
     {
-        headBodyOffset = transform.position - headConstraint.position;
+        //headBodyOffset = transform.position - headConstraint.position;
     }
 
     void LateUpdate()
