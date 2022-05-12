@@ -10,8 +10,6 @@ public class VRMap
     public Vector3 trackingPositionOffset;
     public Vector3 trackingRotationOffset;
 
-    
-
     public void Map()
     {
         rigTarget.position = vrTarget.TransformPoint(trackingPositionOffset);
@@ -28,6 +26,7 @@ public class VRAnimator : MonoBehaviour
 
     public Transform headConstraint;
     public Vector3 headBodyOffset;
+    public Vector3 CameraOffset;
     void Start()
     {
         //headBodyOffset = transform.position - headConstraint.position;
