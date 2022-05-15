@@ -26,33 +26,44 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         SetPlayerInt(PlayerHealth, newHealth, PhotonNetwork.LocalPlayer);
         if (newHealth < 1)
         {
-            StartCoroutine(Respawn());
-            SetPlayerBool(PlayerAlive, false, PhotonNetwork.LocalPlayer);
+            Death(true);
+            //rpcDeathRPC()
         }
-            
+        
     }
     IEnumerator Respawn()
     {
         disolveEvent();
         yield return new WaitForSeconds(DeathTime);
         Health = MaxHealth;
+
+        //enable ragdoll mode
+        //seperate from player
         if(HandMagic.Respawn == true && SceneLoader.instance.CurrentSetting == CurrentGame.Testing)
+        {
             HandMagic.instance.RB.transform.position = HandDebug.instance.Spawn.position;
+        } 
         else if (HandMagic.Respawn == true && SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
         {
             Transform Spawn = InGameManager.instance.SpectatorSpawns[Random.Range(0, InGameManager.instance.SpectatorSpawns.Count)];
             HandMagic.instance.RB.transform.position = Spawn.position;
         }
     }
+    public void Death(bool IsMine)
+    {
+        StartCoroutine(Respawn());
+        if(IsMine == true)
+        {
+            SetPlayerBool(PlayerAlive, false, PhotonNetwork.LocalPlayer);
+        }
+            
 
+    }
     [PunRPC]
-    public void FindSpotRPC()
+    public void DeathRPC()
     {
-        FindSpot();
+        Death(false);
     }
-
-    public void FindSpot()
-    {
-        Debug.Log("findSpot");
-    }
+    //we're pretty far ahead of the instagram!
+    //hows the github download coming along?
 }

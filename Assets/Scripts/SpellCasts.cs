@@ -169,14 +169,16 @@ public class SpellCasts : MonoBehaviour
                     }
 
 
-                    if (pushedOBJ.gameObject.tag == "Player")
-                    {
-                        //launch
-                    }
+                    
                 }
                 
             }
-            
+            else if (pushedOBJ.gameObject.tag == "Player")
+            {
+                //rpc call to player sending my world position as pusher
+                //send them into ragdoll
+                //upon landing, getup animation
+            }
         }
     }
     #endregion
