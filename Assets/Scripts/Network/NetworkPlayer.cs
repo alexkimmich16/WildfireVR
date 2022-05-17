@@ -18,6 +18,8 @@ public class NetworkPlayer : MonoBehaviour
     private Transform RigRight;
 
     public Hashtable Info;
+
+    public GameObject SkinRenderer;
     void Start()
     {
         photonView = GetComponent<PhotonView>();
@@ -34,6 +36,7 @@ public class NetworkPlayer : MonoBehaviour
             Head.gameObject.SetActive(false);
             Left.gameObject.SetActive(false);
             Right.gameObject.SetActive(false);
+            SkinRenderer.SetActive(false);
 
             MapPosition(Head, RigHead);
             MapPosition(Left, RigLeft);

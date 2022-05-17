@@ -93,7 +93,7 @@ public class FireController : MonoBehaviour
 
     private void Update()
     {
-        fire.SetVector3("Angle", transform.rotation.eulerAngles);
+        //fire.SetVector3("Angle", transform.rotation.eulerAngles);
         CheckArriveTimes();
         if (Targets.Count < 0)
             return;

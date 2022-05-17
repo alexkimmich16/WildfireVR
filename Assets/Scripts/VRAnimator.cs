@@ -32,10 +32,10 @@ public class VRAnimator : MonoBehaviour
         //headBodyOffset = transform.position - headConstraint.position;
     }
 
-    void LateUpdate()
+    void Update()
     {
         transform.position = headConstraint.position + headBodyOffset;
-        transform.forward = Vector3.Lerp(transform.forward, Vector3.ProjectOnPlane(headConstraint.up, Vector3.up).normalized, Time.deltaTime * TurnSmooth);
+        transform.forward = Vector3.Lerp(transform.forward, Vector3.ProjectOnPlane(headConstraint.forward, Vector3.up).normalized, Time.deltaTime * TurnSmooth);
 
         head.Map();
         left.Map();
