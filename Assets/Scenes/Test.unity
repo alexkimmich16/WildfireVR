@@ -27708,13 +27708,19 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 991701983}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 4ef832b9dbf5cab488437b647c9ada25, type: 3}
+  m_Controller: {fileID: 9100000, guid: 009f67a0b02856941ad38aa25cd8dfb2, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'metarig'\n\tTransform 'thumb.03.R'\n\tTransform
+    'forearm.R'\n\tTransform 'thumb.02.L'\n\tTransform 'shoulder.R'\n\tTransform
+    'f_middle.02.R'\n\tTransform 'f_index.02.R'\n\tTransform 'thigh.L'\n\tTransform
+    'toe.L'\n\tTransform 'f_ring.03.L'\n\tand more ...\n\tFrom animation clip 'WallRun2'\n\tFrom
+    animation clip 'ForwardVault'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
