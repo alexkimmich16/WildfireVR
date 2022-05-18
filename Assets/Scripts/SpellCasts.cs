@@ -133,7 +133,7 @@ public class SpellCasts : MonoBehaviour
         Vector3 pos = HM.Cam.transform.position;
         SoundManager.instance.PlayAudio("Force", null);
         Collider[] colliders = Physics.OverlapSphere(pos, HM.PushRadius);
-
+        ForcepushManager.instance.Push(pos);
         //push everyone  back
         foreach (Collider pushedOBJ in colliders)
         {
@@ -180,6 +180,8 @@ public class SpellCasts : MonoBehaviour
                 //upon landing, getup animation
             }
         }
+
+
     }
     #endregion
     #region Telekinesis

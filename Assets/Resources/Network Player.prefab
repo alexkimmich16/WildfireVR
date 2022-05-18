@@ -5729,6 +5729,9 @@ MonoBehaviour:
   headConstraint: {fileID: 1329269842912803564}
   headBodyOffset: {x: 0, y: -1.5, z: 0}
   CameraOffset: {x: 0, y: 0, z: 0}
+  anim: {fileID: 0}
+  WalkingThreshold: 0
+  Current: 0
 --- !u!114 &5197786402960849317
 MonoBehaviour:
   m_ObjectHideFlags: 0

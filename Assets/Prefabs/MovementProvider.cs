@@ -13,7 +13,7 @@ public class MovementProvider : MonoBehaviour
 
     public XRNode inputSource;
     private XRRig rig;
-    private Vector2 inputAxis;
+    public Vector2 inputAxis;
     public float gravity = -9.81f;
     private float fallSpeed;
     public float speed;

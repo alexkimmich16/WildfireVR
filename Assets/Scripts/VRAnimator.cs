@@ -27,11 +27,13 @@ public class VRAnimator : MonoBehaviour
     public Transform headConstraint;
     public Vector3 headBodyOffset;
     public Vector3 CameraOffset;
-    void Start()
-    {
-        //headBodyOffset = transform.position - headConstraint.position;
-    }
 
+    public Animator anim;
+    [Range(0f, 1f)]
+    public float WalkingThreshold;
+
+    [Range(0f, 1f)]
+    public float Current;
     void Update()
     {
         transform.position = headConstraint.position + headBodyOffset;
@@ -40,5 +42,14 @@ public class VRAnimator : MonoBehaviour
         head.Map();
         left.Map();
         right.Map();
+        Current = Vector2.SqrMagnitude(MovementProvider.instance.inputAxis);
+        //Debug.Log(MoveSpeed);
+        if (anim == null)
+            return;
+        if (Current < WalkingThreshold)
+            anim.SetBool("Walking", false);
+        else
+            anim.SetBool("Walking", true);
+
     }
 }
