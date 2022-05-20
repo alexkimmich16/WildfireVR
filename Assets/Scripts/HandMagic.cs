@@ -546,13 +546,10 @@ public class HandMagic : MonoBehaviour
         }
 
         if (ShouldCharge == true)
-            ChangeMagic(MagicRecharge);
+            ChangeMagic(MagicRecharge * ZoneController.instance.Multiplier(MovementProvider.instance.gameObject));
 
         if (UseMaxTime == true)
             CheckUnused();
-        //Debug.Log(Spells[0].FinalInfo.curves.X.Evaluate(5));
-        //Spells[0].FinalInfo.curves.X.Evaluate(5);
-            //
     }
     public void ChangeMagic(float BaseChange)
     {

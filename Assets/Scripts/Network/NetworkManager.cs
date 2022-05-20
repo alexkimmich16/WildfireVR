@@ -85,11 +85,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 Debug.Log("Initialized room and reset or created all stats");
                 InGameManager.instance.InitialisePlayer();
             }
-
-            
-
         }
-            
         base.OnJoinedRoom();
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)

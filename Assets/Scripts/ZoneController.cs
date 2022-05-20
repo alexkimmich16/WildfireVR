@@ -12,15 +12,9 @@ public class ZoneController : MonoBehaviour
     public float MagicLinePos;
     public VisualEffect MagicLine;
 
-    public GameObject Zone1Weak;
-    public GameObject Zone2Weak;
-    public GameObject Zone1Strong;
-    public GameObject Zone2Strong;
+    public GameObject Zone1Weak, Zone2Weak, Zone1Strong, Zone2Strong;
 
-    public float Weak1;
-    public float Weak2;
-    public float Strong1;
-    public float Strong2;
+    private float Weak1, Weak2, Strong1, Strong2;
 
     public List<GameObject> Players1;
     public List<GameObject> Players2;
@@ -28,6 +22,8 @@ public class ZoneController : MonoBehaviour
     public float Team1Distance;
     public float Team2Distance;
 
+
+    public float WeakMultiplier, StrongMultiplier;
     public Vector2 ZoneWeak(int Zone)
     {
         //0 is low
@@ -102,7 +98,29 @@ public class ZoneController : MonoBehaviour
         AdjustLine();
     }
 
+    public float Multiplier(GameObject CheckObject)
+    {
+        float X = CheckObject.transform.position.x;
+        float FinalValue = 1;
+        int Side;
+        if (X < MagicLineWorldPos(MagicLinePos))
+            Side = 0;
+        else
+            Side = 1;
 
+        if (Within(ZoneWeak(Side), X))
+            FinalValue = FinalValue * WeakMultiplier;
+        if (Within(ZoneStrong(Side), X))
+            FinalValue = FinalValue * StrongMultiplier;
+        return FinalValue;
+        bool Within(Vector2 Limits, float Value)
+        {
+            if (Value > Limits.x && Value < Limits.y)
+                return true;
+            else
+                return false;
+        }
+    }
     public float MagicLineWorldPos(float Percent)
     {
         return (TotalSize * Percent) + WorldPos.x;

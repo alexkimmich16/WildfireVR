@@ -4,42 +4,30 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
-//using Hashtable = ExitGames.Client.Photon.Hashtable;
-
-public enum GameState
+#region Classes
+[System.Serializable]
+public class SpawnPoint
 {
-    Waiting = 0,
-    CountDown = 1,
-    Active = 2,
-    Finished = 3,
-}
-public enum Result
-{
-    AttackWon = 0,
-    DefenseWon = 1,
-    Tie = 2,
+    public Transform Point;
+    public int ListNum;
+    //public bool Taken = false;
 }
 
+[System.Serializable]
+public class TeamInfo
+{
+    public string Side;
+    public List<SpawnPoint> Spawns = new List<SpawnPoint>();
+}
+
+#endregion
 public class InGameManager : MonoBehaviour
 {
-    #region Singleton + classes
+    #region Singleton
     public static InGameManager instance;
     void Awake() { instance = this; }
 
-    [System.Serializable]
-    public class SpawnPoint
-    {
-        public Transform Point;
-        public int ListNum;
-        //public bool Taken = false;
-    }
-
-    [System.Serializable]
-    public class TeamInfo
-    {
-        public string Side;
-        public List<SpawnPoint> Spawns = new List<SpawnPoint>();
-    }
+    
     #endregion
 
     //timer
@@ -56,6 +44,9 @@ public class InGameManager : MonoBehaviour
     public static bool CanMove = false;
 
     public float TimeMultiplier = 3f;
+
+    //public int MyPos;
+    //public Team MyTeam;
 
     //state + spawns
     //public GameState currentState = GameState.Waiting;
@@ -169,7 +160,6 @@ public class InGameManager : MonoBehaviour
                 if (Exists(AttackSpawns[0], null))
                 {
                     SpawnPoint SpawnInfo = FindSpawn(InfoSave.instance.team);
-                    //Debug.Log(SpawnInfo.ListNum);
                     SetNewPosition(SpawnInfo);
                     SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
                     FoundSpawn = true;
@@ -267,8 +257,6 @@ public class InGameManager : MonoBehaviour
             SetGameBool(AttackText, false);
             SetGameBool(DefenseText, false);
         }
-
-        
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
             //set all alive
@@ -278,7 +266,13 @@ public class InGameManager : MonoBehaviour
         PhotonView[] photonViews = FindObjectsOfType<PhotonView>();
         for (int i = 0; i < photonViews.Length; i++)
         {
-            photonViews[i].RPC("FindSpotRPC", RpcTarget.All);
+            if (photonViews[i].IsMine)
+            {
+                //photonViews[i].RPC("FindSpotRPC", RpcTarget.All);
+                photonViews[i].gameObject.GetComponent<NetworkPlayer>().RespawnAll();
+                
+            }
+            
         }
         //get phototonview of other
         
@@ -335,7 +329,18 @@ public class InGameManager : MonoBehaviour
         //stop game
     }
     #endregion
+}
 
-
-    
+public enum GameState
+{
+    Waiting = 0,
+    CountDown = 1,
+    Active = 2,
+    Finished = 3,
+}
+public enum Result
+{
+    AttackWon = 0,
+    DefenseWon = 1,
+    Tie = 2,
 }

@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.XR;
 using Photon.Pun;
 using UnityEngine.XR.Interaction.Toolkit;
+using static Odin.Net;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class NetworkPlayer : MonoBehaviour
+public class NetworkPlayer : MonoBehaviourPun
 {
     public Transform Head;
     public Transform Left;
@@ -73,5 +74,26 @@ public class NetworkPlayer : MonoBehaviour
     {
         target.position = rigTrans.position;
         target.rotation = rigTrans.rotation;
+    }
+
+    public void RespawnAll()
+    {
+        photonView.RPC("FindSpotRPC", RpcTarget.All);
+        //Team team = 
+
+    }
+
+    [PunRPC]
+    void FindSpotRPC()
+    {
+        //reset my position
+        Debug.Log("RPC");
+        BillBoardManager.instance.SetResetButton(false);
+        Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer);
+        SpawnPoint SpawnInfo = InGameManager.instance.FindSpawn(team);
+        InGameManager.instance.SetNewPosition(SpawnInfo);
+        SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
+        Debug.Log("RPC Respawn at: " + SpawnInfo.ListNum + " Team: " + team.ToString());
+        //InGameManager.instance.FoundSpawn = true;
     }
 }

@@ -1219,14 +1219,12 @@ MonoBehaviour:
   Zone2Weak: {fileID: 1667312404}
   Zone1Strong: {fileID: 1040750875}
   Zone2Strong: {fileID: 1024859494}
-  Weak1: 0
-  Weak2: 0
-  Strong1: 0
-  Strong2: 0
   Players1: []
   Players2: []
   Team1Distance: 0
   Team2Distance: 0
+  WeakMultiplier: 0.3
+  StrongMultiplier: 2
   StrongSpace: 2
   WeakSpace: 2
   WorldPos: {x: -10, y: 10}
@@ -2360,7 +2358,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &289069804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16381,7 +16379,7 @@ MonoBehaviour:
   voiceDetectionThreshold: 0.01
   voiceDetectionDelayMs: 500
   unityMicrophoneDevice: 
-  photonMicrophoneDeviceId: -1
+  photonMicrophoneDeviceId: 0
   interestGroup: 0
   debugEchoMode: 0
   reliableMode: 0

@@ -64,6 +64,4 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     {
         Death(false);
     }
-    //we're pretty far ahead of the instagram!
-    //hows the github download coming along?
 }
