@@ -5,6 +5,9 @@ using UnityEngine.VFX;
 
 public class ZoneController : MonoBehaviour
 {
+    public static ZoneController instance;
+    void Awake() { instance = this; }
+
     [Range(0f, 1f)]
     public float MagicLinePos;
     public VisualEffect MagicLine;
@@ -100,7 +103,7 @@ public class ZoneController : MonoBehaviour
     }
 
 
-    float MagicLineWorldPos(float Percent)
+    public float MagicLineWorldPos(float Percent)
     {
         return (TotalSize * Percent) + WorldPos.x;
     }

@@ -12,6 +12,9 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         SpawnedPlayerPrefab = PhotonNetwork.Instantiate("Network Player", transform.position, transform.rotation);
         SpawnedPlayerPrefab.name = "My Player";
+
+        //get player side
+
         if (SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
         {
 

@@ -5714,24 +5714,23 @@ MonoBehaviour:
   head:
     vrTarget: {fileID: 7077550060436018196}
     rigTarget: {fileID: 1329269842912803564}
-    trackingPositionOffset: {x: 0, y: -0.458, z: 0}
-    trackingRotationOffset: {x: 0, y: 0, z: 0}
   left:
     vrTarget: {fileID: 165320934450250722}
     rigTarget: {fileID: 6427545549521349281}
-    trackingPositionOffset: {x: 0, y: 0, z: 0}
-    trackingRotationOffset: {x: -90, y: 90, z: 0}
   right:
     vrTarget: {fileID: 1062120216902390105}
     rigTarget: {fileID: 6427545549521349281}
-    trackingPositionOffset: {x: 0, y: 0, z: 0}
-    trackingRotationOffset: {x: 90, y: -90, z: 0}
   headConstraint: {fileID: 1329269842912803564}
   headBodyOffset: {x: 0, y: -1.5, z: 0}
-  CameraOffset: {x: 0, y: 0, z: 0}
-  anim: {fileID: 0}
+  VRType: 0
+  VRTypes:
+  - type: Oculus
+    ControllerPosOffset: {x: 0.04, y: -0.02, z: -0.09}
+    ControllerRotOffset: {x: 266.63, y: -174.3, z: -9.93}
   WalkingThreshold: 0
   Current: 0
+  HeadPosOffset: {x: 0, y: 0, z: 0}
+  HeadRotOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &5197786402960849317
 MonoBehaviour:
   m_ObjectHideFlags: 0
