@@ -615,8 +615,12 @@ public class HandMagic : MonoBehaviour
         for (int i = 0; i < Spells.Count; i++)
         {
             //set active if
-            Spells[i].Sides[0].SetActive(State);
-            Spells[i].Sides[1].SetActive(State);
+            if(Spells[i].Sides[0] != null)
+            {
+                Spells[i].Sides[0].SetActive(State);
+                Spells[i].Sides[1].SetActive(State);
+            }
+            
             //if setting true and spell is inactive, don't set at all
             if (State == true || Spells[i].Active == false)
             {
