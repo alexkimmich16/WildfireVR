@@ -38,11 +38,11 @@ public class SoundManager : MonoBehaviour
 
     private Transform Parent;
     public List<Audio> AudioClips = new List<Audio>();
-
+    public bool UseSounds;
     public void PlayAudio(string Name, GameObject ToParent)
     {
         //Debug.Log("PT1");
-        if (HandMagic.AllSounds == true)
+        if (UseSounds == true)
         {
             if (ToParent != null)
             {

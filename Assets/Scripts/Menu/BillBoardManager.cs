@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
@@ -21,12 +19,19 @@ public class BillBoardManager : MonoBehaviour
     public TextMeshProUGUI MyPlayerSpawnText;
     public TextMeshProUGUI MyTeamText;
     public TextMeshProUGUI AliveText;
+    
+    public TextMeshProUGUI AttackTeamCount;
+    public TextMeshProUGUI DefenseTeamCount;
 
     public List<TextMeshProUGUI> DefenseSpawnText = new List<TextMeshProUGUI>();
     public List<TextMeshProUGUI> AttackSpawnsText = new List<TextMeshProUGUI>();
 
+    
+
     public void UpdateWall()
     {
+        
+        
         if (Exists(GameStateText, null))
         {
             StateText.text = GetGameState().ToString();

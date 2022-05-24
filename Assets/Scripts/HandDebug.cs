@@ -282,7 +282,6 @@ public class HandDebug : MonoBehaviour
         Type.text = "Testing: " + DataFolders[num].Name;
         Max.text = "End: " + EndLerp.ToString("F1");
         Min.text = "Start: " + StartLerp.ToString("F1");
-        RecordingEnum.text = "State: " + RockVR.Video.VideoCaptureCtrl.instance.status.ToString();
 
         if (HM.InfiniteMagic == false)
             MagicSlider.value = HM.CurrentMagic;

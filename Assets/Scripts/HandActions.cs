@@ -36,7 +36,7 @@ public class HandActions : MonoBehaviour
     public SkinnedMeshRenderer meshRenderer;
     public bool SettingStats = false;
 
-    public static int PastFrameCount = 20;
+    public static int PastFrameCount = 5;
     [HideInInspector]
     public List<Vector3> PastFrames = new List<Vector3>();
    // public Vector3 MyEuler;
@@ -44,7 +44,10 @@ public class HandActions : MonoBehaviour
     //public Vector3 BeforeLocal;
     public Vector3 CamLocal;
     public Vector3 LocalRotation;
+    public Vector3 Velocity;
+    public Vector3 Acceleration;
 
+    public float Magnitude;
     private float SpellCheckTimer;
 
     public void WaitFrames()
@@ -205,10 +208,18 @@ public class HandActions : MonoBehaviour
             Child.y -= 360;
         LocalRotation = new Vector3(Child.x, CamLocal.y - Child.y, Child.z);
     }
-
+    public Vector3 AverageDirection()
+    {
+        Vector3 average = Vector3.zero;
+        for (int i = 0; i < PastFrames.Count; i++)
+        {
+            average += PastFrames[i];
+        }
+        
+        return average / PastFrames.Count;
+    }
     public void LastFrameSave()
     {
-        int Count = 0;
         for (int i = 0; i < PastFrameCount; i++)
         {
             if (PastFrames.Count < PastFrameCount)
@@ -216,7 +227,7 @@ public class HandActions : MonoBehaviour
                 PastFrames.Add(Vector3.zero);
                 return;
             }
-            Count = PastFrameCount - i - 1;
+            int Count = PastFrameCount - i - 1;
             if (Count == 0)
             {
                 PastFrames[0] = transform.position;
@@ -272,6 +283,11 @@ public class HandActions : MonoBehaviour
         device.TryGetFeatureValue(CommonUsages.primaryTouch, out TopButtonTouched);
 
         device.TryGetFeatureValue(CommonUsages.primary2DAxis, out Direction);
+
+        device.TryGetFeatureValue(CommonUsages.deviceVelocity, out Velocity);
+        device.TryGetFeatureValue(CommonUsages.deviceAcceleration, out Acceleration);
+
+        Magnitude = Velocity.magnitude;
         if (Direction != Vector2.zero)
         {
             //Debug.Log("touchpad" + Direction);

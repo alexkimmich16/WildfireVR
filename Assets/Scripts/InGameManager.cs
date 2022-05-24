@@ -45,12 +45,6 @@ public class InGameManager : MonoBehaviour
 
     public float TimeMultiplier = 3f;
 
-    //public int MyPos;
-    //public Team MyTeam;
-
-    //state + spawns
-    //public GameState currentState = GameState.Waiting;
-
     private Transform Rig;
 
     //attack first
@@ -90,18 +84,10 @@ public class InGameManager : MonoBehaviour
     {
         string Name = "";
         if (team == Team.Attack)
-            Name = "AttackTeam";
+            Name = AttackTeamCount;
         else if (team == Team.Defense)
-            Name = "DefenseTeam";
-
-        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(Name, out object temp))
-        {
-            return (int)temp;
-        }
-        else
-        {
-            return 100;
-        }
+            Name = DefenseTeamCount;
+        return GetGameInt(Name);
     }
     public void ProgressTime()
     {
@@ -111,6 +97,7 @@ public class InGameManager : MonoBehaviour
             float FinishTimer = GetGameFloat(GameFinishTimer);
             int Attack = SideCount(Team.Attack);
             int Defense = SideCount(Team.Defense);
+            //Debug.Log("Attack: " + Attack + "  Defense: " + Defense);
             GameState state = GetGameState();
             if (state == GameState.Waiting)
             {
@@ -161,6 +148,7 @@ public class InGameManager : MonoBehaviour
                 {
                     SpawnPoint SpawnInfo = FindSpawn(InfoSave.instance.team);
                     SetNewPosition(SpawnInfo);
+                    //Debug.Log("newpos: " + SpawnInfo.ListNum);
                     SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
                     FoundSpawn = true;
                 }
@@ -186,6 +174,7 @@ public class InGameManager : MonoBehaviour
         Transform spawn = SpawnInfo.Point;
 
         //change listnum
+        //Debug.Log("newpos: " + SpawnInfo.ListNum);
         SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
         Rig.transform.position = spawn.position;
     }
@@ -227,20 +216,29 @@ public class InGameManager : MonoBehaviour
         ChangeTeamCount(oldTeam, -1);
 
         // get old team and uncheck old spawn bool
-        string TeamName = InfoSave.instance.team.ToString();
-        var OldSpawnNumVAR = PhotonNetwork.LocalPlayer.CustomProperties["SpawnNum"];
-        int OldSpawnNum = (int)OldSpawnNumVAR;
-        string FinalOldSpawn = TeamName + OldSpawnNum;
+        string OldTeamName = oldTeam.ToString();
+        int OldSpawnNum = GetPlayerInt("SpawnNum", PhotonNetwork.LocalPlayer);
+        if (OldSpawnNum > 2)
+            OldSpawnNum -= 3;
 
+        string FinalOldSpawn = OldTeamName + OldSpawnNum;
+        //Debug.Log(FinalOldSpawn);
         SetGameBool(FinalOldSpawn, false);
 
         SpawnPoint SpawnInfo = FindSpawn(NewTeam);
         SetNewPosition(SpawnInfo);
+
+
     }
     public void ChangeTeamCount(Team team, int Change)
     {
         //Debug.Log(team.ToString() + "  " + Change);
-        string Name = team.ToString();
+        string Name;
+        if (team == Team.Attack)
+            Name = AttackTeamCount;
+        else
+            Name = DefenseTeamCount;
+       // Debug.Log("Name: " + Name + " Change" + Change);
         int NewCount = SideCount(team) + Change;
         SetGameInt(Name, NewCount);
     }

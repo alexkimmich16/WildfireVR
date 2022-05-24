@@ -92,6 +92,7 @@ public class NetworkPlayer : MonoBehaviourPun
         Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer);
         SpawnPoint SpawnInfo = InGameManager.instance.FindSpawn(team);
         InGameManager.instance.SetNewPosition(SpawnInfo);
+        Debug.Log("newpos: " + SpawnInfo.ListNum);
         SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
         Debug.Log("RPC Respawn at: " + SpawnInfo.ListNum + " Team: " + team.ToString());
         //InGameManager.instance.FoundSpawn = true;

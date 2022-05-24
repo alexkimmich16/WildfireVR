@@ -13,21 +13,16 @@ public class Fireball : MonoBehaviour
     public GameObject Explosion, Flash, DestoryAudio;
 
     //public float LifeTime = 3;
-    void Start()
-    {
-        if (HandMagic.AllSounds == true)
-        {
-            //FireSound.Play();
-        }
-    }
     void Update()
     {
         transform.Translate(Vector3.forward * Time.deltaTime * Speed);
     }
     void OnCollisionEnter(Collision col)
     {
-        GameObject Ex = (GameObject)GameObject.Instantiate(Explosion, this.transform.position, this.transform.rotation);
-        GameObject Fl = (GameObject)GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
+        if(Explosion != null)
+            GameObject.Instantiate(Explosion, this.transform.position, this.transform.rotation);
+        if(Flash != null)
+            GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
         SoundManager.instance.PlayAudio("FireballExplosion", null);
         if (col.collider.tag == "Shield")
         {

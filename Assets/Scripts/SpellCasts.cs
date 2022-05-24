@@ -6,6 +6,11 @@ using Photon.Realtime;
 
 public class SpellCasts : MonoBehaviour
 {
+    #region Singleton + Classes
+    public static SpellCasts instance;
+    void Awake() { instance = this; }
+    #endregion
+
     public HandMagic HM;
     public static bool DirectionalPush = false;
     [System.Serializable]
@@ -41,44 +46,60 @@ public class SpellCasts : MonoBehaviour
         //eventually check for people and do damage
     }
     #endregion
-    #region Fireball
-    public IEnumerator FireballMagic()
-    {
-        yield return new WaitForSeconds(1);
-        HM.ChangeMagic(HM.Spells[1].Cost);
-    }
-    public void FireballStart(int Hand)
-    {
-        //StartFire()
-        //HM.Controllers[Hand].transform.GetComponent<FireController>().StartFire();
-        Stats[Hand].Fire = PhotonNetwork.Instantiate("NewFire", HM.Controllers[Hand].transform.position, HM.Controllers[Hand].transform.rotation);
-        StartCoroutine(FireballMagic());
-    }
-    public void StartFireballEnd(int Hand)
-    {
-        Stats[Hand].Fire.GetComponent<FireController>().StopFire();
-        //HM.Controllers[Hand].transform.GetComponent<FireController>().StopFire();
-        StopCoroutine(FireballMagic());
 
-        /*
-        Vector3 VelDirection = HM.Controllers[Hand].PastFrames[0] - HM.Controllers[Hand].PastFrames[HandActions.PastFrameCount - 1];
-        VelDirection = VelDirection.normalized;
-        //GameObject FireBall = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
-        //FireBall.GetComponent<Fireball>().Speed = HM.Speed;
-        GameObject fireball = PhotonNetwork.Instantiate("FireballMultiplayer", HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
-        SoundManager.instance.PlayAudio("Fireball", fireball);
-        fireball.GetComponent<Fireball>().Speed = HM.Speed;
-        */
-    }
-    public void RemoveFireball(GameObject Fire)
+    #region Torch
+    public void ToggleTorch(int Hand, bool On)
     {
-        for (int i = 0; i < 2; i++)
-            if (Stats[i].Fire != null)
-                if (Stats[i].Fire == Fire)
-                {
-                    RemoveObjectFromNetwork(Stats[i].Fire);
-                    Stats[i].Fire = null;
-                }
+        if (On == true)
+        {
+            GameObject Torch = PhotonNetwork.Instantiate("Torch", HM.Controllers[Hand].transform.position, Quaternion.identity);
+            NewMagicCheck.instance.Torch[Hand].FlameObject = Torch;
+            //SoundManager.instance.PlayAudio("Fireball", fireball);
+            HM.ChangeMagic(HM.Spells[1].Cost);
+            UpdateTorchPosition();
+        }
+        else if (On == false)
+        {
+            NewMagicCheck.instance.Torch[Hand].AbleToSpawn = false;
+            NewMagicCheck.instance.Torch[Hand].FlameObject.GetComponent<ParticleSystem>().Stop();
+            StartCoroutine(Destroy(Hand));
+            //RemoveObjectFromNetwork(NewMagicCheck.instance.Torch[Hand].FlameObject);
+        }
+        
+    }
+
+    public void UpdateTorchPosition()
+    {
+        for (var i = 0; i < NewMagicCheck.instance.Torch.Count; i++)
+        {
+            if (NewMagicCheck.instance.Torch[i].FlameObject != null)
+            {
+                NewMagicCheck.instance.Torch[i].FlameObject.transform.position = HM.Controllers[i].transform.position;
+                NewMagicCheck.instance.Torch[i].FlameObject.transform.rotation = HM.Controllers[i].transform.rotation;
+            }
+        }
+    }
+
+    public IEnumerator Destroy(int Side)
+    {
+        yield return new WaitForSeconds(2);
+        RemoveObjectFromNetwork(NewMagicCheck.instance.Torch[Side].FlameObject);
+        NewMagicCheck.instance.Torch[Side].AbleToSpawn = true;
+        NewMagicCheck.instance.Torch[Side].FlameObject = null;
+        //HM.ChangeMagic(HM.Spells[1].Cost);
+    }
+    #endregion
+
+    #region Fireball
+    public void FireballCast(int Hand, Vector3 Dir)
+    {
+        float Mag = Dir.magnitude;
+        Dir = Dir.normalized;
+        
+        GameObject fireball = PhotonNetwork.Instantiate("Fireball", HM.Controllers[Hand].transform.position, Quaternion.LookRotation(Dir));
+        SoundManager.instance.PlayAudio("Fireball", fireball);
+        fireball.GetComponent<Fireball>().Speed = HM.Speed * Mag;
+        HM.ChangeMagic(HM.Spells[1].Cost);
     }
     #endregion
     #region Shield
@@ -307,9 +328,10 @@ public class SpellCasts : MonoBehaviour
     {
         //UpdateShieldMultiplayerPosition();
         UpdatePositions();
-        CheckTelekinesis();
-        CheckFlying();
-        AddSlashPosList();
+        UpdateTorchPosition();
+        //CheckTelekinesis();
+        //CheckFlying();
+        //AddSlashPosList();
     }
     private void UpdatePositions()
     {
@@ -332,4 +354,46 @@ public class SpellCasts : MonoBehaviour
     {
         PhotonNetwork.Destroy(obj);
     }
+
+
+    #region OldFireball
+    public IEnumerator FireballMagic()
+    {
+        yield return new WaitForSeconds(1);
+        HM.ChangeMagic(HM.Spells[1].Cost);
+    }
+    public void FireballStart(int Hand)
+    {
+        //StartFire()
+        //HM.Controllers[Hand].transform.GetComponent<FireController>().StartFire();
+        Stats[Hand].Fire = PhotonNetwork.Instantiate("Fireball", HM.Controllers[Hand].transform.position, HM.Controllers[Hand].transform.rotation);
+        StartCoroutine(FireballMagic());
+    }
+    public void StartFireballEnd(int Hand)
+    {
+        Stats[Hand].Fire.GetComponent<FireController>().StopFire();
+        //HM.Controllers[Hand].transform.GetComponent<FireController>().StopFire();
+        //StopCoroutine(FireballMagic());
+        //Fireball
+
+        Vector3 VelDirection = HM.Controllers[Hand].PastFrames[0] - HM.Controllers[Hand].PastFrames[HandActions.PastFrameCount - 1];
+        VelDirection = VelDirection.normalized;
+        //GameObject FireBall = Instantiate(HM.Fireball, HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
+        //FireBall.GetComponent<Fireball>().Speed = HM.Speed;
+        GameObject fireball = PhotonNetwork.Instantiate("FireballMultiplayer", HM.Controllers[Hand].transform.position, Quaternion.LookRotation(VelDirection));
+        SoundManager.instance.PlayAudio("Fireball", fireball);
+        fireball.GetComponent<Fireball>().Speed = HM.Speed;
+
+    }
+    public void RemoveFireball(GameObject Fire)
+    {
+        for (int i = 0; i < 2; i++)
+            if (Stats[i].Fire != null)
+                if (Stats[i].Fire == Fire)
+                {
+                    RemoveObjectFromNetwork(Stats[i].Fire);
+                    Stats[i].Fire = null;
+                }
+    }
+    #endregion
 }
