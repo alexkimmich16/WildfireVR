@@ -13108,9 +13108,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1388871734}
+  - component: {fileID: 1388871735}
   - component: {fileID: 1388871733}
   - component: {fileID: 1388871732}
-  - component: {fileID: 1388871735}
   m_Layer: 0
   m_Name: Magic
   m_TagString: Untagged
@@ -13401,19 +13401,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FireBall:
   - Name: left
-    Checks: 000000
-    Timer: 0
+    Checks: 010000
+    Timer: 0.44561762
     dir: 0
-    SavedDir: {x: 0, y: 0, z: 0}
+    SavedDir: {x: 4.953059, y: 1.1971316, z: 0.3244438}
   - Name: right
     Checks: 000000
     Timer: 0
-    dir: 0
+    dir: 2
     SavedDir: {x: 0, y: 0, z: 0}
-  FirstVelMax: 2.02
-  StopVelMin: 0.8
-  PullVelMax: 1.09
-  TimeMax1: 1.2
+  VelThreshold: 0
+  AngleMinMax: {x: 29.9, y: 36.2}
+  Threshold: 0.69
+  TimeMax1: 1.17
   TimeMax2: 0.46
   Torch:
   - Name: left
@@ -13423,7 +13423,7 @@ MonoBehaviour:
     Checks: 0000
     AbleToSpawn: 1
   - Name: right
-    type: 0
+    type: 1
     Last: 0
     FlameObject: {fileID: 0}
     Checks: 0000

@@ -218,7 +218,7 @@ public class NewMagicCheck : MonoBehaviour
             {
                 if (HM.Controllers[i].Magnitude > VelThreshold && FireBall[i].dir == Direction.Towards)
                 {
-                    Debug.Log(FireBall[i].SavedDir);
+                    //Debug.Log(FireBall[i].SavedDir);
                     SC.FireballCast(i, FireBall[i].SavedDir);
                     Reset();
                 }
