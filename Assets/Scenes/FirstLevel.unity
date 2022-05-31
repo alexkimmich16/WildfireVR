@@ -13401,20 +13401,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FireBall:
   - Name: left
-    Checks: 010000
-    Timer: 0.44561762
-    dir: 0
-    SavedDir: {x: 4.953059, y: 1.1971316, z: 0.3244438}
+    Checks: 000000
+    Timer: 0
+    dir: 3
+    SavedDir: {x: 0, y: 0, z: 0}
+    Magnitude: 0.0001796477
+    Angle: 139.398
+    Velocity: {x: -0.00012324032, y: 0.00009329877, z: -0.00009154485}
   - Name: right
     Checks: 000000
     Timer: 0
-    dir: 2
+    dir: 3
     SavedDir: {x: 0, y: 0, z: 0}
-  VelThreshold: 0
-  AngleMinMax: {x: 29.9, y: 36.2}
-  Threshold: 0.69
-  TimeMax1: 1.17
-  TimeMax2: 0.46
+    Magnitude: 0
+    Angle: 0
+    Velocity: {x: 0, y: 0, z: 0}
+  PunchSpeedThreshold: 1.16
+  StopSpeedThreshold: 0.1
+  FireballOffset: {x: 25, y: 0, z: 0}
+  DirectionLeaniency: 50
+  DirectionForceThreshold: 1
+  TimeMax1: 0.75
+  TimeMax2: 0.82
+  type: 0
+  UseFireBall: 1
   Torch:
   - Name: left
     type: 0
@@ -13429,6 +13439,7 @@ MonoBehaviour:
     Checks: 0000
     AbleToSpawn: 1
   HookSpeedMin: 1.15
+  UseTorch: 0
 --- !u!1 &1393079182
 GameObject:
   m_ObjectHideFlags: 0
@@ -16475,7 +16486,7 @@ MonoBehaviour:
   voiceDetectionThreshold: 0.01
   voiceDetectionDelayMs: 500
   unityMicrophoneDevice: 
-  photonMicrophoneDeviceId: 0
+  photonMicrophoneDeviceId: -1
   interestGroup: 0
   debugEchoMode: 0
   reliableMode: 0
@@ -17769,7 +17780,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 448692, guid: 4c323f1f4a42d43bc844932a2876c81e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9583475
+      value: -0.90923595
       objectReference: {fileID: 0}
     - target: {fileID: 448692, guid: 4c323f1f4a42d43bc844932a2876c81e, type: 3}
       propertyPath: m_LocalRotation.x
@@ -17777,11 +17788,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 448692, guid: 4c323f1f4a42d43bc844932a2876c81e, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.2856047
+      value: 0.41628104
       objectReference: {fileID: 0}
     - target: {fileID: 448692, guid: 4c323f1f4a42d43bc844932a2876c81e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 448692, guid: 4c323f1f4a42d43bc844932a2876c81e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -17789,7 +17800,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 448692, guid: 4c323f1f4a42d43bc844932a2876c81e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -33.19
+      value: 310.8
       objectReference: {fileID: 0}
     - target: {fileID: 448692, guid: 4c323f1f4a42d43bc844932a2876c81e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z

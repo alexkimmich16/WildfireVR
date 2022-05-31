@@ -247,7 +247,6 @@ public class HandDebug : MonoBehaviour
                     
                     
                 }
-                
             }
         }
         else
@@ -290,7 +289,6 @@ public class HandDebug : MonoBehaviour
 
         CreateInfo();
     }
-
     public void LoadChildScriptableObjects(AllData Load)
     {
         /*
@@ -374,9 +372,6 @@ public class HandDebug : MonoBehaviour
         DataFolders[(int)CurrentMove].Storage[PackageNum].Time = 0f;
         DataFolders[(int)CurrentMove].Storage[PackageNum].Interval = 0f;
         DataFolders[(int)CurrentMove].Storage[PackageNum].Set = false;
-
-        //DataFolders[(int)CurrentMove].Storage[PackageNum].RightDifferencePos.Clear();
-        //DataFolders[(int)CurrentMove].Storage[PackageNum].LeftDifferencePos.Clear();
     }
     void Start()
     {
@@ -400,7 +395,6 @@ public class HandDebug : MonoBehaviour
         }
         CurrentMove = (Movements)Current;
     }
-
     public void GetAverage()
     {
         //Debug.Log("getaverage1");

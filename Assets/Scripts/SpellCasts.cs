@@ -93,12 +93,11 @@ public class SpellCasts : MonoBehaviour
     #region Fireball
     public void FireballCast(int Hand, Vector3 Dir)
     {
-        float Mag = Dir.magnitude;
-        Dir = Dir.normalized;
-        
-        GameObject fireball = PhotonNetwork.Instantiate("Fireball", HM.Controllers[Hand].transform.position, Quaternion.LookRotation(Dir));
+        //Debug.Log("Cast");
+        //float Mag = Dir.magnitude;
+        GameObject fireball = PhotonNetwork.Instantiate("Fireball", HM.Controllers[Hand].transform.position, Quaternion.Euler(Dir));
         SoundManager.instance.PlayAudio("Fireball", fireball);
-        fireball.GetComponent<Fireball>().Speed = HM.Speed * Mag;
+        fireball.GetComponent<Fireball>().Speed = HM.Speed;
         HM.ChangeMagic(HM.Spells[1].Cost);
     }
     #endregion

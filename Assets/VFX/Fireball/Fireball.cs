@@ -16,6 +16,7 @@ public class Fireball : MonoBehaviour
     void Update()
     {
         transform.Translate(Vector3.forward * Time.deltaTime * Speed);
+        //Debug.Log("update");
     }
     void OnCollisionEnter(Collision col)
     {
@@ -24,6 +25,9 @@ public class Fireball : MonoBehaviour
         if(Flash != null)
             GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
         SoundManager.instance.PlayAudio("FireballExplosion", null);
+
+        Debug.Log(col.gameObject.name);
+
         if (col.collider.tag == "Shield")
         {
             if(HandMagic.instance.SC.Stats[0].Shield != null)
@@ -40,8 +44,6 @@ public class Fireball : MonoBehaviour
                     HandMagic.instance.SC.ShieldDamage(Damage, 1);
                 }
             }
-            
-            
         }
         else if (col.collider.tag == "HitBox")
         {
