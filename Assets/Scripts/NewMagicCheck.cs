@@ -45,11 +45,16 @@ public class FireBallBallInfo
 public class TorchInfo
 {
     public string Name;
-    public HookType type;
-    public bool Last = false;
+    public bool IsActive = false;
+    public bool OnCooldown = false;
+
+    public bool YPos;
+    public bool Speed;
+    public bool CamDistance;
+
     public GameObject FlameObject;
+
     public List<bool> Checks;
-    public bool AbleToSpawn = true;
     public int Current()
     {
         for (var i = 0; i < Checks.Count; i++)
@@ -58,6 +63,7 @@ public class TorchInfo
         return Checks.Count;
     }
 }
+
 #endregion
 public class NewMagicCheck : MonoBehaviour
 {
@@ -66,26 +72,29 @@ public class NewMagicCheck : MonoBehaviour
 
     HandMagic HM;
     SpellCasts SC;
+    ControllerStats CS;
+    
     [Header("FireBallStats")]
     public List<FireBallBallInfo> FireBall;
     public float PunchSpeedThreshold, StopSpeedThreshold;
-    //public Vector2 AngleMinMax;
     public Vector3 FireballOffset;
     public float DirectionLeaniency;
     public float DirectionForceThreshold;
     public float TimeMax1, TimeMax2;
     public FireBallCastType type;
     public bool UseFireBall;
-    
 
     [Header("TorchStats")]
     public List<TorchInfo> Torch;
-    public float HookSpeedMin;
+    public Vector2 AngleChangeLimits;
+    public Vector2 DistanceLimit;
+    public float YPosLeanience;
     public bool UseTorch;
     void Start()
     {
         HM = HandMagic.instance;
         SC = SpellCasts.instance;
+        CS = ControllerStats.instance;
     }
     
     void Update()
@@ -96,13 +105,12 @@ public class NewMagicCheck : MonoBehaviour
             ManageTorch();
     }
 
-    
-
+   
     public void ManageFireBall()
     {
         for (var i = 0; i < FireBall.Count; i++)
         {
-            FireBall[i].dir = ControllerDir(HM.Controllers[i].Velocity, i);
+            FireBall[i].dir = CS.ControllerDir(HM.Controllers[i].Velocity, i);
             FireBall[i].Velocity = HM.Controllers[i].Velocity;
             FireBall[i].Magnitude = HM.Controllers[i].Magnitude;
             //Magnitude
@@ -112,9 +120,7 @@ public class NewMagicCheck : MonoBehaviour
                 {
                     FireBall[i].Checks[0] = true;
                     FireBall[i].Timer = 0;
-                    Vector3 VelDirection = HM.Controllers[i].PastFrames[0] - HM.Controllers[i].PastFrames[HandActions.PastFrameCount - 1];
-                    VelDirection = VelDirection.normalized;
-                    FireBall[i].SavedDir = VelDirection;
+                    FireBall[i].SavedDir = (HM.Controllers[i].PastFrames[0] - HM.Controllers[i].PastFrames[HandActions.PastFrameCount - 1]).normalized;
                 }
             }
             else if (FireBall[i].Current() == 1)
@@ -145,130 +151,45 @@ public class NewMagicCheck : MonoBehaviour
     }
     public void ManageTorch()
     {
-        //hook
-        //1) hand moving around player at velocity min
-        //2) when above speed play FireBall
-        //3) when slower than min restart
-        //shoot FireBall perpentiduclar to player hand
-
-        float Angle = 0;
         for (var i = 0; i < Torch.Count; i++)
         {
-            if (Torch[i].AbleToSpawn == true)
+            Torch[i].Speed = Speed();
+            Torch[i].YPos = LevelWithHead();
+            Torch[i].CamDistance = CamDis();
+            bool Active = LevelWithHead() && Speed() && CamDis();
+
+            if (Active == true && Torch[i].IsActive == false && Torch[i].OnCooldown == false)
             {
-                if (i == 1)
-                {
-                    Torch[i].type = Hook(HM.Controllers[i].Velocity, out float angle);
-                    Angle = angle;
-                }
-                if (HM.Controllers[i].Magnitude < HookSpeedMin)
-                    Reset();
-
-                if (Torch[i].Current() == 0)
-                {
-                    if (HM.Controllers[i].Magnitude > HookSpeedMin && Angle < 50)
-                    {
-                        if (Torch[i].Last == false)
-                        {
-                            Set();
-                            Torch[i].Last = true;
-                        }
-
-                        Torch[i].Checks[0] = true;
-                    }
-                }
-                else if (Torch[i].Current() == 1)
-                {
-                    if (HM.Controllers[i].Magnitude > HookSpeedMin && Angle < 50)
-                    {
-                        Torch[i].Checks[1] = true;
-                    }
-                    else if (Angle > 50)
-                    {
-                        Reset();
-                    }
-                }
-            }
-
-            void Set()
-            {
+                Torch[i].IsActive = true;
                 SpellCasts.instance.ToggleTorch(i, true);
             }
-            void Reset()
+            else if (Active == false && Torch[i].IsActive == true)
             {
-                for (var j = 0; j < Torch[i].Checks.Count; j++)
-                    Torch[i].Checks[j] = false;
+                Torch[i].IsActive = false;
+                SpellCasts.instance.ToggleTorch(i, false);
+            }
 
-                if (Torch[i].Last == true)
-                {
-                    SpellCasts.instance.ToggleTorch(i, false);
-                    Torch[i].Last = false;
-                }
+            bool LevelWithHead()
+            {
+                Vector3 Controller = HM.Controllers[i].transform.position;
+                Vector3 Cam = MovementProvider.instance.transform.GetChild(0).GetChild(1).position;
+                float Difference = Mathf.Abs(Controller.y - Cam.y);
+                return Difference < YPosLeanience;
+            }
 
+            bool Speed()
+            {
+                float AngleChange = Mathf.Abs(CS.Controllers[i].PosCamAngleChange);
+                return AngleChange > AngleChangeLimits.x && AngleChange < AngleChangeLimits.y;
+            }
+
+            bool CamDis()
+            {
+                float Distance = CS.Controllers[i].CameraDistance;
+                return Distance > DistanceLimit.x && Distance < DistanceLimit.y;
             }
         }
     }
-
-
-    public Direction ControllerDir(Vector3 Vel, int Side)
-    {
-        //Vector3 targetDir = Target.transform.position - transform.position;
-        ///angleToTarget = Vector3.SignedAngle(targetDir, transform.forward, Vector3.up);
-        //angleToTarget += 180;
-
-        Vector3 NewVel = new Vector3(Vel.x, 0, Vel.z);
-        Vector3 CamPos = MovementProvider.instance.transform.GetChild(0).GetChild(1).position;
-        Vector3 CamRot = MovementProvider.instance.transform.GetChild(0).GetChild(1).forward;
-        Vector3 TrueCamRot = new Vector3(CamRot.x, 0, CamRot.z); 
-        Vector3 TrueCamPos = new Vector3(CamPos.x, 0, CamPos.z);
-        Vector3 TrueController = new Vector3(HM.Controllers[Side].transform.position.x, 0, HM.Controllers[Side].transform.position.z);
-        Vector3 CameraToController = (TrueCamPos - TrueController);
-
-        float Angle = Vector3.Angle(NewVel, TrueCamRot);
-        FireBall[Side].Angle = Angle;
-
-        float AngleLeanience = DirectionLeaniency;
-        if(Vel.magnitude > DirectionForceThreshold)
-        {
-            if (Angle > 180 - AngleLeanience)
-            {
-                return Direction.Towards;
-            }
-            else if (Angle < 0 + AngleLeanience && Angle > 0 - AngleLeanience)
-            {
-                return Direction.Away;
-            }
-            else if (Angle < 90 + AngleLeanience && Angle > 90 - AngleLeanience)
-            {
-                return Direction.Side; 
-            }
-        }
-        return Direction.None;
-
-
-    }
-    public HookType Hook(Vector3 Vel, out float Angle)
-    {
-        Vector3 Cam = MovementProvider.instance.transform.GetChild(0).GetChild(1).forward;
-        Vector3 Camleft = new Vector3(Cam.x, Cam.y - 90, Cam.z);
-
-        Vector3 UsedCam = Cam;
-        Vector3 UsedVel = Vel;
-
-        Angle = Vector3.Angle(UsedVel, UsedCam);
-        float Threshold = 0.2f;
-        //if (HM.Controllers[1].TriggerPressed())
-        //Debug.Log("Vel: " + UsedVel.ToString("f3") + "  localEulerAngles: " + UsedCam + "  Angle: " + Angle);
-        //Debug.Log("Dir: " + Cam + "  NewDir: " + Camleft);
-        bool Rot = Angle < 50 && UsedVel.x > 0 || Angle < 130 && Angle > 50 && UsedVel.x < 0;
-        if (Rot == true && UsedVel.magnitude > Threshold)
-        {
-            return HookType.Active;
-        }
-        else
-        {
-            return HookType.None;
-        }
-
-    }
+    
+    
 }

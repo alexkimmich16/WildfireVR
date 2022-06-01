@@ -35,14 +35,14 @@ public class MagicInfo
     public bool Active;
     //public Vector3 Leanience;
     public float Time;
-    public List<ControllerInfo> Controllers = new List<ControllerInfo>();
+    public List<BaseControllerInfo> Controllers = new List<BaseControllerInfo>();
 
     public List<GameObject> Sides = new List<GameObject>();
     public float RotLeanience;
 }
 //Spells[i].Controllers[j].RotDifference
 [System.Serializable]
-public class ControllerInfo
+public class BaseControllerInfo
 {
     //public Side side;
     public int Current;

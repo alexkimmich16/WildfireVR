@@ -60,7 +60,7 @@ public class SpellCasts : MonoBehaviour
         }
         else if (On == false)
         {
-            NewMagicCheck.instance.Torch[Hand].AbleToSpawn = false;
+            NewMagicCheck.instance.Torch[Hand].OnCooldown = true;
             NewMagicCheck.instance.Torch[Hand].FlameObject.GetComponent<ParticleSystem>().Stop();
             StartCoroutine(Destroy(Hand));
             //RemoveObjectFromNetwork(NewMagicCheck.instance.Torch[Hand].FlameObject);
@@ -84,7 +84,7 @@ public class SpellCasts : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         RemoveObjectFromNetwork(NewMagicCheck.instance.Torch[Side].FlameObject);
-        NewMagicCheck.instance.Torch[Side].AbleToSpawn = true;
+        NewMagicCheck.instance.Torch[Side].OnCooldown = false;
         NewMagicCheck.instance.Torch[Side].FlameObject = null;
         //HM.ChangeMagic(HM.Spells[1].Cost);
     }
