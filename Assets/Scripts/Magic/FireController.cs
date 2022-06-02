@@ -9,26 +9,24 @@ using Photon.Realtime;
 
 public class FireController : MonoBehaviour
 {
-    public VisualEffect fire;
-    private bool Active = false;
-    private Vector3 Normalized;
-    //public Transform Target;
+    public bool Active = false;
 
     public List<SendInfo> Times = new List<SendInfo>();
 
     public List<Transform> Targets;
-
-    private float Spread;
 
     public static float CheckInterval = 0.1f;
 
     public static int StayDamage = 1;
     public static float WaitTime = 1f;
 
+    public float Speed;
+    public float Spread;
     public List<DamageInfo> DamageCooldowns = new List<DamageInfo>();
 
     private SpellCasts SC;
 
+    public bool CubeTest;
     public class SendInfo
     {
         public Transform Target;
@@ -50,9 +48,7 @@ public class FireController : MonoBehaviour
         StartCoroutine(Wait());
 
         //StartFire();
-        Active = true;
-
-        Spread = fire.GetFloat("Spread") * 180;
+        //Active = true;
 
         SC = HandMagic.instance.transform.GetComponent<SpellCasts>();
     }
@@ -71,7 +67,6 @@ public class FireController : MonoBehaviour
     {
         List<Transform> TrueColliders = new List<Transform>();
         Collider[] Colliders = Physics.OverlapSphere(transform.position, BlockMimic.CheckDistance);
-        //Debug.Log(Colliders.Length);
         for (int i = 0; i < Colliders.Length; i++)
         {
             /*if (Colliders[i].transform.tag == "VRPerson")
@@ -93,19 +88,18 @@ public class FireController : MonoBehaviour
 
     private void Update()
     {
-        //fire.SetVector3("Angle", transform.rotation.eulerAngles);
         CheckArriveTimes();
         if (Targets.Count < 0)
             return;
+        //
         for (int i = 0; i < Targets.Count; i++)
         {
             Vector3 EnemyAngle = Targets[i].position - transform.position;
             float BetweenAngle = Vector3.Angle(transform.forward, EnemyAngle);
-            //Debug.Log("angle: " + BetweenAngle);
 
-            float Speed = fire.GetFloat("Speed");
             float Distance = Vector3.Distance(Targets[i].position, transform.position);
             float Travel = Distance / Speed;
+
             if (Spread > BetweenAngle)
             {
                 if (Active == true)
@@ -129,7 +123,7 @@ public class FireController : MonoBehaviour
                 {
                     //on hit
                     //give priority to shields in front
-                    if (ShieldBlocking(out GameObject shield) == true)
+                    if (ShieldBlocking(out GameObject shield))
                     {
                         //if my shields
                         
@@ -146,9 +140,10 @@ public class FireController : MonoBehaviour
                                 SC.ShieldDamage(StayDamage, ShieldSide(shield));
                         }
                     }
-                    else if(RaycastWorks() == true && AngleWorks() == true)
+                    else if(RaycastWorks() && AngleWorks())
                     {
                         // damage player
+                        //Debug.Log("DealDamage");
                         if (IsCooldown(Times[i].Target) == false)
                         {
                             //create cooldown
@@ -160,6 +155,7 @@ public class FireController : MonoBehaviour
                             //do damage
                             int oldHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
                             int newHealth = oldHealth - StayDamage;
+
                             SetPlayerInt(PlayerHealth, newHealth, PhotonNetwork.LocalPlayer);
                         }
                     }
@@ -229,22 +225,8 @@ public class FireController : MonoBehaviour
         }
     }
     
-    public void StartFire()
+    public void SetActive(bool active)
     {
-        fire.Play();
-        Active = true;
+        Active = active;
     }
-    public void StopFire()
-    {
-        fire.Stop();
-        Active = false;
-        StartCoroutine(DestroyWait());
-        
-    }
-    public IEnumerator DestroyWait()
-    {
-        yield return new WaitForSeconds(2);
-        SC.RemoveFireball(gameObject);
-    }
-
 }

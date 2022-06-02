@@ -26,7 +26,7 @@ public class Fireball : MonoBehaviour
             GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
         SoundManager.instance.PlayAudio("FireballExplosion", null);
 
-        Debug.Log(col.gameObject.name);
+        //Debug.Log(col.gameObject.name);
 
         if (col.collider.tag == "Shield")
         {
@@ -52,6 +52,7 @@ public class Fireball : MonoBehaviour
                 PhotonView photonView = NetworkManager.instance.Players[i].networkPlayer.transform.GetComponent<PhotonView>();
                 if (photonView.IsMine)
                 {
+                    Debug.Log("TakeDamage");
                     photonView.transform.GetComponent<PlayerControl>().ChangeHealth(Damage);
                 }
             }

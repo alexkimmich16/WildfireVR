@@ -53,7 +53,7 @@ public class TorchInfo
     public bool CamDistance;
 
     public GameObject FlameObject;
-
+    public FireController fireControl;
     public List<bool> Checks;
     public int Current()
     {

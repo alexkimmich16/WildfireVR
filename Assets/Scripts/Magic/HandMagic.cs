@@ -322,7 +322,7 @@ public class HandMagic : MonoBehaviour
             else if (Part == 2)
             {
 
-                SC.StartFireballEnd(Side);
+                //SC.StartFireballEnd(Side);
                 //SC.FireballShoot(Side);
                 //ChangeTrail(move, false, (Side)Side);
             }

@@ -86,7 +86,6 @@ public class SpellCasts : MonoBehaviour
         RemoveObjectFromNetwork(NewMagicCheck.instance.Torch[Side].FlameObject);
         NewMagicCheck.instance.Torch[Side].OnCooldown = false;
         NewMagicCheck.instance.Torch[Side].FlameObject = null;
-        //HM.ChangeMagic(HM.Spells[1].Cost);
     }
     #endregion
 
@@ -370,7 +369,7 @@ public class SpellCasts : MonoBehaviour
     }
     public void StartFireballEnd(int Hand)
     {
-        Stats[Hand].Fire.GetComponent<FireController>().StopFire();
+        //Stats[Hand].Fire.GetComponent<FireController>().StopFire();
         //HM.Controllers[Hand].transform.GetComponent<FireController>().StopFire();
         //StopCoroutine(FireballMagic());
         //Fireball
