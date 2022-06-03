@@ -118,25 +118,4 @@ public class ControllerStats : MonoBehaviour
         }
         return Direction.None;
     }
-    public HookType Hook(Vector3 Vel, out float Angle)
-    {
-        Vector3 Cam = MovementProvider.instance.transform.GetChild(0).GetChild(1).forward;
-        Vector3 Camleft = new Vector3(Cam.x, Cam.y - 90, Cam.z);
-
-        Vector3 UsedCam = Cam;
-        Vector3 UsedVel = Vel;
-
-        Angle = Vector3.Angle(UsedVel, UsedCam);
-        float Threshold = 0.2f;
-        bool Rot = Angle < 50 && UsedVel.x > 0 || Angle < 130 && Angle > 50 && UsedVel.x < 0;
-        if (Rot == true && UsedVel.magnitude > Threshold)
-        {
-            return HookType.Active;
-        }
-        else
-        {
-            return HookType.None;
-        }
-
-    }
 }

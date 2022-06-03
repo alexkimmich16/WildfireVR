@@ -9,11 +9,6 @@ public enum Direction
     Side = 2,
     None = 3,
 }
-public enum HookType
-{
-    Active = 0,
-    None = 1,
-}
 
 public enum FireBallCastType
 {
@@ -35,11 +30,7 @@ public class FireBallBallInfo
         return Checks.Count;
     }
     public float Timer;
-    public Direction dir;
     public Vector3 SavedDir;
-    public float Magnitude;
-    public float Angle;
-    public Vector3 Velocity;
 }
 [System.Serializable]
 public class TorchInfo
@@ -47,13 +38,29 @@ public class TorchInfo
     public string Name;
     public bool IsActive = false;
     public bool OnCooldown = false;
-
-    public bool YPos;
-    public bool Speed;
-    public bool CamDistance;
+    [HideInInspector]
+    public bool YPos, Speed, CamDistance;
 
     public GameObject FlameObject;
     public FireController fireControl;
+    public List<bool> Checks;
+    public int Current()
+    {
+        for (var i = 0; i < Checks.Count; i++)
+            if (Checks[i] == false)
+                return i;
+        return Checks.Count;
+    }
+}
+[System.Serializable]
+public class ShieldInfo
+{
+    public string Name;
+    public bool IsActive = false;
+    public bool OnCooldown = false;
+
+    public GameObject ShieldOBJ;
+    //public FireController fireControl;
     public List<bool> Checks;
     public int Current()
     {
@@ -90,6 +97,11 @@ public class NewMagicCheck : MonoBehaviour
     public Vector2 DistanceLimit;
     public float YPosLeanience;
     public bool UseTorch;
+
+    [Header("Shield")]
+    public List<ShieldInfo> Shields;
+    public Vector2 ShieldOffset;
+    public bool UseShield;
     void Start()
     {
         HM = HandMagic.instance;
@@ -103,6 +115,8 @@ public class NewMagicCheck : MonoBehaviour
             ManageFireBall();
         if(UseTorch)
             ManageTorch();
+        if (UseShield)
+            ManageShield();
     }
 
    
@@ -110,13 +124,11 @@ public class NewMagicCheck : MonoBehaviour
     {
         for (var i = 0; i < FireBall.Count; i++)
         {
-            FireBall[i].dir = CS.ControllerDir(HM.Controllers[i].Velocity, i);
-            FireBall[i].Velocity = HM.Controllers[i].Velocity;
-            FireBall[i].Magnitude = HM.Controllers[i].Magnitude;
+            Direction dir = CS.ControllerDir(HM.Controllers[i].Velocity, i);
             //Magnitude
             if (FireBall[i].Current() == 0)
             {
-                if (HM.Controllers[i].Magnitude > PunchSpeedThreshold && FireBall[i].dir == Direction.Away)
+                if (HM.Controllers[i].Magnitude > PunchSpeedThreshold && dir == Direction.Away)
                 {
                     FireBall[i].Checks[0] = true;
                     FireBall[i].Timer = 0;
@@ -126,7 +138,7 @@ public class NewMagicCheck : MonoBehaviour
             else if (FireBall[i].Current() == 1)
             {
                 FireBall[i].Timer += Time.deltaTime;
-                if (HM.Controllers[i].Magnitude < StopSpeedThreshold && FireBall[i].dir == Direction.None)
+                if (HM.Controllers[i].Magnitude < StopSpeedThreshold && dir == Direction.None)
                 {
                     if (type == FireBallCastType.HandDirection)
                         SC.FireballCast(i, HM.Controllers[i].transform.rotation.eulerAngles + FireballOffset);
@@ -190,6 +202,9 @@ public class NewMagicCheck : MonoBehaviour
             }
         }
     }
-    
+    public void ManageShield()
+    {
+        //motion is
+    }
     
 }
