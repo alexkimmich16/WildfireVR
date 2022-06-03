@@ -12426,9 +12426,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5d960cdc46629d47b000b200bdb849f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Active: 0
   Targets: []
-  Speed: 0
-  Spread: 0
+  Speed: 1.5
+  Spread: 0.91
+  CubeTest: 0
+  TestCube: {fileID: 90743840}
 --- !u!1 &1316563117
 GameObject:
   m_ObjectHideFlags: 0
@@ -15829,9 +15832,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5d960cdc46629d47b000b200bdb849f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Active: 0
   Targets: []
-  Speed: 0
-  Spread: 0
+  Speed: 1.5
+  Spread: 20
+  CubeTest: 1
+  TestCube: {fileID: 90743840}
 --- !u!1 &1561416822
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,6 +27,8 @@ public class FireController : MonoBehaviour
     private SpellCasts SC;
 
     public bool CubeTest;
+
+    public Transform TestCube;
     public class SendInfo
     {
         public Transform Target;
@@ -42,25 +44,18 @@ public class FireController : MonoBehaviour
         public Transform Target;
         public float Time;
     }
+
     private void Start()
     {
-        //fire.Stop();
         StartCoroutine(Wait());
-
-        //StartFire();
-        //Active = true;
 
         SC = HandMagic.instance.transform.GetComponent<SpellCasts>();
     }
     public bool IsCooldown(Transform hitAttempt)
     {
         for (int i = 0; i < DamageCooldowns.Count; i++)
-        {
             if (DamageCooldowns[i].Target == hitAttempt)
-            {
                 return true;
-            }
-        }
         return false;
     }
     public List<Transform> CheckForTargets()
@@ -91,7 +86,15 @@ public class FireController : MonoBehaviour
         CheckArriveTimes();
         if (Targets.Count < 0)
             return;
-        //
+
+        if (CubeTest == true && this == NewMagicCheck.instance.Torch[1].fireControl)
+        {
+            float BlockTargetAngle = Vector3.Angle(transform.forward, TestCube.position - transform.position);
+            if (Spread > BlockTargetAngle)
+                TestCube.GetComponent<MeshRenderer>().material.color = Color.red;
+            else
+                TestCube.GetComponent<MeshRenderer>().material.color = Color.white;
+        }
         for (int i = 0; i < Targets.Count; i++)
         {
             Vector3 EnemyAngle = Targets[i].position - transform.position;
@@ -99,12 +102,13 @@ public class FireController : MonoBehaviour
 
             float Distance = Vector3.Distance(Targets[i].position, transform.position);
             float Travel = Distance / Speed;
-
+            
             if (Spread > BetweenAngle)
             {
                 if (Active == true)
                 {
                     SendInfo ToAdd = new SendInfo();
+                    Debug.Log("Created");
                     ToAdd.Time = Travel;
                     ToAdd.SentPos = transform.position;
                     ToAdd.SentRot = transform.TransformDirection(Vector3.forward);
@@ -140,9 +144,10 @@ public class FireController : MonoBehaviour
                                 SC.ShieldDamage(StayDamage, ShieldSide(shield));
                         }
                     }
-                    else if(RaycastWorks() && AngleWorks())
+                    else if(RaycastWorks(i) && AngleWorks(i))
                     {
                         // damage player
+                        
                         //Debug.Log("DealDamage");
                         if (IsCooldown(Times[i].Target) == false)
                         {
@@ -151,7 +156,7 @@ public class FireController : MonoBehaviour
                             NewTime.Time = WaitTime;
                             NewTime.Target = Times[i].Target;
                             DamageCooldowns.Add(NewTime);
-
+                            Debug.Log("damage");
                             //do damage
                             int oldHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
                             int newHealth = oldHealth - StayDamage;
@@ -161,7 +166,7 @@ public class FireController : MonoBehaviour
                     }
                     
                     Times.Remove(Times[i]);
-                    bool RaycastWorks()
+                    bool RaycastWorks(int i)
                     {
                         RaycastHit hit;
                         Vector3 Direction = Times[i].SentPos - Times[i].Target.position;
@@ -171,7 +176,7 @@ public class FireController : MonoBehaviour
                         else
                             return false;
                     }
-                    bool AngleWorks()
+                    bool AngleWorks(int i)
                     {
                         Vector3 EnemyDirection = Times[i].SentPos - Times[i].Target.position;
                         float BetweenAngle = Vector3.Angle(Times[i].SentRot, EnemyDirection);
@@ -203,7 +208,6 @@ public class FireController : MonoBehaviour
                         }
                             
                     }
-
                     int ShieldSide(GameObject shield)
                     {
                         for (int i = 0; i < 2; i++)
@@ -214,6 +218,7 @@ public class FireController : MonoBehaviour
                     }
                 }
             }
+
             for (int i = 0; i < DamageCooldowns.Count; i++)
             {
                 DamageCooldowns[i].Time -= Time.deltaTime;
