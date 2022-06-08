@@ -60,7 +60,6 @@ public class ShieldInfo
     public bool OnCooldown = false;
 
     public GameObject ShieldOBJ;
-    //public FireController fireControl;
     public List<bool> Checks;
     public int Current()
     {
@@ -118,8 +117,6 @@ public class NewMagicCheck : MonoBehaviour
         if (UseShield)
             ManageShield();
     }
-
-   
     public void ManageFireBall()
     {
         for (var i = 0; i < FireBall.Count; i++)
@@ -205,6 +202,7 @@ public class NewMagicCheck : MonoBehaviour
     public void ManageShield()
     {
         //motion is
+
     }
     
 }
