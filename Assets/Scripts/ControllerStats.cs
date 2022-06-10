@@ -14,6 +14,12 @@ public class ControllerInfo
     public float CamDistanceChange;
     public float CamDistanceSecond;
 
+    public Vector3 Euler;
+    public Vector3 LocalEuler;
+    
+
+    public float ToCamRot;
+
     //public float 
     public List<float> PastAngles;
 }
@@ -39,6 +45,10 @@ public class ControllerStats : MonoBehaviour
         Vector3 LevelCamPos = new Vector3(CamPos.x, 0, CamPos.z);
         Vector3 LevelHandPos = new Vector3(Hand.transform.position.x, 0, Hand.transform.position.z);
 
+        Stats.Euler = Hand.transform.rotation.eulerAngles;
+        Stats.LocalEuler = Hand.transform.localEulerAngles;
+        //z represents rotation
+        //float ZVal = Hand.transform.localEulerAngles.z - 180;
         Stats.VelocityCameraAngle = Vector3.Angle(LevelVel, LevelCamRot);
 
         //angle

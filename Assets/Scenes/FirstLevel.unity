@@ -599,6 +599,7 @@ GameObject:
   - component: {fileID: 90743839}
   - component: {fileID: 90743838}
   - component: {fileID: 90743837}
+  - component: {fileID: 90743841}
   m_Layer: 0
   m_Name: AttackedCube
   m_TagString: Untagged
@@ -683,6 +684,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &90743841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90743836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc62d1212d4933e4193f72b1084be512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: 95
 --- !u!1 &109472944
 GameObject:
   m_ObjectHideFlags: 0
@@ -11261,8 +11275,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1227152062}
-  m_LocalRotation: {x: 0.7064895, y: 0, z: 0, w: 0.70772356}
-  m_LocalPosition: {x: 0, y: 0.0019632545, z: 0}
+  m_LocalRotation: {x: 0.7065211, y: -0, z: -0, w: 0.70769197}
+  m_LocalPosition: {x: -4.97982e-10, y: 0.0019632531, z: 4.0745363e-10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 271673536}
@@ -11278,12 +11292,12 @@ ParentConstraint:
   m_GameObject: {fileID: 1227152062}
   m_Enabled: 1
   m_Weight: 1
-  m_TranslationAtRest: {x: 0, y: 0.0019632545, z: 0}
-  m_RotationAtRest: {x: 89.90109, y: 0, z: 0}
+  m_TranslationAtRest: {x: 0, y: 0.0019632531, z: 0}
+  m_RotationAtRest: {x: 89.90513, y: 0, z: 0}
   m_TranslationOffsets:
   - {x: 0, y: 0, z: 0}
   m_RotationOffsets:
-  - {x: 16.260025, y: 0, z: 0}
+  - {x: 16.26514, y: 0, z: 0}
   m_AffectTranslationX: 1
   m_AffectTranslationY: 1
   m_AffectTranslationZ: 1
@@ -14580,6 +14594,9 @@ MonoBehaviour:
     CameraDistance: 0
     CamDistanceChange: 0
     CamDistanceSecond: 0
+    Euler: {x: 0, y: 0, z: 0}
+    LocalEuler: {x: 0, y: 0, z: 0}
+    ToCamRot: 0
     PastAngles:
     - 0
   - VelocityCameraAngle: 0
@@ -14589,6 +14606,9 @@ MonoBehaviour:
     CameraDistance: 0
     CamDistanceChange: 0
     CamDistanceSecond: 0
+    Euler: {x: 0, y: 0, z: 0}
+    LocalEuler: {x: 0, y: 0, z: 0}
+    ToCamRot: 0
     PastAngles:
     - 0
   Power: 15
@@ -14630,6 +14650,7 @@ MonoBehaviour:
     YPos: 0
     Speed: 0
     CamDistance: 0
+    HandRot: 0
     FlameObject: {fileID: 0}
     fireControl: {fileID: 1308381503}
     Checks: 
@@ -14639,6 +14660,7 @@ MonoBehaviour:
     YPos: 1
     Speed: 0
     CamDistance: 0
+    HandRot: 0
     FlameObject: {fileID: 0}
     fireControl: {fileID: 1552789715}
     Checks: 
@@ -14646,6 +14668,7 @@ MonoBehaviour:
   DistanceLimit: {x: 0.24, y: 0.48}
   YPosLeanience: 0.2
   UseTorch: 1
+  RotationLeanience: 0
   Shields: []
   ShieldOffset: {x: 0, y: 0}
   UseShield: 0

@@ -39,7 +39,7 @@ public class TorchInfo
     public bool IsActive = false;
     public bool OnCooldown = false;
     [HideInInspector]
-    public bool YPos, Speed, CamDistance;
+    public bool YPos, Speed, CamDistance, HandRot;
 
     public GameObject FlameObject;
     public FireController fireControl;
@@ -96,6 +96,7 @@ public class NewMagicCheck : MonoBehaviour
     public Vector2 DistanceLimit;
     public float YPosLeanience;
     public bool UseTorch;
+    public float RotationLeanience;
 
     [Header("Shield")]
     public List<ShieldInfo> Shields;
@@ -107,7 +108,6 @@ public class NewMagicCheck : MonoBehaviour
         SC = SpellCasts.instance;
         CS = ControllerStats.instance;
     }
-    
     void Update()
     {
         if(UseFireBall)
@@ -165,7 +165,8 @@ public class NewMagicCheck : MonoBehaviour
             Torch[i].Speed = Speed();
             Torch[i].YPos = LevelWithHead();
             Torch[i].CamDistance = CamDis();
-            bool Active = LevelWithHead() && Speed() && CamDis();
+            Torch[i].HandRot = HandRotation();
+            bool Active = LevelWithHead() && Speed() && CamDis() && HandRotation();
 
             if (Active == true && Torch[i].IsActive == false && Torch[i].OnCooldown == false)
             {
@@ -177,7 +178,15 @@ public class NewMagicCheck : MonoBehaviour
                 Torch[i].IsActive = false;
                 SpellCasts.instance.ToggleTorch(i, false);
             }
-
+            bool HandRotation()
+            {
+                //facing left
+                //bigger than 350 smaller than 360 or bigger than 0 smaller than 20
+                float Leanience = RotationLeanience;
+                float ZRot = HM.Controllers[i].transform.localEulerAngles.z;
+                return ZRot > (Leanience - Leanience) || ZRot < Leanience;
+                //return true;
+            }
             bool LevelWithHead()
             {
                 Vector3 Controller = HM.Controllers[i].transform.position;

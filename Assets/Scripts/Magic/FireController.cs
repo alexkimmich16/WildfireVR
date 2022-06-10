@@ -22,7 +22,7 @@ public class FireController : MonoBehaviour
 
     public float Speed;
     public float Spread;
-    public List<DamageInfo> DamageCooldowns = new List<DamageInfo>();
+    public List<CooldownInfo> DamageCooldowns = new List<CooldownInfo>();
 
     private SpellCasts SC;
 
@@ -39,7 +39,7 @@ public class FireController : MonoBehaviour
         public Vector3 SentPos;
         public Vector3 SentRot;
     }
-    public class DamageInfo
+    public class CooldownInfo
     {
         public Transform Target;
         public float Time;
@@ -134,7 +134,7 @@ public class FireController : MonoBehaviour
                         if (IsCooldown(shield.transform) == false)
                         {
                             //create cooldown
-                            DamageInfo NewTime = new DamageInfo();
+                            CooldownInfo NewTime = new CooldownInfo();
                             NewTime.Time = WaitTime;
                             NewTime.Target = shield.transform;
                             DamageCooldowns.Add(NewTime);
@@ -146,22 +146,28 @@ public class FireController : MonoBehaviour
                     }
                     else if(RaycastWorks(i) && AngleWorks(i))
                     {
-                        // damage player
-                        
-                        //Debug.Log("DealDamage");
                         if (IsCooldown(Times[i].Target) == false)
                         {
                             //create cooldown
-                            DamageInfo NewTime = new DamageInfo();
+                            if (Times[i].Target.GetComponent<DamageController>())
+                            {
+                                Times[i].Target.GetComponent<DamageController>().TakeDamage(1);
+                            }
+                            else if (Times[i].Target.GetComponent<DamageController>())
+                            {
+
+                            }
+                            //
+                            CooldownInfo NewTime = new CooldownInfo();
                             NewTime.Time = WaitTime;
                             NewTime.Target = Times[i].Target;
                             DamageCooldowns.Add(NewTime);
                             Debug.Log("damage");
                             //do damage
-                            int oldHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
-                            int newHealth = oldHealth - StayDamage;
+                            //int oldHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
+                            //int newHealth = oldHealth - StayDamage;
 
-                            SetPlayerInt(PlayerHealth, newHealth, PhotonNetwork.LocalPlayer);
+                            //SetPlayerInt(PlayerHealth, newHealth, PhotonNetwork.LocalPlayer);
                         }
                     }
                     
