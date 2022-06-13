@@ -12842,6 +12842,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Torch
       objectReference: {fileID: 0}
+    - target: {fileID: 7113995250372004995, guid: 06cf978a1bba09b4f848f9d6df5fce15,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8762489417714232521, guid: 06cf978a1bba09b4f848f9d6df5fce15,
         type: 3}
       propertyPath: sceneViewId
@@ -13284,8 +13289,6 @@ MonoBehaviour:
     PosCamAngleChange: 0
     PosCamAngleSecond: 0
     CameraDistance: 0
-    CamDistanceChange: 0
-    CamDistanceSecond: 0
     Euler: {x: 0, y: 0, z: 0}
     LocalEuler: {x: 0, y: 0, z: 0}
     ToCamRot: 0
@@ -13296,8 +13299,6 @@ MonoBehaviour:
     PosCamAngleChange: 0
     PosCamAngleSecond: 0
     CameraDistance: 0
-    CamDistanceChange: 0
-    CamDistanceSecond: 0
     Euler: {x: 0, y: 0, z: 0}
     LocalEuler: {x: 0, y: 0, z: 0}
     ToCamRot: 0
@@ -13354,11 +13355,11 @@ MonoBehaviour:
     HandRot: 0
     FlameObject: {fileID: 0}
     fireControl: {fileID: 1552789715}
-  AngleChangeLimits: {x: 25.37, y: 301.02}
-  DistanceLimit: {x: 0.24, y: 0.48}
+  AngleChangeLimits: {x: 10.29, y: 301.02}
+  DistanceLimit: {x: 0.24, y: 0.72}
   YPosLeanience: 0.2
   UseTorch: 1
-  RotationLeanience: 0
+  RotationLeanience: 40
   Shields: []
   ResetTime: 0.58
   Cooldown: 0

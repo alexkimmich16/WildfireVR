@@ -23,7 +23,7 @@ public class TorchInfo
     public string Name;
     public bool IsActive = false;
     public bool OnCooldown = false;
-    [HideInInspector]
+    //[HideInInspector]
     public bool YPos, Speed, CamDistance, HandRot;
 
     public GameObject FlameObject;
@@ -165,11 +165,10 @@ public class NewMagicCheck : MonoBehaviour
             }
             bool HandRotation()
             {
-                //facing left
-                //bigger than 350 smaller than 360 or bigger than 0 smaller than 20
                 float Leanience = RotationLeanience;
                 float ZRot = HM.Controllers[i].transform.localEulerAngles.z;
-                return ZRot > 0 || ZRot < Leanience;
+                //350 - 360 || 0 - 10
+                return ZRot > 360 - Leanience || ZRot < Leanience;
                 //return true;
             }
             bool LevelWithHead()

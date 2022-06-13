@@ -11,8 +11,9 @@ public class ControllerInfo
     public float PosCamAngleSecond;
 
     public float CameraDistance;
-    public float CamDistanceChange;
-    public float CamDistanceSecond;
+
+    //public float CamDistanceChange;
+    //public float CamDistanceSecond;
 
     public Vector3 Euler;
     public Vector3 LocalEuler;
@@ -59,9 +60,10 @@ public class ControllerStats : MonoBehaviour
         Stats.PastAngles = Controllers[Side].PastAngles;
         //distance
         Stats.CameraDistance = Vector3.Distance(LevelHandPos, LevelCamPos);
-        //if (Controllers[Side].CameraDistance != 0)
+
+        //if(Controllers[Side].CameraDistance != 0)
             //Stats.PastCamDistance = Controllers[Side].CameraDistance;
-       // Stats.CamDistanceSecond = (Stats.CameraDistance - Stats.PastCamDistance) / Time.deltaTime;
+        //Stats.CamDistanceSecond = (Stats.CameraDistance - Stats.PastCamDistance) / Time.deltaTime;
         //Stats.CamDistanceChange = (Stats.CameraDistance - Stats.PastCamDistance);
 
         return Stats;
