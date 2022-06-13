@@ -26,6 +26,9 @@
         },
         {
             "m_Id": "0b8ec7bbb926441e8c14c7c32d369adf"
+        },
+        {
+            "m_Id": "2850e6ea3912437197fa2e9d7f553798"
         }
     ],
     "m_GroupDatas": [],
@@ -194,10 +197,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 283.0,
-            "y": 48.0,
-            "width": 126.0,
-            "height": 118.0
+            "x": 286.4000244140625,
+            "y": 102.39998626708985,
+            "width": 125.5999755859375,
+            "height": 117.60000610351563
         }
     },
     "m_Slots": [
@@ -228,6 +231,8 @@
         "m_GuidSerialized": "15a4d491-2308-415c-a836-2f4063bd8d59"
     },
     "m_Name": "Index",
+    "m_DefaultRefNameVersion": 0,
+    "m_RefNameGeneratedByDisplayName": "",
     "m_DefaultReferenceName": "Vector1_0ce9574e837f408991312a6c71473833",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
@@ -251,6 +256,8 @@
         "m_GuidSerialized": "fa07be18-8733-448e-a7d4-48e4209b45be"
     },
     "m_Name": "WorldPos",
+    "m_DefaultRefNameVersion": 0,
+    "m_RefNameGeneratedByDisplayName": "",
     "m_DefaultReferenceName": "Vector3_1e07dec0084a48e38c95166c3cdc688d",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
@@ -264,6 +271,38 @@
         "z": 0.0,
         "w": 0.0
     }
+}
+
+{
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.CustomFunctionNode",
+    "m_ObjectId": "2850e6ea3912437197fa2e9d7f553798",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Custom Function",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": 102.39998626708985,
+            "y": -312.0,
+            "width": 208.00001525878907,
+            "height": 244.8000030517578
+        }
+    },
+    "m_Slots": [],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_SourceType": 0,
+    "m_FunctionName": "Enter function name here...",
+    "m_FunctionSource": "",
+    "m_FunctionBody": "Enter function body here..."
 }
 
 {
@@ -535,10 +574,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 0.0,
-            "height": 0.0
+            "x": 2.399991273880005,
+            "y": 0.0000013046264939475805,
+            "width": 241.6000213623047,
+            "height": 349.6000061035156
         }
     },
     "m_Slots": [

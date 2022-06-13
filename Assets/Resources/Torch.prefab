@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 7113995250385878367}
   - component: {fileID: 7113995250385769097}
   - component: {fileID: 8762489417714232521}
-  m_Layer: 0
+  - component: {fileID: 1958561485}
+  m_Layer: 18
   m_Name: Torch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4838,6 +4839,22 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &1958561485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7113995250372004995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a932fd9c75540fc41b62ae4bd27a2bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fire: {fileID: 0}
+  Push: 0
+  Example: {fileID: 0}
+  Force: 0
 --- !u!1 &7113995250372032911
 GameObject:
   m_ObjectHideFlags: 0
@@ -4849,7 +4866,7 @@ GameObject:
   - component: {fileID: 7113995250371728905}
   - component: {fileID: 7113995250385844091}
   - component: {fileID: 7113995250385765031}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9526,7 +9543,7 @@ GameObject:
   - component: {fileID: 7113995250371686551}
   - component: {fileID: 7113995250385836543}
   - component: {fileID: 7113995250385853053}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Flames
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13049,7 +13066,7 @@ ParticleSystem:
     serializedVersion: 4
     type: 1
     collisionMode: 0
-    colliderForce: 0.43
+    colliderForce: 12.45
     multiplyColliderForceByParticleSize: 0
     multiplyColliderForceByParticleSpeed: 0
     multiplyColliderForceByCollisionAngle: 1
@@ -13224,7 +13241,7 @@ ParticleSystem:
     radiusScale: 0.01
     collidesWith:
       serializedVersion: 2
-      m_Bits: 8960
+      m_Bits: 271104
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
@@ -14257,7 +14274,7 @@ GameObject:
   - component: {fileID: 7113995250371726223}
   - component: {fileID: 7113995250385895717}
   - component: {fileID: 7113995250385771081}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Flame Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17771,7 +17788,7 @@ ParticleSystem:
     serializedVersion: 4
     type: 1
     collisionMode: 0
-    colliderForce: 0
+    colliderForce: 1.33
     multiplyColliderForceByParticleSize: 0
     multiplyColliderForceByParticleSpeed: 0
     multiplyColliderForceByCollisionAngle: 1
@@ -17838,7 +17855,7 @@ ParticleSystem:
     m_Bounce:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 1.52
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -17950,7 +17967,7 @@ ParticleSystem:
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
+    collisionMessages: 1
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:

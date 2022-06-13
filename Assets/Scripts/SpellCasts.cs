@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
 
 public class SpellCasts : MonoBehaviour
 {
@@ -110,7 +109,63 @@ public class SpellCasts : MonoBehaviour
         Stats[Left].ShieldHealth = HM.MaxShield;
         SoundManager.instance.PlayAudio("Shield", null);
     }
+    public void ShieldBlast(Vector3 Position)
+    {
+        Vector3 pos = Position;
+        SoundManager.instance.PlayAudio("Force", null);
+        Collider[] colliders = Physics.OverlapSphere(pos, HM.PushRadius);
+        ForcepushManager.instance.Push(pos);
+        //push everyone  back
+        foreach (Collider pushedOBJ in colliders)
+        {
+            //Debug.Log("PT1");
+            if (pushedOBJ.tag != "Player" && pushedOBJ.gameObject.GetComponent<Rigidbody>() != null)
+            {
+                Vector3 ZPlacementObj = new Vector3(pushedOBJ.transform.position.x, HM.Cam.position.y, pushedOBJ.transform.position.z);
+                Vector3 targetDir = ZPlacementObj + HM.Cam.transform.position;
+                float ObjectAngle = Vector3.Angle(targetDir, HM.Cam.transform.forward);
+                float PlayerAngle = HM.Cam.rotation.eulerAngles.y;
+                float Difference = (ObjectAngle - PlayerAngle + 90);
+                //Debug.Log("PT1.1  " + "Difference:  " + Difference + "  HM.AngleMax:  " + HM.AngleMax);
+                if (DirectionalPush == true)
+                {
+                    if (Difference < HM.AngleMax && Difference > -HM.AngleMax)
+                    {
+                        //Debug.Log("PT2");
 
+                    }
+                }
+                else if (DirectionalPush == false)
+                {
+                    if (pushedOBJ.GetComponent<Fireball>())
+                    {
+                        //Debug.Log("PT3");
+                        Vector3 difference = pushedOBJ.transform.position - HM.Cam.position;
+                        pushedOBJ.GetComponent<Fireball>().Bounce(difference);
+                    }
+                    else if (pushedOBJ.GetComponent<Rigidbody>())
+                    {
+                        //Debug.Log("PT4");
+                        pushedOBJ.GetComponent<Rigidbody>().AddExplosionForce(HM.PushAmount, pos, HM.PushRadius);
+                    }
+                    else if (pushedOBJ.GetComponent<FireController>())
+                    {
+
+                    }
+
+
+
+                }
+
+            }
+            else if (pushedOBJ.gameObject.tag == "Player")
+            {
+                //rpc call to player sending my world position as pusher
+                //send them into ragdoll
+                //upon landing, getup animation
+            }
+        }
+    }
     public void EndShield(int Left)
     {
         Stats[Left].Shield.GetComponent<ShieldManager>().StopShield();

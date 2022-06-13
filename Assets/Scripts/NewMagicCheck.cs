@@ -2,21 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 #region classes
-public enum Direction
-{
-    Away = 0,
-    Towards = 1,
-    Side = 2,
-    None = 3,
-}
-
-public enum FireBallCastType
-{
-    HandDirection = 0,
-    HandMotion = 1,
-}
-
-
 [System.Serializable]
 public class FireBallBallInfo
 {
@@ -43,24 +28,19 @@ public class TorchInfo
 
     public GameObject FlameObject;
     public FireController fireControl;
-    public List<bool> Checks;
-    public int Current()
-    {
-        for (var i = 0; i < Checks.Count; i++)
-            if (Checks[i] == false)
-                return i;
-        return Checks.Count;
-    }
 }
 [System.Serializable]
 public class ShieldInfo
 {
     public string Name;
-    public bool IsActive = false;
-    public bool OnCooldown = false;
-
-    public GameObject ShieldOBJ;
+    public float CooldownTimer;
+    public float ResetTimer;
     public List<bool> Checks;
+    public bool OnCooldown;
+
+    //[HideInInspector]
+    public bool GoodRot, GoodPos, SlowRotAndVel, FastRotOrVel, StoppedRot;
+
     public int Current()
     {
         for (var i = 0; i < Checks.Count; i++)
@@ -100,8 +80,13 @@ public class NewMagicCheck : MonoBehaviour
 
     [Header("Shield")]
     public List<ShieldInfo> Shields;
-    public Vector2 ShieldOffset;
+    
+    public float ResetTime;
+    public float Cooldown;
+    public float YLeanience;
+    public float RotLeanience;
     public bool UseShield;
+    public Vector2 DistanceFromHead;
     void Start()
     {
         HM = HandMagic.instance;
@@ -184,7 +169,7 @@ public class NewMagicCheck : MonoBehaviour
                 //bigger than 350 smaller than 360 or bigger than 0 smaller than 20
                 float Leanience = RotationLeanience;
                 float ZRot = HM.Controllers[i].transform.localEulerAngles.z;
-                return ZRot > (Leanience - Leanience) || ZRot < Leanience;
+                return ZRot > 0 || ZRot < Leanience;
                 //return true;
             }
             bool LevelWithHead()
@@ -194,13 +179,11 @@ public class NewMagicCheck : MonoBehaviour
                 float Difference = Mathf.Abs(Controller.y - Cam.y);
                 return Difference < YPosLeanience;
             }
-
             bool Speed()
             {
                 float AngleChange = Mathf.Abs(CS.Controllers[i].PosCamAngleChange);
                 return AngleChange > AngleChangeLimits.x && AngleChange < AngleChangeLimits.y;
             }
-
             bool CamDis()
             {
                 float Distance = CS.Controllers[i].CameraDistance;
@@ -211,7 +194,108 @@ public class NewMagicCheck : MonoBehaviour
     public void ManageShield()
     {
         //motion is
+        for (var i = 0; i < Shields.Count; i++)
+        {
+            AssignValues();
+            if (Shields[i].OnCooldown == false)
+            {
+                if (Shields[i].Current() == 0)
+                {
+                    if (FastRotOrVel())
+                    {
+                        Shields[i].Checks[0] = true;
+                        Shields[i].ResetTimer = 0;
+                    }
+                }
+                else if (Shields[i].Current() == 1)
+                {
+                    Shields[i].ResetTimer += Time.deltaTime;
 
+                    if (GoodRot() && GoodPos() && SlowRotAndVel() && StoppedRot())
+                    {
+                        Reset();
+                        Debug.Log("Blast");
+                        SC.ShieldBlast(HM.Controllers[i].transform.position);
+                    }
+                    else if (Shields[i].ResetTimer > ResetTime)
+                    {
+                        Reset();
+                    }
+                }
+            }
+            else
+            {
+                Shields[i].CooldownTimer += Time.deltaTime;
+                if(Shields[i].CooldownTimer > Cooldown)
+                {
+                    Shields[i].OnCooldown = false;
+                    Shields[i].CooldownTimer = 0;
+                }
+            }
+            
+            bool GoodRot()
+            {
+                float Leanience = RotationLeanience;
+                float ZRot = HM.Controllers[i].transform.localEulerAngles.z;
+                return ZRot > 0 || ZRot < Leanience;
+            }
+            bool GoodPos()
+            {
+                Vector3 Controller = HM.Controllers[i].transform.position;
+                Vector3 Cam = MovementProvider.instance.transform.GetChild(0).GetChild(1).position;
+                float Difference = Mathf.Abs(Controller.y - Cam.y);
+
+                float Distance = CS.Controllers[i].CameraDistance;
+
+                return Difference < YLeanience && Distance > DistanceFromHead.x && Distance < DistanceFromHead.y;
+            }
+            bool SlowRotAndVel()
+            {
+                float RotMag = 0;
+                float DirMag = HM.Controllers[i].Magnitude * 1.2f;
+                return RotMag + DirMag > 3;
+            }
+            bool FastRotOrVel()
+            {
+                return true;
+            }
+            bool StoppedRot()
+            {
+                return true;
+            }
+            void AssignValues()
+            {
+                Shields[i].GoodRot = GoodRot();
+                Shields[i].GoodPos = GoodPos();
+                Shields[i].SlowRotAndVel = SlowRotAndVel();
+                Shields[i].FastRotOrVel = FastRotOrVel();
+                Shields[i].StoppedRot = StoppedRot();
+            }
+            void Reset()
+            {
+                for (var j = 0; j < Shields[i].Checks.Count; j++)
+                    Shields[i].Checks[j] = false;
+                Shields[i].OnCooldown = true;
+                Shields[i].CooldownTimer = Cooldown;
+            }
+            //check for fast rotation or speed
+            //check for stop in speed and rotation of hand
+            
+        }
+            
     }
     
+}
+
+public enum Direction
+{
+    Away = 0,
+    Towards = 1,
+    Side = 2,
+    None = 3,
+}
+public enum FireBallCastType
+{
+    HandDirection = 0,
+    HandMotion = 1,
 }
