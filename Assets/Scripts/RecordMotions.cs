@@ -6,6 +6,7 @@ public class SingleInfo
 {
     public Vector3 HeadPos, HeadRot, HandPos, HandRot, HandVel;
     public Vector2 StartEnd;
+    public bool Works;
     //if x = y than no time
 }
 [System.Serializable]
@@ -13,8 +14,7 @@ public class Motion
 {
     public List<SingleInfo> Infos;
 
-    //x = y if none
-    public Vector2 StartEnd;
+    //public bool IsWorkingMotion;
 }
 public class RecordMotions : MonoBehaviour
 {
@@ -24,9 +24,10 @@ public class RecordMotions : MonoBehaviour
     private HandMagic HM;
 
     public Motion currentMotion;
-    public bool RecordingMotion;
+    private bool RecordingMotion;
+    public bool ShouldRecord;
 
-    private float Timer; 
+    private float Timer;
     void Start()
     {
         HM = HandMagic.instance;
@@ -40,7 +41,8 @@ public class RecordMotions : MonoBehaviour
     void Update()
     {
         FrameInterval = 1 / FramesPerSecond;
-
+        if (ShouldRecord == false)
+            return;
         if (RecordingMotion == false && ButtonsPressed() == true)
         {
             RecordingMotion = true;
@@ -48,10 +50,11 @@ public class RecordMotions : MonoBehaviour
         else if (RecordingMotion == true && ButtonsPressed() == false)
         {
             RecordingMotion = false;
-            Motions.Add(currentMotion);
-            
+            Motion FinalMotion = new Motion();
+            FinalMotion.Infos = new List<SingleInfo>(currentMotion.Infos);
+            Motions.Add(FinalMotion);
+            currentMotion.Infos.Clear();
         }
-            
 
         if (RecordingMotion == false)
             return;
@@ -70,6 +73,7 @@ public class RecordMotions : MonoBehaviour
         newInfo.HandRot = HM.Controllers[1].transform.localRotation.eulerAngles;
         newInfo.HandVel = HM.Controllers[1].Velocity;
 
+        //newInfo
         currentMotion.Infos.Add(newInfo);
 
 
