@@ -44,30 +44,14 @@ public class NetworkPlayer : MonoBehaviourPun
             MapPosition(Right, RigRight);
         }
         if(SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
-        {
             if (transform.position.x < ZoneController.instance.MagicLineWorldPos(ZoneController.instance.MagicLinePos))
             {
                 if (!Contains(ZoneController.instance.Players1, gameObject))
-                {
                     ZoneController.instance.Players1.Add(gameObject);
-                }
             }
-            else if(transform.position.x > ZoneController.instance.MagicLineWorldPos(ZoneController.instance.MagicLinePos))
-            {
+            else if (transform.position.x > ZoneController.instance.MagicLineWorldPos(ZoneController.instance.MagicLinePos))
                 if (!Contains(ZoneController.instance.Players2, gameObject))
-                {
                     ZoneController.instance.Players2.Add(gameObject);
-                }
-            }
-        }
-        
-        bool Contains(List<GameObject> AllObjects, GameObject myObject)
-        {
-            for (int i = 0; i < AllObjects.Count; i++)
-                if (AllObjects[i] == myObject)
-                    return true;
-            return false;
-        }
     }
 
     void MapPosition(Transform target,Transform rigTrans)
