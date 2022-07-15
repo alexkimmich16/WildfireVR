@@ -19,6 +19,8 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
         {
 
         }
+
+        
     }
     public override void OnLeftRoom()
     {

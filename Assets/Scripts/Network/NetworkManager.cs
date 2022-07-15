@@ -87,6 +87,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             }
         }
         base.OnJoinedRoom();
+        InGameManager.instance.ReCalculateTeamSize();
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {

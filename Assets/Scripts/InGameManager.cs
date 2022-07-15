@@ -80,7 +80,6 @@ public class InGameManager : MonoBehaviour
             }
             if (GetGameBool(SpawnString) == false)
             {
-                ChangeTeamCount(team, 1);
                 SetGameBool(SpawnString, true);
                 return Teams[Side].Spawns[i];
             }
@@ -177,19 +176,23 @@ public class InGameManager : MonoBehaviour
             }
         }
 
-        CalculateTeamSize()
+        ReCalculateTeamSize();
     }
-    public void CalculateTeamSize()
+    public void ReCalculateTeamSize()
     {
         int AttackCount = 0;
         int DefenseCount = 0;
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
-            Team team = GetPlayerTeam(PhotonNetwork.PlayerList[i]);
-            if (team == Team.Attack)
-                AttackCount += 1;
-            else
-                DefenseCount += 1;
+            if(Exists(PlayerTeam, PhotonNetwork.PlayerList[i]))
+            {
+                Team team = GetPlayerTeam(PhotonNetwork.PlayerList[i]);
+                if (team == Team.Attack)
+                    AttackCount += 1;
+                else
+                    DefenseCount += 1;
+            }
+            
         }
         SetGameInt(AttackTeamCount, AttackCount);
         SetGameInt(DefenseTeamCount, DefenseCount);
@@ -213,6 +216,7 @@ public class InGameManager : MonoBehaviour
                     RemovePlayer();
                 }
                 LastTotalPlayers = PhotonNetwork.PlayerList.Length;
+                ReCalculateTeamSize();
             }
         }
         if (StartedSpawn && Exists(PlayerSpawn, PhotonNetwork.LocalPlayer) == true && FoundSpawn == false)
@@ -272,8 +276,6 @@ public class InGameManager : MonoBehaviour
 
         SetPlayerTeam(NewTeam, PhotonNetwork.PlayerList[PlayerNum]);
 
-        ChangeTeamCount(oldTeam, -1);
-
         // get old team and uncheck old spawn bool
         string OldTeamName = oldTeam.ToString();
         int OldSpawnNum = GetPlayerInt("SpawnNum", PhotonNetwork.LocalPlayer);
@@ -287,17 +289,7 @@ public class InGameManager : MonoBehaviour
         SpawnPoint SpawnInfo = FindSpawn(NewTeam);
         SetNewPosition(SpawnInfo);
 
-
-    }
-    public void ChangeTeamCount(Team team, int Change)
-    {
-        Debug.Log(team.ToString() + "  " + Change);
-        int NewCount = SideCount(team) + Change;
-        if (team == Team.Attack)
-            SetGameInt(AttackTeamCount, NewCount);
-        else
-            SetGameInt(DefenseTeamCount, NewCount);
-        // Debug.Log("Name: " + Name + " Change" + Change);
+        ReCalculateTeamSize();
     }
     public void RestartGame()
     {
