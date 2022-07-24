@@ -33,7 +33,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //public List<PlayerInfo> info = new List<PlayerInfo>();
     public List<PlayerStats> Players = new List<PlayerStats>();
     public int InGame;
-    
     void Start()
     {
         ConnectToServer();
@@ -64,9 +63,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (DebugScript == true)
             Debug.Log("joined a room");
+        InGameManager.instance.InitialisePlayer();
         if (SceneLoader.BattleScene() == true)
         {
-            if (Exists(GameWarmupTimer, null) == false)
+            if (Initialized() == false)
             {
                 SetGameFloat(GameWarmupTimer, 0f);
                 SetGameFloat(GameFinishTimer, 0f);
@@ -83,10 +83,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 SetGameInt(DefenseTeamCount, 0);
 
                 Debug.Log("Initialized room and reset or created all stats");
-                InGameManager.instance.InitialisePlayer();
+                
             }
         }
         base.OnJoinedRoom();
+        InGameManager.instance.ReCalculateTeamSize();
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {

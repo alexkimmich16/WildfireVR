@@ -30,44 +30,29 @@ public class BillBoardManager : MonoBehaviour
 
     public void UpdateWall()
     {
+        if (!Initialized())
+            return;
+
+        StateText.text = GetGameState().ToString();
+        WarmupTimeText.text = "WarmupTime: " + GetGameFloat(GameWarmupTimer).ToString();
+        FinishTimeText.text = "FinishTime: " + GetGameFloat(GameFinishTimer).ToString();
+
+        for (int i = 0; i < DefenseSpawns.Count; i++)
+        {
+            DefenseSpawnText[i].text = DefenseSpawns[i] + ":  " + GetGameBool(DefenseSpawns[i]);
+            AttackSpawnsText[i].text = AttackSpawns[i] + ":  " + GetGameBool(AttackSpawns[i]);
+        }
         
-        
-        if (Exists(GameStateText, null))
-        {
-            StateText.text = GetGameState().ToString();
-        }
-        if (Exists(GameWarmupTimer, null))
-        {
-            WarmupTimeText.text = "WarmupTime: " + GetGameFloat(GameWarmupTimer).ToString();
-        }
-        if (Exists(GameFinishTimer, null))
-        {
-            FinishTimeText.text = "FinishTime: " + GetGameFloat(GameFinishTimer).ToString();
-        }
+        AttackTeamCount.text = "Attack Team Count: " + InGameManager.instance.SideCount(Team.Attack);
+        DefenseTeamCount.text = "Defense Team Count: " + InGameManager.instance.SideCount(Team.Defense);
 
         Player local = PhotonNetwork.LocalPlayer;
-        if (Exists(PlayerSpawn, local))
-        {
-            MyPlayerSpawnText.text = "PlayerSpawn: " + GetPlayerInt(PlayerSpawn, local).ToString();
-        }
-        if (Exists(PlayerTeam, local))
+        if (InGameManager.instance.FoundSpawn)
         {
             MyTeamText.text = "MyTeam: " + GetPlayerTeam(local).ToString();
-        }
-        if (Exists(PlayerAlive, local))
-        {
+            MyPlayerSpawnText.text = "PlayerSpawn: " + GetPlayerInt(PlayerSpawn, local).ToString();
             AliveText.text = "Alive: " + GetPlayerBool(PlayerAlive, local).ToString();
         }
-        if (Exists(DefenseSpawns[2], null))
-        {
-            for (int i = 0; i < DefenseSpawns.Count; i++)
-            {
-                DefenseSpawnText[i].text = DefenseSpawns[i] + ":  " + GetGameBool(DefenseSpawns[i]);
-                AttackSpawnsText[i].text = AttackSpawns[i] + ":  " + GetGameBool(AttackSpawns[i]);
-
-            }
-        }
-        
     }
 
     #region Singleton + Classes
@@ -90,7 +75,7 @@ public class BillBoardManager : MonoBehaviour
                 else
                     Health[i].gameObject.SetActive(false);
             }
-            if (Exists(GameStateText, null))
+            if (Initialized())
             {
                 GameState state = GetGameState();
                 if (state == GameState.Waiting)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-
+using static Odin.Net;
 public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
 {
     private GameObject SpawnedPlayerPrefab;
@@ -19,10 +19,16 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
         {
 
         }
+
+        
     }
     public override void OnLeftRoom()
     {
-        base.OnLeftRoom();
+        //base.OnLeftRoom();
+        
+
         PhotonNetwork.Destroy(SpawnedPlayerPrefab);
     }
+
+    //override void ON
 }

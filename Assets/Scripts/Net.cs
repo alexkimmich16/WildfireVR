@@ -24,6 +24,26 @@ namespace Odin
         public static string AttackTeamCount = "AttackTeam";
         public static string DefenseTeamCount = "DefenseTeam";
 
+        public static bool Contains(List<GameObject> AllObjects, GameObject myObject)
+        {
+            for (int i = 0; i < AllObjects.Count; i++)
+                if (AllObjects[i] == myObject)
+                    return true;
+            return false;
+        }
+        public static bool Initialized()
+        {
+            //all exists
+            bool Timers = Exists(GameWarmupTimer, null) == true && Exists(GameFinishTimer, null) == true;
+
+            bool Spawns = true;
+            for (int i = 0; i < 2; i++)
+                if (Exists(AttackSpawns[i], null) == false || Exists(DefenseSpawns[i], null) == false)
+                    Spawns = false;
+
+            bool Counts = Exists(AttackTeamCount, null) == true && Exists(DefenseTeamCount, null);
+            return Timers && Spawns && Counts;
+        }
         public static int GetLocal()
         {
             for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
@@ -44,7 +64,7 @@ namespace Odin
                 return (float)temp;
             else
             {
-                Debug.LogError("GetGameFloat.main with string: " + text + "has not been set");
+                Debug.LogError("GetGameFloat.main with string: " + text + " has not been set");
                 return 0f;
             }
         }
@@ -74,7 +94,7 @@ namespace Odin
                 return (int)temp;
             else
             {
-                Debug.LogError("GetHash.GetInt.OfRoom with string: " + text + "has not been set");
+                Debug.LogError("GetHash.GetInt.OfRoom with string: " + text + " has not been set");
                 return 100;
             }
         }

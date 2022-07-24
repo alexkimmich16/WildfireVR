@@ -82,6 +82,8 @@ public class ZoneController : MonoBehaviour
     }
     void Update()
     {
+        RemoveGonePlayers();
+
         Vector3 Pos = MagicLine.transform.position;
         MagicLine.transform.position = new Vector3(MagicLineWorldPos(MagicLinePos), Pos.y, Pos.z);
 
@@ -97,7 +99,15 @@ public class ZoneController : MonoBehaviour
 
         AdjustLine();
     }
-
+    void RemoveGonePlayers()
+    {
+        for (int i = 0; i < Players1.Count; i++)
+            if (Players1[i] == null)
+                Players1.Remove(Players1[i]);
+        for (int i = 0; i < Players2.Count; i++)
+            if (Players2[i] == null)
+                Players2.Remove(Players2[i]);
+    }
     public float Multiplier(GameObject CheckObject)
     {
         float X = CheckObject.transform.position.x;
