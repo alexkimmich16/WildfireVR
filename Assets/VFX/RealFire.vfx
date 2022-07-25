@@ -17,7 +17,7 @@ MonoBehaviour:
   categories: []
   uiBounds:
     serializedVersion: 2
-    x: -226
+    x: -227
     y: -531
     width: 1637
     height: 2635
@@ -4193,7 +4193,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UIIgnoredErrors: []
-  m_Parent: {fileID: 0}
+  m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
   m_UICollapsed: 1
@@ -4609,7 +4609,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UIIgnoredErrors: []
-  m_Parent: {fileID: 0}
+  m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
   m_UICollapsed: 1
@@ -5141,7 +5141,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.ArcSphere, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"sphere":{"center":{"x":0.0,"y":0.0,"z":0.0},"radius":0.14000000059604646},"arc":6.28000020980835}'
+      m_SerializableObject: '{"sphere":{"center":{"x":0.0,"y":0.0,"z":0.0},"radius":0.05000000074505806},"arc":6.28000020980835}'
     m_Space: 0
   m_Property:
     name: ArcSphere
@@ -5478,7 +5478,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.Sphere, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"center":{"x":0.0,"y":0.0,"z":0.0},"radius":0.4699999988079071}'
+      m_SerializableObject: '{"center":{"x":0.0,"y":0.0,"z":0.0},"radius":0.6000000238418579}'
     m_Space: 0
   m_Property:
     name: Sphere
@@ -5680,7 +5680,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 0
+      m_SerializableObject: 2.25
     m_Space: 2147483647
   m_Property:
     name: attractionSpeed
@@ -5782,7 +5782,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 6.86
+      m_SerializableObject: 3.08
     m_Space: 2147483647
   m_Property:
     name: stickForce
@@ -6288,7 +6288,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 0.2
+      m_SerializableObject: 0.15
     m_Space: 2147483647
   m_Property:
     name: Intensity
@@ -6322,7 +6322,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 16.8
+      m_SerializableObject: 45
     m_Space: 2147483647
   m_Property:
     name: Drag
@@ -6356,7 +6356,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 6
+      m_SerializableObject: 4.49
     m_Space: 2147483647
   m_Property:
     name: frequency
@@ -7207,7 +7207,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: -0.01
+      m_SerializableObject: 0.003
     m_Space: 2147483647
   m_Property:
     name: Size
@@ -7237,7 +7237,7 @@ MonoBehaviour:
   m_InputSlots:
   - {fileID: 8926484042661614797}
   m_OutputSlots: []
-  m_Disabled: 0
+  m_Disabled: 1
   attribute: scale
   Composition: 1
   Source: 0
@@ -7271,7 +7271,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"x":0.009999999776482582,"y":0.0,"z":0.0}'
+      m_SerializableObject: '{"x":0.0010000000474974514,"y":0.0,"z":0.0}'
     m_Space: 2147483647
   m_Property:
     name: Scale
@@ -7470,7 +7470,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"x":214.1999969482422,"y":27.989999771118165}'
+      m_SerializableObject: '{"x":0.30000001192092898,"y":27.989999771118165}'
     m_Space: 2147483647
   m_Property:
     name: SpeedRange
@@ -7601,7 +7601,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"x":23.9686279296875,"y":10.507460594177246,"z":0.0}'
+      m_SerializableObject: '{"x":47.937255859375,"y":21.082353591918947,"z":0.0}'
     m_Space: 2147483647
   m_Property:
     name: Color
@@ -7734,7 +7734,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 0.363
+      m_SerializableObject: 1
     m_Space: 2147483647
   m_Property:
     name: Blend
@@ -7830,7 +7830,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 1
+      m_SerializableObject: 0.993
     m_Space: 2147483647
   m_Property:
     name: Blend
@@ -8321,7 +8321,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 0.511
+      m_SerializableObject: 1
     m_Space: 2147483647
   m_Property:
     name: DirectionBlend
@@ -8355,7 +8355,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 0.24
+      m_SerializableObject: 0.39
     m_Space: 2147483647
   m_Property:
     name: Speed
