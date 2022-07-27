@@ -81,6 +81,10 @@ public class FireController : MonoBehaviour
         StartCoroutine(Wait());
     }
 
+
+    
+   
+
     private void Update()
     {
         CheckArriveTimes();
