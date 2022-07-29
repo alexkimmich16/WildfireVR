@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+/*
 [System.Serializable]
 public class SingleInfo
 {
@@ -16,8 +17,10 @@ public class Motion
 
     //public bool IsWorkingMotion;
 }
+*/
 public class RecordMotions : MonoBehaviour
 {
+    /*
     public int FramesPerSecond;
     private float FrameInterval;
     public List<Motion> Motions;
@@ -81,7 +84,7 @@ public class RecordMotions : MonoBehaviour
 
         //Motions[Motions.Count ]
         //Info.Add(newInfo);
-        /*
+        
         Vector3 ZPlacementController = new Vector3(HM.Controllers[1].transform.position.x, HM.Cam.position.y, HM.Controllers[1].transform.position.z);
         float YChange = HM.Controllers[1].transform.position.y - HM.Cam.position.y;
         float Dist = Vector3.Distance(ZPlacementController, HM.Cam.position);
@@ -91,6 +94,7 @@ public class RecordMotions : MonoBehaviour
         //LeftLocalPos.Add(new Vector3(Dist, -angle + 180, YChange));
         //LeftRotation.Add(new Vector3(HM.Controllers[0].transform.rotation.x, HM.Controllers[0].transform.rotation.y, HM.Controllers[0].transform.rotation.z));
         RightRotation.Add(new Vector3(HM.Controllers[1].transform.rotation.x, HM.Controllers[1].transform.rotation.y, HM.Controllers[1].transform.rotation.z));
-        */
+        
     }
+    */
 }

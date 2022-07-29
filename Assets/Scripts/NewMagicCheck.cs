@@ -78,6 +78,8 @@ public class NewMagicCheck : MonoBehaviour
     public bool UseTorch;
     public float RotationLeanience;
 
+    public static bool Active;
+
     [Header("Shield")]
     public List<ShieldInfo> Shields;
     
@@ -95,6 +97,8 @@ public class NewMagicCheck : MonoBehaviour
     }
     void Update()
     {
+        if (Active == false)
+            return;
         if(UseFireBall)
             ManageFireBall();
         if(UseTorch)

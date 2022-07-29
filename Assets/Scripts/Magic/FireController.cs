@@ -9,6 +9,7 @@ using Photon.Realtime;
 
 public class FireController : MonoBehaviour
 {
+    [Header("Info")]
     public bool Active = false;
 
     public List<SendInfo> Times = new List<SendInfo>();
@@ -24,11 +25,35 @@ public class FireController : MonoBehaviour
     public float Spread;
     public List<CooldownInfo> DamageCooldowns = new List<CooldownInfo>();
 
+    [Header("Test")]
     private SpellCasts SC;
 
-    public bool CubeTest;
+    private bool CubeTest;
 
-    public Transform TestCube;
+    private Transform TestCube;
+
+    [Header("VFX")]
+    public VisualEffect Fire;
+    public float PlayRateSpeed;
+
+    public GameObject PositionObjective;
+    public void OnNewState(bool State)
+    {
+        Debug.Log("NewState: " + State);
+        if(State == true && Active == false)
+        {
+            Active = true;
+            Fire.Play();
+            Fire.enabled = true;
+        }
+        else if(State == false && Active == true)
+        {
+            Active = false;
+            Fire.Stop();
+            Fire.enabled = false;
+        }
+    }
+
     public class SendInfo
     {
         public Transform Target;
@@ -49,7 +74,13 @@ public class FireController : MonoBehaviour
     {
         StartCoroutine(Wait());
 
+        Fire.Stop();
+
         SC = HandMagic.instance.transform.GetComponent<SpellCasts>();
+
+        gameObject.GetComponent<LearningAgent>().NewState += OnNewState;
+
+        Fire.playRate = PlayRateSpeed;
     }
     public bool IsCooldown(Transform hitAttempt)
     {
@@ -64,9 +95,6 @@ public class FireController : MonoBehaviour
         Collider[] Colliders = Physics.OverlapSphere(transform.position, BlockMimic.CheckDistance);
         for (int i = 0; i < Colliders.Length; i++)
         {
-            /*if (Colliders[i].transform.tag == "VRPerson")
-                TrueColliders.Add(Colliders[i].transform);*/
-
             if (Colliders[i].transform.tag == "Shield")
                 TrueColliders.Add(Colliders[i].transform);
             if(Colliders[i].transform.tag == "Player")
@@ -80,25 +108,16 @@ public class FireController : MonoBehaviour
         Targets = CheckForTargets();
         StartCoroutine(Wait());
     }
-
-
-    
-   
-
     private void Update()
     {
         CheckArriveTimes();
         if (Targets.Count < 0)
             return;
 
-        if (CubeTest == true && this == NewMagicCheck.instance.Torch[1].fireControl)
-        {
-            float BlockTargetAngle = Vector3.Angle(transform.forward, TestCube.position - transform.position);
-            if (Spread > BlockTargetAngle)
-                TestCube.GetComponent<MeshRenderer>().material.color = Color.red;
-            else
-                TestCube.GetComponent<MeshRenderer>().material.color = Color.white;
-        }
+        transform.position = PositionObjective.transform.position;
+
+        ManageTest();
+
         for (int i = 0; i < Targets.Count; i++)
         {
             Vector3 EnemyAngle = Targets[i].position - transform.position;
@@ -121,7 +140,17 @@ public class FireController : MonoBehaviour
                 }
             }
         }
-
+        void ManageTest()
+        {
+            if (CubeTest == true && this == NewMagicCheck.instance.Torch[1].fireControl)
+            {
+                float BlockTargetAngle = Vector3.Angle(transform.forward, TestCube.position - transform.position);
+                if (Spread > BlockTargetAngle)
+                    TestCube.GetComponent<MeshRenderer>().material.color = Color.red;
+                else
+                    TestCube.GetComponent<MeshRenderer>().material.color = Color.white;
+            }
+        }
         void CheckArriveTimes()
         {
             for (int i = 0; i < Times.Count; i++)
@@ -181,19 +210,13 @@ public class FireController : MonoBehaviour
                         RaycastHit hit;
                         Vector3 Direction = Times[i].SentPos - Times[i].Target.position;
                         int WallCollision = (1 << 14) | (1 << 8) | (1 << 9);
-                        if (!Physics.Raycast(Times[i].SentPos, Direction, out hit, Mathf.Infinity, WallCollision))
-                            return true;
-                        else
-                            return false;
+                        return !Physics.Raycast(Times[i].SentPos, Direction, out hit, Mathf.Infinity, WallCollision);
                     }
                     bool AngleWorks(int i)
                     {
                         Vector3 EnemyDirection = Times[i].SentPos - Times[i].Target.position;
                         float BetweenAngle = Vector3.Angle(Times[i].SentRot, EnemyDirection);
-                        if (BetweenAngle > Spread)
-                            return true;
-                        else
-                            return false;
+                        return BetweenAngle > Spread;
                     }
                     bool ShieldBlocking(out GameObject shield)
                     {
@@ -238,10 +261,5 @@ public class FireController : MonoBehaviour
                 }
             }
         }
-    }
-    
-    public void SetActive(bool active)
-    {
-        Active = active;
     }
 }
