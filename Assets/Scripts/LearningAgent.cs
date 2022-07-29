@@ -23,7 +23,7 @@ public class LearningAgent : Agent
     public static LearningAgent instance;
     private void Awake() { instance = this; }
     [Header("Set")]
-    private static float FramePerSecond = 10;
+    private static float FramePerSecond = 60;
 
     //[HideInInspector]
     public float Interval;
@@ -58,16 +58,35 @@ public class LearningAgent : Agent
     private int Offset = 270;
 
     public bool Guess;
-    private void Update()
+
+    private float SecondTimer;
+    private int SecondCount;
+
+    public float FixedUpdateTimer;
+    private void FixedUpdate()
     {
         Timer += Time.deltaTime;
         if (Timer > Interval)
         {
-            //Debug.Log("interval")
+            SecondCount += 1;
             RequestDecision();
             CustomDebug("RequestDecision");
             Timer = 0;
         }
+    }
+
+    private void Update()
+    {
+        
+        /*
+        SecondTimer += Time.deltaTime;
+        if (SecondTimer > 1)
+        {
+            SecondTimer = 0;
+            Debug.Log(SecondCount);
+            SecondCount = 0;
+        }
+        */
     }
     public override void CollectObservations(VectorSensor sensor)
     {
@@ -76,6 +95,7 @@ public class LearningAgent : Agent
         LearnManager LM = LearnManager.instance;
         SingleInfo info = CurrentControllerInfo();
 
+        
         if (LM.HeadPos)
             sensor.AddObservation(info.HeadPos);
         if (LM.HeadRot)

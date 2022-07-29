@@ -39,7 +39,7 @@ public class FireController : MonoBehaviour
     public GameObject PositionObjective;
     public void OnNewState(bool State)
     {
-        Debug.Log("NewState: " + State);
+        //Debug.Log("NewState: " + State);
         if(State == true && Active == false)
         {
             Active = true;
