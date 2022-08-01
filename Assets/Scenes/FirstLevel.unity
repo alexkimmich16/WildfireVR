@@ -4797,7 +4797,7 @@ MonoBehaviour:
   - type: Index
     ControllerPosOffset: {x: 0, y: 0, z: 0}
     ControllerRotOffset: {x: 0, y: 0, z: 0}
-  WalkingThreshold: 0
+  WalkingThreshold: 0.199
   Current: 0
   HeadPosOffset: {x: 0, y: -0.1, z: 0}
   HeadRotOffset: {x: 0, y: 0, z: 0}
@@ -6906,12 +6906,9 @@ MonoBehaviour:
     HandRot: {x: 0, y: 0, z: 0}
     HandVel: {x: 0, y: 0, z: 0}
     AdjustedHandPos: {x: 0, y: 0, z: 0}
-    VertDist: 0
-    HorDist: 0
-    Dist: 0
-    Angle: 0
     Works: 0
   Guess: 0
+  FixedUpdateTimer: 0
 --- !u!114 &762929927
 MonoBehaviour:
   m_ObjectHideFlags: 0

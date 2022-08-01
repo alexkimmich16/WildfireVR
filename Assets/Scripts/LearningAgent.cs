@@ -59,16 +59,17 @@ public class LearningAgent : Agent
 
     public bool Guess;
 
-    private float SecondTimer;
-    private int SecondCount;
+    //private float SecondTimer;
+    //private int SecondCount;
 
     public float FixedUpdateTimer;
     private void FixedUpdate()
     {
+        Interval = 1 / FramePerSecond;
         Timer += Time.deltaTime;
         if (Timer > Interval)
         {
-            SecondCount += 1;
+            //SecondCount += 1;
             RequestDecision();
             CustomDebug("RequestDecision");
             Timer = 0;
@@ -114,10 +115,11 @@ public class LearningAgent : Agent
     public override void OnActionReceived(ActionBuffers actions)
     {
         CustomDebug("OnActionReceived");
+        
         bool CurrentGuess = actions.DiscreteActions[0] == 1;
         Guess = CurrentGuess;
         //GuessNum = actions.DiscreteActions[0];
-
+        CustomDebug(CurrentGuess.ToString());
         NewState(CurrentGuess);
     }
     public void CustomDebug(string text)
@@ -128,10 +130,6 @@ public class LearningAgent : Agent
         //if (DebugType == DebugType.WithState)
             //FrameReference = " Timer: " + Timer + "|Frame: " + Frame + "|Set: " + Set + "" + "|CycleNum: " + CycleNum + "|";
         Debug.Log(text + FrameReference);
-    }
-    private void Start()
-    {
-        Interval = 1 / FramePerSecond;
     }
     public SingleInfo CurrentControllerInfo()
     {
