@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Photon.Pun;
 public class FireballGenerator : MonoBehaviour
 {
     public float MaxTime;
@@ -15,7 +15,7 @@ public class FireballGenerator : MonoBehaviour
         if(Active == true)
         {
             Timer += Time.deltaTime;
-            Spawn.LookAt(HandMagic.instance.Cam);
+            Spawn.LookAt(Camera.main.transform);
             if (Timer > MaxTime)
             {
                 SpawnFireball();
@@ -27,7 +27,7 @@ public class FireballGenerator : MonoBehaviour
 
     public void SpawnFireball()
     {
-        GameObject Current = Instantiate(Fireball, Spawn.position, Spawn.rotation);
+        GameObject Current = PhotonNetwork.Instantiate("RealFireball", Spawn.position, Spawn.rotation);
         Current.GetComponent<Fireball>().Speed = Speed;
     }
 }

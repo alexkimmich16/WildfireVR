@@ -27,6 +27,6 @@ public class InfoSave : MonoBehaviour
     }
     #endregion
 
-    [Header("Info")]
-    public Team team;
+    //[Header("Info")]
+    //public Team team;
 }

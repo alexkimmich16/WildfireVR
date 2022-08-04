@@ -137,11 +137,11 @@ public class LearningAgent : Agent
         LearnManager LM = LearnManager.instance;
         HandActions controller = MyHand();
 
-        newInfo.HeadPos = LM.Cam.position;
+        newInfo.HeadPos = LM.Cam.localPosition;
         newInfo.HeadRot = LM.Cam.rotation.eulerAngles;
         if (Right)
         {
-            newInfo.HandPos = controller.transform.position;
+            newInfo.HandPos = controller.transform.localPosition;
             newInfo.HandRot = controller.transform.localRotation.eulerAngles;
             newInfo.HandVel = controller.Velocity;
 
@@ -158,7 +158,7 @@ public class LearningAgent : Agent
             //CamRot
             float CamRot = LM.Cam.rotation.eulerAngles.y;
             CamAngle = CamRot;
-            Vector3 handPos = controller.transform.position;
+            Vector3 handPos = controller.transform.localPosition;
             float Distance = Vector3.Distance(new Vector3(handPos.x, 0, handPos.z), new Vector3(newInfo.HeadPos.x, 0, newInfo.HeadPos.z));
             //pos
             Vector3 LevelCamPos = new Vector3(newInfo.HeadPos.x, 0, newInfo.HeadPos.z);

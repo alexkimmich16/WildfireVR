@@ -23,34 +23,77 @@ public class FireController : MonoBehaviour
 
     public float Speed;
     public float Spread;
+    public float MaxDistance;
     public List<CooldownInfo> DamageCooldowns = new List<CooldownInfo>();
-
-    [Header("Test")]
-    private SpellCasts SC;
-
-    private bool CubeTest;
-
-    private Transform TestCube;
+    public int ConsecutiveFrames;
+    public List<bool> PastFrames;
+    private static int Capacity = 10;
 
     [Header("VFX")]
-    public VisualEffect Fire;
+    //public VisualEffect Fire;
     public float PlayRateSpeed;
 
     public GameObject PositionObjective;
+
+    private GameObject CurrentFire;
+    public GameObject FirePrefab;
+
+    public float DestoryInTime;
+
+    [Header("CubeTest")]
+    private SpellCasts SC;
+    private bool CubeTest;
+    private Transform TestCube;
+
+    //private float FireStart
+    public bool AllPastFrames(bool Check)
+    {
+        if (PastFrames.Count != Capacity)
+            return false;
+        for (int i = 0; i < ConsecutiveFrames; i++)
+            if (PastFrames[Capacity - 1] != Check)
+                return false;
+        return true;
+    }
+    public void StopFire()
+    {
+        if (CurrentFire == null)
+            return;
+        CurrentFire.GetPhotonView().RPC("SetFlames", RpcTarget.All, false, PlayRateSpeed);
+        Destroy(CurrentFire, DestoryInTime);
+        CurrentFire = null;
+    }
+    public void StartFire()
+    {
+        CurrentFire = PhotonNetwork.Instantiate("RealFlames", Vector3.zero, Camera.main.transform.rotation);
+        CurrentFire.GetPhotonView().RPC("SetFlames", RpcTarget.All, true, PlayRateSpeed);
+        CurrentFire.transform.SetParent(transform);
+    }
+
+
+    public void AddToList(bool New)
+    {
+        PastFrames.Add(New);
+        if (PastFrames.Count > Capacity)
+            PastFrames.RemoveAt(0);
+    }
     public void OnNewState(bool State)
     {
-        //Debug.Log("NewState: " + State);
-        if(State == true && Active == false)
+        // hasn't started yet InGameManager.MagicBeforeStart &&
+        AddToList(State);
+        if (InGameManager.CanCast == false)
+            return;
+
+        if(State == true && Active == false && AllPastFrames(true))
         {
             Active = true;
-            Fire.Play();
-            Fire.enabled = true;
+            Debug.Log("start");
+            StartFire();
         }
-        else if(State == false && Active == true)
+        else if(State == false && Active == true && AllPastFrames(false))
         {
             Active = false;
-            Fire.Stop();
-            Fire.enabled = false;
+            StopFire();
         }
     }
 
@@ -74,13 +117,9 @@ public class FireController : MonoBehaviour
     {
         StartCoroutine(Wait());
 
-        Fire.Stop();
-
         SC = HandMagic.instance.transform.GetComponent<SpellCasts>();
 
         gameObject.GetComponent<LearningAgent>().NewState += OnNewState;
-
-        Fire.playRate = PlayRateSpeed;
     }
     public bool IsCooldown(Transform hitAttempt)
     {
@@ -92,49 +131,56 @@ public class FireController : MonoBehaviour
     public List<Transform> CheckForTargets()
     {
         List<Transform> TrueColliders = new List<Transform>();
-        Collider[] Colliders = Physics.OverlapSphere(transform.position, BlockMimic.CheckDistance);
+        Collider[] Colliders = Physics.OverlapSphere(PositionObjective.transform.position, MaxDistance);
+        //Debug.Log("colliders: " + Colliders.Length);
         for (int i = 0; i < Colliders.Length; i++)
         {
-            if (Colliders[i].transform.tag == "Shield")
-                TrueColliders.Add(Colliders[i].transform);
-            if(Colliders[i].transform.tag == "Player")
-                TrueColliders.Add(Colliders[i].transform);
+            //if (Colliders[i].transform.tag == "Shield")
+            //TrueColliders.Add(Colliders[i].transform);
+            //Debug.Log(Colliders[i].gameObject.layer);
+            if (Colliders[i].gameObject.GetComponent<PhotonView>())
+                if (Colliders[i].gameObject.layer == LayerMask.NameToLayer("PlayerSee") && Colliders[i].gameObject.GetComponent<PhotonView>().IsMine == false)
+                    TrueColliders.Add(Colliders[i].transform);
         }
-            return TrueColliders;
+        return TrueColliders;
     }
     public IEnumerator Wait()
     {
-        yield return new WaitForSeconds(CheckInterval);
-        Targets = CheckForTargets();
-        StartCoroutine(Wait());
+        while(false == false)
+        {
+            //Debug.Log("check");
+            Targets = CheckForTargets();
+            yield return new WaitForSeconds(CheckInterval);
+        }
     }
     private void Update()
     {
         CheckArriveTimes();
-        if (Targets.Count < 0)
+        if (Targets.Count < 0 || CurrentFire == null)
             return;
 
-        transform.position = PositionObjective.transform.position;
+        CurrentFire.transform.position = PositionObjective.transform.position;
+        CurrentFire.transform.rotation = Camera.main.transform.rotation;
 
         ManageTest();
-
         for (int i = 0; i < Targets.Count; i++)
         {
-            Vector3 EnemyAngle = Targets[i].position - transform.position;
-            float BetweenAngle = Vector3.Angle(transform.forward, EnemyAngle);
+            Vector3 RealEnemyPos = new Vector3(Targets[i].position.x, Targets[i].position.y + 1.5f, Targets[i].position.z);
+            Vector3 EnemyAngle = RealEnemyPos - CurrentFire.transform.position;
+            float BetweenAngle = Vector3.Angle(Camera.main.transform.forward, EnemyAngle);
 
-            float Distance = Vector3.Distance(Targets[i].position, transform.position);
+            float Distance = Vector3.Distance(Targets[i].position, CurrentFire.transform.position);
             float Travel = Distance / Speed;
-            
+            //Debug.Log(BetweenAngle);
             if (Spread > BetweenAngle)
             {
                 if (Active == true)
                 {
                     SendInfo ToAdd = new SendInfo();
-                    Debug.Log("Created");
+                    //Debug.Log("Created");
                     ToAdd.Time = Travel;
-                    ToAdd.SentPos = transform.position;
-                    ToAdd.SentRot = transform.TransformDirection(Vector3.forward);
+                    ToAdd.SentPos = CurrentFire.transform.position;
+                    ToAdd.SentRot = CurrentFire.transform.TransformDirection(Vector3.forward);
                     ToAdd.Target = Targets[i];
                     Times.Add(ToAdd);
                 }
@@ -160,6 +206,7 @@ public class FireController : MonoBehaviour
                 {
                     //on hit
                     //give priority to shields in front
+                    /*
                     if (ShieldBlocking(out GameObject shield))
                     {
                         //if my shields
@@ -177,25 +224,28 @@ public class FireController : MonoBehaviour
                                 SC.ShieldDamage(StayDamage, ShieldSide(shield));
                         }
                     }
-                    else if(RaycastWorks(i) && AngleWorks(i))
+                    */
+                    //Debug.Log("Damage1");
+                    if(RaycastWorks(i) && AngleWorks(i))
                     {
+                        //Debug.Log("Damage2");
                         if (IsCooldown(Times[i].Target) == false)
                         {
                             //create cooldown
-                            if (Times[i].Target.GetComponent<DamageController>())
+                            //Debug.Log("Damage3");
+                            if (Times[i].Target.GetComponent<PhotonView>())
                             {
-                                Times[i].Target.GetComponent<DamageController>().TakeDamage(1);
-                            }
-                            else if (Times[i].Target.GetComponent<DamageController>())
-                            {
-
+                                //Debug.Log("Damage4");
+                                PhotonView EnemyPhoton = Times[i].Target.GetComponent<PhotonView>();
+                                EnemyPhoton.RPC("takeDamage", RpcTarget.All, EnemyPhoton.Owner.ActorNumber, 1);
+                                //Times[i].Target.GetComponent<DamageController>().TakeDamage(1);
                             }
                             //
                             CooldownInfo NewTime = new CooldownInfo();
                             NewTime.Time = WaitTime;
                             NewTime.Target = Times[i].Target;
                             DamageCooldowns.Add(NewTime);
-                            Debug.Log("damage");
+                            //Debug.Log("damage5");
                             //do damage
                             //int oldHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
                             //int newHealth = oldHealth - StayDamage;
@@ -262,4 +312,5 @@ public class FireController : MonoBehaviour
             }
         }
     }
+    
 }

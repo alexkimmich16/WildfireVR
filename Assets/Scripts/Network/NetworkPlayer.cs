@@ -81,4 +81,14 @@ public class NetworkPlayer : MonoBehaviourPun
         Debug.Log("RPC Respawn at: " + SpawnInfo.ListNum + " Team: " + team.ToString());
         //InGameManager.instance.FoundSpawn = true;
     }
+
+    [PunRPC]
+    public void takeDamage(int ID, int damg)
+    {
+        if (PhotonNetwork.LocalPlayer.ActorNumber == ID)
+        {
+            NetworkManager.instance.LocalTakeDamage(damg);
+            Debug.Log("Take Damage");
+        }
+    }
 }

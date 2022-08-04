@@ -33,6 +33,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //public List<PlayerInfo> info = new List<PlayerInfo>();
     public List<PlayerStats> Players = new List<PlayerStats>();
     public int InGame;
+    public List<PhotonView> PlayerPhotonViews;
+
+    public delegate void DamageEvent(int Damage);
+    public event DamageEvent OnTakeDamage;
+
     void Start()
     {
         ConnectToServer();
@@ -45,7 +50,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log("try connect to server");
         }
     }
-
+    public static bool HasConnected()
+    {
+        return PhotonNetwork.InRoom == true && Initialized();
+    }
     public override void OnConnectedToMaster()
     {
         if (DebugScript == true)
@@ -95,6 +103,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log("a new player joined");
         base.OnPlayerEnteredRoom(newPlayer);
     }
+    public void LocalTakeDamage(int Damage)
+    {
+        OnTakeDamage(Damage);
+        int HealthNum = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
+        SetPlayerInt(PlayerHealth, HealthNum - Damage, PhotonNetwork.LocalPlayer);
+    }
     private void Update()
     {
         InGame = PhotonNetwork.PlayerList.Length;
@@ -114,4 +128,5 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     
+
 }

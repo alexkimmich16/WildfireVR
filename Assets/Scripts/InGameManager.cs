@@ -42,6 +42,10 @@ public class InGameManager : MonoBehaviour
 
     public static bool MagicCasting = false;
     public static bool CanMove = false;
+    public static bool CanCast;
+
+
+    public static bool MagicBeforeStart = false;
 
     public float TimeMultiplier = 3f;
 
@@ -54,8 +58,18 @@ public class InGameManager : MonoBehaviour
     public List<Transform> SpectatorSpawns = new List<Transform>();
 
     public Result result;
-    private bool StartedSpawn = false;
+    public bool StartedSpawn = false;
     public bool FoundSpawn = false;
+
+    public int Alive(Team team)
+    {
+        int Alive = 0;
+        for (int i = 0; i < PhotonNetwork.CountOfPlayers; i++)
+            if (GetPlayerBool(PlayerAlive, PhotonNetwork.PlayerList[i]) && GetPlayerTeam(PhotonNetwork.PlayerList[i]) == team)
+                Alive += 1;
+        return Alive;
+    }
+    private float OnSpawnMagicDelay = 0;
     public string GetNameWithNumber(int Index)
     {
         if(Index < 3)
@@ -134,7 +148,9 @@ public class InGameManager : MonoBehaviour
             }
             if (state == GameState.Active)
             {
-                if (FinishTimer > FinishTime || Attack == 0 || Defense == 0)
+                int AttackAlive = Alive(Team.Attack);
+                int DefenseAlive = Alive(Team.Defense);
+                if (FinishTimer > FinishTime || AttackAlive == 0 || DefenseAlive == 0)
                 {
                     SetGameState(GameState.Finished);
                     SetGameFloat(GameFinishTimer, 0f);
@@ -192,22 +208,48 @@ public class InGameManager : MonoBehaviour
                 else
                     DefenseCount += 1;
             }
-            
         }
         SetGameInt(AttackTeamCount, AttackCount);
         SetGameInt(DefenseTeamCount, DefenseCount);
     }
+    public Team LowTeamCount()
+    {
+        int AttCount = SideCount(Team.Attack);
+        int DefCount = SideCount(Team.Defense);
+        if (AttCount > DefCount)
+            return Team.Defense;
+        else if (AttCount < DefCount)
+            return Team.Attack;
+        else
+        {
+            int Rand = Random.Range(0, 2);
+            if(Rand == 0)
+                return Team.Attack;
+            else
+                return Team.Defense;
+        }
+        
+    }
     void Update()
     {
-        if (PhotonNetwork.InRoom == true && Initialized())
+        if (NetworkManager.HasConnected())
         {
             if (StartedSpawn == false)
             {
-                SpawnPoint SpawnInfo = FindSpawn(InfoSave.instance.team);
+                Team team = LowTeamCount();
+                SpawnPoint SpawnInfo = FindSpawn(team);
+                SetPlayerTeam(team, PhotonNetwork.LocalPlayer);
                 SetNewPosition(SpawnInfo);
                 //Debug.Log("newpos: " + SpawnInfo.ListNum);
                 StartedSpawn = true;
             }
+            if (StartedSpawn == true && OnSpawnMagicDelay < 4)
+                OnSpawnMagicDelay += Time.deltaTime;
+            else if(StartedSpawn == true)
+                CanCast = true;
+
+
+
             if (PhotonNetwork.IsMasterClient)
             {
                 ProgressTime();
@@ -227,8 +269,6 @@ public class InGameManager : MonoBehaviour
     public void InitialisePlayer()
     {
         Rig = GameObject.Find("XR Rig").transform;
-
-        SetPlayerTeam(InfoSave.instance.team, PhotonNetwork.LocalPlayer);
         SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);
         SetPlayerBool(PlayerAlive, true, PhotonNetwork.LocalPlayer);
     }
@@ -255,6 +295,7 @@ public class InGameManager : MonoBehaviour
             while (Found == false)
             {
                 int ToRemove = Random.Range(0, PhotonNetwork.PlayerList.Length);
+                //GetPlayerTeam
                 var teamVAR = PhotonNetwork.PlayerList[ToRemove].CustomProperties["TEAM"];
                 Team team = (Team)teamVAR;
                 if (ToLook == (int)team)

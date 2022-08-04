@@ -17,7 +17,7 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
 
         if (SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
         {
-
+            NetworkManager.instance.PlayerPhotonViews.Add(SpawnedPlayerPrefab.GetComponent<PhotonView>());
         }
 
         
@@ -25,8 +25,8 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         //base.OnLeftRoom();
-        
 
+        NetworkManager.instance.PlayerPhotonViews.Remove(SpawnedPlayerPrefab.GetComponent<PhotonView>());
         PhotonNetwork.Destroy(SpawnedPlayerPrefab);
     }
 
