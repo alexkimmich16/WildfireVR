@@ -46,12 +46,11 @@ public class BillBoardManager : MonoBehaviour
         AttackTeamCount.text = "Attack Team Count: " + InGameManager.instance.SideCount(Team.Attack);
         DefenseTeamCount.text = "Defense Team Count: " + InGameManager.instance.SideCount(Team.Defense);
 
-        Player local = PhotonNetwork.LocalPlayer;
         if (InGameManager.instance.FoundSpawn)
         {
-            MyTeamText.text = "MyTeam: " + GetPlayerTeam(local).ToString();
-            MyPlayerSpawnText.text = "PlayerSpawn: " + GetPlayerInt(PlayerSpawn, local).ToString();
-            AliveText.text = "Alive: " + GetPlayerBool(PlayerAlive, local).ToString();
+            MyTeamText.text = "MyTeam: " + GetPlayerTeam(PhotonNetwork.LocalPlayer).ToString();
+            MyPlayerSpawnText.text = "PlayerSpawn: " + GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer).ToString();
+            AliveText.text = "Alive: " + Alive(PhotonNetwork.LocalPlayer).ToString();
         }
     }
 

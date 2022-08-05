@@ -24,8 +24,8 @@ public class LearnManager : MonoBehaviour
     public bool Angle;
 
     [Header("References")]
-    public BehaviorParameters parameters;
-    public LearningAgent agent;
+    //public BehaviorParameters parameters;
+    //public LearningAgent agent;
 
     public HandActions Left;
     public HandActions Right;

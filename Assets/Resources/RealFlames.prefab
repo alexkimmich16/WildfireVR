@@ -33,12 +33,14 @@ Transform:
   m_LocalRotation: {x: 0, y: -0.3262282, z: 0, w: 0.94529104}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -38.08, z: 0}
 --- !u!73398921 &2199576666746651424
 VFXRenderer:
+  serializedVersion: 1
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -56,8 +58,6 @@ VFXRenderer:
   m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -117,10 +117,10 @@ VisualEffect:
       - m_Value: {x: 1.1297305, y: 0.96847034, z: 0.9092224}
         m_Name: Fire_scale
         m_Overridden: 1
-      - m_Value: {x: 0, y: 321.91998, z: 0}
+      - m_Value: {x: -0, y: 83.71999, z: 0}
         m_Name: Cam_angles
         m_Overridden: 1
-      - m_Value: {x: 0, y: 0, z: 0}
+      - m_Value: {x: -9.098, y: 1.82, z: 0.414}
         m_Name: Cam_position
         m_Overridden: 1
       - m_Value: {x: 1, y: 1, z: 1}

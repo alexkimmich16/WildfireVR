@@ -9,6 +9,9 @@ using Photon.Realtime;
 
 public class FireController : MonoBehaviour
 {
+    public static FireController instance;
+    void Awake() { instance = this; }
+
     [Header("Info")]
     public bool Active = false;
 
@@ -25,9 +28,9 @@ public class FireController : MonoBehaviour
     public float Spread;
     public float MaxDistance;
     public List<CooldownInfo> DamageCooldowns = new List<CooldownInfo>();
-    public int ConsecutiveFrames;
-    public List<bool> PastFrames;
-    private static int Capacity = 10;
+    //public int ConsecutiveFrames;
+    //public List<bool> PastFrames;
+    //private static int Capacity = 10;
 
     [Header("VFX")]
     //public VisualEffect Fire;
@@ -38,29 +41,29 @@ public class FireController : MonoBehaviour
     private GameObject CurrentFire;
     public GameObject FirePrefab;
 
-    public float DestoryInTime;
+    //public float DestoryInTime;
 
     [Header("CubeTest")]
     private SpellCasts SC;
     private bool CubeTest;
     private Transform TestCube;
 
+    public static bool DebugDamageShard;
+    public GameObject DamageShard;
+
+    private float Timer;
+    public float Interval = 0.03f;
+    public float ShardSpeed;
+    [Header("Frames")]
+    public Frames frames;
+
     //private float FireStart
-    public bool AllPastFrames(bool Check)
-    {
-        if (PastFrames.Count != Capacity)
-            return false;
-        for (int i = 0; i < ConsecutiveFrames; i++)
-            if (PastFrames[Capacity - 1] != Check)
-                return false;
-        return true;
-    }
     public void StopFire()
     {
         if (CurrentFire == null)
             return;
         CurrentFire.GetPhotonView().RPC("SetFlames", RpcTarget.All, false, PlayRateSpeed);
-        Destroy(CurrentFire, DestoryInTime);
+        //Destroy(CurrentFire, DestoryInTime);
         CurrentFire = null;
     }
     public void StartFire()
@@ -69,28 +72,18 @@ public class FireController : MonoBehaviour
         CurrentFire.GetPhotonView().RPC("SetFlames", RpcTarget.All, true, PlayRateSpeed);
         CurrentFire.transform.SetParent(transform);
     }
-
-
-    public void AddToList(bool New)
-    {
-        PastFrames.Add(New);
-        if (PastFrames.Count > Capacity)
-            PastFrames.RemoveAt(0);
-    }
     public void OnNewState(bool State)
     {
         // hasn't started yet InGameManager.MagicBeforeStart &&
-        AddToList(State);
         if (InGameManager.CanCast == false)
             return;
 
-        if(State == true && Active == false && AllPastFrames(true))
+        if(Active == false && frames.AllPastFrames(true))
         {
             Active = true;
-            Debug.Log("start");
             StartFire();
         }
-        else if(State == false && Active == true && AllPastFrames(false))
+        else if(Active == true && frames.AllPastFrames(false))
         {
             Active = false;
             StopFire();
@@ -118,8 +111,9 @@ public class FireController : MonoBehaviour
         StartCoroutine(Wait());
 
         SC = HandMagic.instance.transform.GetComponent<SpellCasts>();
-
+        gameObject.GetComponent<LearningAgent>().NewState += frames.AddToList;
         gameObject.GetComponent<LearningAgent>().NewState += OnNewState;
+        
     }
     public bool IsCooldown(Transform hitAttempt)
     {
@@ -153,16 +147,56 @@ public class FireController : MonoBehaviour
             yield return new WaitForSeconds(CheckInterval);
         }
     }
+    public void DamageShardHit(GameObject Hit)
+    {
+        if (IsCooldown(Hit.transform))
+            return;
+        PhotonView EnemyPhoton = Hit.GetComponent<PhotonView>();
+        EnemyPhoton.RPC("takeDamage", RpcTarget.All, EnemyPhoton.Owner.ActorNumber, 1);
+
+        CooldownInfo NewTime = new CooldownInfo();
+        NewTime.Time = WaitTime;
+        NewTime.Target = Hit.transform;
+        DamageCooldowns.Add(NewTime);
+    }
     private void Update()
     {
         CheckArriveTimes();
-        if (Targets.Count < 0 || CurrentFire == null)
+        for (int i = 0; i < DamageCooldowns.Count; i++)
+        {
+            DamageCooldowns[i].Time -= Time.deltaTime;
+            if (DamageCooldowns[i].Time < 0)
+            {
+                DamageCooldowns.Remove(DamageCooldowns[i]);
+            }
+        }
+        if (Active)
+        {
+            float RandomRad = Random.Range(0, 360) * Mathf.Deg2Rad;
+            float x = Mathf.Cos(RandomRad);
+            float y = Mathf.Sin(RandomRad);
+            Vector3 NewRot = new Vector3(x, y, 0) * Random.Range(0.1f, Spread);
+            GameObject shard = Instantiate(DamageShard, PositionObjective.transform.position, Camera.main.transform.rotation);
+            shard.transform.eulerAngles += NewRot;
+            shard.GetComponent<DamageShard>().Speed = ShardSpeed;
+            Timer = 0;
+            Timer += Time.deltaTime;
+            if (Timer > Interval)
+            {
+                
+            }
+        }
+        if (Targets.Count < -1 || CurrentFire == null)
             return;
+
+
 
         CurrentFire.transform.position = PositionObjective.transform.position;
         CurrentFire.transform.rotation = Camera.main.transform.rotation;
 
         ManageTest();
+
+        
         for (int i = 0; i < Targets.Count; i++)
         {
             Vector3 RealEnemyPos = new Vector3(Targets[i].position.x, Targets[i].position.y + 1.5f, Targets[i].position.z);
@@ -171,6 +205,17 @@ public class FireController : MonoBehaviour
 
             float Distance = Vector3.Distance(Targets[i].position, CurrentFire.transform.position);
             float Travel = Distance / Speed;
+
+            /*
+            SendInfo ToAdd = new SendInfo();
+            
+            ToAdd.Time = Travel;
+            ToAdd.SentPos = CurrentFire.transform.position;
+            ToAdd.SentRot = CurrentFire.transform.TransformDirection(Vector3.forward);
+            ToAdd.Target = Targets[i];
+            Times.Add(ToAdd);
+            
+            
             //Debug.Log(BetweenAngle);
             if (Spread > BetweenAngle)
             {
@@ -185,7 +230,10 @@ public class FireController : MonoBehaviour
                     Times.Add(ToAdd);
                 }
             }
+            */
         }
+
+        
         void ManageTest()
         {
             if (CubeTest == true && this == NewMagicCheck.instance.Torch[1].fireControl)
@@ -197,6 +245,8 @@ public class FireController : MonoBehaviour
                     TestCube.GetComponent<MeshRenderer>().material.color = Color.white;
             }
         }
+        
+
         void CheckArriveTimes()
         {
             for (int i = 0; i < Times.Count; i++)
@@ -302,15 +352,9 @@ public class FireController : MonoBehaviour
                 }
             }
 
-            for (int i = 0; i < DamageCooldowns.Count; i++)
-            {
-                DamageCooldowns[i].Time -= Time.deltaTime;
-                if (DamageCooldowns[i].Time < 0)
-                {
-                    DamageCooldowns.Remove(DamageCooldowns[i]);
-                }
-            }
+            
         }
     }
+
     
 }

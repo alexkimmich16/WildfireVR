@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1896018481031965421}
   - component: {fileID: 8604382431839097032}
   m_Layer: 11
-  m_Name: RealFireball
+  m_Name: BetterFireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,19 +55,22 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 0.02
-        m_Name: Alpha
+      - m_Value: 0.721
+        m_Name: ColorBlendValue
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 0.608
         m_Name: AlphaBlendValue
         m_Overridden: 1
-      - m_Value: 0.532
-        m_Name: ColorBlendValue
+      - m_Value: 0.07
+        m_Name: Alpha
         m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: -14.68, y: 0.33, z: 7.14}
+        m_Name: ColorBlend
+        m_Overridden: 1
     m_Vector4f:
       m_Array:
       - m_Value: {x: 1, y: 1, z: 0, w: 1}
@@ -85,18 +88,18 @@ VisualEffect:
       m_Array:
       - m_Value:
           serializedVersion: 2
-          key0: {r: 0.13333334, g: 0.009433985, b: 0.009433985, a: 0.5686275}
-          key1: {r: 0.18867922, g: 0.016433865, b: 0, a: 1}
-          key2: {r: 0, g: 0, b: 0, a: 0}
+          key0: {r: 1, g: 1, b: 1, a: 0.5686275}
+          key1: {r: 0, g: 0.0014419556, b: 1, a: 1}
+          key2: {r: 0.32415238, g: 0, b: 4.4223633, a: 0}
           key3: {r: 26.348768, g: 0.13795167, b: 0, a: 0}
           key4: {r: 5.0494823, g: 0.03919951, b: 0, a: 0}
           key5: {r: 0, g: 0, b: 0, a: 0}
           key6: {r: 0, g: 0, b: 0, a: 0}
           key7: {r: 0, g: 0, b: 0, a: 0}
           ctime0: 0
-          ctime1: 1928
-          ctime2: 3470
-          ctime3: 8481
+          ctime1: 578
+          ctime2: 1735
+          ctime3: 45875
           ctime4: 58982
           ctime5: 0
           ctime6: 0

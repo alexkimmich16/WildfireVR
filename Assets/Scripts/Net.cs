@@ -10,7 +10,7 @@ namespace Odin
     public static class Net
     {
         public static string PlayerTeam = "Team";
-        public static string PlayerAlive = "Alive";
+        //public static string PlayerAlive = "Alive";
         public static string PlayerHealth = "Health";
         public static string PlayerSpawn = "SpawnNum";
 
@@ -23,6 +23,12 @@ namespace Odin
 
         public static string AttackTeamCount = "AttackTeam";
         public static string DefenseTeamCount = "DefenseTeam";
+
+
+        public static bool Alive(Player player)
+        {
+            return GetPlayerInt(PlayerHealth, player) > 0;
+        }
 
         public static bool Contains(List<GameObject> AllObjects, GameObject myObject)
         {

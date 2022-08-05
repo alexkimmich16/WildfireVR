@@ -26,7 +26,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         SetPlayerInt(PlayerHealth, newHealth, PhotonNetwork.LocalPlayer);
         if (newHealth < 1)
         {
-            Death(true);
+            //Death(true);
             //rpcDeathRPC()
         }
         
@@ -49,19 +49,9 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
             HandMagic.instance.RB.transform.position = Spawn.position;
         }
     }
-    public void Death(bool IsMine)
-    {
-        StartCoroutine(Respawn());
-        if(IsMine == true)
-        {
-            SetPlayerBool(PlayerAlive, false, PhotonNetwork.LocalPlayer);
-        }
-            
-
-    }
     [PunRPC]
     public void DeathRPC()
     {
-        Death(false);
+        //Death(false);
     }
 }

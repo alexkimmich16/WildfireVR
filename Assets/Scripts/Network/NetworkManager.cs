@@ -105,9 +105,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public void LocalTakeDamage(int Damage)
     {
+        int BeforeHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
+        int NewHealth = BeforeHealth - Damage;
         OnTakeDamage(Damage);
-        int HealthNum = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
-        SetPlayerInt(PlayerHealth, HealthNum - Damage, PhotonNetwork.LocalPlayer);
+        if (NewHealth > 0)
+        {
+            SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);
+        }
+        else
+        {
+            SetPlayerInt(PlayerHealth, 0, PhotonNetwork.LocalPlayer);
+            OnDeath();
+        }
+        
+    }
+    public void OnDeath()
+    {
+        GameObject.Find("XR Rig").transform.position = InGameManager.instance.RandomSpectatorPos();
+        //move to stands
+        //disable magic
+        //
     }
     private void Update()
     {

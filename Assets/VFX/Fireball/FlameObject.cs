@@ -11,12 +11,8 @@ public class FlameObject : MonoBehaviour
     {
         Flames.playRate = Speed;
         if (NewState == true)
-        {
             Flames.Play();
-        }
         else if(NewState == false)
-        {
             Flames.Stop();
-        }
     }
 }

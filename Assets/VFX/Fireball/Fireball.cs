@@ -8,20 +8,29 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Fireball : MonoBehaviour
 {
-    [HideInInspector]
+    //[HideInInspector]
     public float Speed;
     [HideInInspector]
     public static int Damage = 5;
-    public GameObject Explosion, Flash, DestoryAudio;
-    private Rigidbody RB;
 
+    [HideInInspector]
+    public GameObject Explosion, Flash, DestoryAudio;
+    [HideInInspector]
+    public Rigidbody RB;
+
+    public bool Absorbing;
+    
     //public float LifeTime = 3;
     void Update()
     {
-        Vector3 Forward = transform.forward;
-        //transform.Translate(Vector3.forward * Time.deltaTime * Speed);
-        RB.velocity = Forward * Time.deltaTime * Speed;
-        //Debug.Log("update");
+        if (Absorbing == false)
+        {
+            Vector3 Forward = transform.forward;
+            //transform.Translate(Vector3.forward * Time.deltaTime * Speed);
+            RB.velocity = Forward * Time.deltaTime * Speed;
+            //Debug.Log("update");
+        }
+
     }
 
 
@@ -48,6 +57,7 @@ public class Fireball : MonoBehaviour
             
         }
         Destroy(gameObject);
+        
     }
     public PhotonView MyPhotonView()
     {
@@ -67,6 +77,7 @@ public class Fireball : MonoBehaviour
     private void Start()
     {
         RB = GetComponent<Rigidbody>();
+        Speed = FireballController.instance.Speed;
     }
 
     /*
