@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.VFX;
 using UnityEngine.XR.Interaction.Toolkit;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -19,16 +20,35 @@ public class Fireball : MonoBehaviour
     public Rigidbody RB;
 
     public bool Absorbing;
-    
+
+    public float TrailRate, BallRate;
+
+    public VisualEffect Trail;
+    public VisualEffect Ball;
+
+
+
+    public void SetAbsorbed(bool State)
+    {
+        Absorbing = State;
+        if (State == true)
+        {
+            Trail.Stop();
+        }
+        else if (State == false)
+        {
+
+        }
+    }
     //public float LifeTime = 3;
     void Update()
     {
+        Trail.playRate = TrailRate;
+        Ball.playRate = BallRate;
         if (Absorbing == false)
         {
             Vector3 Forward = transform.forward;
-            //transform.Translate(Vector3.forward * Time.deltaTime * Speed);
             RB.velocity = Forward * Time.deltaTime * Speed;
-            //Debug.Log("update");
         }
 
     }
@@ -37,13 +57,15 @@ public class Fireball : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
+        if (Absorbing == true)
+            return;
         if(Explosion != null)
             GameObject.Instantiate(Explosion, this.transform.position, this.transform.rotation);
         if(Flash != null)
             GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
         SoundManager.instance.PlayAudio("FireballExplosion", null);
 
-        Debug.Log(col.gameObject.name);
+        //Debug.Log(col.gameObject.name);
         
         if (col.collider.tag == "HitBox")
         {

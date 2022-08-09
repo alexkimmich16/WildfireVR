@@ -37,10 +37,11 @@ public class FireballController : MonoBehaviour
 
     public void EndCount()
     {
-        //Debug.Log(Vector3.Distance(StartPos, Hand.localPosition));
+        Debug.Log(Vector3.Distance(StartPos, Hand.localPosition));
         if(Vector3.Distance(StartPos, Hand.localPosition) > MinFireDistance)
         {
-            SpawnFireball(FireAbsorb.FireballControl);
+            SpawnFireball(FireAbsorb.instance.FireballControl);
+            //Debug.Log(FireAbsorb.instance.FireballControl);
             FireAbsorb.instance.StopHoldingFireball();
         }
         StartPos = Hand.localPosition;
@@ -70,9 +71,10 @@ public class FireballController : MonoBehaviour
 
     public void SpawnFireball(bool Redirect)
     {
+        Debug.Log(Redirect);
         if(Redirect == false) 
             Fireball = PhotonNetwork.Instantiate("RealFireball", Spawn.position, Camera.main.transform.rotation);
-        else
+        else if(Redirect == true)
             Fireball = PhotonNetwork.Instantiate("BetterFireball", Spawn.position, Camera.main.transform.rotation);
     }
 }

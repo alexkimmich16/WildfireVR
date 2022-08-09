@@ -57,8 +57,9 @@ public class LearningAgent : Agent
     public static List<bool> InvertAngles  = new List<bool>() { false, true, false, true };
     private int Offset = 270;
 
-    public bool Guess;
+    private bool Guess;
 
+    public bool Active;
     //private float SecondTimer;
     //private int SecondCount;
 
@@ -66,7 +67,7 @@ public class LearningAgent : Agent
     private void FixedUpdate()
     {
         Interval = 1 / FramePerSecond;
-        Timer += Time.deltaTime;
+        
         if (Timer > Interval)
         {
             //SecondCount += 1;
@@ -74,20 +75,6 @@ public class LearningAgent : Agent
             CustomDebug("RequestDecision");
             Timer = 0;
         }
-    }
-
-    private void Update()
-    {
-        
-        /*
-        SecondTimer += Time.deltaTime;
-        if (SecondTimer > 1)
-        {
-            SecondTimer = 0;
-            Debug.Log(SecondCount);
-            SecondCount = 0;
-        }
-        */
     }
     public override void CollectObservations(VectorSensor sensor)
     {
@@ -110,7 +97,10 @@ public class LearningAgent : Agent
         if (LM.AdjustedHandPos)
             sensor.AddObservation(info.AdjustedHandPos);
 
-        RequestAction();
+        if(Active == true)
+            RequestAction();
+        else
+            NewState(false);
     }
     public override void OnActionReceived(ActionBuffers actions)
     {

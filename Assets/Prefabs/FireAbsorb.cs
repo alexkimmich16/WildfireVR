@@ -20,7 +20,7 @@ public class FireAbsorb : MonoBehaviour
 
     public Transform AbsorbingPosition;
 
-    public static bool FireballControl;
+    public bool FireballControl;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -28,7 +28,7 @@ public class FireAbsorb : MonoBehaviour
         if (other.GetComponent<Fireball>())
         {
             Debug.Log("works: " + other.name);
-            other.GetComponent<Fireball>().Absorbing = true;
+            other.GetComponent<Fireball>().SetAbsorbed(true);
             DetectAbsorbStart(other.GetComponent<Rigidbody>());
         }
     }
@@ -36,7 +36,7 @@ public class FireAbsorb : MonoBehaviour
     public void DetectAbsorbStart(Rigidbody Fireball)
     {
         Fire = Fireball;
-        Debug.Log(Vector3.Angle(Fireball.velocity.normalized, Hand.transform.eulerAngles));
+        //Debug.Log(Vector3.Angle(Fireball.velocity.normalized, Hand.transform.eulerAngles));
 
         ///hand is facing fireball
         ///
@@ -55,14 +55,16 @@ public class FireAbsorb : MonoBehaviour
 
     void Update()
     {
-        if(Fire != null && FireballControl == false)
+        if (Fire == null)
+            return;
+        if(FireballControl == false)
         {
             float HandSpeed = Hand.Velocity.magnitude;
             float FireSpeed = Fire.velocity.magnitude;
-            Debug.Log("HandSpeed: " + HandSpeed + "  FireSpeed: " + FireSpeed);
+            //Debug.Log("HandSpeed: " + HandSpeed + "  FireSpeed: " + FireSpeed);
             if (FireSpeed - HandSpeed < AbsorbThreshold)
             {
-                float ReduceSpeedWeight = (FireSpeed - HandSpeed) * FireDecaySpeed;
+                //float ReduceSpeedWeight = (FireSpeed - HandSpeed) * FireDecaySpeed;
 
                 Fire.velocity = Fire.velocity * FireDecaySpeed;
                 //reduce speed
@@ -80,13 +82,19 @@ public class FireAbsorb : MonoBehaviour
         if(FireballControl == true)
         {
             Fire.transform.position = AbsorbingPosition.position;
+
+            //gameObject.GetComponent<LearningAgent>().NewState += ReDirectFireball();
+
             ///adjust threshold later
+            ///
+            /*
             if (Vector3.Distance(LearnManager.instance.Left.transform.position, Fire.transform.position) < 0.001f)
             {
                 StopHoldingFireball();
                 AbsorbFireball();
             }
-            //gameObject.GetComponent<LearningAgent>().NewState += ReDirectFireball();
+            */
+            
 
             //set position
 
