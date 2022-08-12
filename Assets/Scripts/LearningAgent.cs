@@ -67,9 +67,10 @@ public class LearningAgent : Agent
     private void FixedUpdate()
     {
         Interval = 1 / FramePerSecond;
-        
+        Timer += Time.deltaTime;
         if (Timer > Interval)
         {
+            //Debug.Log("CAll");
             //SecondCount += 1;
             RequestDecision();
             CustomDebug("RequestDecision");
