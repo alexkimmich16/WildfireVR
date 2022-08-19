@@ -21,45 +21,35 @@ public class AudioController : MonoBehaviour
         public AudioMixer audioMixer;
         public Slider slider;
         public TextMeshProUGUI text;
-        [HideInInspector] public float Float;
         [HideInInspector] public int Percent;
-        [HideInInspector] public int Change;
+        [HideInInspector] public float TrueVolume;
     }
 
     #endregion
     public List<AudioType> AudioMixers = new List<AudioType>();
 
-    // Update is called once per frame
-    void Update()
-    {
-        //effects
-        for(int i = 0; i < AudioMixers.Count; i++)
-        {
-            AudioType A = AudioMixers[i];
-            A.Float = A.slider.value * 100;
-            A.Percent = (int)A.Float / 100;
-            string VolumeText = A.Type + ":  "+ A.Percent + "%";
-            A.text.text = VolumeText;
-            int VolumeChangePT = -(A.Percent * 8 / 10) + 160;
-            A.Change = 80 - VolumeChangePT;
-            A.audioMixer.SetFloat("Volume", A.Change);
-        }
-    }
-
     public void ChangeSlider(int Percent, int Slider)
     {
         AudioMixers[Slider].slider.value = Percent;
+
+    }
+
+    public void OnValueChanged(int Num)
+    {
+        AudioType A = AudioMixers[Num];
+        A.Percent = (int)((A.slider.value + 80) / 160) * 100;
+        A.text.text = A.Type + ":  " + A.Percent + "%";
+
+        A.TrueVolume = A.slider.value;
+        A.audioMixer.SetFloat("Volume", A.TrueVolume);
+        PlayerPrefs.SetFloat(AudioMixers[Num].Type, A.TrueVolume);
     }
     void Start()
     {
-        //SoundSlider.value = 100;
-        //MusicSlider.value = 100;
-
         for (int i = 0; i < AudioMixers.Count; i++)
         {
-            AudioMixers[i].audioMixer.SetFloat("Volume", AudioMixers[i].Change);
-            AudioMixers[i].slider.value = 100;
+            AudioMixers[i].audioMixer.SetFloat("Volume", PlayerPrefs.GetFloat(AudioMixers[i].Type));
+            AudioMixers[i].slider.value = PlayerPrefs.GetFloat(AudioMixers[i].Type);
         }
-
     }
 }

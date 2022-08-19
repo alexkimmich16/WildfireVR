@@ -121,29 +121,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public void OnDeath()
     {
-        GameObject.Find("XR Rig").transform.position = InGameManager.instance.RandomSpectatorPos();
-        //move to stands
         //disable magic
-        //
+        StartCoroutine(NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetComponent<PlayerControl>().RagdollRespawn());
     }
-    private void Update()
-    {
-        InGame = PhotonNetwork.PlayerList.Length;
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-        {
-            int PlayerNum = i + 1;
-            if (SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
-            {
-                //BillBoardManager.instance.Health[i].text = "Player " + PlayerNum + ": " + info[i].Player.GetComponent<PlayerControl>().Health + "/" + info[i].Player.GetComponent<PlayerControl>().MaxHealth;
-            }
-            else if(SceneLoader.instance.CurrentSetting == CurrentGame.Testing)
-            {
-                //HandDebug.instance.Health[i].text = "Player " + PlayerNum + ": " + info[i].Player.GetComponent<PlayerControl>().Health + "/" + info[i].Player.GetComponent<PlayerControl>().MaxHealth;
-            }
-        }
-        
-    }
-
-    
-
 }

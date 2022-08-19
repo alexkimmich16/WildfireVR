@@ -73,20 +73,15 @@ public class Fireball : MonoBehaviour
             //MyPhotonView().transform.GetComponent<PlayerControl>().ChangeHealth(Damage);
             //TakeDamage
             NetworkManager.instance.LocalTakeDamage(Damage);
-
-
             Debug.Log("TakeDamage1");
-            
         }
         Destroy(gameObject);
-        
     }
     public PhotonView MyPhotonView()
     {
         for (int i = 0; i < NetworkManager.instance.PlayerPhotonViews.Count; i++)
             if (NetworkManager.instance.PlayerPhotonViews[i].IsMine)
                 return NetworkManager.instance.PlayerPhotonViews[i];
-
         Debug.LogError("Could Not Get PhotonView");
         return null;
     }

@@ -9,10 +9,11 @@ public class Ragdoll : MonoBehaviour
     public float Upforce;
     public float SideForce;
     public Rigidbody[] Rigidbodies;
-    public PlayerControl SubscribeDisolve;
     private bool Started = false;
     public void EnableRagdoll()
     {
+        //seperate from playerw
+        //DISABLE IK
         foreach (Rigidbody rb in Rigidbodies)
         {
             rb.AddForce(Vector3.up * Upforce, ForceMode.Impulse);
@@ -35,23 +36,8 @@ public class Ragdoll : MonoBehaviour
 
         Rigidbodies = gameObject.GetComponentsInChildren<Rigidbody>();
         DisableRagdoll();
-        TryInitialize();
-    }
-     
-    public void LookForSubscribe()
-    {
-        try
-        {
-            Transform Myobject = GameObject.Find("My Player").transform;
-            if (Myobject != null)
-            {
-                SubscribeDisolve = Myobject.GetComponent<PlayerControl>();
-            }
-        }
-        catch
-        {
 
-        }
+
     }
     // Update is called once per frame
     void Update()
@@ -67,16 +53,6 @@ public class Ragdoll : MonoBehaviour
 
         if (Started == false)
         {
-            LookForSubscribe();
-            TryInitialize();
-        }
-    }
-    public void TryInitialize()
-    {
-        if (SubscribeDisolve != null)
-        {
-            Started = true;
-            SubscribeDisolve.disolveEvent += EnableRagdoll;
         }
     }
 

@@ -63,6 +63,7 @@ public class FireController : MonoBehaviour
         if (CurrentFire == null)
             return;
         CurrentFire.GetPhotonView().RPC("SetFlames", RpcTarget.All, false, PlayRateSpeed);
+        EyeController.instance.ChangeEyes(Eyes.Fire);
         //Destroy(CurrentFire, DestoryInTime);
         CurrentFire = null;
     }
@@ -70,7 +71,11 @@ public class FireController : MonoBehaviour
     {
         CurrentFire = PhotonNetwork.Instantiate("RealFlames", Vector3.zero, Camera.main.transform.rotation);
         CurrentFire.GetPhotonView().RPC("SetFlames", RpcTarget.All, true, PlayRateSpeed);
+
         CurrentFire.transform.SetParent(transform);
+        EyeController.instance.ChangeEyes(Eyes.Fire);
+
+        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, Spell.Flames);
     }
     public void OnNewState(bool State)
     {
@@ -90,21 +95,7 @@ public class FireController : MonoBehaviour
         }
     }
 
-    public class SendInfo
-    {
-        public Transform Target;
-        
-        public float Timer;
-        public float Time;
-
-        public Vector3 SentPos;
-        public Vector3 SentRot;
-    }
-    public class CooldownInfo
-    {
-        public Transform Target;
-        public float Time;
-    }
+    
 
     private void Start()
     {
@@ -113,7 +104,6 @@ public class FireController : MonoBehaviour
         SC = HandMagic.instance.transform.GetComponent<SpellCasts>();
         gameObject.GetComponent<LearningAgent>().NewState += frames.AddToList;
         gameObject.GetComponent<LearningAgent>().NewState += OnNewState;
-        
     }
     public bool IsCooldown(Transform hitAttempt)
     {
@@ -128,14 +118,9 @@ public class FireController : MonoBehaviour
         Collider[] Colliders = Physics.OverlapSphere(PositionObjective.transform.position, MaxDistance);
         //Debug.Log("colliders: " + Colliders.Length);
         for (int i = 0; i < Colliders.Length; i++)
-        {
-            //if (Colliders[i].transform.tag == "Shield")
-            //TrueColliders.Add(Colliders[i].transform);
-            //Debug.Log(Colliders[i].gameObject.layer);
             if (Colliders[i].gameObject.GetComponent<PhotonView>())
                 if (Colliders[i].gameObject.layer == LayerMask.NameToLayer("PlayerSee") && Colliders[i].gameObject.GetComponent<PhotonView>().IsMine == false)
                     TrueColliders.Add(Colliders[i].transform);
-        }
         return TrueColliders;
     }
     public IEnumerator Wait()
@@ -357,4 +342,19 @@ public class FireController : MonoBehaviour
     }
 
     
+}
+public class SendInfo
+{
+    public Transform Target;
+
+    public float Timer;
+    public float Time;
+
+    public Vector3 SentPos;
+    public Vector3 SentRot;
+}
+public class CooldownInfo
+{
+    public Transform Target;
+    public float Time;
 }

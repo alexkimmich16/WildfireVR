@@ -1,44 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+public enum Eyes
+{
+    None = 0,
+    Block = 1,
+    Fire = 2,
+}
 
+//rpc call to eyec
 public class EyeController : MonoBehaviour
 {
-    public List<Eye> Eyes;
-    public Material Fire;
-    public Material Block;
-    public Material None;
-    public void ChangeEyes(int Type)
+    public static EyeController instance;
+    void Awake() { instance = this; }
+    public float ColorTime;
+    private float TimeLeft;
+    public List<GameObject> AllEyes;
+    public List<Material> EyeMats;
+    public void ChangeEyes(Eyes eyes)
     {
-        if (Type == 1)
-            SetEyesNormal();
-        else if (Type == 2 || Type == 1)
-            SetEyesFire();
-    }
-    public void SetEyesNormal()
-    {
-        for (var i = 0; i < Eyes.Count; i++)
-            Eyes[i].OBJ.GetComponent<SkinnedMeshRenderer>().material = None;
-    }
-    public void SetEyesFire()
-    {
-        for (var i = 0; i < Eyes.Count; i++)
-            Eyes[i].OBJ.GetComponent<SkinnedMeshRenderer>().material = Fire;
-    }
-    void Start()
-    {
-        
+        if(eyes != Eyes.None)
+            TimeLeft = ColorTime;
+        for (var i = 0; i < AllEyes.Count; i++)
+            AllEyes[i].GetComponent<SkinnedMeshRenderer>().material = EyeMats[(int)eyes];
+        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("SetEyes", RpcTarget.All, eyes);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //subtract
+        if(TimeLeft > 0)
+            TimeLeft -= Time.deltaTime;
+        else
+        {
+            ChangeEyes(Eyes.None);
+        }
     }
-}
-
-[System.Serializable]
-public class Eye
-{
-    public GameObject OBJ;
 }

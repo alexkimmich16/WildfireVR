@@ -6,7 +6,9 @@ using Photon.Realtime;
 using static Odin.Net;
 public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
 {
-    private GameObject SpawnedPlayerPrefab;
+    public static NetworkPlayerSpawner instance;
+    void Awake() { instance = this; }
+    public GameObject SpawnedPlayerPrefab;
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
