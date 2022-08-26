@@ -24,7 +24,8 @@ public class EyeController : MonoBehaviour
             TimeLeft = ColorTime;
         for (var i = 0; i < AllEyes.Count; i++)
             AllEyes[i].GetComponent<SkinnedMeshRenderer>().material = EyeMats[(int)eyes];
-        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("SetEyes", RpcTarget.All, eyes);
+        if(NetworkPlayerSpawner.instance.SpawnedPlayerPrefab != null)
+            NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("SetEyes", RpcTarget.All, eyes);
     }
 
     // Update is called once per frame

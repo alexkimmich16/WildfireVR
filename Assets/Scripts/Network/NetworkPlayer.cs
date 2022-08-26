@@ -12,19 +12,17 @@ public class NetworkPlayer : MonoBehaviourPun
     public Transform Head;
     public Transform Left;
     public Transform Right;
-    public PhotonView photonView;
 
     private Transform RigHead;
     private Transform RigLeft;
     private Transform RigRight;
 
-    public Hashtable Info;
-
     public GameObject SkinRenderer;
+    public bool Testing;
+    //public XR
     void Start()
     {
-        photonView = GetComponent<PhotonView>();
-        XRRig rig = FindObjectOfType<XRRig>();
+        LocomotionSystem rig = FindObjectOfType<LocomotionSystem>();
         RigHead = rig.transform.Find("Camera Offset/Main Camera");
         RigLeft = rig.transform.Find("Camera Offset/LeftHand Controller");
         RigRight = rig.transform.Find("Camera Offset/RightHand Controller");
@@ -34,10 +32,10 @@ public class NetworkPlayer : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            Head.gameObject.SetActive(false);
-            Left.gameObject.SetActive(false);
-            Right.gameObject.SetActive(false);
-            SkinRenderer.SetActive(false);
+            Head.gameObject.SetActive(Testing);
+            Left.gameObject.SetActive(Testing);
+            Right.gameObject.SetActive(Testing);
+            SkinRenderer.SetActive(Testing);
 
             MapPosition(Head, RigHead);
             MapPosition(Left, RigLeft);

@@ -5,10 +5,14 @@ using UnityEngine;
 public class CamAtFloor : MonoBehaviour
 {
     private Transform Cam;
-    public static float FloorHeight = 0.36f;
+    public float FloorHeight = 0.13f;
+    public GameObject NetworkOBJ;
     void Start()
     {
-        Cam = Camera.main.transform;
+        if (NetworkOBJ == null)
+            Cam = Camera.main.transform;
+        else
+            Cam = NetworkOBJ.transform;
     }
 
     // Update is called once per frame

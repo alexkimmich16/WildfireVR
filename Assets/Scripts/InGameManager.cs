@@ -42,7 +42,7 @@ public class InGameManager : MonoBehaviour
 
     public static bool MagicCasting = false;
     public static bool CanMove = false;
-    public static bool CanCast;
+    public static bool CanCast = false;
 
 
     public static bool MagicBeforeStart = false;
