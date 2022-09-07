@@ -61,12 +61,12 @@ public class FireballController : MonoBehaviour
         if (!CanSpawn || Fireball != null)
             return;
 
-        if (frames.AllPastFrames(true) && Active == false)
+        if (frames.FramesWork(true) && Active == false)
         {
             Active = true;
             StartCount();
         }
-        else if (frames.AllPastFrames(false) && Active == true)
+        else if (frames.FramesWork(false) && Active == true)
         {
             Active = false;
             EndCount();

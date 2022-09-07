@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2697732732789199174
+--- !u!1 &5693465802032118110
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,43 +8,42 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2697732732789199181}
-  - component: {fileID: 2697732732789199170}
-  - component: {fileID: 2697732732789199171}
-  - component: {fileID: 2697732732789199168}
-  - component: {fileID: 2697732732789199169}
-  - component: {fileID: 1367374958236257572}
-  - component: {fileID: 597465284154478718}
-  - component: {fileID: 8124068679510309764}
+  - component: {fileID: 5693465802032118101}
+  - component: {fileID: 5693465802032118106}
+  - component: {fileID: 5693465802032118107}
+  - component: {fileID: 5693465802032118104}
+  - component: {fileID: 5693465802032118105}
+  - component: {fileID: 8686002343831053628}
+  - component: {fileID: 7077858548092942438}
   m_Layer: 0
-  m_Name: FlipBookFire
+  m_Name: FlipBookFireOffline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2697732732789199181
+--- !u!4 &5693465802032118101
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2697732732789199174}
-  m_LocalRotation: {x: 0, y: -0.36590853, z: 0, w: 0.9306508}
+  m_GameObject: {fileID: 5693465802032118110}
+  m_LocalRotation: {x: -0, y: 0.91631347, z: -0, w: 0.40046188}
   m_LocalPosition: {x: 0, y: 0.846, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 677.073, z: 0}
---- !u!2083052967 &2697732732789199170
+  m_LocalEulerAnglesHint: {x: 0, y: 852.786, z: 0}
+--- !u!2083052967 &5693465802032118106
 VisualEffect:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2697732732789199174}
+  m_GameObject: {fileID: 5693465802032118110}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: 029dd51fed0100442aa7ece66de25a40, type: 3}
   m_InitialEventName: OnPlay
@@ -59,7 +58,7 @@ VisualEffect:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: -0, y: 317.07333, z: 0}
+      - m_Value: {x: -0, y: 132.78589, z: -0}
         m_Name: Cam_angles
         m_Overridden: 1
       - m_Value: {x: 0, y: 0.846, z: 0}
@@ -84,14 +83,14 @@ VisualEffect:
       m_Array: []
     m_Bool:
       m_Array: []
---- !u!73398921 &2697732732789199171
+--- !u!73398921 &5693465802032118107
 VFXRenderer:
   serializedVersion: 1
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2697732732789199174}
+  m_GameObject: {fileID: 5693465802032118110}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 0
@@ -124,13 +123,13 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &2697732732789199168
+--- !u!114 &5693465802032118104
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2697732732789199174}
+  m_GameObject: {fileID: 5693465802032118110}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cdafc37f32b176349b1684c4455b98e9, type: 3}
@@ -138,15 +137,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ExecuteInEditor: 1
   m_Bindings:
-  - {fileID: 2697732732789199169}
-  m_VisualEffect: {fileID: 2697732732789199170}
---- !u!114 &2697732732789199169
+  - {fileID: 5693465802032118105}
+  m_VisualEffect: {fileID: 5693465802032118106}
+--- !u!114 &5693465802032118105
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2697732732789199174}
+  m_GameObject: {fileID: 5693465802032118110}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7fdfea1f838247c40921a07afedde962, type: 3}
@@ -154,53 +153,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Property:
     m_Name: Cam
-  Target: {fileID: 2697732732789199181}
---- !u!114 &1367374958236257572
+  Target: {fileID: 5693465802032118101}
+--- !u!114 &8686002343831053628
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2697732732789199174}
+  m_GameObject: {fileID: 5693465802032118110}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9eb7550acb6135c4d987c5898794322a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Flames: {fileID: 0}
---- !u!114 &597465284154478718
+  Flames: {fileID: 5693465802032118106}
+--- !u!114 &7077858548092942438
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2697732732789199174}
+  m_GameObject: {fileID: 5693465802032118110}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36fd64cd9e4c21047800ee8fe8ed0ae6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LifeTime: 3
+  LifeTime: 2
   Timer: 0
---- !u!114 &8124068679510309764
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2697732732789199174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0

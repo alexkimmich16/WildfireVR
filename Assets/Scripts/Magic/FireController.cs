@@ -19,7 +19,8 @@ public class FireController : MonoBehaviour
     private bool Active = false;
     public static float CheckInterval = 0.1f;
     public bool CanCast;
-    public bool Debug;
+    public bool ShouldDebug;
+    public bool SpawnOnline;
     public List<Transform> DebugSpheres;
 
     [Header("DamageStats")]
@@ -37,12 +38,15 @@ public class FireController : MonoBehaviour
     public int Damage;
     private float SpawnTimer;
 
+    public float CastCooldowntime;
+
     [Header("VFX")]
     public float PlayRateSpeed;
 
     public GameObject PositionObjective;
 
-    private GameObject CurrentFire;
+    private GameObject OnlineFire;
+    private GameObject PrivateFire;
 
     [Header("CubeTest")]
     private bool CubeTest;
@@ -52,7 +56,8 @@ public class FireController : MonoBehaviour
 
     [Header("Frames")]
     public Frames frames;
-    private float CastCooldowntime;
+    public float MinVelocity;
+    
     private float CastTimer;
 
     [Header("Lists")]
@@ -60,6 +65,11 @@ public class FireController : MonoBehaviour
     public List<Transform> Targets;
     public List<CooldownInfo> DamageCooldowns;
 
+    public delegate void NewState(bool State);
+    public event NewState NewRealState;
+
+
+    private int Index;
     #region LessUseful
     public bool IsCooldown(Transform hitAttempt)
     {
@@ -102,37 +112,61 @@ public class FireController : MonoBehaviour
     #region StartStop
     public void StopFire()
     {
-        if (CurrentFire == null)
+        if (PrivateFire == null)
             return;
-        CurrentFire.GetPhotonView().RPC("SetFlames", RpcTarget.All, false, PlayRateSpeed);
+
+        Debug.Log("Index: " + Index + "  Stop");
+        Index += 1;
+        if (SpawnOnline)
+        {
+            OnlineFire.GetPhotonView().RPC("SetFlames", RpcTarget.Others, false, PlayRateSpeed);
+        }
+        PrivateFire.GetComponent<FlameObject>().SetFlamesOffline(false, PlayRateSpeed);
+        PrivateFire.GetComponent<PhotonDestroy>().StartCountdown();
         EyeController.instance.ChangeEyes(Eyes.Fire);
-        //Destroy(CurrentFire, DestoryInTime);
-        CurrentFire = null;
+
+        OnlineFire = null;
+        PrivateFire = null;
     }
     public void StartFire()
     {
-        CurrentFire = PhotonNetwork.Instantiate("FlipBookFire", Vector3.zero, Camera.main.transform.rotation);
-        CurrentFire.GetPhotonView().RPC("SetFlames", RpcTarget.All, true, PlayRateSpeed);
+        Debug.Log("Index: " + Index + "  Start");
+        Index += 1;
+        if (SpawnOnline)
+        {
+            OnlineFire = PhotonNetwork.Instantiate("FlipBookFireOnline", Vector3.zero, Camera.main.transform.rotation);
+            OnlineFire.GetPhotonView().RPC("SetFlames", RpcTarget.Others, true, PlayRateSpeed);
+            OnlineFire.transform.SetParent(transform);
+        }
+        
 
-        CurrentFire.transform.SetParent(transform);
+        PrivateFire = Instantiate(Resources.Load<GameObject>("FlipBookFireOffline"), Vector3.zero, Camera.main.transform.rotation);
+        PrivateFire.transform.SetParent(transform);
+        PrivateFire.GetComponent<FlameObject>().SetFlamesOffline(true, PlayRateSpeed);
         EyeController.instance.ChangeEyes(Eyes.Fire);
 
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, Spell.Flames);
     }
+    public bool RealFrame()
+    {
+        return frames.FramesWork(true) && LearnManager.instance.Right.Magnitude > MinVelocity;
+    }
     public void OnNewState(bool State)
     {
-        // hasn't started yet InGameManager.MagicBeforeStart &&
-        if (InGameManager.CanCast == false || CanCast == false)
+        NewRealState(RealFrame());
+        if (InGameManager.instance.CanCast == false || CanCast == false)
             return;
-
-        if(Active == false && frames.AllPastFrames(true))
+        //Debug.Log("Newstate2");
+        if (Active == false && frames.FramesWork(true) == true && CastTimer > CastCooldowntime)
         {
+            //Debug.Log("Newstate3");
+            CastTimer = 0f;
             Active = true;
             StartFire();
         }
-        else if(Active == true && frames.AllPastFrames(false) && CastTimer > CastCooldowntime)
+        else if(Active == true && frames.FramesWork(true) == false)
         {
-            CastTimer = 0f;
+            Debug.Log("Stop");
             Active = false;
             StopFire();
         }
@@ -187,7 +221,7 @@ public class FireController : MonoBehaviour
 
     public void DoDebugSpheres()
     {
-        if (Debug == false)
+        if (ShouldDebug == false)
             return;
         for (int i = 0; i < Shards.Count; i++)
         {
@@ -202,14 +236,19 @@ public class FireController : MonoBehaviour
         CastTimer += Time.deltaTime;
 
 
-        CheckArriveTimes();
+        //CheckArriveTimes();
         ManageEnemyCooldown();
         SpawnFireCode();
         DoDebugSpheres();
-        if (Targets.Count < -1 || CurrentFire == null)
+        if (Targets.Count < -1 || PrivateFire == null)
             return;
-        CurrentFire.transform.position = PositionObjective.transform.position;
-        CurrentFire.transform.rotation = Camera.main.transform.rotation;
+        if (OnlineFire && SpawnOnline)
+        {
+            OnlineFire.transform.position = PositionObjective.transform.position;
+            OnlineFire.transform.rotation = Camera.main.transform.rotation;
+        }
+        PrivateFire.transform.position = PositionObjective.transform.position;
+        PrivateFire.transform.rotation = Camera.main.transform.rotation;
     }
     void CheckArriveTimes()
     {

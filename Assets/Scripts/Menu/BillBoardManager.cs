@@ -84,14 +84,14 @@ public class BillBoardManager : MonoBehaviour
                 else if (state == GameState.CountDown)
                 {
                     float WarmupTimer = GetGameFloat("WarmupTimer");
-                    float adjustedTime = InGameManager.WarmupTime - WarmupTimer;
+                    float adjustedTime = InGameManager.instance.WarmupTime - WarmupTimer;
                     string TimeText = adjustedTime.ToString("F2");
                     DisplayVictory.text = "Starting in: " + TimeText + " Seconds";
                 }
                 else if (state == GameState.Active)
                 {
                     float FinishTimer = GetGameFloat("FinishTimer");
-                    float Left = InGameManager.FinishTime - FinishTimer;
+                    float Left = InGameManager.instance.FinishTime - FinishTimer;
                     DisplayVictory.text = "Started!  Time Left: " + Left;
                 }
                 else if (state == GameState.Finished)

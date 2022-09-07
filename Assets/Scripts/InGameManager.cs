@@ -26,28 +26,25 @@ public class InGameManager : MonoBehaviour
     #region Singleton
     public static InGameManager instance;
     void Awake() { instance = this; }
-
-    
     #endregion
 
-    //timer
-    public static bool BalenceTeams = false;
-    public static float WarmupTime = 5f;
-    [HideInInspector]
-    public static float FinishTime = 200f;
-
-    //sides
+    [Header("Input")]
     public static int MaxPlayers = 3;
     public static int MinPlayers = 1;
 
-    public static bool MagicCasting = false;
-    public static bool CanMove = false;
-    public static bool CanCast = false;
+    public bool BalenceTeams = false;
+    public float WarmupTime = 5f;
+    public float FinishTime = 200f;
 
-
-    public static bool MagicBeforeStart = false;
-
+    public bool MagicBeforeStart = false;
     public float TimeMultiplier = 3f;
+    [Header("States")]
+    //public bool MagicCasting = false;
+    public bool CanMove = false;
+    public bool CanCast = false;
+    [Header("Output")]
+
+    
 
     private Transform Rig;
 
@@ -406,14 +403,13 @@ public class InGameManager : MonoBehaviour
     public void StartGame()
     {
         CanMove = true;
-        MagicCasting = true;
         //HandMagic.instance.EnableCubes(true);
         //play go audio
     }
     public void Finish()
     {
         CanMove = false;
-        MagicCasting = false;
+        CanCast = false;
         //HandMagic.instance.EnableCubes(false);
         if (EndResult() == Result.AttackWon)
         {

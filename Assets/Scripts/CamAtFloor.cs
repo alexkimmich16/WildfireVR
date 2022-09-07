@@ -6,6 +6,7 @@ public class CamAtFloor : MonoBehaviour
 {
     private Transform Cam;
     public float FloorHeight = 0.13f;
+    public float ElevatorOffset;
     public GameObject NetworkOBJ;
     void Start()
     {
@@ -18,6 +19,16 @@ public class CamAtFloor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector3(Cam.position.x, FloorHeight, Cam.position.z);
+        int SequenceNum = (int)DoorManager.instance.Sequence;
+        float TempFloorHeight;
+        if (SequenceNum < 2)
+        {
+            TempFloorHeight = ElevatorOffset + DoorManager.instance.Elevator.transform.localPosition.y;
+        }
+        else
+        {
+            TempFloorHeight = FloorHeight;
+        }
+        transform.position = new Vector3(Cam.position.x, TempFloorHeight, Cam.position.z);
     }
 }

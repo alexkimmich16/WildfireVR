@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 594556145}
-  m_IndirectSpecularColor: {r: 0.0067008305, g: 0.049784675, b: 0.24330245, a: 1}
+  m_IndirectSpecularColor: {r: 0.0067073726, g: 0.049762532, b: 0.24338552, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3566,7 +3566,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh39148
+  m_Name: pb_Mesh60998
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -4655,7 +4655,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!73398921 &219493214
 VFXRenderer:
   serializedVersion: 1
@@ -4664,7 +4664,7 @@ VFXRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 219493213}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -10993,7 +10993,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 468753716}
   m_LocalRotation: {x: 0.3699089, y: 0, z: 0, w: 0.929068}
-  m_LocalPosition: {x: -11.38, y: 1.6, z: -7.67}
+  m_LocalPosition: {x: -9.73, y: 1.6, z: -7.67}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11377,7 +11377,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh35782
+  m_Name: pb_Mesh57636
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -17003,21 +17003,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5d960cdc46629d47b000b200bdb849f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Active: 0
-  Targets: []
-  Speed: 0
+  CanCast: 0
+  ShouldDebug: 0
+  SpawnOnline: 0
+  DebugSpheres: []
+  DamageType: 0
+  CollisionDistance: 0
   Spread: 0
-  MaxDistance: 0
+  SpawnInterval: 0.03
+  ShardSpeed: 0
+  ShardLifetime: 0
+  EnemyCooldownTime: 0
+  TargetCheckDistance: 0
+  Damage: 0
+  CastCooldowntime: 0
   PlayRateSpeed: 0
   PositionObjective: {fileID: 0}
-  FirePrefab: {fileID: 0}
   DamageShard: {fileID: 0}
-  Interval: 0.03
-  ShardSpeed: 0
   frames:
-    ConsecutiveFrames: 0
-    PastFrames: 
+    trackType: 0
     Capacity: 10
+    AverageFrames: 0
+    FrameAverageThreshold: 0
+    AverageVal: 0
+    PastFrames: 
+    RealState: 0
+  MinVelocity: 0
+  Shards: []
+  Targets: []
+  DamageCooldowns: []
 --- !u!2083052967 &646351948
 VisualEffect:
   m_ObjectHideFlags: 0
@@ -40023,7 +40037,7 @@ MonoBehaviour:
   voiceDetectionThreshold: 0.01
   voiceDetectionDelayMs: 500
   unityMicrophoneDevice: 
-  photonMicrophoneDeviceId: -1
+  photonMicrophoneDeviceId: 0
   interestGroup: 0
   debugEchoMode: 0
   reliableMode: 0

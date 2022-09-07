@@ -84,7 +84,7 @@ public class MovementProvider : MonoBehaviour
     {
         if(SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
         {
-            if (InGameManager.CanMove == true)
+            if (InGameManager.instance.CanMove == true)
             {
                 Move();
             }

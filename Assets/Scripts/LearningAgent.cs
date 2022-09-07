@@ -77,6 +77,9 @@ public class LearningAgent : Agent
             Timer = 0;
         }
     }
+
+    //public 
+
     public override void CollectObservations(VectorSensor sensor)
     {
         CustomDebug("CollectObservations");

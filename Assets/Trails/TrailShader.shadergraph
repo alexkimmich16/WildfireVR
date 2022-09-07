@@ -1,5 +1,5 @@
 {
-    "m_SGVersion": 2,
+    "m_SGVersion": 3,
     "m_Type": "UnityEditor.ShaderGraph.GraphData",
     "m_ObjectId": "63f6ba50aefe4c66a69afc0cec84e623",
     "m_Properties": [
@@ -47,6 +47,12 @@
         }
     ],
     "m_Keywords": [],
+    "m_Dropdowns": [],
+    "m_CategoryData": [
+        {
+            "m_Id": "e51140e102f640959f1bfa26d1715bfa"
+        }
+    ],
     "m_Nodes": [
         {
             "m_Id": "b55699d7ae724c778e8c3000539ed478"
@@ -1226,10 +1232,11 @@
         "serializedMesh": {
             "m_SerializedMesh": "{\"mesh\":{\"instanceID\":0}}",
             "m_Guid": ""
-        }
+        },
+        "preventRotation": false
     },
     "m_Path": "Shader Graphs",
-    "m_ConcretePrecision": 0,
+    "m_GraphPrecision": 0,
     "m_PreviewMode": 2,
     "m_OutputNode": {
         "m_Id": ""
@@ -1541,7 +1548,8 @@
         "m_SerializableColors": []
     },
     "m_TextureType": 0,
-    "m_NormalMapSpace": 0
+    "m_NormalMapSpace": 0,
+    "m_EnableGlobalMipBias": true
 }
 
 {
@@ -1572,6 +1580,8 @@
     "m_DefaultReferenceName": "_Edge",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -2554,6 +2564,8 @@
     "m_DefaultReferenceName": "_Dissolve",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -3696,6 +3708,8 @@
     "m_DefaultReferenceName": "_Distortion",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -3945,6 +3959,8 @@
     "m_DefaultReferenceName": "_DissolveSpeed",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -4630,6 +4646,8 @@
     "m_DefaultReferenceName": "_Color01",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -4640,6 +4658,7 @@
         "b": 1.0,
         "a": 1.0
     },
+    "isMainColor": false,
     "m_ColorMode": 1
 }
 
@@ -5024,6 +5043,8 @@
     "m_DefaultReferenceName": "_Color02",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -5034,6 +5055,7 @@
         "b": 0.12061595916748047,
         "a": 1.0
     },
+    "isMainColor": false,
     "m_ColorMode": 1
 }
 
@@ -5296,6 +5318,8 @@
     "m_DefaultReferenceName": "_DistortionScale",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -5920,6 +5944,8 @@
     "m_DefaultReferenceName": "_DissolveScale",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -6025,6 +6051,8 @@
     "m_DefaultReferenceName": "_DistoritonSpeed",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -6050,6 +6078,8 @@
     "m_DefaultReferenceName": "_MainTex",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -6058,6 +6088,8 @@
         "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"4179d3360f3fba0429f7e31ae25cde56\",\"type\":3}}",
         "m_Guid": ""
     },
+    "isMainTexture": false,
+    "useTilingAndOffset": false,
     "m_Modifiable": true,
     "m_DefaultType": 0
 }
@@ -6408,11 +6440,17 @@
     "m_ActiveSubTarget": {
         "m_Id": "3be1450fcbe64ba49463881e1fcc50d6"
     },
+    "m_AllowMaterialOverride": false,
     "m_SurfaceType": 1,
+    "m_ZTestMode": 4,
+    "m_ZWriteControl": 0,
     "m_AlphaMode": 0,
-    "m_TwoSided": false,
+    "m_RenderFace": 2,
     "m_AlphaClip": true,
-    "m_CustomEditorGUI": ""
+    "m_CastShadows": true,
+    "m_ReceiveShadows": true,
+    "m_CustomEditorGUI": "",
+    "m_SupportVFX": false
 }
 
 {
@@ -6546,6 +6584,8 @@
     "m_DefaultReferenceName": "_DistortionDissolve",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -6874,6 +6914,8 @@
     "m_DefaultReferenceName": "_Rotation",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -7242,57 +7284,6 @@
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.CategoryData",
-    "m_ObjectId": "cc5af13f137e4a109648f868d64a6be5",
-    "m_Name": "",
-    "m_ChildObjectList": [
-        {
-            "m_Id": "6ffc8803345d4c40b4af384522e8233f"
-        },
-        {
-            "m_Id": "80ca5557d41c4e75896db8ec2890074c"
-        },
-        {
-            "m_Id": "a6b78424e4534fb7aeb1ffac1ed367ad"
-        },
-        {
-            "m_Id": "e20aa437eb9f44a7998809c2255fcf44"
-        },
-        {
-            "m_Id": "fabdee2ae98d4065ad35a4cfba1cfae0"
-        },
-        {
-            "m_Id": "5757aec1c77f48588519cb31469f3e7e"
-        },
-        {
-            "m_Id": "b3810092de3a4e848cf78c89897a7f26"
-        },
-        {
-            "m_Id": "848f8921fc324f2eabdbb23c7ac1ffad"
-        },
-        {
-            "m_Id": "a60e1b4a44814142b704d1a4bd547b74"
-        },
-        {
-            "m_Id": "2aa9021c4f4948bc8b49f4543af3923d"
-        },
-        {
-            "m_Id": "a1a0cce4b0d944d3858f5a0cd437c86c"
-        },
-        {
-            "m_Id": "5bef2978fa3a4ed4ae6280769b56bb9f"
-        },
-        {
-            "m_Id": "0a9094efad7a4f029db8f45b16681ca5"
-        },
-        {
-            "m_Id": "be243b43384749bbac96e055f370d291"
-        }
-    ]
 }
 
 {
@@ -7757,6 +7748,8 @@
     "m_DefaultReferenceName": "_MainTexTiling",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
@@ -7817,6 +7810,57 @@
     "m_Property": {
         "m_Id": "80ca5557d41c4e75896db8ec2890074c"
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.CategoryData",
+    "m_ObjectId": "e51140e102f640959f1bfa26d1715bfa",
+    "m_Name": "",
+    "m_ChildObjectList": [
+        {
+            "m_Id": "6ffc8803345d4c40b4af384522e8233f"
+        },
+        {
+            "m_Id": "a6b78424e4534fb7aeb1ffac1ed367ad"
+        },
+        {
+            "m_Id": "e20aa437eb9f44a7998809c2255fcf44"
+        },
+        {
+            "m_Id": "fabdee2ae98d4065ad35a4cfba1cfae0"
+        },
+        {
+            "m_Id": "5757aec1c77f48588519cb31469f3e7e"
+        },
+        {
+            "m_Id": "2aa9021c4f4948bc8b49f4543af3923d"
+        },
+        {
+            "m_Id": "848f8921fc324f2eabdbb23c7ac1ffad"
+        },
+        {
+            "m_Id": "a60e1b4a44814142b704d1a4bd547b74"
+        },
+        {
+            "m_Id": "a1a0cce4b0d944d3858f5a0cd437c86c"
+        },
+        {
+            "m_Id": "5bef2978fa3a4ed4ae6280769b56bb9f"
+        },
+        {
+            "m_Id": "80ca5557d41c4e75896db8ec2890074c"
+        },
+        {
+            "m_Id": "0a9094efad7a4f029db8f45b16681ca5"
+        },
+        {
+            "m_Id": "b3810092de3a4e848cf78c89897a7f26"
+        },
+        {
+            "m_Id": "be243b43384749bbac96e055f370d291"
+        }
+    ]
 }
 
 {
@@ -8363,6 +8407,8 @@
     "m_DefaultReferenceName": "_MainTexSpeed",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,

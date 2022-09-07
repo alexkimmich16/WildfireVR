@@ -13,6 +13,18 @@ public class FlameObject : MonoBehaviour
         if (NewState == true)
             Flames.Play();
         else if(NewState == false)
+        {
+            Flames.Stop();
+            GetComponent<PhotonDestroy>().StartCountdown();
+        }
+    }
+
+    public void SetFlamesOffline(bool NewState, float Speed)
+    {
+        Flames.playRate = Speed;
+        if (NewState == true)
+            Flames.Play();
+        else if (NewState == false)
             Flames.Stop();
     }
 }
