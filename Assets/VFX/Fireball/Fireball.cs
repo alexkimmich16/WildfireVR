@@ -94,7 +94,7 @@ public class Fireball : MonoBehaviour
     private void Start()
     {
         RB = GetComponent<Rigidbody>();
-        Speed = FireballController.instance.Speed;
+        //Speed = FireballController.instance.Speed;
     }
 
     /*

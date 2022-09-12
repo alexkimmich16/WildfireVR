@@ -10,9 +10,6 @@ public enum ControlType
 }
 public class FireballController : MonoBehaviour
 {
-    public static FireballController instance;
-    void Awake() { instance = this; }
-
     private bool Active;
     public bool CanSpawn;
     public bool IsControlling;
@@ -28,9 +25,11 @@ public class FireballController : MonoBehaviour
 
     public float ControlForce;
     public ControlType controlType;
+    private Side side;
+
     [Header("References")]
-    public Transform Spawn;
-    public Transform Hand;
+    //public Transform Spawn;
+    //p//ublic Transform Hand;
 
     [Header("Frames")]
     public Frames frames;
@@ -38,22 +37,22 @@ public class FireballController : MonoBehaviour
     public void StartCount()
     {
         //first
-        StartPos = Hand.localPosition;
+        StartPos = AIMagicControl.instance.Hands[(int)side].localPosition;
     }
 
     public void EndCount()
     {
         //Debug.Log(Vector3.Distance(StartPos, Hand.localPosition));
         
-        if (Vector3.Distance(StartPos, Hand.localPosition) > MinFireDistance)
+        if (Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition) > MinFireDistance)
         {
-            DistToHead = Vector3.Distance(Hand.localPosition, Camera.main.transform.localPosition);
-            ControlPos = Hand.localPosition;
+            DistToHead = Vector3.Distance(AIMagicControl.instance.Hands[(int)side].localPosition, Camera.main.transform.localPosition);
+            ControlPos = AIMagicControl.instance.Hands[(int)side].localPosition;
             StartCoroutine(WaitForClose());
             SpawnFireball(FireAbsorb.instance.FireballControl);
             FireAbsorb.instance.StopHoldingFireball();
         }
-        StartPos = Hand.localPosition;
+        StartPos = AIMagicControl.instance.Hands[(int)side].localPosition;
     }
     public void OnNewState(bool State)
     {
@@ -76,6 +75,7 @@ public class FireballController : MonoBehaviour
     {
         gameObject.GetComponent<LearningAgent>().NewState += OnNewState;
         gameObject.GetComponent<LearningAgent>().NewState += frames.AddToList;
+        side = GetComponent<LearningAgent>().side;
     }
 
     public void SpawnFireball(bool Redirect)
@@ -84,9 +84,9 @@ public class FireballController : MonoBehaviour
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, Spell.Fireball);
         //Debug.Log(Redirect);
         if (Redirect == false) 
-            Fireball = PhotonNetwork.Instantiate("RealFireball", Spawn.position, Camera.main.transform.rotation);
+            Fireball = PhotonNetwork.Instantiate("RealFireball", AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
         else if(Redirect == true)
-            Fireball = PhotonNetwork.Instantiate("BetterFireball", Spawn.position, Camera.main.transform.rotation);
+            Fireball = PhotonNetwork.Instantiate("BetterFireball", AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
     }
     private Vector3 ControlPos;
     private void Update()
@@ -113,7 +113,7 @@ public class FireballController : MonoBehaviour
     }
     public IEnumerator WaitForClose()
     {
-        bool PastThreshold = DistToHead > Vector3.Distance(Hand.localPosition, Camera.main.transform.localPosition);
+        bool PastThreshold = DistToHead > Vector3.Distance(AIMagicControl.instance.Spawn[(int)side].localPosition, Camera.main.transform.localPosition);
         IsControlling = true;
         while (PastThreshold == false)
         {
@@ -121,4 +121,5 @@ public class FireballController : MonoBehaviour
         }
         IsControlling = false;
     }
+
 }

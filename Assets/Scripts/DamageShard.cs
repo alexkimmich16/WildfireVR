@@ -23,7 +23,7 @@ public class DamageShard : MonoBehaviour
     {
         if (col.collider.gameObject.GetComponent<PhotonView>())
         {
-            FireController.instance.DamageShardHit(col.collider.gameObject);
+            //FireController.instance.DamageShardHit(col.collider.gameObject);
             Debug.Log("TakeDamage1");
             Destroy(gameObject);
         }

@@ -7,16 +7,18 @@ public class HandDebugger : MonoBehaviour
     public SkinnedMeshRenderer hand;
     public Spell currentSpell;
     public List<Material> FalseTrue;
+    public FireController fire;
+    public FireballController Fireball;
     //public Debug
     void Start()
     {
         if (currentSpell == Spell.Fireball)
         {
-            FireballController.instance.gameObject.GetComponent<LearningAgent>().NewState += SetNew;
+            Fireball.gameObject.GetComponent<LearningAgent>().NewState += SetNew;
         }
         else if (currentSpell == Spell.Flames)
         {
-            FireController.instance.NewRealState += SetNew;
+            fire.NewRealState += SetNew;
         }
     }
 

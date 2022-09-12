@@ -26,13 +26,12 @@ public class LearningAgent : Agent
     private static float FramePerSecond = 60;
 
     //[HideInInspector]
-    public float Interval;
+    private float Interval;
 
-    public int DesiredCycles;
     public DebugType DebugType;
 
     [Header("Current")]
-    public float Timer;
+    private float Timer;
 
     [Header("Other")]
 
@@ -48,7 +47,7 @@ public class LearningAgent : Agent
     public delegate void EventHandlerThree(bool State);
     public event EventHandlerThree NewState;
 
-    public bool Right;
+    public Side side;
 
     public SingleInfo info;
 
@@ -58,12 +57,6 @@ public class LearningAgent : Agent
     private int Offset = 270;
 
     private bool Guess;
-
-    public bool Active;
-    //private float SecondTimer;
-    //private int SecondCount;
-
-    public float FixedUpdateTimer;
     private void FixedUpdate()
     {
         Interval = 1 / FramePerSecond;
@@ -100,11 +93,7 @@ public class LearningAgent : Agent
             sensor.AddObservation(info.HandVel);
         if (LM.AdjustedHandPos)
             sensor.AddObservation(info.AdjustedHandPos);
-
-        if(Active == true)
-            RequestAction();
-        else
-            NewState(false);
+        RequestAction();
     }
     public override void OnActionReceived(ActionBuffers actions)
     {
@@ -133,7 +122,7 @@ public class LearningAgent : Agent
 
         newInfo.HeadPos = LM.Cam.localPosition;
         newInfo.HeadRot = LM.Cam.rotation.eulerAngles;
-        if (Right)
+        if (side == Side.Right)
         {
             newInfo.HandPos = controller.transform.localPosition;
             newInfo.HandRot = controller.transform.localRotation.eulerAngles;
@@ -244,7 +233,7 @@ public class LearningAgent : Agent
 
     HandActions MyHand()
     {
-        if (Right)
+        if (side == Side.Right)
             return LearnManager.instance.Right;
         else
             return LearnManager.instance.Left;

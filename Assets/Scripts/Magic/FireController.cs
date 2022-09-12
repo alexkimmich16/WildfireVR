@@ -14,8 +14,7 @@ public enum FireDetectType
 
 public class FireController : MonoBehaviour
 {
-    public static FireController instance;
-    void Awake() { instance = this; }
+    
     private bool Active = false;
     public static float CheckInterval = 0.1f;
     public bool CanCast;
@@ -25,38 +24,33 @@ public class FireController : MonoBehaviour
 
     [Header("DamageStats")]
     public FireDetectType DamageType;
-    public float CollisionDistance;
     public float Spread;
+    public float EnemyCooldownTime;
+    public int Damage;
+    private float SpawnTimer;
+    public float CastCooldowntime;
+    public float MinVelocity;
 
+    [Header("Colliders")]
     public float SpawnInterval = 0.03f;
     public float ShardSpeed;
     public float ShardLifetime;
-    public float EnemyCooldownTime;
+    
+    public GameObject DamageShard;
 
+    [Header("CodeDetect")]
     public float TargetCheckDistance;
-
-    public int Damage;
-    private float SpawnTimer;
-
-    public float CastCooldowntime;
+    public float CollisionDistance;
 
     [Header("VFX")]
     public float PlayRateSpeed;
 
-    public GameObject PositionObjective;
-
     private GameObject OnlineFire;
     private GameObject PrivateFire;
 
-    [Header("CubeTest")]
-    private bool CubeTest;
-    private Transform TestCube;
-    public static bool DebugDamageShard;
-    public GameObject DamageShard;
-
     [Header("Frames")]
     public Frames frames;
-    public float MinVelocity;
+    
     
     private float CastTimer;
 
@@ -68,8 +62,9 @@ public class FireController : MonoBehaviour
     public delegate void NewState(bool State);
     public event NewState NewRealState;
 
-
+    private Side side;
     private int Index;
+
     #region LessUseful
     public bool IsCooldown(Transform hitAttempt)
     {
@@ -81,7 +76,7 @@ public class FireController : MonoBehaviour
     public List<Transform> CheckForTargets()
     {
         List<Transform> TrueColliders = new List<Transform>();
-        Collider[] Colliders = Physics.OverlapSphere(PositionObjective.transform.position, TargetCheckDistance);
+        Collider[] Colliders = Physics.OverlapSphere(AIMagicControl.instance.PositionObjectives[(int)side].transform.position, TargetCheckDistance);
         for (int i = 0; i < Colliders.Length; i++)
             if (Colliders[i].gameObject.GetComponent<PhotonView>())
                 if (Colliders[i].gameObject.layer == LayerMask.NameToLayer("PlayerSee") && Colliders[i].gameObject.GetComponent<PhotonView>().IsMine == false)
@@ -115,7 +110,7 @@ public class FireController : MonoBehaviour
         if (PrivateFire == null)
             return;
 
-        Debug.Log("Index: " + Index + "  Stop");
+        //Debug.Log("Index: " + Index + "  Stop");
         Index += 1;
         if (SpawnOnline)
         {
@@ -130,7 +125,7 @@ public class FireController : MonoBehaviour
     }
     public void StartFire()
     {
-        Debug.Log("Index: " + Index + "  Start");
+        //Debug.Log("Index: " + Index + "  Start");
         Index += 1;
         if (SpawnOnline)
         {
@@ -147,24 +142,25 @@ public class FireController : MonoBehaviour
 
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, Spell.Flames);
     }
-    public bool RealFrame()
+    public bool FrameWorks()
     {
-        return frames.FramesWork(true) && LearnManager.instance.Right.Magnitude > MinVelocity;
+        float Speed = AIMagicControl.instance.Hands[(int)side].transform.GetComponent<HandActions>().Magnitude;
+        return frames.FramesWork(true) && Speed > MinVelocity;
     }
     public void OnNewState(bool State)
     {
-        NewRealState(RealFrame());
+        NewRealState(FrameWorks());
         if (InGameManager.instance.CanCast == false || CanCast == false)
             return;
         //Debug.Log("Newstate2");
-        if (Active == false && frames.FramesWork(true) == true && CastTimer > CastCooldowntime)
+        if (Active == false && FrameWorks() == true && CastTimer > CastCooldowntime)
         {
             //Debug.Log("Newstate3");
             CastTimer = 0f;
             Active = true;
             StartFire();
         }
-        else if(Active == true && frames.FramesWork(true) == false)
+        else if(Active == true && FrameWorks() == false)
         {
             Debug.Log("Stop");
             Active = false;
@@ -179,6 +175,7 @@ public class FireController : MonoBehaviour
         StartCoroutine(Wait());
         gameObject.GetComponent<LearningAgent>().NewState += frames.AddToList;
         gameObject.GetComponent<LearningAgent>().NewState += OnNewState;
+        side = GetComponent<LearningAgent>().side;
     }
     public void ManageEnemyCooldown()
     {
@@ -205,7 +202,7 @@ public class FireController : MonoBehaviour
             float x = Mathf.Cos(RandomRad);
             float y = Mathf.Sin(RandomRad);
             Vector3 NewRot = new Vector3(x, y, 0) * Random.Range(0.1f, Spread);
-            GameObject shard = Instantiate(DamageShard, PositionObjective.transform.position, Camera.main.transform.rotation);
+            GameObject shard = Instantiate(DamageShard, AIMagicControl.instance.PositionObjectives[(int)side].position, Camera.main.transform.rotation);
             shard.transform.eulerAngles += NewRot;
             shard.GetComponent<DamageShard>().Speed = ShardSpeed;
         }
@@ -213,8 +210,8 @@ public class FireController : MonoBehaviour
         {
             ShardInfo ToAdd = new ShardInfo();
             ToAdd.Timer = 0;
-            ToAdd.CurrentPos = PositionObjective.transform.position;
-            ToAdd.SentRot = PositionObjective.transform.TransformDirection(Vector3.forward);
+            ToAdd.CurrentPos = AIMagicControl.instance.PositionObjectives[(int)side].position;
+            ToAdd.SentRot = AIMagicControl.instance.PositionObjectives[(int)side].TransformDirection(Vector3.forward);
             Shards.Add(ToAdd);
         }
     }
@@ -234,9 +231,6 @@ public class FireController : MonoBehaviour
     private void Update()
     {
         CastTimer += Time.deltaTime;
-
-
-        //CheckArriveTimes();
         ManageEnemyCooldown();
         SpawnFireCode();
         DoDebugSpheres();
@@ -244,10 +238,10 @@ public class FireController : MonoBehaviour
             return;
         if (OnlineFire && SpawnOnline)
         {
-            OnlineFire.transform.position = PositionObjective.transform.position;
+            OnlineFire.transform.position = AIMagicControl.instance.PositionObjectives[(int)side].transform.position;
             OnlineFire.transform.rotation = Camera.main.transform.rotation;
         }
-        PrivateFire.transform.position = PositionObjective.transform.position;
+        PrivateFire.transform.position = AIMagicControl.instance.PositionObjectives[(int)side].transform.position;
         PrivateFire.transform.rotation = Camera.main.transform.rotation;
     }
     void CheckArriveTimes()
