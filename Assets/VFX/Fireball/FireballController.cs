@@ -42,7 +42,8 @@ public class FireballController : MonoBehaviour
 
     public void EndCount()
     {
-        //Debug.Log(Vector3.Distance(StartPos, Hand.localPosition));
+        if(Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition) > 0.1f)
+            Debug.Log(Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition));
         
         if (Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition) > MinFireDistance)
         {
@@ -50,7 +51,7 @@ public class FireballController : MonoBehaviour
             ControlPos = AIMagicControl.instance.Hands[(int)side].localPosition;
             StartCoroutine(WaitForClose());
             SpawnFireball(FireAbsorb.instance.FireballControl);
-            FireAbsorb.instance.StopHoldingFireball();
+            ///FireAbsorb.instance.StopHoldingFireball();
         }
         StartPos = AIMagicControl.instance.Hands[(int)side].localPosition;
     }
