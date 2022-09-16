@@ -16839,9 +16839,9 @@ MonoBehaviour:
   CanSpawn: 1
   IsControlling: 0
   Speed: 450
-  MinFireDistance: 0.39
+  CastDistance: 0
+  StopControllingDistance: 0
   Fireball: {fileID: 0}
-  DistToHeadThreshold: 0
   RotationThreshold: 0
   ControlForce: 0
   controlType: 0
@@ -25479,9 +25479,9 @@ MonoBehaviour:
   CanSpawn: 1
   IsControlling: 0
   Speed: 450
-  MinFireDistance: 0.39
+  CastDistance: 0
+  StopControllingDistance: 0
   Fireball: {fileID: 0}
-  DistToHeadThreshold: 0
   RotationThreshold: 0
   ControlForce: 0
   controlType: 0
@@ -38064,7 +38064,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3ac7c89d36f874a4a91ed6f9764d95ba, type: 2}
+  - {fileID: 2100000, guid: 8cdf7df8965e0464384336d114f4738a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

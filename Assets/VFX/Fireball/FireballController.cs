@@ -15,12 +15,11 @@ public class FireballController : MonoBehaviour
     public bool IsControlling;
     [Header("Stats")]
     public float Speed;
-    public float MinFireDistance;
+    public float CastDistance;
+    public float StopControllingDistance;
     Vector3 StartPos;
     public GameObject Fireball;
-
-    private float DistToHead;
-    public float DistToHeadThreshold;
+    
     public float RotationThreshold;
 
     public float ControlForce;
@@ -45,10 +44,9 @@ public class FireballController : MonoBehaviour
         if(Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition) > 0.1f)
             Debug.Log(Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition));
         
-        if (Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition) > MinFireDistance)
+        if (Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition) > CastDistance)
         {
-            DistToHead = Vector3.Distance(AIMagicControl.instance.Hands[(int)side].localPosition, Camera.main.transform.localPosition);
-            ControlPos = AIMagicControl.instance.Hands[(int)side].localPosition;
+            //ControlPos = AIMagicControl.instance.Hands[(int)side].localPosition;
             StartCoroutine(WaitForClose());
             SpawnFireball(FireAbsorb.instance.FireballControl);
             ///FireAbsorb.instance.StopHoldingFireball();
@@ -89,7 +87,6 @@ public class FireballController : MonoBehaviour
         else if(Redirect == true)
             Fireball = PhotonNetwork.Instantiate("BetterFireball", AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
     }
-    private Vector3 ControlPos;
     private void Update()
     {
 
@@ -114,7 +111,7 @@ public class FireballController : MonoBehaviour
     }
     public IEnumerator WaitForClose()
     {
-        bool PastThreshold = DistToHead > Vector3.Distance(AIMagicControl.instance.Spawn[(int)side].localPosition, Camera.main.transform.localPosition);
+        bool PastThreshold = StopControllingDistance < Vector3.Distance(AIMagicControl.instance.Spawn[(int)side].localPosition, Camera.main.transform.localPosition);
         IsControlling = true;
         while (PastThreshold == false)
         {
