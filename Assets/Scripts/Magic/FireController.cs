@@ -14,7 +14,6 @@ public enum FireDetectType
 
 public class FireController : MonoBehaviour
 {
-    
     private bool Active = false;
     public static float CheckInterval = 0.1f;
     public bool CanCast;
@@ -107,10 +106,8 @@ public class FireController : MonoBehaviour
     #region StartStop
     public void StopFire()
     {
-        if (PrivateFire == null)
-            return;
+        if (PrivateFire == null) return;
 
-        //Debug.Log("Index: " + Index + "  Stop");
         Index += 1;
         if (SpawnOnline)
         {
@@ -135,7 +132,7 @@ public class FireController : MonoBehaviour
         }
         
 
-        PrivateFire = Instantiate(Resources.Load<GameObject>("FlipBookFireOffline"), Vector3.zero, Camera.main.transform.rotation);
+        PrivateFire = Instantiate(Resources.Load<GameObject>("FlameThrower"), Vector3.zero, Camera.main.transform.rotation);
         PrivateFire.transform.SetParent(transform);
         PrivateFire.GetComponent<FlameObject>().SetFlamesOffline(true, PlayRateSpeed);
         EyeController.instance.ChangeEyes(Eyes.Fire);

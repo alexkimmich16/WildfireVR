@@ -5,26 +5,57 @@ using UnityEngine.VFX;
 using Photon.Pun;
 public class FlameObject : MonoBehaviour
 {
-    public VisualEffect Flames;
+    public VisualEffect FlamesVFX;
+    public List<ParticleSystem> FlameParticalSystem;
     [PunRPC]
     void SetFlames(bool NewState, float Speed)
     {
-        Flames.playRate = Speed;
-        if (NewState == true)
-            Flames.Play();
-        else if(NewState == false)
+        if(FlamesVFX != null)
         {
-            Flames.Stop();
-            GetComponent<PhotonDestroy>().StartCountdown();
+            FlamesVFX.playRate = Speed;
+            if (NewState == true)
+                FlamesVFX.Play();
+            else if (NewState == false)
+            {
+                FlamesVFX.Stop();
+                GetComponent<PhotonDestroy>().StartCountdown();
+            }
+        }
+        else if(FlameParticalSystem.Count != 0)
+        {
+            if (NewState == true)
+                for (int i = 0; i < FlameParticalSystem.Count; i++)
+                    FlameParticalSystem[i].Play();
+            else if (NewState == false)
+            {
+                for (int i = 0; i < FlameParticalSystem.Count; i++)
+                    FlameParticalSystem[i].Stop();
+                GetComponent<PhotonDestroy>().StartCountdown();
+            }
         }
     }
 
     public void SetFlamesOffline(bool NewState, float Speed)
     {
-        Flames.playRate = Speed;
-        if (NewState == true)
-            Flames.Play();
-        else if (NewState == false)
-            Flames.Stop();
+        if (FlamesVFX != null)
+        {
+            FlamesVFX.playRate = Speed;
+            if (NewState == true)
+                FlamesVFX.Play();
+            else if (NewState == false)
+                FlamesVFX.Stop();
+        }
+        else if (FlameParticalSystem.Count != 0)
+        {
+            if (NewState == true)
+                for (int i = 0; i < FlameParticalSystem.Count; i++)
+                    FlameParticalSystem[i].Play();
+            else if (NewState == false)
+            {
+                for (int i = 0; i < FlameParticalSystem.Count; i++)
+                    FlameParticalSystem[i].Stop();
+                GetComponent<PhotonDestroy>().StartCountdown();
+            }
+        }
     }
 }

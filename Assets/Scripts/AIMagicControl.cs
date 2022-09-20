@@ -10,14 +10,4 @@ public class AIMagicControl : MonoBehaviour
 
     public static AIMagicControl instance;
     void Awake() { instance = this; }
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
