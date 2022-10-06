@@ -10,6 +10,7 @@ public enum TrackType
 public class Frames
 {
     [Header("Input")]
+    public bool CanCast;
     public TrackType trackType;
     public int Capacity = 10;
     //public int ConsecutiveFrames;
@@ -39,17 +40,6 @@ public class Frames
             Total += Asint(AtInverseIndex(i));
         return Total / AverageFrames;
     }
-    /*
-    public bool AllPastFrames(bool Check)
-    {
-        if (PastFrames.Count != Capacity)
-            return false;
-        for (int i = 0; i < ConsecutiveFrames; i++)
-            if (AtInverseIndex(i) != Check)
-                return false;
-        return true;
-    }
-    */
     public void AddToList(bool New)
     {
         if(Capacity == PastFrames.Count)

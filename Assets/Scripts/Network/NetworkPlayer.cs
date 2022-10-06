@@ -69,6 +69,7 @@ public class NetworkPlayer : MonoBehaviourPun
     void FindSpotRPC()
     {
         //reset my position
+        DoorManager.instance.UpdateElevator();
         Debug.Log("RPC");
         BillBoardManager.instance.SetResetButton(false);
         Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer);

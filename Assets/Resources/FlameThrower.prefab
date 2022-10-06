@@ -25,7 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 58292936881470258}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -41,14 +41,14 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 58292936881470258}
   serializedVersion: 8
-  lengthInSec: 64.56
+  lengthInSec: 7.5
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -106,7 +106,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
   randomSeed: 0
@@ -168,8 +168,8 @@ ParticleSystem:
         m_RotationOrder: 4
     startSpeed:
       serializedVersion: 2
-      minMaxState: 3
-      scalar: 0
+      minMaxState: 0
+      scalar: 23.53
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -661,8 +661,8 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 0
-    angle: 25
+    type: 4
+    angle: 7.2
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 0.5
@@ -748,7 +748,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 2
+      value: 0.13
       mode: 0
       spread: 0
       speed:
@@ -1544,7 +1544,7 @@ ParticleSystem:
     flipU: 0
     flipV: 0
   VelocityModule:
-    enabled: 1
+    enabled: 0
     x:
       serializedVersion: 2
       minMaxState: 0
@@ -14696,7 +14696,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 58292938412173471}
   serializedVersion: 8
-  lengthInSec: 64.56
+  lengthInSec: 7.5
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -17397,7 +17397,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.68
+      scalar: 2
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -24428,8 +24428,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4388453758017755076}
-  - component: {fileID: -4785011081999304556}
-  - component: {fileID: -4862290619291821821}
+  - component: {fileID: 1367012815407822274}
+  - component: {fileID: -530231042916774742}
+  - component: {fileID: 4608106398029057618}
   m_Layer: 0
   m_Name: FlameThrower
   m_TagString: Untagged
@@ -24446,7 +24447,7 @@ Transform:
   m_GameObject: {fileID: 1267622881173442705}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 4.9999995, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 58292936881470263}
@@ -24457,7 +24458,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-4785011081999304556
+--- !u!114 &1367012815407822274
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -24473,7 +24474,7 @@ MonoBehaviour:
   FlameParticalSystem:
   - {fileID: 58292936881470260}
   - {fileID: 58292938412173441}
---- !u!114 &-4862290619291821821
+--- !u!114 &-530231042916774742
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -24485,5 +24486,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36fd64cd9e4c21047800ee8fe8ed0ae6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LifeTime: 2
+  LifeTime: 4.42
   Timer: 0
+--- !u!114 &4608106398029057618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1267622881173442705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a932fd9c75540fc41b62ae4bd27a2bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fire: {fileID: 58292936881470260}
+  Push: 0
+  Example: {fileID: 0}
+  Force: 0

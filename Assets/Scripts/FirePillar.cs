@@ -10,7 +10,7 @@ public enum Spell
 }
 public class FirePillar : MonoBehaviour
 {
-    public VisualEffect FireVFX;
+    public FlameObject FireVFX;
     //subscribe to on fire event
     public delegate void StateEvent(Spell spell);
     public static event StateEvent OnFire;
@@ -19,19 +19,19 @@ public class FirePillar : MonoBehaviour
 
     public void StartFlame(Spell spell)
     {
-        FireVFX.Play();
+        FireVFX.SetFlamesOffline(true);
         StartCoroutine(WaitEndFire());
         
     }
     void Start()
     {
         OnFire += StartFlame;
-        FireVFX.Stop();
+        FireVFX.SetFlamesOffline(false);
     }
     
     public IEnumerator WaitEndFire()
     {
         yield return new WaitForSeconds(StopTime);
-        FireVFX.Stop();
+        FireVFX.SetFlamesOffline(false);
     }
 }

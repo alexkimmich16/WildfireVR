@@ -532,7 +532,7 @@ public class HandMagic : MonoBehaviour
     {
         if (SceneLoader.BattleScene() == true)
         {
-            if (InGameManager.instance.CanCast == true)
+            if (InGameManager.instance.CanDoMagic() == true)
             {
                 BothSpellManager();
                 FollowMotion();

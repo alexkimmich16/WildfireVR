@@ -23,7 +23,7 @@ public class CamAtFloor : MonoBehaviour
         float TempFloorHeight;
         if (SequenceNum < 2)
         {
-            TempFloorHeight = ElevatorOffset + DoorManager.instance.Elevator.transform.localPosition.y;
+            TempFloorHeight = ElevatorOffset + DoorManager.instance.Doors[0].OBJ.localPosition.y;
         }
         else
         {

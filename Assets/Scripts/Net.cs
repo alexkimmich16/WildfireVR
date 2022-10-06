@@ -24,6 +24,11 @@ namespace Odin
         public static string AttackTeamCount = "AttackTeam";
         public static string DefenseTeamCount = "DefenseTeam";
 
+        public static List<string> DoorNames = new List<string>() { "ElevatorHeight", "InnerGateHeight", "OuterGateHeight" };
+
+        public static string DoorState = "DoorState";
+
+
 
         public static bool Alive(Player player)
         {
@@ -141,6 +146,8 @@ namespace Odin
         {
             if (player == null)
             {
+                if (PhotonNetwork.CurrentRoom == null)
+                    return false;
                 if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(text))
                     return true;
                 else

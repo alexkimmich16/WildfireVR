@@ -7,6 +7,7 @@ public class FireAbsorb : MonoBehaviour
     public static FireAbsorb instance;
     void Awake() { instance = this; }
 
+    public bool CanCast;
     public HandActions Hand;
     public Rigidbody Fire;
 
@@ -55,7 +56,7 @@ public class FireAbsorb : MonoBehaviour
 
     void Update()
     {
-        if (Fire == null)
+        if (Fire == null || CanCast == false)
             return;
         if(FireballControl == false)
         {

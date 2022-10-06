@@ -89,6 +89,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
                 SetGameInt(AttackTeamCount, 0);
                 SetGameInt(DefenseTeamCount, 0);
+                for (int i = 0; i < DoorManager.instance.Doors.Count; i++)
+                {
+                    Vector3 Local = DoorManager.instance.Doors[i].OBJ.localPosition;
+                    DoorManager.instance.Doors[i].OBJ.localPosition = new Vector3(Local.x, DoorManager.instance.Doors[i].MinMax.x, Local.z);
+                    SetGameFloat(DoorNames[i], DoorManager.instance.Doors[i].OBJ.localPosition.y);
+                    
+                }
+
+
 
                 Debug.Log("Initialized room and reset or created all stats");
                 

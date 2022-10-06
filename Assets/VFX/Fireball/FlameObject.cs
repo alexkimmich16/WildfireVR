@@ -8,11 +8,10 @@ public class FlameObject : MonoBehaviour
     public VisualEffect FlamesVFX;
     public List<ParticleSystem> FlameParticalSystem;
     [PunRPC]
-    void SetFlames(bool NewState, float Speed)
+    void SetFlames(bool NewState)
     {
         if(FlamesVFX != null)
         {
-            FlamesVFX.playRate = Speed;
             if (NewState == true)
                 FlamesVFX.Play();
             else if (NewState == false)
@@ -35,11 +34,10 @@ public class FlameObject : MonoBehaviour
         }
     }
 
-    public void SetFlamesOffline(bool NewState, float Speed)
+    public void SetFlamesOffline(bool NewState)
     {
         if (FlamesVFX != null)
         {
-            FlamesVFX.playRate = Speed;
             if (NewState == true)
                 FlamesVFX.Play();
             else if (NewState == false)

@@ -25,10 +25,20 @@ public class FlameCollision : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Push == true)
+        if(Push == true && Example != null)
         {
             Push = false;
             PushFire(Example.position, Force);
         }
+    }
+    private void OnParticleCollision(GameObject other)
+    {
+        
+        if(other.tag == "VRPerson")
+        {
+            Debug.Log("HIT!");
+            FireController.DamageShardHit(other);
+        }
+            
     }
 }

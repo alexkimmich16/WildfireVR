@@ -11,7 +11,7 @@ public enum ControlType
 public class FireballController : MonoBehaviour
 {
     private bool Active;
-    public bool CanSpawn;
+    public bool SpawnOnline;
     public bool IsControlling;
     [Header("Stats")]
     public float Speed;
@@ -19,6 +19,8 @@ public class FireballController : MonoBehaviour
     public float StopControllingDistance;
     Vector3 StartPos;
     public GameObject Fireball;
+    public GameObject PrivateFireball;
+
     
     public float RotationThreshold;
 
@@ -27,8 +29,6 @@ public class FireballController : MonoBehaviour
     private Side side;
 
     [Header("References")]
-    //public Transform Spawn;
-    //p//ublic Transform Hand;
 
     [Header("Frames")]
     public Frames frames;
@@ -41,9 +41,9 @@ public class FireballController : MonoBehaviour
 
     public void EndCount()
     {
-        if(Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition) > 0.1f)
+        if(Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition) > 0.1)
             Debug.Log(Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition));
-        
+        Debug.Log(Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition));
         if (Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition) > CastDistance)
         {
             //ControlPos = AIMagicControl.instance.Hands[(int)side].localPosition;
@@ -56,7 +56,7 @@ public class FireballController : MonoBehaviour
     public void OnNewState(bool State)
     {
         //Debug.Log("NewState: " + State);
-        if (!CanSpawn || Fireball != null)
+        if (!frames.CanCast || Fireball != null)
             return;
 
         if (frames.FramesWork(true) && Active == false)
@@ -80,12 +80,17 @@ public class FireballController : MonoBehaviour
     public void SpawnFireball(bool Redirect)
     {
         EyeController.instance.ChangeEyes(Eyes.Fire);
-        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, Spell.Fireball);
-        //Debug.Log(Redirect);
-        if (Redirect == false) 
-            Fireball = PhotonNetwork.Instantiate("RealFireball", AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
-        else if(Redirect == true)
-            Fireball = PhotonNetwork.Instantiate("BetterFireball", AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
+        ///direction of controller forward
+        if (SpawnOnline)
+        {
+            if (Redirect == false)
+                Fireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(Spell.Fireball,true), AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
+            else if (Redirect == true)
+                Fireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(Spell.BlueFireball, true), AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
+            NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, Spell.Fireball);
+            Fireball.SetActive(false);
+        }
+        PrivateFireball = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(Spell.BlueFireball, true)), Vector3.zero, Camera.main.transform.rotation);
     }
     private void Update()
     {

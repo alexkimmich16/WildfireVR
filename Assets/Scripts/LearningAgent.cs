@@ -78,7 +78,7 @@ public class LearningAgent : Agent
         CustomDebug("CollectObservations");
         //Debug.Log("Observe  Frame: " + Frame + " Set: " + Set);
         LearnManager LM = LearnManager.instance;
-        SingleInfo info = CurrentControllerInfo();
+        SingleInfo info = AIMagicControl.instance.Info.GetControllerInfo(side);
 
         
         if (LM.HeadPos)
@@ -114,6 +114,45 @@ public class LearningAgent : Agent
             //FrameReference = " Timer: " + Timer + "|Frame: " + Frame + "|Set: " + Set + "" + "|CycleNum: " + CycleNum + "|";
         Debug.Log(text + FrameReference);
     }
+    
+    HandActions MyHand()
+    {
+        if (side == Side.Right)
+            return LearnManager.instance.Right;
+        else
+            return LearnManager.instance.Left;
+    }
+}
+[System.Serializable]
+public class SingleInfo
+{
+    public Vector3 HeadPos, HeadRot, HandPos, HandRot, HandVel, AdjustedHandPos;
+    public bool Works;
+}
+[System.Serializable]
+public class Motion
+{
+    public List<SingleInfo> Infos;
+    public int TrueIndex;
+}
+
+///should contain: velocity, hand rot, hand pos, head rot, head pos, 
+///
+///possible ways of input/recording:
+///1: as lists containing info, generated from player motions
+///2: randomly generated motions
+///3: doing it in engine
+///
+///possible ways of learning given info:
+///1: operator gives start and end time if at all(would require display and repeat motion)
+///2: 
+///
+
+///should be able to tell if motion is true between 2 given frames
+
+///OR give it lists, with active times determined ahead of time when given
+///
+/*
     public SingleInfo CurrentControllerInfo()
     {
         SingleInfo newInfo = new SingleInfo();
@@ -230,40 +269,4 @@ public class LearningAgent : Agent
             }
         }
     }
-
-    HandActions MyHand()
-    {
-        if (side == Side.Right)
-            return LearnManager.instance.Right;
-        else
-            return LearnManager.instance.Left;
-    }
-}
-[System.Serializable]
-public class SingleInfo
-{
-    public Vector3 HeadPos, HeadRot, HandPos, HandRot, HandVel, AdjustedHandPos;
-    public bool Works;
-}
-[System.Serializable]
-public class Motion
-{
-    public List<SingleInfo> Infos;
-    public int TrueIndex;
-}
-
-///should contain: velocity, hand rot, hand pos, head rot, head pos, 
-///
-///possible ways of input/recording:
-///1: as lists containing info, generated from player motions
-///2: randomly generated motions
-///3: doing it in engine
-///
-///possible ways of learning given info:
-///1: operator gives start and end time if at all(would require display and repeat motion)
-///2: 
-///
-
-///should be able to tell if motion is true between 2 given frames
-
-///OR give it lists, with active times determined ahead of time when given
+    */
