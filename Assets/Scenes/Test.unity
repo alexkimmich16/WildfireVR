@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 594556145}
-  m_IndirectSpecularColor: {r: 0.0067073726, g: 0.049762532, b: 0.24338552, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -17003,24 +17003,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5d960cdc46629d47b000b200bdb849f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CanCast: 0
   ShouldDebug: 0
   SpawnOnline: 0
   DebugSpheres: []
   DamageType: 0
-  CollisionDistance: 0
   Spread: 0
+  EnemyCooldownTime: 0
+  Damage: 0
+  CastCooldowntime: 0
+  MinVelocity: 0
   SpawnInterval: 0.03
   ShardSpeed: 0
   ShardLifetime: 0
-  EnemyCooldownTime: 0
-  TargetCheckDistance: 0
-  Damage: 0
-  CastCooldowntime: 0
-  PlayRateSpeed: 0
-  PositionObjective: {fileID: 0}
   DamageShard: {fileID: 0}
+  TargetCheckDistance: 0
+  CollisionDistance: 0
+  PrivateFire: {fileID: 0}
   frames:
+    CanCast: 0
     trackType: 0
     Capacity: 10
     AverageFrames: 0
@@ -17028,10 +17028,8 @@ MonoBehaviour:
     AverageVal: 0
     PastFrames: 
     RealState: 0
-  MinVelocity: 0
   Shards: []
   Targets: []
-  DamageCooldowns: []
 --- !u!2083052967 &646351948
 VisualEffect:
   m_ObjectHideFlags: 0
