@@ -14,11 +14,13 @@ public class HandDebugger : MonoBehaviour
     {
         if (currentSpell == Spell.Fireball)
         {
-            Fireball.gameObject.GetComponent<LearningAgent>().NewState += SetNew;
+            //Fireball.gameObject.GetComponent<LearningAgent>().NewState += SetNew;
+            Fireball.RealNewState += SetNew;
         }
         else if (currentSpell == Spell.Flames)
         {
-            fire.NewRealState += SetNew;
+            //fire.NewRealState += SetNew;
+            //fire.frames.RealNewState += SetNew;
         }
     }
 

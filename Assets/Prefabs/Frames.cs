@@ -21,6 +21,7 @@ public class Frames
     public float AverageVal;
     public List<bool> PastFrames;
     public bool RealState;
+
     public bool AtInverseIndex(int Index)
     {
         int Inverse = Capacity - 1- Index;
@@ -42,10 +43,10 @@ public class Frames
     }
     public void AddToList(bool New)
     {
-        if(Capacity == PastFrames.Count)
+        if (Capacity == PastFrames.Count)
         {
             AverageVal = Average();
-            RealState = FramesWork(false);
+            RealState = FramesWork();
         }
             
         PastFrames.Add(New);
@@ -53,18 +54,13 @@ public class Frames
             PastFrames.RemoveAt(0);
     }
 
-    public bool FramesWork(bool Looking)
+    public bool FramesWork()
     {
         if (trackType == TrackType.FrameAverage)
         {
             //is state true?
             //state is true when avg > thresh
             return AverageVal > FrameAverageThreshold;
-
-            if (Looking == false)
-                return AverageVal > FrameAverageThreshold;
-            else
-                return AverageVal < FrameAverageThreshold;
         }
 
         return false;

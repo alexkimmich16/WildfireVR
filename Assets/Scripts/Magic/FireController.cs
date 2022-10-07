@@ -30,6 +30,7 @@ public class FireController : MonoBehaviour
     public float CastCooldowntime;
     public float MinVelocity;
 
+
     [Header("Colliders")]
     public float SpawnInterval = 0.03f;
     public float ShardSpeed;
@@ -142,7 +143,7 @@ public class FireController : MonoBehaviour
     public bool FrameWorks()
     {
         float Speed = AIMagicControl.instance.Hands[(int)side].transform.GetComponent<HandActions>().Magnitude;
-        return frames.FramesWork(true) && Speed > MinVelocity;
+        return frames.FramesWork() && Speed > MinVelocity;
     }
     public void OnNewState(bool State)
     {

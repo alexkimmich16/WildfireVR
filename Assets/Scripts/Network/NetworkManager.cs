@@ -94,13 +94,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                     Vector3 Local = DoorManager.instance.Doors[i].OBJ.localPosition;
                     DoorManager.instance.Doors[i].OBJ.localPosition = new Vector3(Local.x, DoorManager.instance.Doors[i].MinMax.x, Local.z);
                     SetGameFloat(DoorNames[i], DoorManager.instance.Doors[i].OBJ.localPosition.y);
-                    
                 }
-
-
-
                 Debug.Log("Initialized room and reset or created all stats");
-                
             }
         }
         base.OnJoinedRoom();
@@ -134,3 +129,4 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartCoroutine(NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetComponent<PlayerControl>().RagdollRespawn());
     }
 }
+    

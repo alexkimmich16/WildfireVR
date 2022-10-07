@@ -23,12 +23,12 @@ public class BlockController : MonoBehaviour
             return;
 
         return;
-        if (frames.FramesWork(true) && Active == false)
+        if (frames.FramesWork() == true && Active == false)
         {
             Active = true;
             SetNewState(true);
         }
-        else if (frames.FramesWork(false) && Active == true)
+        else if (frames.FramesWork() == false && Active == true)
         {
             Active = false;
             SetNewState(false);

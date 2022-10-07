@@ -10,28 +10,38 @@ public enum ControlType
 }
 public class FireballController : MonoBehaviour
 {
-    private bool Active;
+    //public bool Active;
     public bool SpawnOnline;
     public bool IsControlling;
     [Header("Stats")]
     public float Speed;
     public float CastDistance;
+    public float MinDistanceToHead;
     public float StopControllingDistance;
-    Vector3 StartPos;
-    public GameObject Fireball;
-    public GameObject PrivateFireball;
+    public float MinVelCam;
+    public float MinVelHand;
 
+    public float DirectionLeaniency;
+    Vector3 StartPos;
+    public GameObject OnlineFireball;
+    public GameObject PrivateFireball;
     
+
     public float RotationThreshold;
 
     public float ControlForce;
     public ControlType controlType;
     private Side side;
 
-    [Header("References")]
 
+
+    [Header("References")]
+    public GameObject PositionExample;
     [Header("Frames")]
     public Frames frames;
+
+    public delegate void EventHandlerThree(bool State);
+    public event EventHandlerThree RealNewState;
 
     public void StartCount()
     {
@@ -41,9 +51,8 @@ public class FireballController : MonoBehaviour
 
     public void EndCount()
     {
-        if(Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition) > 0.1)
+        if(Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition) > 0.2)
             Debug.Log(Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition));
-        Debug.Log(Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition));
         if (Vector3.Distance(StartPos, AIMagicControl.instance.Hands[(int)side].localPosition) > CastDistance)
         {
             //ControlPos = AIMagicControl.instance.Hands[(int)side].localPosition;
@@ -53,23 +62,54 @@ public class FireballController : MonoBehaviour
         }
         StartPos = AIMagicControl.instance.Hands[(int)side].localPosition;
     }
+    public Direction ControllerDir()
+    {
+        Vector3 LevelVel = new Vector3(AIMagicControl.instance.Hands[(int)side].GetComponent<HandActions>().Velocity.x, 0, AIMagicControl.instance.Hands[(int)side].GetComponent<HandActions>().Velocity.z);
+        Vector3 LevelCamRot = new Vector3(Camera.main.transform.forward.x, 0, Camera.main.transform.forward.z);
+        float VelCamAngle = Vector3.Angle(LevelVel, LevelCamRot);
+        float Angle = VelCamAngle;
+        Debug.Log(Angle);
+        if (Angle > 180 - DirectionLeaniency)
+            return Direction.Towards;
+        else if (Angle < 0 + DirectionLeaniency && Angle > 0 - DirectionLeaniency)
+            return Direction.Away;
+        else if (Angle < 90 + DirectionLeaniency && Angle > 90 - DirectionLeaniency)
+            return Direction.Side;
+        return Direction.None;
+    }
+    public bool RealState(bool FramesState)
+    {
+        /*
+        Vector3 CamForward = new Vector3(0, Camera.main.transform.eulerAngles.y, 0).normalized;
+        Vector3 HandForward = AIMagicControl.instance.Hands[(int)side].eulerAngles.normalized;
+        Vector3 Velocity = AIMagicControl.instance.Hands[(int)side].GetComponent<HandActions>().Velocity.normalized;
+        float CamVelDist = Vector3.Angle(Velocity, CamForward);
+        float HandVelDist = Vector3.Angle(Velocity, HandForward);
+        */
+        bool VelocityWorks = ControllerDir() == Direction.Away;
+        //Debug.Log(HandVelDist);
+        //Debug.Log(Vector3.Distance(Camera.main.transform.position, AIMagicControl.instance.Hands[(int)side].position));
+        return FramesState && frames.CanCast && Vector3.Distance(Camera.main.transform.position, AIMagicControl.instance.Hands[(int)side].position) > MinDistanceToHead && VelocityWorks;
+    }
     public void OnNewState(bool State)
     {
         //Debug.Log("NewState: " + State);
-        if (!frames.CanCast || Fireball != null)
-            return;
+        bool FinalState = RealState(State);
+        if (RealNewState != null)
+            RealNewState(FinalState);
 
-        if (frames.FramesWork(true) && Active == false)
+
+        if (FinalState == true)
         {
-            Active = true;
-            StartCount();
+
         }
-        else if (frames.FramesWork(false) && Active == true)
+        else if (FinalState == false)
         {
-            Active = false;
+            //get distance to 
             EndCount();
         }
     }
+
     private void Start()
     {
         gameObject.GetComponent<LearningAgent>().NewState += OnNewState;
@@ -81,39 +121,31 @@ public class FireballController : MonoBehaviour
     {
         EyeController.instance.ChangeEyes(Eyes.Fire);
         ///direction of controller forward
+        Spell spell;
+        if (Redirect == false)
+            spell = Spell.Fireball;
+        else
+            spell = Spell.BlueFireball;
+
         if (SpawnOnline)
         {
-            if (Redirect == false)
-                Fireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(Spell.Fireball,true), AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
-            else if (Redirect == true)
-                Fireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(Spell.BlueFireball, true), AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
+            OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(spell, true), AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
             NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, Spell.Fireball);
-            Fireball.SetActive(false);
+            OnlineFireball.SetActive(false);
         }
-        PrivateFireball = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(Spell.BlueFireball, true)), Vector3.zero, Camera.main.transform.rotation);
+        PrivateFireball = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(spell, true)), AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
     }
     private void Update()
     {
+        if (PositionExample != null)
+            PositionExample.transform.localPosition = StartPos;
 
         if (IsControlling == false)
             return;
-        if (controlType == ControlType.OnMoveHand)
-        {
-
-        }
-        else if (controlType == ControlType.Constant)
-        {
-
-        }
-        else
-        {
-
-        }
-            
             //get amount to change normalized
             //change each frame
-        
     }
+
     public IEnumerator WaitForClose()
     {
         bool PastThreshold = StopControllingDistance < Vector3.Distance(AIMagicControl.instance.Spawn[(int)side].localPosition, Camera.main.transform.localPosition);

@@ -119,6 +119,7 @@ public class ControllerStats : MonoBehaviour
     public Direction ControllerDir(Vector3 Vel, int Side)
     {
         float Angle = Controllers[Side].VelocityCameraAngle;
+
         if (Vel.magnitude > NM.DirectionForceThreshold)
         {
             if (Angle > 180 - NM.DirectionLeaniency)

@@ -14,13 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Spells:
   - spell: 0
-    Online: {fileID: 4091433384368674057, guid: 48245549fe6fc3d45b032cf67b87f738,
+    Online: {fileID: 4091433384368674057, guid: fb740e686fbae3e4a9d27bf06b74e49d,
       type: 3}
-    Offline: {fileID: 0}
+    Offline: {fileID: 4091433384368674057, guid: 48245549fe6fc3d45b032cf67b87f738,
+      type: 3}
   - spell: 1
-    Online: {fileID: 4091433384368674057, guid: 594408de9920cdf45a400c14c1ab9932,
+    Online: {fileID: 4091433384368674057, guid: 2f7029b6ed8d7694c81ec2487f698509,
       type: 3}
-    Offline: {fileID: 0}
+    Offline: {fileID: 4091433384368674057, guid: 594408de9920cdf45a400c14c1ab9932,
+      type: 3}
   - spell: 2
     Online: {fileID: 1267622881173442705, guid: 7a7492023bd23154db5a95268b72b960,
       type: 3}

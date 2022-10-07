@@ -47,10 +47,8 @@ public class Fireball : MonoBehaviour
         Ball.playRate = BallRate;
         if (Absorbing == false)
         {
-            Vector3 Forward = transform.forward;
-            RB.velocity = Forward * Time.deltaTime * Speed;
+            RB.velocity = transform.forward * Time.deltaTime * Speed;
         }
-
     }
 
 
@@ -96,24 +94,4 @@ public class Fireball : MonoBehaviour
         RB = GetComponent<Rigidbody>();
         //Speed = FireballController.instance.Speed;
     }
-
-    /*
-        if (col.collider.tag == "Shield")
-        {
-            if(HandMagic.instance.SC.Stats[0].Shield != null)
-            {
-                if (col.collider.transform == HandMagic.instance.SC.Stats[0].Shield.transform)
-                {
-                    HandMagic.instance.SC.ShieldDamage(Damage, 0);
-                }
-            }
-            else if (HandMagic.instance.SC.Stats[1].Shield != null)
-            {
-                if (col.collider.transform == HandMagic.instance.SC.Stats[1].Shield.transform)
-                {
-                    HandMagic.instance.SC.ShieldDamage(Damage, 1);
-                }
-            }
-        }
-        */
 }

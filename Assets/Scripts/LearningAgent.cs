@@ -57,6 +57,8 @@ public class LearningAgent : Agent
     private int Offset = 270;
 
     private bool Guess;
+
+    public float MinSpeedThreshold;
     private void FixedUpdate()
     {
         Interval = 1 / FramePerSecond;
@@ -99,7 +101,7 @@ public class LearningAgent : Agent
     {
         CustomDebug("OnActionReceived");
         
-        bool CurrentGuess = actions.DiscreteActions[0] == 1;
+        bool CurrentGuess = actions.DiscreteActions[0] == 1 && MinSpeedThreshold < AIMagicControl.instance.Hands[(int)side].GetComponent<HandActions>().Magnitude;
         Guess = CurrentGuess;
         //GuessNum = actions.DiscreteActions[0];
         CustomDebug(CurrentGuess.ToString());

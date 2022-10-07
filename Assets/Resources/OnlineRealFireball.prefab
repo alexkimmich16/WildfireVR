@@ -255,11 +255,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8224596622423788929}
   - component: {fileID: 4225442064924622518}
+  - component: {fileID: 4757698871527882875}
   - component: {fileID: 2820639949846293221}
   - component: {fileID: 1896018481031965421}
   - component: {fileID: 8604382431839097032}
   m_Layer: 11
-  m_Name: RealFireball
+  m_Name: OnlineRealFireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -305,6 +306,28 @@ MonoBehaviour:
   BallRate: 1
   Trail: {fileID: 6611124086417175280}
   Ball: {fileID: 7041256672707463191}
+--- !u!114 &4757698871527882875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4091433384368674057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!135 &2820639949846293221
 SphereCollider:
   m_ObjectHideFlags: 0
