@@ -7,6 +7,9 @@ public class FlameObject : MonoBehaviour
 {
     public VisualEffect FlamesVFX;
     public List<ParticleSystem> FlameParticalSystem;
+    public bool DestoryStop = true;
+    
+
     [PunRPC]
     void SetFlames(bool NewState)
     {
@@ -52,7 +55,8 @@ public class FlameObject : MonoBehaviour
             {
                 for (int i = 0; i < FlameParticalSystem.Count; i++)
                     FlameParticalSystem[i].Stop();
-                GetComponent<PhotonDestroy>().StartCountdown();
+                if(DestoryStop)
+                    GetComponent<PhotonDestroy>().StartCountdown();
             }
         }
     }

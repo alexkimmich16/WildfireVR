@@ -10,28 +10,38 @@ public enum Spell
 }
 public class FirePillar : MonoBehaviour
 {
-    public FlameObject FireVFX;
     //subscribe to on fire event
     public delegate void StateEvent(Spell spell);
     public static event StateEvent OnFire;
+
+    //public delegate void CountdownEvent();
+    //public static event CountdownEvent StartCountdown;
+
     public float StopTime;
+
+    public VFXHolder VFX;
     public static void CallStartFire(Spell spell) { OnFire(spell); }
 
     public void StartFlame(Spell spell)
     {
-        FireVFX.SetFlamesOffline(true);
-        StartCoroutine(WaitEndFire());
-        
+        Debug.Log("recieved");
+        if(spell == Spell.Flames || spell == Spell.Fireball)
+        {
+            VFX.SetNewState(true);
+            StartCoroutine(WaitEndFire());
+        }
     }
     void Start()
     {
         OnFire += StartFlame;
-        FireVFX.SetFlamesOffline(false);
+        VFX.SetNewState(false);
+        //OnFire(Spell.Flames);
     }
-    
+
     public IEnumerator WaitEndFire()
     {
+        Debug.Log("wait");
         yield return new WaitForSeconds(StopTime);
-        FireVFX.SetFlamesOffline(false);
+        VFX.SetNewState(false);
     }
 }

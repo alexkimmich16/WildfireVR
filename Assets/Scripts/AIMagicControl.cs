@@ -14,6 +14,15 @@ public class AIMagicControl : MonoBehaviour
     
     public static AIMagicControl instance;
     void Awake() { instance = this; }
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.D))
+        {
+            Debug.Log("call");
+            FirePillar.CallStartFire(Spell.Flames);
+        }
+    }
 }
 
 [System.Serializable]
