@@ -8,6 +8,16 @@ public enum SoundTypes
     Start = 0,
     During = 1,
 }
+[System.Serializable]
+public class Audio
+{
+    public string Name;
+    public AudioClip Sound;
+    public SoundTypes type;
+
+    [Range(0.0f, 1f)]
+    public float Volume = 1;
+}
 public class SoundManager : MonoBehaviour
 {
     #region Singleton + classes
@@ -24,21 +34,21 @@ public class SoundManager : MonoBehaviour
         else
             Destroy(this);
     }
-    [System.Serializable]
-    public class Audio
-    {
-        public string Name;
-        public AudioClip Sound;
-        public SoundTypes type;
-
-        [Range(0.0f, 1f)]
-        public float Volume = 1;
-    }
+    
     #endregion
 
     private Transform Parent;
     public List<Audio> AudioClips = new List<Audio>();
     public bool UseSounds;
+
+    public bool UseCrowd;
+
+
+    public AudioClip Ambience;
+    public AudioClip Roar;
+    public AudioClip Boo;
+
+    ///
     public void PlayAudio(string Name, GameObject ToParent)
     {
         //Debug.Log("PT1");
@@ -88,5 +98,51 @@ public class SoundManager : MonoBehaviour
             Sound.GetComponent<AudioSource>().Play();
             Parent = null;
         }
+    }
+    private void Start()
+    {
+        //ambience
+
+        GameObject Sound = Instantiate((GameObject)Resources.Load("Sound"), Vector3.zero, transform.rotation);
+        Sound.transform.parent = Parent;
+        Sound.GetComponent<AudioSource>().volume = 1f;
+        Sound.GetComponent<AudioSource>().loop = true;
+        Sound.GetComponent<AudioSource>().clip = Ambience;
+
+        //Sound.
+        Destroy(Sound.GetComponent<PhotonView>());
+        Destroy(Sound.GetComponent<MagicalFX.FX_LifeTime>());
+        Sound.GetComponent<AudioSource>().Play();
+    }
+    private void Update()
+    {
+        UpdateCrowd();
+        //play ambience on repeat
+        if (Input.GetKeyDown(KeyCode.D))
+            OnPlayerDeath();
+        if (Input.GetKeyDown(KeyCode.H))
+            OnPlayerHit();
+        if (Input.GetKeyDown(KeyCode.L))
+            OnPlayerLeave();
+    }
+    
+
+    public void OnPlayerDeath()
+    {
+        Roar
+    }
+
+    public void OnPlayerHit()
+    {
+
+    }
+
+    public void OnPlayerLeave()
+    {
+        ///booooooo
+    }
+    public void UpdateCrowd()
+    {
+
     }
 }
