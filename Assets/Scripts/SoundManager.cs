@@ -48,6 +48,13 @@ public class SoundManager : MonoBehaviour
     public AudioClip Roar;
     public AudioClip Boo;
 
+    public GameObject AmbienceOBJ;
+    public GameObject RoarOBJ;
+
+    public float TimeAfterRoar;
+
+    public AnimationCurve RoarCurve;
+    public AnimationCurve AmbienceCurve;
     ///
     public void PlayAudio(string Name, GameObject ToParent)
     {
@@ -101,40 +108,50 @@ public class SoundManager : MonoBehaviour
     }
     private void Start()
     {
-        //ambience
+        AmbienceOBJ = Instantiate((GameObject)Resources.Load("Sound"), Vector3.zero, transform.rotation);
+        AmbienceOBJ.GetComponent<AudioSource>().volume = 1f;
+        AmbienceOBJ.GetComponent<AudioSource>().loop = true;
+        AmbienceOBJ.GetComponent<AudioSource>().clip = Ambience;
 
-        GameObject Sound = Instantiate((GameObject)Resources.Load("Sound"), Vector3.zero, transform.rotation);
-        Sound.transform.parent = Parent;
-        Sound.GetComponent<AudioSource>().volume = 1f;
-        Sound.GetComponent<AudioSource>().loop = true;
-        Sound.GetComponent<AudioSource>().clip = Ambience;
+        Destroy(AmbienceOBJ.GetComponent<PhotonView>());
+        Destroy(AmbienceOBJ.GetComponent<MagicalFX.FX_LifeTime>());
+        AmbienceOBJ.GetComponent<AudioSource>().Play();
+        AmbienceOBJ.name = "Ambience";
 
-        //Sound.
-        Destroy(Sound.GetComponent<PhotonView>());
-        Destroy(Sound.GetComponent<MagicalFX.FX_LifeTime>());
-        Sound.GetComponent<AudioSource>().Play();
+        RoarOBJ = Instantiate((GameObject)Resources.Load("Sound"), Vector3.zero, transform.rotation);
+        RoarOBJ.GetComponent<AudioSource>().volume = 1f;
+        RoarOBJ.GetComponent<AudioSource>().clip = Roar;
+        RoarOBJ.name = "Roar";
+        Destroy(RoarOBJ.GetComponent<PhotonView>());
+        Destroy(RoarOBJ.GetComponent<MagicalFX.FX_LifeTime>());
+
+        NetworkPlayer.TakeDamage += OnPlayerHit;
     }
     private void Update()
     {
         UpdateCrowd();
-        //play ambience on repeat
-        if (Input.GetKeyDown(KeyCode.D))
-            OnPlayerDeath();
+        TimeAfterRoar += Time.deltaTime;
+        AmbienceOBJ.GetComponent<AudioSource>().volume = AmbienceCurve.Evaluate(TimeAfterRoar);
+        RoarOBJ.GetComponent<AudioSource>().volume = RoarCurve.Evaluate(TimeAfterRoar);
+        //RoarCurve
+        //if (Input.GetKeyDown(KeyCode.D))
+            //OnPlayerDeath();
         if (Input.GetKeyDown(KeyCode.H))
             OnPlayerHit();
-        if (Input.GetKeyDown(KeyCode.L))
-            OnPlayerLeave();
+        //if (Input.GetKeyDown(KeyCode.L))
+            //OnPlayerLeave();
     }
     
 
     public void OnPlayerDeath()
     {
-        Roar
+        //Roar
     }
 
     public void OnPlayerHit()
     {
-
+        RoarOBJ.GetComponent<AudioSource>().Play();
+        TimeAfterRoar = 0f;
     }
 
     public void OnPlayerLeave()

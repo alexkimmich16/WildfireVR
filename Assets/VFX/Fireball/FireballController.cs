@@ -68,7 +68,7 @@ public class FireballController : MonoBehaviour
         Vector3 LevelCamRot = new Vector3(Camera.main.transform.forward.x, 0, Camera.main.transform.forward.z);
         float VelCamAngle = Vector3.Angle(LevelVel, LevelCamRot);
         float Angle = VelCamAngle;
-        Debug.Log(Angle);
+        //Debug.Log(Angle);
         if (Angle > 180 - DirectionLeaniency)
             return Direction.Towards;
         else if (Angle < 0 + DirectionLeaniency && Angle > 0 - DirectionLeaniency)

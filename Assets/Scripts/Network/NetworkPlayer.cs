@@ -19,7 +19,14 @@ public class NetworkPlayer : MonoBehaviourPun
 
     public GameObject SkinRenderer;
     public bool Testing;
+
+    public delegate void StateEvent();
+    public static event StateEvent TakeDamage;
     //public XR
+    public static void TakeDamageMethod()
+    {
+        TakeDamage();
+    }
     void Start()
     {
         LocomotionSystem rig = FindObjectOfType<LocomotionSystem>();
@@ -88,6 +95,7 @@ public class NetworkPlayer : MonoBehaviourPun
         {
             NetworkManager.instance.LocalTakeDamage(damg);
             Debug.Log("Take Damage");
+            TakeDamage();
         }
     }
 }

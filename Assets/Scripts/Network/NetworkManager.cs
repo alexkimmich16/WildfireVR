@@ -112,6 +112,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         int BeforeHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
         int NewHealth = BeforeHealth - Damage;
         OnTakeDamage(Damage);
+        NetworkPlayer.TakeDamageMethod();
         if (NewHealth > 0)
         {
             SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);
