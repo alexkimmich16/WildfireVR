@@ -20,7 +20,9 @@ public class DoorManager : MonoBehaviour
     [Header("Wall")]
     public float StoneScrollSpeed;
     public Transform Wall;
-    
+
+    public delegate void DoorEvent(SequenceState state);
+    public static event DoorEvent OnDoorChange;
 
     [Header("States")]
     public SequenceState Sequence;
@@ -65,6 +67,7 @@ public class DoorManager : MonoBehaviour
         }
         
     }
+    //public void StartElevatorSequence
     public void SetNewSequenceState(SequenceState state)
     {
         Sequence = state;
@@ -85,7 +88,6 @@ public class DoorManager : MonoBehaviour
                     return false;
         return true;
     }
-
     bool PlayerInElevator()
     {
         for (int i = 0; i < ElevatorColliders.Count; i++)
@@ -100,12 +102,23 @@ public class DoorManager : MonoBehaviour
         for (int i = 0; i < Doors.Count; i++)
             SetPosition(i);
     }
+    public void KeyCodeTesting()
+    {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            Debug.Log("N");
+            StartSequence();
+        }
+            
+    }
     void Update()
     {
         if (Initialized() == false)
             return;
+        if (InGameManager.instance.KeypadTesting)
+            KeyCodeTesting();
 
-        
+
         Inelevator = PlayerInElevator();
         if (Sequence == SequenceState.Waiting)
         {

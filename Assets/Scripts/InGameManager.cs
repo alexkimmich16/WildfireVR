@@ -27,7 +27,9 @@ public class InGameManager : MonoBehaviour
     public static InGameManager instance;
     void Awake() { instance = this; }
     #endregion
-
+    
+    [Header("Misc")]
+    public bool KeypadTesting;
     [Header("Players")]
     public int MaxPlayers = 3;
     public int MinPlayers = 1;
@@ -55,8 +57,6 @@ public class InGameManager : MonoBehaviour
     public Result result;
     public bool StartedSpawn = false;
     public bool FoundSpawn = false;
-
-    
 
     private float OnSpawnMagicDelay = 0;
 
