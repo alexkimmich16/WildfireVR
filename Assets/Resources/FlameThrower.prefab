@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 58292936881470263}
   - component: {fileID: 58292936881470260}
   - component: {fileID: 58292936881470261}
+  - component: {fileID: 584730511}
   m_Layer: 0
   m_Name: Explosion
   m_TagString: Untagged
@@ -2410,7 +2411,7 @@ ParticleSystem:
     multiplierCurve:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -2463,7 +2464,7 @@ ParticleSystem:
     influenceFilter: 0
     influenceMask:
       serializedVersion: 2
-      m_Bits: 4294967295
+      m_Bits: 256
     influenceList: []
   ClampVelocityModule:
     enabled: 0
@@ -2742,7 +2743,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0.57
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -2899,7 +2900,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     separateAxes: 0
-    frequency: 0.5
+    frequency: 1.97
     damping: 1
     octaves: 1
     octaveMultiplier: 0.5
@@ -3670,9 +3671,9 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
-    type: 0
+    type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
@@ -3844,17 +3845,17 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    minKillSpeed: 0
+    minKillSpeed: 10000
     maxKillSpeed: 10000
-    radiusScale: 1
+    radiusScale: 0.05
     collidesWith:
       serializedVersion: 2
-      m_Bits: 4294967295
+      m_Bits: 82944
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
-    collidesWithDynamic: 1
+    collisionMessages: 1
+    collidesWithDynamic: 0
     interiorCollisions: 0
   TriggerModule:
     enabled: 0
@@ -4882,6 +4883,22 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &584730511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 58292936881470258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a932fd9c75540fc41b62ae4bd27a2bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fire: {fileID: 58292936881470260}
+  Push: 0
+  Example: {fileID: 0}
+  Force: 0
 --- !u!1 &58292937700656454
 GameObject:
   m_ObjectHideFlags: 0
@@ -24430,7 +24447,6 @@ GameObject:
   - component: {fileID: 4388453758017755076}
   - component: {fileID: 1367012815407822274}
   - component: {fileID: -530231042916774742}
-  - component: {fileID: 4608106398029057618}
   m_Layer: 0
   m_Name: FlameThrower
   m_TagString: Untagged
@@ -24474,6 +24490,7 @@ MonoBehaviour:
   FlameParticalSystem:
   - {fileID: 58292936881470260}
   - {fileID: 58292938412173441}
+  DestoryStop: 1
 --- !u!114 &-530231042916774742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24488,19 +24505,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LifeTime: 4.42
   Timer: 0
---- !u!114 &4608106398029057618
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1267622881173442705}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a932fd9c75540fc41b62ae4bd27a2bba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fire: {fileID: 58292936881470260}
-  Push: 0
-  Example: {fileID: 0}
-  Force: 0

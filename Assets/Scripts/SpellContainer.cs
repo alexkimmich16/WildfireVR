@@ -20,7 +20,5 @@ public class SpellContainer : ScriptableObject
             return Spells[(int)spell].Online.name;
         else
             return Spells[(int)spell].Offline.name;
-
-
     }
 }

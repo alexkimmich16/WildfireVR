@@ -38,6 +38,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public delegate void DamageEvent(int Damage);
     public event DamageEvent OnTakeDamage;
 
+    public delegate void initializeEvent();
+    public static event initializeEvent Initialize;
+
     void Start()
     {
         ConnectToServer();
@@ -99,6 +102,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             }
         }
         base.OnJoinedRoom();
+        Initialize();
         InGameManager.instance.ReCalculateTeamSize();
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)

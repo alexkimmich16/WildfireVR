@@ -33,6 +33,10 @@ public class DoorManager : MonoBehaviour
     public GameObject ElevatorEnterPreventor;
     public List<Collider> ElevatorColliders;
     public bool Inelevator;
+
+    public float DropAmount;
+    //public float IncreaseSpeed;
+    //public float 
     public void ResetDoors()
     {
         for (int i = 0; i < Doors.Count; i++)
@@ -41,7 +45,13 @@ public class DoorManager : MonoBehaviour
     public void StartSequence()
     {
         if(Sequence == SequenceState.Waiting)
-            Sequence = SequenceState.ElevatorMove;
+        {
+            SetNewSequenceState(SequenceState.ElevatorMove);
+            
+            Doors[0].OBJ.Translate(Vector3.up * -DropAmount);
+        }
+            
+
     }
     private void Start()
     {
@@ -72,6 +82,8 @@ public class DoorManager : MonoBehaviour
     {
         Sequence = state;
         SetGameInt(DoorState, (int)state);
+        if(OnDoorChange != null)
+            OnDoorChange(state);
     }
     public void SetPosition(int DoorNum)
     {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+
 public enum ControlType
 {
     OnMoveHand = 0,
@@ -119,6 +120,9 @@ public class FireballController : MonoBehaviour
 
     public void SpawnFireball(bool Redirect)
     {
+        if (InGameManager.instance.CanDoMagic() == false || frames.CanCast == false)
+            return;
+
         EyeController.instance.ChangeEyes(Eyes.Fire);
         ///direction of controller forward
         Spell spell;
@@ -133,7 +137,7 @@ public class FireballController : MonoBehaviour
             NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, Spell.Fireball);
             OnlineFireball.SetActive(false);
         }
-        PrivateFireball = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(spell, true)), AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
+        PrivateFireball = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(spell, false)), AIMagicControl.instance.Spawn[(int)side].position, Camera.main.transform.rotation);
     }
     private void Update()
     {

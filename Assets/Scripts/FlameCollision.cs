@@ -33,10 +33,10 @@ public class FlameCollision : MonoBehaviour
     }
     private void OnParticleCollision(GameObject other)
     {
-        
+        Debug.Log("Collisison");
         if(other.tag == "VRPerson")
         {
-            Debug.Log("HIT!");
+            Debug.Log("DAMAGE!");
             FireController.DamageShardHit(other);
         }
             

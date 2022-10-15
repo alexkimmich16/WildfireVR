@@ -272,10 +272,14 @@ public class InGameManager : MonoBehaviour
     {
         if (NetworkManager.HasConnected())
         {
-            if (Input.GetKeyDown(KeyCode.A))
-                NewStateEvent(1);
-            else if (Input.GetKeyDown(KeyCode.D))
-                NewStateEvent(2);
+            if (KeypadTesting)
+            {
+                if (Input.GetKeyDown(KeyCode.A))
+                    NewStateEvent(1);
+                else if (Input.GetKeyDown(KeyCode.D))
+                    NewStateEvent(2);
+            }
+            
             if (StartedSpawn == false)
             {
                 if(GetGameState() == GameState.Waiting)

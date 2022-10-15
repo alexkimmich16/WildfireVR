@@ -56,13 +56,19 @@ public class Frames
 
     public bool FramesWork()
     {
-        if (trackType == TrackType.FrameAverage)
+        if (NetworkManager.HasConnected() == false)
+            return false;
+        
+        return AverageVal > FrameAverageThreshold;
+        /*
+        if (trackType == TrackType.FrameAverage || )
         {
             //is state true?
             //state is true when avg > thresh
-            return AverageVal > FrameAverageThreshold;
+            
         }
 
         return false;
+        */
     }
 }

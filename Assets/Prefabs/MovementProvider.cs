@@ -10,7 +10,7 @@ public class MovementProvider : MonoBehaviour
     public static MovementProvider instance;
     void Awake() { instance = this; }
     #endregion
-
+    public bool CanMove;
     public XRNode inputSource;
     private XRRig rig;
     public Vector2 inputAxis;
@@ -76,6 +76,8 @@ public class MovementProvider : MonoBehaviour
      */
     public void Move()
     {
+        if (CanMove == false)
+            return;
         Quaternion headYaw = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
         directionAdd = headYaw * new Vector3(inputAxis.x, 0, inputAxis.y);
         RB.AddForce(directionAdd * Time.fixedDeltaTime * speed);

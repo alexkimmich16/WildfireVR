@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6598808301656167585}
   - component: {fileID: 3419784420648201715}
   - component: {fileID: -5141211954705100154}
-  - component: {fileID: -6350853428986018007}
+  - component: {fileID: -6028915702672958050}
   m_Layer: 0
   m_Name: Sound
   m_TagString: Untagged
@@ -29,6 +29,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.985612, y: 2.7962143, z: -8.092831}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -144,7 +145,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LifeTime: 6
   SpawnAfterDead: {fileID: 0}
---- !u!114 &-6350853428986018007
+--- !u!114 &-6028915702672958050
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6598808301656167585}
   - component: {fileID: 3419784420648201715}
-  - component: {fileID: -3329566499990130146}
+  - component: {fileID: 7270270475007684723}
   m_Layer: 0
   m_Name: ParentSound
   m_TagString: Untagged
@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.985612, y: 2.7962143, z: -8.092831}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -129,7 +130,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &-3329566499990130146
+--- !u!114 &7270270475007684723
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

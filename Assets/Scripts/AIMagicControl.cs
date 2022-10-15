@@ -17,11 +17,13 @@ public class AIMagicControl : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.D))
-        {
-            Debug.Log("call");
-            FirePillar.CallStartFire(Spell.Flames);
-        }
+        if(InGameManager.instance.KeypadTesting)
+            if (Input.GetKey(KeyCode.D))
+            {
+                Debug.Log("call");
+                FirePillar.CallStartFire(Spell.Flames);
+            }
+
     }
 }
 

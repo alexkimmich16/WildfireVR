@@ -16,12 +16,15 @@ public class NetworkPlayer : MonoBehaviourPun
     private Transform RigHead;
     private Transform RigLeft;
     private Transform RigRight;
+    private Transform Rig;
 
     public GameObject SkinRenderer;
-    public bool Testing;
+    public bool TestingSelf;
 
     public delegate void StateEvent();
     public static event StateEvent TakeDamage;
+
+    public CamAtFloor AtFloor;
     //public XR
     public static void TakeDamageMethod()
     {
@@ -29,24 +32,38 @@ public class NetworkPlayer : MonoBehaviourPun
     }
     void Start()
     {
-        LocomotionSystem rig = FindObjectOfType<LocomotionSystem>();
-        RigHead = rig.transform.Find("Camera Offset/Main Camera");
-        RigLeft = rig.transform.Find("Camera Offset/LeftHand Controller");
-        RigRight = rig.transform.Find("Camera Offset/RightHand Controller");
+        Rig = AIMagicControl.instance.Cam.parent.parent;
+        RigHead = AIMagicControl.instance.Cam;
+        RigLeft = AIMagicControl.instance.PositionObjectives[(int)Side.Left]; //rig.transform.Find("Camera Offset/LeftHand Controller");
+        RigRight = AIMagicControl.instance.PositionObjectives[(int)Side.Right]; //rig.transform.Find("Camera Offset/RightHand Controller");
+        if (photonView.IsMine)
+        {
+            AtFloor.IsActive = false;
+        }
+        
+
+
     }
 
     void Update()
     {
         if (photonView.IsMine)
         {
-            Head.gameObject.SetActive(Testing);
-            Left.gameObject.SetActive(Testing);
-            Right.gameObject.SetActive(Testing);
-            SkinRenderer.SetActive(Testing);
+            Head.gameObject.SetActive(TestingSelf);
+            Left.gameObject.SetActive(TestingSelf);
+            Right.gameObject.SetActive(TestingSelf);
+            SkinRenderer.SetActive(TestingSelf);
 
+            //transform.position = Rig
+            //transform.position = new Vector3(Rig.position.x, transform.position.y, Rig.position.z);
+            //MapPosition(transform, Rig);
+            AtFloor.CustomUpdate();
             MapPosition(Head, RigHead);
             MapPosition(Left, RigLeft);
             MapPosition(Right, RigRight);
+
+
+            
         }
         if(SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
             if (transform.position.x < ZoneController.instance.MagicLineWorldPos(ZoneController.instance.MagicLinePos))

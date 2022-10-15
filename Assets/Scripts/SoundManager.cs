@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using static Odin.Net;
 public enum SoundTypes
 {
     Start = 0,
@@ -91,13 +92,15 @@ public class SoundManager : MonoBehaviour
                 if (Name == AudioClips[i].Name)
                 {
                     //Debug.Log("PT4");
+                    SpawnSound(AudioClips[i].Sound, AudioClips[i].Volume, false);
                     if (AudioClips[i].type == SoundTypes.Start)
                     {
-                        SpawnAudio(i, false);
+                        //SpawnSound(AudioClips[i].Sound, AudioClips[i].Volume, false);
+                        //SpawnAudio(i, false);
                     }
                     else if (AudioClips[i].type == SoundTypes.During)
                     {
-                        SpawnAudio(i, true);
+                        //SpawnAudio(i, true);
                     }           
                     return;
                 }
@@ -106,26 +109,8 @@ public class SoundManager : MonoBehaviour
         
         
     }
-    public void SpawnAudio(int Num, bool ShouldParent)
-    {
-        if (ShouldParent == false)
-        {
-            GameObject Sound = PhotonNetwork.Instantiate("Sound", Vector3.zero, transform.rotation);
-            Sound.GetComponent<AudioSource>().clip = AudioClips[Num].Sound;
-            Sound.GetComponent<AudioSource>().volume = AudioClips[Num].Volume;
-            Sound.GetComponent<AudioSource>().Play();
-        }
-        else
-        {
-            GameObject Sound = PhotonNetwork.Instantiate("ParentSound", Vector3.zero, transform.rotation);
-            Sound.transform.parent = Parent;
-            Sound.GetComponent<AudioSource>().clip = AudioClips[Num].Sound;
-            Sound.GetComponent<AudioSource>().volume = AudioClips[Num].Volume;
-            Sound.GetComponent<AudioSource>().Play();
-            Parent = null;
-        }
-    }
-    private void Start()
+    
+    private void OnInitialize()
     {
         if (UseCrowdSounds == true)
         {
@@ -142,15 +127,18 @@ public class SoundManager : MonoBehaviour
 
             NetworkPlayer.TakeDamage += OnPlayerHit;
         }
-        if(UseElevatorSounds == true)
+        if (UseElevatorSounds == true)
         {
             DoorManager.OnDoorChange += ElevatorSound;
         }
-        
+    }
+    private void Start()
+    {
+        NetworkManager.Initialize += OnInitialize;
     }
     private void Update()
     {
-        if (UseCrowdSounds == true)
+        if (UseCrowdSounds == true && Initialized())
             UpdateCrowd();
         //if (UseElevatorSounds == true)
             //UpdateElevator();
@@ -158,7 +146,12 @@ public class SoundManager : MonoBehaviour
 
     public GameObject SpawnSound(AudioClip sound, float Volume, bool Loop)
     {
+        //if (Initialized() == false)
+            //return null;
+
         GameObject SpawnObject = PhotonNetwork.Instantiate("Sound", Vector3.zero, transform.rotation);
+        if(Loop == true)
+            Destroy(SpawnObject.GetComponent<MagicalFX.FX_LifeTime>());
         SpawnObject.GetComponent<AudioSource>().clip = sound;
         SpawnObject.GetComponent<AudioSource>().volume = Volume;
         SpawnObject.GetComponent<AudioSource>().loop = Loop;
@@ -240,5 +233,25 @@ public class SoundManager : MonoBehaviour
             OnPlayerHit();
         //if (Input.GetKeyDown(KeyCode.L))
         //OnPlayerLeave();
+    }
+
+    public void SpawnAudio(int Num, bool ShouldParent)
+    {
+        if (ShouldParent == false)
+        {
+            GameObject Sound = PhotonNetwork.Instantiate("Sound", Vector3.zero, transform.rotation);
+            Sound.GetComponent<AudioSource>().clip = AudioClips[Num].Sound;
+            Sound.GetComponent<AudioSource>().volume = AudioClips[Num].Volume;
+            Sound.GetComponent<AudioSource>().Play();
+        }
+        else
+        {
+            GameObject Sound = PhotonNetwork.Instantiate("ParentSound", Vector3.zero, transform.rotation);
+            Sound.transform.parent = Parent;
+            Sound.GetComponent<AudioSource>().clip = AudioClips[Num].Sound;
+            Sound.GetComponent<AudioSource>().volume = AudioClips[Num].Volume;
+            Sound.GetComponent<AudioSource>().Play();
+            Parent = null;
+        }
     }
 }

@@ -6,9 +6,8 @@ public class FireAbsorb : MonoBehaviour
 {
     public static FireAbsorb instance;
     void Awake() { instance = this; }
-
+    public Side side;
     public bool CanCast;
-    public HandActions Hand;
     public Rigidbody Fire;
 
     [Range(0,1)]
@@ -19,10 +18,10 @@ public class FireAbsorb : MonoBehaviour
     public float MaxAngle;
     public Vector3 HandRotOffset;
 
-    public Transform AbsorbingPosition;
-
     public bool FireballControl;
-
+    [Header("Testing")]
+    public bool TestBubble = false;
+    public GameObject BubbleDisplay;
     private void OnTriggerEnter(Collider other)
     {
         //Debug.Log(other.name);
@@ -56,11 +55,14 @@ public class FireAbsorb : MonoBehaviour
 
     void Update()
     {
+        if(BubbleDisplay != null)
+            BubbleDisplay.SetActive(TestBubble);
+
         if (Fire == null || CanCast == false)
             return;
         if(FireballControl == false)
         {
-            float HandSpeed = Hand.Velocity.magnitude;
+            float HandSpeed = AIMagicControl.instance.Hands[(int)side].GetComponent<HandActions>().Velocity.magnitude;
             float FireSpeed = Fire.velocity.magnitude;
             //Debug.Log("HandSpeed: " + HandSpeed + "  FireSpeed: " + FireSpeed);
             if (FireSpeed - HandSpeed < AbsorbThreshold)
@@ -82,7 +84,7 @@ public class FireAbsorb : MonoBehaviour
         }
         if(FireballControl == true)
         {
-            Fire.transform.position = AbsorbingPosition.position;
+            Fire.transform.position = AIMagicControl.instance.PositionObjectives[(int)side].position;
 
             //gameObject.GetComponent<LearningAgent>().NewState += ReDirectFireball();
 
