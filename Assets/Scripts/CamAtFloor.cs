@@ -9,9 +9,14 @@ public class CamAtFloor : MonoBehaviour
     public float ElevatorOffset;
     public GameObject NetworkOBJ;
     public bool IsActive = true;
+
+    public bool RestrictAll = false;
     public void CustomUpdate()
     {
-        int SequenceNum = (int)DoorManager.instance.Sequence;
+        if (RestrictAll)
+            return;
+        //int SequenceNum = (int)DoorManager.instance.Sequence;
+        /*
         float TempFloorHeight;
         if (SequenceNum < 2)
         {
@@ -19,9 +24,11 @@ public class CamAtFloor : MonoBehaviour
         }
         else
         {
-            TempFloorHeight = FloorHeight;
+            
+            //TempFloorHeight = FloorHeight;
         }
-        transform.position = new Vector3(Cam.position.x, TempFloorHeight, Cam.position.z);
+        */
+        transform.position = new Vector3(Cam.position.x, ElevatorOffset + DoorManager.instance.Doors[0].OBJ.position.y, Cam.position.z);
 
     }
     void Start()
@@ -35,7 +42,11 @@ public class CamAtFloor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(IsActive)
+        
+    }
+    private void FixedUpdate()
+    {
+        if (IsActive)
             CustomUpdate();
     }
 }

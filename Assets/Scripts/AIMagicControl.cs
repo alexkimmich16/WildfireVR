@@ -13,6 +13,8 @@ public class AIMagicControl : MonoBehaviour
     public SpellContainer spells;
     
     public static AIMagicControl instance;
+
+    public bool PlayerInHeadset;
     void Awake() { instance = this; }
 
     private void Update()
@@ -23,7 +25,12 @@ public class AIMagicControl : MonoBehaviour
                 Debug.Log("call");
                 FirePillar.CallStartFire(Spell.Flames);
             }
+        /*
+        if(PlayerInHeadset == true)
+        {
 
+        }
+        */
     }
 }
 

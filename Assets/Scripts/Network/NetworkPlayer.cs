@@ -38,7 +38,7 @@ public class NetworkPlayer : MonoBehaviourPun
         RigRight = AIMagicControl.instance.PositionObjectives[(int)Side.Right]; //rig.transform.Find("Camera Offset/RightHand Controller");
         if (photonView.IsMine)
         {
-            AtFloor.IsActive = false;
+            //AtFloor.IsActive = false;
         }
         
 
@@ -61,9 +61,6 @@ public class NetworkPlayer : MonoBehaviourPun
             MapPosition(Head, RigHead);
             MapPosition(Left, RigLeft);
             MapPosition(Right, RigRight);
-
-
-            
         }
         if(SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
             if (transform.position.x < ZoneController.instance.MagicLineWorldPos(ZoneController.instance.MagicLinePos))

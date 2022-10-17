@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
-
+using Unity.XR.CoreUtils;
 public class MovementProvider : MonoBehaviour
 {
     #region Singleton
@@ -12,10 +12,8 @@ public class MovementProvider : MonoBehaviour
     #endregion
     public bool CanMove;
     public XRNode inputSource;
-    private XRRig rig;
+    private XROrigin rig;
     public Vector2 inputAxis;
-    public float gravity = -9.81f;
-    private float fallSpeed;
     public float speed;
     public LayerMask groundLayer;
     public float Additionalheight = 20;
@@ -24,12 +22,15 @@ public class MovementProvider : MonoBehaviour
     public Vector3 directionAdd;
     public bool isGrounded;
 
+    //public bool HeadsetActive;
+
     public static bool isHardwarePresent()
     {
         var xrDisplaySubsystems = new List<XRDisplaySubsystem>();
         SubsystemManager.GetInstances<XRDisplaySubsystem>(xrDisplaySubsystems);
         foreach (var xrDisplay in xrDisplaySubsystems)
         {
+            //Debug.Log(xrDisplay.ToString() + xrDisplay.running);
             if (xrDisplay.running)
             {
                 return true;
@@ -40,13 +41,16 @@ public class MovementProvider : MonoBehaviour
 
     void Start()
     {
-        rig = GetComponent<XRRig>();
+        rig = GetComponent<XROrigin>();
         RB = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        //HeadsetActive = isHardwarePresent();
+        //rig.
+
         InputDevice device = InputDevices.GetDeviceAtXRNode(inputSource);
         device.TryGetFeatureValue(CommonUsages.primary2DAxis, out inputAxis);
 

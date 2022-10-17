@@ -48,7 +48,6 @@ public class HandActions : MonoBehaviour
     public Vector3 Acceleration;
 
     public float Magnitude;
-    private float SpellCheckTimer;
 
     public void WaitFrames()
     {
@@ -190,14 +189,8 @@ public class HandActions : MonoBehaviour
         SetRemoteStats();
         //CheckColliders();
         
-        WaitFrames();
+        //WaitFrames();
         LastFrameSave();
-        SpellCheckTimer += Time.deltaTime;
-        if (SpellCheckTimer > HM.SpellCheckTime)
-        {
-            SpellCheckTimer = 0;
-            CheckAll();
-        }
         Child = transform.GetChild(1).eulerAngles;
         //MyEuler = transform.eulerAngles;
        // BeforeLocal = MyEuler - Child;
