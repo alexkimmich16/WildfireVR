@@ -276,7 +276,7 @@ public class InGameManager : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.A))
                     NewStateEvent(1);
-                else if (Input.GetKeyDown(KeyCode.D))
+                else if (Input.GetKeyDown(KeyCode.S))
                     NewStateEvent(2);
             }
             

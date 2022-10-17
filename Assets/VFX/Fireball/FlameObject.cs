@@ -60,4 +60,21 @@ public class FlameObject : MonoBehaviour
             }
         }
     }
+
+    private void Update()
+    {
+        if (InGameManager.instance.KeypadTesting)
+        {
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                SetFlamesOffline(true);
+            }
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                //stop
+                SetFlamesOffline(false);
+            }
+        }
+        
+    }
 }
