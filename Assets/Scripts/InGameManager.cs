@@ -331,7 +331,7 @@ public class InGameManager : MonoBehaviour
     {
         Transform spawn = SpawnInfo.Point;
         float ElevatorPos = GetGameFloat(DoorNames[0]);
-        Debug.Log(ElevatorPos + ElevatorSpawnOffset);
+        //Debug.Log(ElevatorPos + ElevatorSpawnOffset);
         Vector3 SpawnPos = new Vector3(spawn.position.x, ElevatorPos + ElevatorSpawnOffset, spawn.position.z);
         SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
         Rig.transform.position = SpawnPos;

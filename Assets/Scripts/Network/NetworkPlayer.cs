@@ -16,7 +16,7 @@ public class NetworkPlayer : MonoBehaviourPun
     private Transform RigHead;
     private Transform RigLeft;
     private Transform RigRight;
-    private Transform Rig;
+    private Transform CharacterDisplay;
 
     public GameObject SkinRenderer;
     public bool TestingSelf;
@@ -32,8 +32,8 @@ public class NetworkPlayer : MonoBehaviourPun
     }
     void Start()
     {
-        Rig = AIMagicControl.instance.Cam.parent.parent;
-        RigHead = AIMagicControl.instance.Cam;
+        CharacterDisplay = AIMagicControl.instance.MyCharacterDisplay;
+        RigHead = AIMagicControl.instance.CamOffset;
         RigLeft = AIMagicControl.instance.PositionObjectives[(int)Side.Left]; //rig.transform.Find("Camera Offset/LeftHand Controller");
         RigRight = AIMagicControl.instance.PositionObjectives[(int)Side.Right]; //rig.transform.Find("Camera Offset/RightHand Controller");
         if (photonView.IsMine)
@@ -57,7 +57,9 @@ public class NetworkPlayer : MonoBehaviourPun
             //transform.position = Rig
             //transform.position = new Vector3(Rig.position.x, transform.position.y, Rig.position.z);
             //MapPosition(transform, Rig);
-            AtFloor.CustomUpdate();
+            //AtFloor.CustomUpdate();
+            transform.position = CharacterDisplay.position;
+            //MapPosition(transform, CharacterDisplay);
             MapPosition(Head, RigHead);
             MapPosition(Left, RigLeft);
             MapPosition(Right, RigRight);

@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 public class HandDebugger : MonoBehaviour
 {
+    public bool ShouldDebug;
     public SkinnedMeshRenderer hand;
     public Spell currentSpell;
     public List<Material> FalseTrue;
@@ -23,7 +24,10 @@ public class HandDebugger : MonoBehaviour
             //fire.frames.RealNewState += SetNew;
         }
     }
-
+    private void Update()
+    {
+        hand.gameObject.SetActive(ShouldDebug);
+    }
     public void SetNew(bool State)
     {
         hand.material = FalseTrue[Convert.ToInt32(State)];

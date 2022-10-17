@@ -10,6 +10,8 @@ public class AIMagicControl : MonoBehaviour
     public List<Transform> Hands;
     public List<Transform> Spawn;
     public Transform Cam;
+    public Transform CamOffset;
+    public Transform MyCharacterDisplay;
     public SpellContainer spells;
     
     public static AIMagicControl instance;
@@ -19,12 +21,16 @@ public class AIMagicControl : MonoBehaviour
 
     private void Update()
     {
-        if(InGameManager.instance.KeypadTesting)
+        if (InGameManager.instance.KeypadTesting)
+        {
+            //Debug.Log("First");
             if (Input.GetKey(KeyCode.D))
             {
-                Debug.Log("call");
+                //Debug.Log("call");
                 FirePillar.CallStartFire(Spell.Flames);
             }
+        }
+            
         /*
         if(PlayerInHeadset == true)
         {

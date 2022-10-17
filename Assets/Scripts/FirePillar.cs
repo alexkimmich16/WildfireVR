@@ -20,7 +20,8 @@ public class FirePillar : MonoBehaviour
     public float StopTime;
 
     public VFXHolder VFX;
-    public static void CallStartFire(Spell spell) { OnFire(spell); Debug.Log("FLAMEEEE"); }
+    //Debug.Log("FLAMEEEE");
+    public static void CallStartFire(Spell spell) { OnFire(spell);  }
 
     public void StartFlame(Spell spell)
     {
