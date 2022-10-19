@@ -54,8 +54,6 @@ public class SceneLoader : MonoBehaviour
             DestroyList.Add(InfoSave.instance.gameObject);
         if (SoundManager.instance != null)
             DestroyList.Add(SoundManager.instance.gameObject);
-        if (HandMagic.instance != null)
-            DestroyList.Add(HandMagic.instance.gameObject);
         if (SceneLoader.instance != null)
             DestroyList.Add(SceneLoader.instance.gameObject);
         

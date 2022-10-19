@@ -4,6 +4,26 @@ using UnityEngine;
 using static Odin.Net;
 using Photon.Pun;
 using Photon.Realtime;
+public enum Movements
+{
+    Spike = 0,
+    Fireball = 1,
+    Shield = 2,
+    Push = 3,
+    Telekinetic = 4,
+    Flight = 5,
+    Slice = 6,
+}
+public enum SpellType
+{
+    Individual = 0,
+    Both = 1,
+}
+public enum Side
+{
+    Left = 0,
+    Right = 1,
+}
 public class AIMagicControl : MonoBehaviour
 {
     public NewControllerInfo Info;
@@ -11,6 +31,8 @@ public class AIMagicControl : MonoBehaviour
     public List<Transform> PositionObjectives;
     public List<Transform> Hands;
     public List<Transform> Spawn;
+
+    public Rigidbody PlayerRB;
     public Transform Cam;
     public Transform CamOffset;
     public Transform MyCharacterDisplay;
@@ -24,7 +46,32 @@ public class AIMagicControl : MonoBehaviour
     public List<FireballController> Fireballs;
     public List<FireAbsorb> Absorbs;
     public List<BlockController> Blocks;
+
+    public float DirectionLeaniency;
+    public float DirectionForceThreshold;
+
+
     void Awake() { instance = this; }
+    public HandActions GetHandActions(Side side)
+    {
+        return Hands[(int)side].GetComponent<HandActions>();
+    }
+    public Direction ControllerDir(Vector3 Vel, Side side)
+    {
+        float Angle = GetHandActions(side).VelocityCameraAngle();
+
+        if (Vel.magnitude > DirectionForceThreshold)
+        {
+            if (Angle > 180 - DirectionLeaniency)
+                return Direction.Towards;
+            else if (Angle < 0 + DirectionLeaniency && Angle > 0 - DirectionLeaniency)
+                return Direction.Away;
+            else if (Angle < 90 + DirectionLeaniency && Angle > 90 - DirectionLeaniency)
+                return Direction.Side;
+        }
+        return Direction.None;
+    }
+
     public bool IsBlocking()
     {
         return Blocks[0].Active == true && Blocks[1].Active == true;

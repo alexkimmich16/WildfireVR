@@ -21,6 +21,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks
 
         //enable ragdoll mode
         //seperate from player
+        /*
         if(HandMagic.Respawn == true && SceneLoader.instance.CurrentSetting == CurrentGame.Testing)
         {
             HandMagic.instance.RB.transform.position = HandDebug.instance.Spawn.position;
@@ -30,6 +31,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks
             Transform Spawn = InGameManager.instance.SpectatorSpawns[Random.Range(0, InGameManager.instance.SpectatorSpawns.Count)];
             HandMagic.instance.RB.transform.position = Spawn.position;
         }
+        */
     }
 
     public IEnumerator RagdollRespawn()
@@ -40,7 +42,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks
 
         //move to stands
         Transform Spawn = InGameManager.instance.SpectatorSpawns[Random.Range(0, InGameManager.instance.SpectatorSpawns.Count)];
-        HandMagic.instance.RB.transform.position = Spawn.position;
+        AIMagicControl.instance.PlayerRB.transform.position = Spawn.position;
     }
 
     [PunRPC]
