@@ -59,9 +59,14 @@ public class FireController : MonoBehaviour
     public static List<CooldownInfo> DamageCooldowns;
 
     public delegate void NewState(bool State);
-    public event NewState NewRealState;
+    public event NewState RealNewState;
+
+    public List<FlameObject> ActiveFires;
+
+    public float BlockForce;
 
     private Side side;
+    
     #region LessUseful
     public static bool IsCooldown(Transform hitAttempt)
     {
@@ -91,14 +96,22 @@ public class FireController : MonoBehaviour
     }
     public static void DamageShardHit(GameObject Hit)
     {
-        if (IsCooldown(Hit.transform))
+        if (IsCooldown(Hit.transform.parent))
             return;
         Debug.Log("doDamage");
-        PhotonView EnemyPhoton = Hit.GetComponent<PhotonView>();
+        PhotonView EnemyPhoton = Hit.transform.parent.GetComponent<PhotonView>();
+        if (EnemyPhoton.IsMine)
+            return;
+        //if blocking
+        if (GetPlayerBool(Blocking, EnemyPhoton.Owner))
+        {
+            AIMagicControl.instance.PushAllFires(Hit.transform.parent.position);
+            return;
+        }
         EnemyPhoton.RPC("takeDamage", RpcTarget.All, EnemyPhoton.Owner.ActorNumber, 2);
 
         CooldownInfo NewTime = new CooldownInfo();
-        NewTime.Target = Hit.transform;
+        NewTime.Target = Hit.transform.parent;
         DamageCooldowns.Add(NewTime);
     }
     #endregion
@@ -127,10 +140,11 @@ public class FireController : MonoBehaviour
         //Debug.Log("Index: " + Index + "  Start");
         //Index += 1;
 
-
+        
         PrivateFire = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(Spell.Flames, false)), Vector3.zero, Camera.main.transform.rotation);
         PrivateFire.GetComponent<FlameObject>().SetFlamesOffline(true);
-
+        ActiveFires.Add(PrivateFire.GetComponent<FlameObject>());
+        PrivateFire.GetComponent<FlameObject>().FlameParent = this;
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, Spell.Flames);
         if (SpawnOnline)
         {
@@ -153,8 +167,8 @@ public class FireController : MonoBehaviour
         if (Active == false && FrameWorks() == true && CastTimer > CastCooldowntime)
         {
             //Debug.Log("Newstate3");
-            if(NewRealState != null)
-                NewRealState(true);
+            if(RealNewState != null)
+                RealNewState(true);
             CastTimer = 0f;
             Active = true;
             StartFire();
@@ -162,8 +176,8 @@ public class FireController : MonoBehaviour
         else if(Active == true && FrameWorks() == false)
         {
             //Debug.Log("Stop");
-            if (NewRealState != null)
-                NewRealState(false);
+            if (RealNewState != null)
+                RealNewState(false);
             Active = false;
             StopFire();
         }
@@ -371,5 +385,5 @@ public class ShardInfo
 public class CooldownInfo
 {
     public Transform Target;
-    public float Time = 0;
+    public float Time = 1;
 }

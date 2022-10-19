@@ -7,7 +7,7 @@ public class ZoneController : MonoBehaviour
 {
     public static ZoneController instance;
     void Awake() { instance = this; }
-
+    public bool UseZones;
     [Range(0f, 1f)]
     public float MagicLinePos;
     public VisualEffect MagicLine;
@@ -81,6 +81,22 @@ public class ZoneController : MonoBehaviour
         obj.transform.localScale = newScale;
     }
     void Update()
+    {
+        if (UseZones)
+            UpdateZones();
+        else
+        {
+            Zone1Weak.SetActive(false);
+            Zone2Weak.SetActive(false);
+            Zone1Strong.SetActive(false);
+            Zone2Strong.SetActive(false);
+        }
+
+
+
+    }
+
+    public void UpdateZones()
     {
         RemoveGonePlayers();
 

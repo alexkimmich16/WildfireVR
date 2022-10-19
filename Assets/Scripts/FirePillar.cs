@@ -7,6 +7,8 @@ public enum Spell
     Fireball = 0,
     BlueFireball = 1,
     Flames = 2,
+    Block = 3,
+    Redirect = 4,
 }
 public class FirePillar : MonoBehaviour
 {

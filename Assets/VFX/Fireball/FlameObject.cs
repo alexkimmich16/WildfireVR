@@ -8,8 +8,16 @@ public class FlameObject : MonoBehaviour
     public VisualEffect FlamesVFX;
     public List<ParticleSystem> FlameParticalSystem;
     public bool DestoryStop = true;
-    
-
+    public FlameCollision FlameCol;
+    public FireController FlameParent;
+    private void Start()
+    {
+        GetComponent<PhotonDestroy>().DestoryEvent += OnDestory;
+    }
+    public void OnDestory()
+    {
+        FlameParent.ActiveFires.Remove(this);
+    }
     [PunRPC]
     void SetFlames(bool NewState)
     {

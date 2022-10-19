@@ -4898,7 +4898,7 @@ MonoBehaviour:
   fire: {fileID: 58292936881470260}
   Push: 0
   Example: {fileID: 0}
-  Force: 0
+  Force: 22.4
 --- !u!1 &58292937700656454
 GameObject:
   m_ObjectHideFlags: 0
@@ -24491,6 +24491,8 @@ MonoBehaviour:
   - {fileID: 58292936881470260}
   - {fileID: 58292938412173441}
   DestoryStop: 1
+  FlameCol: {fileID: 584730511}
+  FlameParent: {fileID: 0}
 --- !u!114 &-530231042916774742
 MonoBehaviour:
   m_ObjectHideFlags: 0

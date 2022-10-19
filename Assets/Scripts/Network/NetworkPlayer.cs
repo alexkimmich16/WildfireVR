@@ -26,10 +26,8 @@ public class NetworkPlayer : MonoBehaviourPun
 
     public CamAtFloor AtFloor;
     //public XR
-    public static void TakeDamageMethod()
-    {
-        TakeDamage();
-    }
+    public static void TakeDamageEventMethod() { if (TakeDamage != null){ TakeDamage(); } }
+
     void Start()
     {
         CharacterDisplay = AIMagicControl.instance.MyCharacterDisplay;
@@ -111,7 +109,7 @@ public class NetworkPlayer : MonoBehaviourPun
         {
             NetworkManager.instance.LocalTakeDamage(damg);
             Debug.Log("Take Damage");
-            TakeDamage();
+            TakeDamageEventMethod();
         }
     }
 }

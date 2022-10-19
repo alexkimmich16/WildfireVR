@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using static Odin.Net;
+using Photon.Pun;
+using Photon.Realtime;
 public class AIMagicControl : MonoBehaviour
 {
     public NewControllerInfo Info;
@@ -17,8 +19,22 @@ public class AIMagicControl : MonoBehaviour
     public static AIMagicControl instance;
 
     public bool PlayerInHeadset;
-    void Awake() { instance = this; }
 
+    public List<FireController> Flames;
+    public List<FireballController> Fireballs;
+    public List<FireAbsorb> Absorbs;
+    public List<BlockController> Blocks;
+    void Awake() { instance = this; }
+    public bool IsBlocking()
+    {
+        return Blocks[0].Active == true && Blocks[1].Active == true;
+    }
+    public void PushAllFires(Vector3 Pos)
+    {
+        for (int i = 0; i < 2; i++)
+            for (int j = 0; j < Flames[i].ActiveFires.Count; j++)
+                Flames[i].ActiveFires[j].FlameCol.PushFire(Pos, 2);
+    }
     private void Update()
     {
         if (InGameManager.instance.KeypadTesting)
@@ -30,7 +46,7 @@ public class AIMagicControl : MonoBehaviour
                 FirePillar.CallStartFire(Spell.Flames);
             }
         }
-            
+        SetPlayerBool(Blocking, IsBlocking(), PhotonNetwork.LocalPlayer);
         /*
         if(PlayerInHeadset == true)
         {

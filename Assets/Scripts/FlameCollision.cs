@@ -8,7 +8,7 @@ public class FlameCollision : MonoBehaviour
     public bool Push;
     public Transform Example;
     public float Force;
-    void PushFire(Vector3 PushPos, float Force)
+    public void PushFire(Vector3 PushPos, float InputForce)
     {
         // GetParticles is allocation free because we reuse the m_Particles buffer between updates
         ParticleSystem.Particle[] m_Particles = new ParticleSystem.Particle[fire.main.maxParticles];
@@ -31,6 +31,7 @@ public class FlameCollision : MonoBehaviour
             PushFire(Example.position, Force);
         }
     }
+    
     private void OnParticleCollision(GameObject other)
     {
         Debug.Log("Collisison");

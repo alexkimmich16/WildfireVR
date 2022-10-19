@@ -7,6 +7,8 @@ public class PhotonDestroy : MonoBehaviour
     public float LifeTime;
     public float Timer;
     private bool IsActive;
+    public delegate void OnDestory();
+    public event OnDestory DestoryEvent;
     public void StartCountdown()
     {
         IsActive = true;
@@ -20,6 +22,8 @@ public class PhotonDestroy : MonoBehaviour
         if(Timer > LifeTime)
         {
             //PhotonNetwork.Destroy(gameObject);
+            if (DestoryEvent != null)
+                DestoryEvent();
             Destroy(gameObject);
         }
     }

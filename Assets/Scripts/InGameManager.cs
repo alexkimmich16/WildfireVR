@@ -431,8 +431,10 @@ public class InGameManager : MonoBehaviour
     #region Info
     public Result EndResult()
     {
-        int AttackTeamAlive = GetGameInt(AttackTeamCount);
-        int DefenseTeamAlive = GetGameInt(DefenseTeamCount);
+        int AttackTeamAlive = TotalAlive(Team.Attack);
+        int DefenseTeamAlive = TotalAlive(Team.Defense);
+        if(ShouldDebug)
+            Debug.Log("Def: " + DefenseTeamAlive + "Att: " + AttackTeamAlive);
         if (AttackTeamAlive > DefenseTeamAlive)
             return Result.AttackWon;
         else if (DefenseTeamAlive > AttackTeamAlive)
@@ -512,7 +514,8 @@ public class InGameManager : MonoBehaviour
         int AliveNum = 0;
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
-            Debug.Log("Team: " + GetPlayerTeam(PhotonNetwork.PlayerList[i]) + "  Alive: " + Alive(PhotonNetwork.PlayerList[i]));
+            if(ShouldDebug)
+                Debug.Log("Team: " + GetPlayerTeam(PhotonNetwork.PlayerList[i]) + "  Alive: " + Alive(PhotonNetwork.PlayerList[i]));
             if (Alive(PhotonNetwork.PlayerList[i]) && GetPlayerTeam(PhotonNetwork.PlayerList[i]) == team)
                 AliveNum += 1;
         }

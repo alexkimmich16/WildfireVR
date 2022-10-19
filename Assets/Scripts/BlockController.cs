@@ -5,14 +5,17 @@ using UnityEngine;
 public class BlockController : MonoBehaviour
 {
     public bool Active;
+    public bool AlwaysTrue;
 
     [Header("Stats")]
 
     private Side side;
-
+    public delegate void NewState(bool State);
+    public event NewState RealNewState;
     [Header("References")]
     //public Transform Spawn;
     //p//ublic Transform Hand;
+
 
     [Header("Frames")]
     public Frames frames;
@@ -21,8 +24,12 @@ public class BlockController : MonoBehaviour
         //Debug.Log("NewState: " + State);
         if (!frames.CanCast)
             return;
-
-        return;
+        if (AlwaysTrue)
+        {
+            Active = true;
+            return;
+        }
+            
         if (frames.FramesWork() == true && Active == false)
         {
             Active = true;
@@ -41,7 +48,8 @@ public class BlockController : MonoBehaviour
     }
     public void SetNewState(bool NewState)
     {
-
+        if (RealNewState != null)
+            RealNewState(NewState);
     }
     private void Start()
     {
@@ -53,7 +61,6 @@ public class BlockController : MonoBehaviour
     {
         if (Active == false)
             return;
-        BlockFire();
     }
 
     
