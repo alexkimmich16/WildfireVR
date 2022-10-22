@@ -38,9 +38,6 @@ public class NetworkPlayer : MonoBehaviourPun
         {
             //AtFloor.IsActive = false;
         }
-        
-
-
     }
 
     void Update()
@@ -103,9 +100,9 @@ public class NetworkPlayer : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void takeDamage(int ID, int damg)
+    public void takeDamage(int damg)
     {
-        if (PhotonNetwork.LocalPlayer.ActorNumber == ID)
+        if (photonView.IsMine)
         {
             NetworkManager.instance.LocalTakeDamage(damg);
             Debug.Log("Take Damage");

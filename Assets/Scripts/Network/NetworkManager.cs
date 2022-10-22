@@ -66,44 +66,74 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         roomOptions.MaxPlayers = 10;
         roomOptions.IsVisible = true;
         roomOptions.IsOpen = true;
-
         PhotonNetwork.JoinOrCreateRoom("Room 1", roomOptions, TypedLobby.Default);
-
+    }
+    private void Update()
+    {
+        if (InGameManager.instance.KeypadTesting)
+            if (Input.GetKeyDown(KeyCode.G))
+                LocalTakeDamage(5);
+    }
+    public void SpectatorSpawn()
+    {
+        AIMagicControl.instance.Rig.position = InGameManager.instance.GetSpectatorPos();
     }
     public override void OnJoinedRoom()
     {
         if (DebugScript == true)
             Debug.Log("joined a room");
-        InGameManager.instance.InitialisePlayer();
         if (SceneLoader.BattleScene() == true)
         {
+            SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);
             if (Initialized() == false)
+                InitializeAllGameStats();
+            else if(Initialized() == true)
             {
-                SetGameFloat(GameWarmupTimer, 0f);
-                SetGameFloat(GameFinishTimer, 0f);
-                SetGameState(GameState.Waiting);
-
-                SetGameBool(AttackSpawns[0], false);
-                SetGameBool(AttackSpawns[1], false);
-                SetGameBool(AttackSpawns[2], false);
-                SetGameBool(DefenseSpawns[0], false);
-                SetGameBool(DefenseSpawns[1], false);
-                SetGameBool(DefenseSpawns[2], false);
-
-                SetGameInt(AttackTeamCount, 0);
-                SetGameInt(DefenseTeamCount, 0);
-                for (int i = 0; i < DoorManager.instance.Doors.Count; i++)
+                if (GetGameState() == GameState.Active || GetGameState() == GameState.CountDown)//game going on join as spectator
                 {
-                    Vector3 Local = DoorManager.instance.Doors[i].OBJ.localPosition;
-                    DoorManager.instance.Doors[i].OBJ.localPosition = new Vector3(Local.x, DoorManager.instance.Doors[i].MinMax.x, Local.z);
-                    SetGameFloat(DoorNames[i], DoorManager.instance.Doors[i].OBJ.localPosition.y);
+                    SetPlayerTeam(Team.Spectator, PhotonNetwork.LocalPlayer);
+                    SpectatorSpawn();
+
+
+
+                    //spawn on spectator
                 }
-                Debug.Log("Initialized room and reset or created all stats");
+                else//join as waiting player
+                {
+
+                }
             }
         }
         base.OnJoinedRoom();
         Initialize();
         InGameManager.instance.ReCalculateTeamSize();
+
+        void InitializeAllGameStats()
+        {
+            SetGameFloat(GameWarmupTimer, 0f);
+            SetGameFloat(GameFinishTimer, 0f);
+            SetGameState(GameState.Waiting);
+
+            SetGameBool(AttackSpawns[0], false);
+            SetGameBool(AttackSpawns[1], false);
+            SetGameBool(AttackSpawns[2], false);
+            SetGameBool(DefenseSpawns[0], false);
+            SetGameBool(DefenseSpawns[1], false);
+            SetGameBool(DefenseSpawns[2], false);
+
+            SetGameInt(AttackTeamCount, 0);
+            SetGameInt(DefenseTeamCount, 0);
+
+            for (int i = 0; i < DoorManager.instance.Doors.Count; i++)
+            {
+                Vector3 Local = DoorManager.instance.Doors[i].OBJ.localPosition;
+                DoorManager.instance.Doors[i].OBJ.localPosition = new Vector3(Local.x, DoorManager.instance.Doors[i].MinMax.x, Local.z);
+                SetGameFloat(DoorNames[i], DoorManager.instance.Doors[i].OBJ.localPosition.y);
+            }
+
+            if(InGameManager.instance.ShouldDebug)
+                Debug.Log("Initialized room and reset or created all stats");
+        }
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
@@ -130,8 +160,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public void OnDeath()
     {
-        //disable magic
+        SpectatorSpawn();
         StartCoroutine(NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetComponent<PlayerControl>().RagdollRespawn());
     }
 }
-    

@@ -40,13 +40,7 @@ public class InGameManager : MonoBehaviour
     [Header("Time")]
     public float WarmupTime = 5f;
     public float FinishTime = 200f;
-    [Header("States")]
-    //public bool MagicCasting = false;
-    
-    //public bool CanCast = false;
     [Header("Output")]
-
-    private Transform Rig;
 
     public int LastTotalPlayers;
 
@@ -267,7 +261,6 @@ public class InGameManager : MonoBehaviour
         SetGameInt(AttackTeamCount, AttackCount);
         SetGameInt(DefenseTeamCount, DefenseCount);
     }
-    
     void Update()
     {
         if (NetworkManager.HasConnected())
@@ -320,13 +313,6 @@ public class InGameManager : MonoBehaviour
             FoundSpawn = true;
         }
     }
-    public void InitialisePlayer()
-    {
-        Rig = GameObject.Find("XR Rig").transform;
-        SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);
-        //SetPlayerBool(PlayerAlive, true, PhotonNetwork.LocalPlayer);
-    }
-    
     public void SetNewPosition(SpawnPoint SpawnInfo)
     {
         Transform spawn = SpawnInfo.Point;
@@ -334,8 +320,36 @@ public class InGameManager : MonoBehaviour
         //Debug.Log(ElevatorPos + ElevatorSpawnOffset);
         Vector3 SpawnPos = new Vector3(spawn.position.x, ElevatorPos + ElevatorSpawnOffset, spawn.position.z);
         SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
-        Rig.transform.position = SpawnPos;
+        AIMagicControl.instance.Rig.position = SpawnPos;
     }
+    public void ChangePlayerSide(int PlayerNum)
+    {
+        Team oldTeam = GetPlayerTeam(PhotonNetwork.PlayerList[PlayerNum]);
+        Team NewTeam;
+        if (oldTeam == Team.Attack)
+            NewTeam = Team.Defense;
+        else
+            NewTeam = Team.Attack;
+
+        SetPlayerTeam(NewTeam, PhotonNetwork.PlayerList[PlayerNum]);
+
+        // get old team and uncheck old spawn bool
+        string OldTeamName = oldTeam.ToString();
+        int OldSpawnNum = GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer);
+        if (OldSpawnNum > 2)
+            OldSpawnNum -= 3;
+
+        string FinalOldSpawn = OldTeamName + OldSpawnNum;
+        //Debug.Log(FinalOldSpawn);
+        SetGameBool(FinalOldSpawn, false);
+
+        SpawnPoint SpawnInfo = FindSpawn(NewTeam);
+        SetNewPosition(SpawnInfo);
+
+        ReCalculateTeamSize();
+    }
+
+    #region SequenceManage
     public void ManageTeam()
     {
         /*
@@ -364,32 +378,7 @@ public class InGameManager : MonoBehaviour
         }
         */
     }
-    public void ChangePlayerSide(int PlayerNum)
-    {
-        Team oldTeam = GetPlayerTeam(PhotonNetwork.PlayerList[PlayerNum]);
-        Team NewTeam;
-        if (oldTeam == Team.Attack)
-            NewTeam = Team.Defense;
-        else
-            NewTeam = Team.Attack;
-
-        SetPlayerTeam(NewTeam, PhotonNetwork.PlayerList[PlayerNum]);
-
-        // get old team and uncheck old spawn bool
-        string OldTeamName = oldTeam.ToString();
-        int OldSpawnNum = GetPlayerInt("SpawnNum", PhotonNetwork.LocalPlayer);
-        if (OldSpawnNum > 2)
-            OldSpawnNum -= 3;
-
-        string FinalOldSpawn = OldTeamName + OldSpawnNum;
-        //Debug.Log(FinalOldSpawn);
-        SetGameBool(FinalOldSpawn, false);
-
-        SpawnPoint SpawnInfo = FindSpawn(NewTeam);
-        SetNewPosition(SpawnInfo);
-
-        ReCalculateTeamSize();
-    }
+    
     public void RestartGame()
     {
         BillBoardManager.instance.SetResetButton(false);
@@ -412,11 +401,10 @@ public class InGameManager : MonoBehaviour
         {
             if (photonViews[i].IsMine)
             {
-                //photonViews[i].RPC("FindSpotRPC", RpcTarget.All);
                 photonViews[i].gameObject.GetComponent<NetworkPlayer>().RespawnAll();
-                
+
             }
-            
+
         }
         //set everything
         //than playerset
@@ -427,7 +415,7 @@ public class InGameManager : MonoBehaviour
             //PhotonNetwork.PlayerList[i].photonView.RPC("changeColour", RpcTarget.AllBuffered, r, g, b);
         }
     }
-
+    #endregion
     #region Info
     public Result EndResult()
     {
@@ -451,7 +439,7 @@ public class InGameManager : MonoBehaviour
         Debug.LogError("SideCount Error!");
         return 0;
     }
-    public Vector3 RandomSpectatorPos()
+    public Vector3 GetSpectatorPos()
     {
         return SpectatorSpawns[Random.Range(0, SpectatorSpawns.Count - 1)].position;
     }
@@ -480,19 +468,14 @@ public class InGameManager : MonoBehaviour
         {
             string SpawnString;
             if (team == Team.Attack)
-            {
                 SpawnString = AttackSpawns[i];
-            }
             else
-            {
                 SpawnString = DefenseSpawns[i];
-            }
             if (GetGameBool(SpawnString) == false)
             {
                 SetGameBool(SpawnString, true);
                 return Teams[Side].Spawns[i];
             }
-
         }
         Debug.LogError("Could not find spawn of type: " + team.ToString());
         return null;

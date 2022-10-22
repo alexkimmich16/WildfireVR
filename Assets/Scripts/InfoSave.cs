@@ -6,6 +6,7 @@ public enum Team
 {
     Attack = 0,
     Defense = 1,
+    Spectator = 2,
 }
 public class InfoSave : MonoBehaviour
 {

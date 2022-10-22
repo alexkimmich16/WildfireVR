@@ -67,7 +67,6 @@ public class FireController : MonoBehaviour
 
     private Side side;
     
-    #region LessUseful
     public static bool IsCooldown(Transform hitAttempt)
     {
         for (int i = 0; i < DamageCooldowns.Count; i++)
@@ -108,13 +107,12 @@ public class FireController : MonoBehaviour
             AIMagicControl.instance.PushAllFires(Hit.transform.parent.position);
             return;
         }
-        EnemyPhoton.RPC("takeDamage", RpcTarget.All, EnemyPhoton.Owner.ActorNumber, 2);
+        EnemyPhoton.RPC("takeDamage", RpcTarget.All, 2);
 
         CooldownInfo NewTime = new CooldownInfo();
         NewTime.Target = Hit.transform.parent;
         DamageCooldowns.Add(NewTime);
     }
-    #endregion
     #region StartStop
     public void StopFire()
     {

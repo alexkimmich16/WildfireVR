@@ -31,7 +31,7 @@ public class AIMagicControl : MonoBehaviour
     public List<Transform> PositionObjectives;
     public List<Transform> Hands;
     public List<Transform> Spawn;
-
+    public Transform Rig;
     public Rigidbody PlayerRB;
     public Transform Cam;
     public Transform CamOffset;
@@ -85,21 +85,9 @@ public class AIMagicControl : MonoBehaviour
     private void Update()
     {
         if (InGameManager.instance.KeypadTesting)
-        {
-            //Debug.Log("First");
             if (Input.GetKey(KeyCode.D))
-            {
-                //Debug.Log("call");
                 FirePillar.CallStartFire(Spell.Flames);
-            }
-        }
         SetPlayerBool(Blocking, IsBlocking(), PhotonNetwork.LocalPlayer);
-        /*
-        if(PlayerInHeadset == true)
-        {
-
-        }
-        */
     }
 }
 
