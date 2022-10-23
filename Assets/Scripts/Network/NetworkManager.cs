@@ -129,6 +129,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 Vector3 Local = DoorManager.instance.Doors[i].OBJ.localPosition;
                 DoorManager.instance.Doors[i].OBJ.localPosition = new Vector3(Local.x, DoorManager.instance.Doors[i].MinMax.x, Local.z);
                 SetGameFloat(DoorNames[i], DoorManager.instance.Doors[i].OBJ.localPosition.y);
+                
             }
 
             if(InGameManager.instance.ShouldDebug)

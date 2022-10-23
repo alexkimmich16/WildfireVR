@@ -1,4 +1,4 @@
-﻿Shader "GAPH Custom Shader/Distortion Effect" {
+﻿Shader "NorenK/Distortion Effect" {
 	Properties {
 		_TintColor ("Tint Color", Color) = (1,1,1,1)
 		_Mask ("Mask",2D) = "black"{}
