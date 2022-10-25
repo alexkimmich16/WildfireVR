@@ -21,10 +21,12 @@ public class Fireball : MonoBehaviour
 
     public bool Absorbing;
 
-    public float TrailRate, BallRate;
+    //public float TrailRate, BallRate;
 
-    public VisualEffect Trail;
-    public VisualEffect Ball;
+    public VFXHolder VFX;
+
+    //public VisualEffect Trail;
+    //public VisualEffect Ball;
 
 
 
@@ -33,7 +35,7 @@ public class Fireball : MonoBehaviour
         Absorbing = State;
         if (State == true)
         {
-            Trail.Stop();
+            VFX.SetNewState(false);
         }
         else if (State == false)
         {
@@ -43,8 +45,6 @@ public class Fireball : MonoBehaviour
     //public float LifeTime = 3;
     void Update()
     {
-        Trail.playRate = TrailRate;
-        Ball.playRate = BallRate;
         if (Absorbing == false)
         {
             RB.velocity = transform.forward * Time.deltaTime * Speed;

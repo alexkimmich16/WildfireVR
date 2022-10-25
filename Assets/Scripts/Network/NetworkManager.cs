@@ -78,7 +78,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public IEnumerator WaitForInitalized()
     {
         yield return new WaitWhile(() => Initialized() == false);
-        Debug.Log("init: " + Initialized());
+        if(DebugScript)
+            Debug.Log("init: " + Initialized());
         Initialize();
     }
 
