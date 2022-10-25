@@ -46,12 +46,9 @@ public class BillBoardManager : MonoBehaviour
         AttackTeamCount.text = "Attack Team Count: " + InGameManager.instance.SideCount(Team.Attack);
         DefenseTeamCount.text = "Defense Team Count: " + InGameManager.instance.SideCount(Team.Defense);
 
-        if (InGameManager.instance.FoundSpawn)
-        {
-            MyTeamText.text = "MyTeam: " + GetPlayerTeam(PhotonNetwork.LocalPlayer).ToString();
-            MyPlayerSpawnText.text = "PlayerSpawn: " + GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer).ToString();
-            AliveText.text = "Alive: " + Alive(PhotonNetwork.LocalPlayer).ToString();
-        }
+        MyTeamText.text = "MyTeam: " + GetPlayerTeam(PhotonNetwork.LocalPlayer).ToString();
+        MyPlayerSpawnText.text = "PlayerSpawn: " + GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer).ToString();
+        AliveText.text = "Alive: " + Alive(PhotonNetwork.LocalPlayer).ToString();
     }
 
     #region Singleton + Classes
@@ -115,8 +112,8 @@ public class BillBoardManager : MonoBehaviour
     }
     public void ChangeTeam()
     {
-        int LocalNum = GetLocal();
-        InGameManager.instance.ChangePlayerSide(LocalNum);
+        //int LocalNum = GetLocal();
+        //InGameManager.instance.ChangePlayerSide(LocalNum);
     }
     public void SetResetButton(bool Set)
     {

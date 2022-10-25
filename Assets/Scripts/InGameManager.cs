@@ -46,21 +46,18 @@ public class InGameManager : MonoBehaviour
 
     //attack first
     public List<TeamInfo> Teams = new List<TeamInfo>();
-    public List<Transform> SpectatorSpawns = new List<Transform>();
+    //public List<Transform> SpectatorSpawns = new List<Transform>();
 
     public Result result;
-    public bool StartedSpawn = false;
-    public bool FoundSpawn = false;
-
-    private float OnSpawnMagicDelay = 0;
-
-    private bool DoneSpawnWaiting;
 
     [Header("Debug")]
     public bool ShouldDebug;
     public GameState CurrentState;
     public List<int> Health;
-
+    private void Start()
+    {
+        NetworkManager.Initialize += SpawnSequence;
+    }
     #region StateEvents
     public delegate void StateEvent();
     public event StateEvent StartCountdown;
@@ -261,6 +258,7 @@ public class InGameManager : MonoBehaviour
         SetGameInt(AttackTeamCount, AttackCount);
         SetGameInt(DefenseTeamCount, DefenseCount);
     }
+    
     void Update()
     {
         if (NetworkManager.HasConnected())
@@ -272,10 +270,20 @@ public class InGameManager : MonoBehaviour
                 else if (Input.GetKeyDown(KeyCode.S))
                     NewStateEvent(2);
             }
-            
+            if (PhotonNetwork.IsMasterClient && Initialized())
+            {
+                ProgressTime();
+                if (LastTotalPlayers > PhotonNetwork.PlayerList.Length && LastTotalPlayers != 0)
+                {
+                    RemovePlayer();
+                }
+                LastTotalPlayers = PhotonNetwork.PlayerList.Length;
+                ReCalculateTeamSize();
+            }
+            /*
             if (StartedSpawn == false)
             {
-                if(GetGameState() == GameState.Waiting)
+                if(GetGameState() == GameState.Waiting)// find team
                 {
                     Team team = LowTeamCount();
                     SpawnPoint SpawnInfo = FindSpawn(team);
@@ -289,6 +297,8 @@ public class InGameManager : MonoBehaviour
                     Debug.LogError("Not In Waiting Phase");
                 }
             }
+            */
+            /*
             if (StartedSpawn == true)
             {
                 if(OnSpawnMagicDelay < 4)
@@ -296,89 +306,50 @@ public class InGameManager : MonoBehaviour
                 else if (OnSpawnMagicDelay > 4)
                     DoneSpawnWaiting = true;
             }
+            */
 
-            if (PhotonNetwork.IsMasterClient && Initialized())
-            {
-                ProgressTime();
-                if(LastTotalPlayers > PhotonNetwork.PlayerList.Length && LastTotalPlayers != 0)
-                {
-                    RemovePlayer();
-                }
-                LastTotalPlayers = PhotonNetwork.PlayerList.Length;
-                ReCalculateTeamSize();
-            }
         }
+        /*
         if (StartedSpawn && Exists(PlayerSpawn, PhotonNetwork.LocalPlayer) == true && FoundSpawn == false)
         {
             FoundSpawn = true;
         }
+        */
+    }
+
+    public IEnumerator SpawnSequenceCorotine()//get appropriate team, spawn, set online
+    {
+        Team team = BestTeam();
+        SetPlayerTeam(team, PhotonNetwork.LocalPlayer);
+        yield return new WaitWhile(() => Exists(PlayerTeam, PhotonNetwork.LocalPlayer) == false); //wait for team
+        SpawnPoint SpawnInfo = FindSpawn(team);
+        SetNewPosition(SpawnInfo);
+        ///enable view
+    }
+    public void SpawnSequence()
+    {
+        StartCoroutine(SpawnSequenceCorotine()); 
     }
     public void SetNewPosition(SpawnPoint SpawnInfo)
     {
-        Transform spawn = SpawnInfo.Point;
-        float ElevatorPos = GetGameFloat(DoorNames[0]);
-        //Debug.Log(ElevatorPos + ElevatorSpawnOffset);
-        Vector3 SpawnPos = new Vector3(spawn.position.x, ElevatorPos + ElevatorSpawnOffset, spawn.position.z);
-        SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
+        Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer);
+        Vector3 SpawnPos = realSpawn(team);
+        if(team == Team.Attack || team == Team.Defense)
+            SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
         AIMagicControl.instance.Rig.position = SpawnPos;
-    }
-    public void ChangePlayerSide(int PlayerNum)
-    {
-        Team oldTeam = GetPlayerTeam(PhotonNetwork.PlayerList[PlayerNum]);
-        Team NewTeam;
-        if (oldTeam == Team.Attack)
-            NewTeam = Team.Defense;
-        else
-            NewTeam = Team.Attack;
 
-        SetPlayerTeam(NewTeam, PhotonNetwork.PlayerList[PlayerNum]);
-
-        // get old team and uncheck old spawn bool
-        string OldTeamName = oldTeam.ToString();
-        int OldSpawnNum = GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer);
-        if (OldSpawnNum > 2)
-            OldSpawnNum -= 3;
-
-        string FinalOldSpawn = OldTeamName + OldSpawnNum;
-        //Debug.Log(FinalOldSpawn);
-        SetGameBool(FinalOldSpawn, false);
-
-        SpawnPoint SpawnInfo = FindSpawn(NewTeam);
-        SetNewPosition(SpawnInfo);
-
-        ReCalculateTeamSize();
-    }
-
-    #region SequenceManage
-    public void ManageTeam()
-    {
-        /*
-        int BalenceCount = SideCount(Team.Attack) - SideCount(Team.Defense);
-        int ToLook = 3;
-        if (BalenceCount < -1)
-            ToLook = 1;
-        else if (BalenceCount > 1)
-            ToLook = 0;
-        for (int i = 0; i < BalenceCount / 2; i++)
+        Vector3 realSpawn(Team team)
         {
-            bool Found = false;
-            while (Found == false)
-            {
-                int ToRemove = Random.Range(0, PhotonNetwork.PlayerList.Length);
-
-                //GetPlayerTeam
-                var teamVAR = PhotonNetwork.PlayerList[ToRemove].CustomProperties["TEAM"];
-                Team team = (Team)teamVAR;
-                if (ToLook == (int)team)
-                {
-                    Found = true;
-                    ChangePlayerSide(ToRemove);
-                }
-            }
+            if (team == Team.Attack || team == Team.Defense)
+                return new Vector3(SpawnInfo.Point.position.x, GetGameFloat(DoorNames[0]) + ElevatorSpawnOffset, SpawnInfo.Point.position.z);
+            else
+                return SpawnInfo.Point.position;
         }
-        */
     }
     
+    #region SequenceManage
+
+
     public void RestartGame()
     {
         BillBoardManager.instance.SetResetButton(false);
@@ -439,14 +410,15 @@ public class InGameManager : MonoBehaviour
         Debug.LogError("SideCount Error!");
         return 0;
     }
-    public Vector3 GetSpectatorPos()
+    public Team BestTeam()
     {
-        return SpectatorSpawns[Random.Range(0, SpectatorSpawns.Count - 1)].position;
-    }
-    public Team LowTeamCount()
-    {
+        if(GetGameState() != GameState.Waiting)
+            return Team.Spectator;
+
         int AttCount = SideCount(Team.Attack);
         int DefCount = SideCount(Team.Defense);
+        if (AttCount == MaxPlayers && DefCount == MaxPlayers)
+            return Team.Spectator;
         if (AttCount > DefCount)
             return Team.Defense;
         else if (AttCount < DefCount)
@@ -464,6 +436,8 @@ public class InGameManager : MonoBehaviour
     public SpawnPoint FindSpawn(Team team)
     {
         int Side = (int)team;
+        if (team == Team.Spectator)
+            return Teams[Side].Spawns[Random.Range(0, Teams[Side].Spawns.Count)];
         for (int i = 0; i < Teams[Side].Spawns.Count; i++)
         {
             string SpawnString;
@@ -477,20 +451,27 @@ public class InGameManager : MonoBehaviour
                 return Teams[Side].Spawns[i];
             }
         }
+        
         Debug.LogError("Could not find spawn of type: " + team.ToString());
         return null;
     }
     public bool CanDoMagic()
     {
+        /*
         if (Initialized() == false || PhotonNetwork.CurrentRoom == null)
             return false;
-        GameState state = GetGameState(); 
-        if (DoneSpawnWaiting == false)
+        */
+        if (Exists(PlayerTeam, PhotonNetwork.LocalPlayer) == false)
             return false;
+        if (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator)
+            return false;
+        GameState state = GetGameState();
         if (state == GameState.Active)
             return true;
-        else
+        else if (state == GameState.Waiting)
             return MagicBeforeStart;
+        else
+            return false;
     }
     public int TotalAlive(Team team)
     {
@@ -512,7 +493,64 @@ public class InGameManager : MonoBehaviour
             return DefenseSpawns[Index - 3];
         //ebug.LogError("Could not Spawn With Index: " + Index);
     }
+    /*
+    public void ChangePlayerSide(int PlayerNum)
+    {
+        Team oldTeam = GetPlayerTeam(PhotonNetwork.PlayerList[PlayerNum]);
+        Team NewTeam;
+        if (oldTeam == Team.Attack)
+            NewTeam = Team.Defense;
+        else
+            NewTeam = Team.Attack;
+
+        SetPlayerTeam(NewTeam, PhotonNetwork.PlayerList[PlayerNum]);
+
+        // get old team and uncheck old spawn bool
+        string OldTeamName = oldTeam.ToString();
+        int OldSpawnNum = GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer);
+        if (OldSpawnNum > 2)
+            OldSpawnNum -= 3;
+
+        string FinalOldSpawn = OldTeamName + OldSpawnNum;
+        //Debug.Log(FinalOldSpawn);
+        SetGameBool(FinalOldSpawn, false);
+
+        SpawnPoint SpawnInfo = FindSpawn(NewTeam);
+        SetNewPosition(SpawnInfo);
+
+        ReCalculateTeamSize();
+    }
+    */
+    public void ManageTeam()
+    {
+        /*
+        int BalenceCount = SideCount(Team.Attack) - SideCount(Team.Defense);
+        int ToLook = 3;
+        if (BalenceCount < -1)
+            ToLook = 1;
+        else if (BalenceCount > 1)
+            ToLook = 0;
+        for (int i = 0; i < BalenceCount / 2; i++)
+        {
+            bool Found = false;
+            while (Found == false)
+            {
+                int ToRemove = Random.Range(0, PhotonNetwork.PlayerList.Length);
+
+                //GetPlayerTeam
+                var teamVAR = PhotonNetwork.PlayerList[ToRemove].CustomProperties["TEAM"];
+                Team team = (Team)teamVAR;
+                if (ToLook == (int)team)
+                {
+                    Found = true;
+                    ChangePlayerSide(ToRemove);
+                }
+            }
+        }
+        */
+    }
     #endregion
+
 }
 
 public enum GameState
