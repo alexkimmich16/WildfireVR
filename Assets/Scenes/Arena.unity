@@ -10154,11 +10154,11 @@ MonoBehaviour:
       ListNum: 4
     - Point: {fileID: 1267074363}
       ListNum: 5
-  SpectatorSpawns:
-  - {fileID: 948580842}
+  - Side: Spectator
+    Spawns:
+    - Point: {fileID: 948580842}
+      ListNum: 3
   result: 2
-  StartedSpawn: 0
-  FoundSpawn: 0
   ShouldDebug: 1
   CurrentState: 0
   Health: 
