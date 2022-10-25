@@ -74,34 +74,38 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (Input.GetKeyDown(KeyCode.G))
                 LocalTakeDamage(5);
     }
-
-    public IEnumerator WaitForInitalized()
+    public void SpectatorSpawn()
     {
-        yield return new WaitWhile(() => Initialized() == false);
-        Debug.Log("init: " + Initialized());
-        Initialize();
+        AIMagicControl.instance.Rig.position = InGameManager.instance.GetSpectatorPos();
     }
-
     public override void OnJoinedRoom()
     {
-        
         if (DebugScript == true)
             Debug.Log("joined a room");
-        base.OnJoinedRoom();
         if (SceneLoader.BattleScene() == true)
         {
             SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);
             if (Initialized() == false)
-            {
                 InitializeAllGameStats();
+            else if(Initialized() == true)
+            {
+                if (GetGameState() == GameState.Active || GetGameState() == GameState.CountDown)//game going on join as spectator
+                {
+                    SetPlayerTeam(Team.Spectator, PhotonNetwork.LocalPlayer);
+                    SpectatorSpawn();
+
+
+
+                    //spawn on spectator
+                }
+                else//join as waiting player
+                {
+
+                }
             }
-            
         }
-        // Initialize();
-        //Debug.Log(Initialized());
-        //base.OnJoinedRoom();
-        //Initialize();
-        StartCoroutine(WaitForInitalized());
+        base.OnJoinedRoom();
+        Initialize();
         InGameManager.instance.ReCalculateTeamSize();
 
         void InitializeAllGameStats()
@@ -157,11 +161,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public void OnDeath()
     {
-        SpawnPoint SpawnInfo = InGameManager.instance.FindSpawn(Team.Spectator);
-        InGameManager.instance.SetNewPosition(SpawnInfo);
-
-
-        ///seperate body from rig before respawn
+        SpectatorSpawn();
         StartCoroutine(NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetComponent<PlayerControl>().RagdollRespawn());
     }
 }

@@ -39,6 +39,10 @@ public class PlayerControl : MonoBehaviourPunCallbacks
         gameObject.GetPhotonView().RPC("PlayerDied", RpcTarget.All);
         //camera grey to floor(post processing)
         yield return new WaitForSeconds(DeathTime);
+
+        //move to stands
+        Transform Spawn = InGameManager.instance.SpectatorSpawns[Random.Range(0, InGameManager.instance.SpectatorSpawns.Count)];
+        AIMagicControl.instance.PlayerRB.transform.position = Spawn.position;
     }
 
     [PunRPC]
