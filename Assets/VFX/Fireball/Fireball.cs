@@ -51,7 +51,10 @@ public class Fireball : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// on absorb parent + keep position
+    /// watch for disance to unparent
+    /// </summary>
 
     void OnCollisionEnter(Collision col)
     {
