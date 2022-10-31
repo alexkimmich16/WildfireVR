@@ -21,7 +21,6 @@ public class FireballGenerator : MonoBehaviour
                 Timer = 0;
             }
         }
-        
     }
 
     public void SpawnFireball()

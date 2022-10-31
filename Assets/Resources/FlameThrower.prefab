@@ -24486,10 +24486,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eb7550acb6135c4d987c5898794322a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FlamesVFX: {fileID: 0}
-  FlameParticalSystem:
-  - {fileID: 58292936881470260}
-  - {fileID: 58292938412173441}
+  VFX:
+    VFXGraph: {fileID: 0}
+    ParticalSystem:
+    - {fileID: 58292936881470260}
+    - {fileID: 58292938412173441}
   DestoryStop: 1
   FlameCol: {fileID: 584730511}
   FlameParent: {fileID: 0}
@@ -24507,3 +24508,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LifeTime: 4.42
   Timer: 0
+  photonView: {fileID: 0}

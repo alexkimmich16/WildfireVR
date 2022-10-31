@@ -7,8 +7,7 @@ public class FlameCollision : MonoBehaviour
     public ParticleSystem fire;
     public bool Push;
     public Transform Example;
-    public float Force;
-    public void PushFire(Vector3 PushPos, float InputForce)
+    public void PushFire(Vector3 PushPos)
     {
         // GetParticles is allocation free because we reuse the m_Particles buffer between updates
         ParticleSystem.Particle[] m_Particles = new ParticleSystem.Particle[fire.main.maxParticles];
@@ -18,7 +17,7 @@ public class FlameCollision : MonoBehaviour
         {
             Vector3 Pos = m_Particles[i].position;
             Vector3 Dir = (Pos - PushPos).normalized;
-            m_Particles[i].velocity = Dir * (Force);
+            m_Particles[i].velocity = Dir * (OnlineEventManager.instance.FireForce);
         }
         fire.SetParticles(m_Particles, numParticlesAlive);
     }
@@ -28,7 +27,7 @@ public class FlameCollision : MonoBehaviour
         if(Push == true && Example != null)
         {
             Push = false;
-            PushFire(Example.position, Force);
+            PushFire(Example.position);
         }
     }
     
@@ -41,5 +40,11 @@ public class FlameCollision : MonoBehaviour
             FireController.DamageShardHit(other);
         }
             
+    }
+    public void UnsubscribeToFire() { OnlineEventManager.FirePushEvent -= PushFire; }
+    private void Start()
+    {
+        OnlineEventManager.FirePushEvent += PushFire;
+        transform.parent.GetComponent<PhotonDestroy>().DestoryEvent += UnsubscribeToFire;
     }
 }

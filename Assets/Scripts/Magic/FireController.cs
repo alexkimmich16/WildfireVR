@@ -61,12 +61,13 @@ public class FireController : MonoBehaviour
     public delegate void NewState(bool State);
     public event NewState RealNewState;
 
-    public List<FlameObject> ActiveFires;
+    
+
+    //public List<FlameObject> ActiveFires;
 
     public float BlockForce;
 
     private Side side;
-    
     public static bool IsCooldown(Transform hitAttempt)
     {
         for (int i = 0; i < DamageCooldowns.Count; i++)
@@ -88,7 +89,6 @@ public class FireController : MonoBehaviour
     {
         while (false == false)
         {
-            //Debug.Log("check");
             Targets = CheckForTargets();
             yield return new WaitForSeconds(CheckInterval);
         }
@@ -101,10 +101,11 @@ public class FireController : MonoBehaviour
         PhotonView EnemyPhoton = Hit.transform.parent.GetComponent<PhotonView>();
         if (EnemyPhoton.IsMine)
             return;
+
         //if blocking
         if (GetPlayerBool(Blocking, EnemyPhoton.Owner))
         {
-            AIMagicControl.instance.PushAllFires(Hit.transform.parent.position);
+            OnlineEventManager.PushFireOnlineEvent(Hit.transform.parent.position);
             return;
         }
         EnemyPhoton.RPC("takeDamage", RpcTarget.All, 2);
@@ -113,6 +114,7 @@ public class FireController : MonoBehaviour
         NewTime.Target = Hit.transform.parent;
         DamageCooldowns.Add(NewTime);
     }
+
     #region StartStop
     public void StopFire()
     {
@@ -121,10 +123,11 @@ public class FireController : MonoBehaviour
         //Index += 1;
         if (SpawnOnline)
         {
-            OnlineFire.GetPhotonView().RPC("SetFlames", RpcTarget.Others, false);
+            OnlineFire.GetComponent<FlameObject>().SetFlames(false);
         }
-        PrivateFire.GetComponent<FlameObject>().SetFlamesOffline(false);
+        PrivateFire.GetComponent<FlameObject>().SetFlames(false);
         PrivateFire.GetComponent<PhotonDestroy>().StartCountdown();
+        
         EyeController.instance.ChangeEyes(Eyes.Fire);
 
         OnlineFire = null;
@@ -134,22 +137,26 @@ public class FireController : MonoBehaviour
     {
         if (InGameManager.instance.CanDoMagic() == false || frames.CanCast == false)
             return;
-        EyeController.instance.ChangeEyes(Eyes.Fire);
-        //Debug.Log("Index: " + Index + "  Start");
-        //Index += 1;
 
-        
+        EyeController.instance.ChangeEyes(Eyes.Fire);
+
+
         PrivateFire = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(Spell.Flames, false)), Vector3.zero, Camera.main.transform.rotation);
-        PrivateFire.GetComponent<FlameObject>().SetFlamesOffline(true);
-        ActiveFires.Add(PrivateFire.GetComponent<FlameObject>());
-        PrivateFire.GetComponent<FlameObject>().FlameParent = this;
+        PrivateFire.GetComponent<FlameObject>().SetFlames(true);
+        //ActiveFires.Add(PrivateFire.GetComponent<FlameObject>());
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, Spell.Flames);
+        //Debug.Log("PT2");
         if (SpawnOnline)
         {
+            Debug.Log("online");
             OnlineFire = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(Spell.Flames, true), Vector3.zero, Camera.main.transform.rotation);
-            OnlineFire.GetPhotonView().RPC("SetFlames", RpcTarget.Others, true);
-            OnlineFire.transform.SetParent(transform);
-            OnlineFire.SetActive(false);
+            OnlineFire.name = "OnlineFire";
+            OnlineFire.GetComponent<FlameObject>().SetFlames(true);
+            //OnlineFire.transform.SetParent(transform);
+            //OnlineFire.SetActive(false);
+
+
+            ///add to all fires list
         }
     }
     public bool FrameWorks()
@@ -247,22 +254,21 @@ public class FireController : MonoBehaviour
         CastTimer += Time.deltaTime;
         if(side == Side.Right)
             ManageEnemyCooldown();
-        //SpawnFireCode();
         DoDebugSpheres();
-        //if (Targets.Count < -1 || PrivateFire == null)
-        if (PrivateFire == null)
-            return;
+
+        Quaternion Rot = Quaternion.LookRotation(AIMagicControl.instance.PositionObjectives[(int)side].transform.position - AIMagicControl.instance.Cam.position);
+        Vector3 Pos = AIMagicControl.instance.PositionObjectives[(int)side].position;
         if (OnlineFire && SpawnOnline)
         {
-            OnlineFire.transform.position = AIMagicControl.instance.PositionObjectives[(int)side].position;
-            OnlineFire.transform.rotation = Camera.main.transform.rotation;
+            OnlineFire.transform.position = Pos;
+            OnlineFire.transform.rotation = Rot;
         }
-        //Debug.Log("made");
-        PrivateFire.transform.position = AIMagicControl.instance.PositionObjectives[(int)side].position;
+        if (PrivateFire == null)
+            return;
+        PrivateFire.transform.position = Pos;
+        PrivateFire.transform.rotation = Rot;
 
-        
-        Vector3 Dir = AIMagicControl.instance.PositionObjectives[(int)side].transform.position - AIMagicControl.instance.Cam.position;
-        PrivateFire.transform.rotation = Quaternion.LookRotation(Dir);
+
     }
     void CheckArriveTimes()
     {

@@ -68,12 +68,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         roomOptions.IsOpen = true;
         PhotonNetwork.JoinOrCreateRoom("Room 1", roomOptions, TypedLobby.Default);
     }
-    private void Update()
-    {
-        if (InGameManager.instance.KeypadTesting)
-            if (Input.GetKeyDown(KeyCode.G))
-                LocalTakeDamage(5);
-    }
+
 
     public IEnumerator WaitForInitalized()
     {

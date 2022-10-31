@@ -13,19 +13,21 @@ MonoBehaviour:
   m_Name: Keycodes
   m_EditorClassIdentifier: 
   ToDoActive:
-  - Sub: 'Stop/Start Spell: O/P'
-    ToDo: []
-    Done: []
   - Sub: 'Elevator: N'
     ToDo: []
     Done: []
   - Sub: 'Braziers: D'
     ToDo: []
     Done: []
-  - Sub: 'GameState 1/2: A/S'
+  - Sub: 'Flames Start/Stop : A/S'
     ToDo:
     - O/P
     Done: []
-  - Sub: 'TakeLocalDamage: G'
-    ToDo: []
+  - Sub: 'Spawn Fireball : Z'
+    ToDo:
+    - O/P
+    Done: []
+  - Sub: 'Take Damage: G'
+    ToDo:
+    - O/P
     Done: []

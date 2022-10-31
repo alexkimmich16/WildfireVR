@@ -26,7 +26,7 @@ public class BillBoardManager : MonoBehaviour
     public List<TextMeshProUGUI> DefenseSpawnText = new List<TextMeshProUGUI>();
     public List<TextMeshProUGUI> AttackSpawnsText = new List<TextMeshProUGUI>();
 
-    
+
 
     public void UpdateWall()
     {
@@ -42,13 +42,16 @@ public class BillBoardManager : MonoBehaviour
             DefenseSpawnText[i].text = DefenseSpawns[i] + ":  " + GetGameBool(DefenseSpawns[i]);
             AttackSpawnsText[i].text = AttackSpawns[i] + ":  " + GetGameBool(AttackSpawns[i]);
         }
-        
+
         AttackTeamCount.text = "Attack Team Count: " + InGameManager.instance.SideCount(Team.Attack);
         DefenseTeamCount.text = "Defense Team Count: " + InGameManager.instance.SideCount(Team.Defense);
 
-        MyTeamText.text = "MyTeam: " + GetPlayerTeam(PhotonNetwork.LocalPlayer).ToString();
-        MyPlayerSpawnText.text = "PlayerSpawn: " + GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer).ToString();
-        AliveText.text = "Alive: " + Alive(PhotonNetwork.LocalPlayer).ToString();
+        if (Exists(PlayerTeam, PhotonNetwork.LocalPlayer))
+            MyTeamText.text = "MyTeam: " + GetPlayerTeam(PhotonNetwork.LocalPlayer).ToString();
+        if (Exists(PlayerSpawn, PhotonNetwork.LocalPlayer))
+            MyPlayerSpawnText.text = "PlayerSpawn: " + GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer).ToString();
+        if (Exists(PlayerHealth, PhotonNetwork.LocalPlayer))
+            AliveText.text = "Alive: " + Alive(PhotonNetwork.LocalPlayer).ToString();
     }
 
     #region Singleton + Classes
@@ -57,58 +60,60 @@ public class BillBoardManager : MonoBehaviour
     #endregion
     void Update()
     {
-        if(PhotonNetwork.InRoom == true)
+        if (!PhotonNetwork.InRoom)
+            return;
+
+        UpdateWall();
+        for (int i = 0; i < Health.Count; i++)
         {
-            UpdateWall();
-            for (int i = 0; i < Health.Count; i++)
+            if (i < PhotonNetwork.PlayerList.Length && Exists(PlayerHealth, PhotonNetwork.PlayerList[i]) == true)
             {
-                if (i < PhotonNetwork.PlayerList.Length && Exists(PlayerHealth, PhotonNetwork.PlayerList[i]) == true)
-                {
-                    int HealthNum = GetPlayerInt(PlayerHealth, PhotonNetwork.PlayerList[i]);
-                    Health[i].gameObject.SetActive(true);
-                    Health[i].text = "Player" + i + " Health: " + HealthNum;
-                }
-                else
-                    Health[i].gameObject.SetActive(false);
+                int HealthNum = GetPlayerInt(PlayerHealth, PhotonNetwork.PlayerList[i]);
+                Health[i].gameObject.SetActive(true);
+                Health[i].text = "Player" + i + " Health: " + HealthNum;
             }
-            if (Initialized())
-            {
-                GameState state = GetGameState();
-                if (state == GameState.Waiting)
-                {
-                    DisplayVictory.text = "Waiting For Players";
-                }
-                else if (state == GameState.CountDown)
-                {
-                    float WarmupTimer = GetGameFloat("WarmupTimer");
-                    float adjustedTime = InGameManager.instance.WarmupTime - WarmupTimer;
-                    string TimeText = adjustedTime.ToString("F2");
-                    DisplayVictory.text = "Starting in: " + TimeText + " Seconds";
-                }
-                else if (state == GameState.Active)
-                {
-                    float FinishTimer = GetGameFloat("FinishTimer");
-                    float Left = InGameManager.instance.FinishTime - FinishTimer;
-                    DisplayVictory.text = "Started!  Time Left: " + Left;
-                }
-                else if (state == GameState.Finished)
-                {
-                    DisplayVictory.text = OnWin(InGameManager.instance.result);
-                }
-            }
-            
-            
+            else
+                Health[i].gameObject.SetActive(false);
         }
-        
+        if (Initialized())
+        {
+            GameState state = GetGameState();
+            if (state == GameState.Waiting)
+            {
+                DisplayVictory.text = "Waiting For Players";
+            }
+            else if (state == GameState.CountDown)
+            {
+                float WarmupTimer = GetGameFloat("WarmupTimer");
+                float adjustedTime = InGameManager.instance.WarmupTime - WarmupTimer;
+                string TimeText = adjustedTime.ToString("F2");
+                DisplayVictory.text = "Starting in: " + TimeText + " Seconds";
+            }
+            else if (state == GameState.Active)
+            {
+                float FinishTimer = GetGameFloat("FinishTimer");
+                float Left = InGameManager.instance.FinishTime - FinishTimer;
+                DisplayVictory.text = "Started!  Time Left: " + Left;
+            }
+            else if (state == GameState.Finished)
+            {
+                DisplayVictory.text = OnWin(InGameManager.instance.result);
+            }
+        }
+
     }
     public string OnWin(Result result)
     {
-        if (result == Result.DefenseWon)
-            return "Red Team Wins!";
-        else if (result == Result.AttackWon)
-            return "Blue Team Wins!";
-        else
-            return "Tie!";
+        Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer);
+        return GetWinnerText() + " Won so you: " + GetPlayerWonText();
+        string GetWinnerText()
+        {
+            return (result == Result.AttackWon) ? "Attack" : "Defense";
+        }
+        string GetPlayerWonText()
+        {
+            return (team == Team.Attack && result == Result.AttackWon || team == Team.Defense && result == Result.DefenseWon) ? "Won" : "Lost";
+        }
     }
     public void ChangeTeam()
     {

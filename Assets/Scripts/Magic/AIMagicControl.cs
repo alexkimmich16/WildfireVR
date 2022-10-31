@@ -4,6 +4,7 @@ using UnityEngine;
 using static Odin.Net;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.XR;
 public enum Movements
 {
     Spike = 0,
@@ -26,6 +27,11 @@ public enum Side
 }
 public class AIMagicControl : MonoBehaviour
 {
+    void Awake() { instance = this; }
+    public static AIMagicControl instance;
+
+    public XRNode inputSource;
+
     public NewControllerInfo Info;
 
     public List<Transform> PositionObjectives;
@@ -38,7 +44,6 @@ public class AIMagicControl : MonoBehaviour
     public Transform MyCharacterDisplay;
     public SpellContainer spells;
     
-    public static AIMagicControl instance;
 
     public bool PlayerInHeadset;
 
@@ -51,50 +56,27 @@ public class AIMagicControl : MonoBehaviour
     public float DirectionForceThreshold;
 
 
-    void Awake() { instance = this; }
+    
     public HandActions GetHandActions(Side side)
     {
         return Hands[(int)side].GetComponent<HandActions>();
-    }
-    public Direction ControllerDir(Vector3 Vel, Side side)
-    {
-        float Angle = GetHandActions(side).VelocityCameraAngle();
-
-        if (Vel.magnitude > DirectionForceThreshold)
-        {
-            if (Angle > 180 - DirectionLeaniency)
-                return Direction.Towards;
-            else if (Angle < 0 + DirectionLeaniency && Angle > 0 - DirectionLeaniency)
-                return Direction.Away;
-            else if (Angle < 90 + DirectionLeaniency && Angle > 90 - DirectionLeaniency)
-                return Direction.Side;
-        }
-        return Direction.None;
     }
 
     public bool IsBlocking()
     {
         return Blocks[0].Active == true && Blocks[1].Active == true;
     }
-    public void PushAllFires(Vector3 Pos)
-    {
-        for (int i = 0; i < 2; i++)
-            for (int j = 0; j < Flames[i].ActiveFires.Count; j++)
-                Flames[i].ActiveFires[j].FlameCol.PushFire(Pos, 2);
-    }
     private void Update()
     {
-        if (InGameManager.instance.KeypadTesting)
-            if (Input.GetKey(KeyCode.D))
-                FirePillar.CallStartFire(Spell.Flames);
         SetPlayerBool(Blocking, IsBlocking(), PhotonNetwork.LocalPlayer);
+        InputDevice device = InputDevices.GetDeviceAtXRNode(inputSource);
+        device.TryGetFeatureValue(CommonUsages.userPresence, out PlayerInHeadset);
     }
 }
 
 [System.Serializable]
 public class NewControllerInfo
 {
-
     public List<Transform> TestMain;
     public List<Transform> TestCam;
     public List<Transform> TestHand;

@@ -5,84 +5,33 @@ using UnityEngine.VFX;
 using Photon.Pun;
 public class FlameObject : MonoBehaviour
 {
-    public VisualEffect FlamesVFX;
-    public List<ParticleSystem> FlameParticalSystem;
-    public bool DestoryStop = true;
+    public VFXHolder VFX;
     public FlameCollision FlameCol;
-    public FireController FlameParent;
     private void Start()
     {
         GetComponent<PhotonDestroy>().DestoryEvent += OnDestory;
     }
     public void OnDestory()
     {
-        FlameParent.ActiveFires.Remove(this);
+
     }
     [PunRPC]
-    void SetFlames(bool NewState)
+    void SetFlamesOnline(bool NewState)
     {
-        if(FlamesVFX != null)
-        {
-            if (NewState == true)
-                FlamesVFX.Play();
-            else if (NewState == false)
-            {
-                FlamesVFX.Stop();
-                GetComponent<PhotonDestroy>().StartCountdown();
-            }
-        }
-        else if(FlameParticalSystem.Count != 0)
-        {
-            if (NewState == true)
-                for (int i = 0; i < FlameParticalSystem.Count; i++)
-                    FlameParticalSystem[i].Play();
-            else if (NewState == false)
-            {
-                for (int i = 0; i < FlameParticalSystem.Count; i++)
-                    FlameParticalSystem[i].Stop();
-                GetComponent<PhotonDestroy>().StartCountdown();
-            }
-        }
+        VFX.SetNewState(NewState);
     }
 
-    public void SetFlamesOffline(bool NewState)
+    public void SetFlames(bool NewState)
     {
-        if (FlamesVFX != null)
+        if (GetComponent<PhotonView>())
         {
-            if (NewState == true)
-                FlamesVFX.Play();
-            else if (NewState == false)
-                FlamesVFX.Stop();
+            GetComponent<PhotonView>().RPC("SetFlamesOnline", RpcTarget.Others, NewState);
+            VFX.SetNewState(false);
         }
-        else if (FlameParticalSystem.Count != 0)
-        {
-            if (NewState == true)
-                for (int i = 0; i < FlameParticalSystem.Count; i++)
-                    FlameParticalSystem[i].Play();
-            else if (NewState == false)
-            {
-                for (int i = 0; i < FlameParticalSystem.Count; i++)
-                    FlameParticalSystem[i].Stop();
-                if(DestoryStop)
-                    GetComponent<PhotonDestroy>().StartCountdown();
-            }
-        }
-    }
+        else
+            VFX.SetNewState(NewState);
 
-    private void Update()
-    {
-        if (InGameManager.instance.KeypadTesting)
-        {
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                SetFlamesOffline(true);
-            }
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                //stop
-                SetFlamesOffline(false);
-            }
-        }
-        
+        if (NewState == false)
+            GetComponent<PhotonDestroy>().StartCountdown();
     }
 }

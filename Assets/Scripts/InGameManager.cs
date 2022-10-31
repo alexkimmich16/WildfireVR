@@ -28,8 +28,7 @@ public class InGameManager : MonoBehaviour
     void Awake() { instance = this; }
     #endregion
     
-    [Header("Misc")]
-    public bool KeypadTesting;
+    //[Header("Misc")]
     [Header("Players")]
     public int MaxPlayers = 3;
     public int MinPlayers = 1;
@@ -60,52 +59,23 @@ public class InGameManager : MonoBehaviour
     }
     #region StateEvents
     public delegate void StateEvent();
-    public event StateEvent StartCountdown;
+    public event StateEvent OnStartCountdown;
     public event StateEvent OnGameStart;
     public event StateEvent OnGameEnd;
-    public const byte NewStateCode = 1;
+
+    //public delegate void Outcome(Result result);
+    //public event Outcome OnOutcome;
+
 
     private float Timer;
 
     public float ElevatorSpawnOffset;
-    private void OnEnable() { PhotonNetwork.NetworkingClient.EventReceived += ReceiveNewState; }
-    private void OnDisable() { PhotonNetwork.NetworkingClient.EventReceived -= ReceiveNewState; }
 
-    public void ReceiveNewState(EventData photonEvent)
-    {
-        if (photonEvent.Code == NewStateCode)
-        {
-            object[] data = (object[])photonEvent.CustomData;
-            int NewState = (int)data[0];
-            //Debug.Log("NewState: " + NewState);
-            if (NewState == 0)
-            {
-                //start timer
-            }
-            else if(NewState == 1)
-            {
-
-            }
-            else if(NewState == 2)
-            {
-
-            }
-            else if (NewState == 3)
-            {
-
-            }
-        }
-    }
     public bool CanMove()
     {
         return true;
     }
-    private void NewStateEvent(int NewState)
-    {
-        object[] content = new object[] { NewState };
-        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
-        PhotonNetwork.RaiseEvent(NewStateCode, content, raiseEventOptions, SendOptions.SendReliable);
-    }
+    
     public void SetNewGameState(GameState state)
     {
         //for each individually
@@ -116,8 +86,8 @@ public class InGameManager : MonoBehaviour
         }
         else if (state == GameState.CountDown)
         {
-            if(StartCountdown != null)
-                StartCountdown();
+            if(OnStartCountdown != null)
+                OnStartCountdown();
         }
         else if (state == GameState.Active)
         {
@@ -128,16 +98,9 @@ public class InGameManager : MonoBehaviour
         }
         else if (state == GameState.Finished)
         {
-            OnGameEnd();
+            if(OnGameEnd != null)
+                OnGameEnd();
             SetGameFloat(GameFinishTimer, 0f);
-            if (EndResult() == Result.AttackWon)
-            {
-
-            }
-            else if (EndResult() == Result.DefenseWon)
-            {
-
-            }
             Debug.Log("Outcome: " + EndResult().ToString());
             result = EndResult();
             //set board
@@ -149,7 +112,7 @@ public class InGameManager : MonoBehaviour
         }
         //set odin stat
         SetGameState(state);
-        NewStateEvent((int)state);
+        //NewStateEvent((int)state);
     }
     #endregion
     public void ProgressTime()
@@ -263,13 +226,6 @@ public class InGameManager : MonoBehaviour
     {
         if (NetworkManager.HasConnected())
         {
-            if (KeypadTesting)
-            {
-                if (Input.GetKeyDown(KeyCode.A))
-                    NewStateEvent(1);
-                else if (Input.GetKeyDown(KeyCode.S))
-                    NewStateEvent(2);
-            }
             if (PhotonNetwork.IsMasterClient && Initialized())
             {
                 ProgressTime();
@@ -280,41 +236,7 @@ public class InGameManager : MonoBehaviour
                 LastTotalPlayers = PhotonNetwork.PlayerList.Length;
                 ReCalculateTeamSize();
             }
-            /*
-            if (StartedSpawn == false)
-            {
-                if(GetGameState() == GameState.Waiting)// find team
-                {
-                    Team team = LowTeamCount();
-                    SpawnPoint SpawnInfo = FindSpawn(team);
-                    SetPlayerTeam(team, PhotonNetwork.LocalPlayer);
-                    SetNewPosition(SpawnInfo);
-                    //Debug.Log("newpos: " + SpawnInfo.ListNum);
-                    StartedSpawn = true;
-                }
-                else
-                {
-                    Debug.LogError("Not In Waiting Phase");
-                }
-            }
-            */
-            /*
-            if (StartedSpawn == true)
-            {
-                if(OnSpawnMagicDelay < 4)
-                    OnSpawnMagicDelay += Time.deltaTime;
-                else if (OnSpawnMagicDelay > 4)
-                    DoneSpawnWaiting = true;
-            }
-            */
-
         }
-        /*
-        if (StartedSpawn && Exists(PlayerSpawn, PhotonNetwork.LocalPlayer) == true && FoundSpawn == false)
-        {
-            FoundSpawn = true;
-        }
-        */
     }
 
     public IEnumerator SpawnSequenceCorotine()//get appropriate team, spawn, set online
@@ -325,6 +247,10 @@ public class InGameManager : MonoBehaviour
         SpawnPoint SpawnInfo = FindSpawn(team);
         SetNewPosition(SpawnInfo);
         ///enable view
+    }
+    public void RespawnToSpawnPoint()
+    {
+        AIMagicControl.instance.Rig.position = GetSpawnGivenIndex(GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer)).position;//respawn
     }
     public void SpawnSequence()
     {
@@ -346,45 +272,21 @@ public class InGameManager : MonoBehaviour
                 return SpawnInfo.Point.position;
         }
     }
-    
+    public Transform GetSpawnGivenIndex(int Index)//get point based on online code
+    {
+        if (Index < Teams[0].Spawns.Count)
+            return Teams[0].Spawns[Index].Point;
+        else
+            return Teams[1].Spawns[Index - Teams[0].Spawns.Count].Point;
+    }
     #region SequenceManage
 
 
     public void RestartGame()
     {
-        BillBoardManager.instance.SetResetButton(false);
-        SetGameState(GameState.CountDown);
-
-        //reset spawn stats
-        for (int i = 0; i < MaxPlayers; i++)
-        {
-            string AttackText = "Attack" + i;
-            string DefenseText = "Defense" + i;
-            SetGameBool(AttackText, false);
-            SetGameBool(DefenseText, false);
-        }
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-        {
-            SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.PlayerList[i]);
-        }
-        PhotonView[] photonViews = FindObjectsOfType<PhotonView>();
-        for (int i = 0; i < photonViews.Length; i++)
-        {
-            if (photonViews[i].IsMine)
-            {
-                photonViews[i].gameObject.GetComponent<NetworkPlayer>().RespawnAll();
-
-            }
-
-        }
-        //set everything
-        //than playerset
-        //for all players in stand, assign random team, and teleport, and allow them to switch in cooldown
-
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-        {
-            //PhotonNetwork.PlayerList[i].photonView.RPC("changeColour", RpcTarget.AllBuffered, r, g, b);
-        }
+        if (GetGameState() != GameState.Finished)
+            return;
+        OnlineEventManager.RestartEvent(); //tell all to restart, master will reset stats
     }
     #endregion
     #region Info

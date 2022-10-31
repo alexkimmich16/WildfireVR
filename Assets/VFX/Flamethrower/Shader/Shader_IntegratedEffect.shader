@@ -1,4 +1,4 @@
-Shader "NorenK/Shader_IntegratedEffect"
+Shader "GAPH Custom Shader/Shader_IntegradedEffect"
 {
 		Properties {
 			[Header(Main)]

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 public class PhotonDestroy : MonoBehaviour
 {
     public float LifeTime;
@@ -13,18 +14,22 @@ public class PhotonDestroy : MonoBehaviour
     {
         IsActive = true;
     }
-    // Update is called once per frame
+    public void DoDestroy()
+    {
+        if (DestoryEvent != null)
+            DestoryEvent();
+        if (GetComponent<PhotonView>() != null)
+            PhotonNetwork.Destroy(gameObject);
+        else
+            Destroy(gameObject);
+    }
     void Update()
     {
         if (!IsActive)
             return;
         Timer += Time.deltaTime;
-        if(Timer > LifeTime)
-        {
-            //PhotonNetwork.Destroy(gameObject);
-            if (DestoryEvent != null)
-                DestoryEvent();
-            Destroy(gameObject);
-        }
+        if (Timer > LifeTime)
+            DoDestroy();
     }
 }
+//Int myVariable = ( someBoolValueOrStatementHere ) ? 1 : 0;

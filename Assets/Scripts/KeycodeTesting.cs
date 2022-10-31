@@ -1,0 +1,50 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class KeycodeTesting : MonoBehaviour
+{
+    public static KeycodeTesting instance;
+    void Awake() { instance = this; }
+
+
+    public bool useTesting;
+    public bool KeypadTesting()
+    {
+        return useTesting;
+    }
+    public TODO keycodes;
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (useTesting == false)
+            return;
+        
+        if(Input.GetKeyDown(KeyCode.N))
+            DoorManager.instance.StartSequence();
+
+        if (Input.GetKey(KeyCode.D))
+            FirePillar.CallStartFire(Spell.Flames);
+
+        if (Input.GetKeyDown(KeyCode.A))
+            AIMagicControl.instance.Flames[(int)Side.Right].StartFire();
+        if (Input.GetKeyDown(KeyCode.S))
+            AIMagicControl.instance.Flames[(int)Side.Right].StopFire();
+
+        if (Input.GetKeyDown(KeyCode.G))
+            NetworkManager.instance.LocalTakeDamage(5);
+
+        if (Input.GetKeyDown(KeyCode.Z))
+            AIMagicControl.instance.Fireballs[(int)Side.Right].SpawnFireball(false);
+
+        if (Input.GetKeyDown(KeyCode.R))
+            InGameManager.instance.RestartGame();
+        /*
+        if (Input.GetKeyDown(KeyCode.P))
+            SetFlames(true);
+        if (Input.GetKeyDown(KeyCode.O))
+            SetFlames(false);
+        */
+    }
+}

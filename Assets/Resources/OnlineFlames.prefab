@@ -24430,8 +24430,8 @@ GameObject:
   - component: {fileID: 4388453758017755076}
   - component: {fileID: 1367012815407822274}
   - component: {fileID: -530231042916774742}
-  - component: {fileID: 4608106398029057618}
   - component: {fileID: 1545638919380530457}
+  - component: {fileID: 6437820956946422509}
   m_Layer: 0
   m_Name: OnlineFlames
   m_TagString: Untagged
@@ -24471,10 +24471,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eb7550acb6135c4d987c5898794322a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FlamesVFX: {fileID: 0}
-  FlameParticalSystem:
-  - {fileID: 58292936881470260}
-  - {fileID: 58292938412173441}
+  VFX:
+    VFXGraph: {fileID: 0}
+    ParticalSystem:
+    - {fileID: 58292936881470260}
+    - {fileID: 58292938412173441}
+  FlameCol: {fileID: 0}
 --- !u!114 &-530231042916774742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24489,22 +24491,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LifeTime: 4.42
   Timer: 0
---- !u!114 &4608106398029057618
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1267622881173442705}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a932fd9c75540fc41b62ae4bd27a2bba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fire: {fileID: 58292936881470260}
-  Push: 0
-  Example: {fileID: 0}
-  Force: 0
 --- !u!114 &1545638919380530457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24523,7 +24509,24 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 6437820956946422509}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &6437820956946422509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1267622881173442705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1

@@ -57,7 +57,7 @@ public class DoorManager : MonoBehaviour
     {
         //ResetDoors();
         InGameManager.instance.OnGameStart += StartSequence;
-        InGameManager.instance.OnGameEnd += ResetDoors;
+        //InGameManager.instance.OnGameEnd += ResetDoors;
         
     }
     //private bool PlayerInElevator;
@@ -114,21 +114,10 @@ public class DoorManager : MonoBehaviour
         for (int i = 0; i < Doors.Count; i++)
             SetPosition(i);
     }
-    public void KeyCodeTesting()
-    {
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            Debug.Log("N");
-            StartSequence();
-        }
-            
-    }
     void Update()
     {
         if (Initialized() == false)
             return;
-        if (InGameManager.instance.KeypadTesting)
-            KeyCodeTesting();
 
 
         Inelevator = PlayerInElevator();

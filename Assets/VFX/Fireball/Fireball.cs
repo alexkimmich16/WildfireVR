@@ -28,27 +28,23 @@ public class Fireball : MonoBehaviour
     //public VisualEffect Trail;
     //public VisualEffect Ball;
 
+    //public bool Collided;
 
 
     public void SetAbsorbed(bool State)
     {
         Absorbing = State;
-        if (State == true)
-        {
-            VFX.SetNewState(false);
-        }
-        else if (State == false)
-        {
-
-        }
+        VFX.SetNewState(false);
     }
     //public float LifeTime = 3;
     void Update()
     {
         if (Absorbing == false)
-        {
-            RB.velocity = transform.forward * Time.deltaTime * Speed;
-        }
+            return;
+        if (GetComponent<PhotonView>().IsMine == false)
+            return;
+
+        RB.velocity = transform.forward * Time.deltaTime * Speed;
     }
 
     /// <summary>
@@ -64,19 +60,21 @@ public class Fireball : MonoBehaviour
             GameObject.Instantiate(Explosion, this.transform.position, this.transform.rotation);
         if(Flash != null)
             GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
+
         SoundManager.instance.PlayAudio("FireballExplosion", null);
 
-        //Debug.Log(col.gameObject.name);
+        //gameObject.GetComponent<PhotonDestroy>().LifeTime = 5f;
+        //gameObject.GetComponent<PhotonDestroy>().Timer = 0f;
+
+        gameObject.GetComponent<SphereCollider>().enabled = false;
+
+        VFX.SetNewState(false);
         
         if (col.collider.tag == "HitBox")
         {
-            Debug.Log("TakeDamage2");
-            //MyPhotonView().transform.GetComponent<PlayerControl>().ChangeHealth(Damage);
-            //TakeDamage
             NetworkManager.instance.LocalTakeDamage(Damage);
-            Debug.Log("TakeDamage1");
         }
-        Destroy(gameObject);
+        GetComponent<PhotonDestroy>().DoDestroy();
     }
     public PhotonView MyPhotonView()
     {
