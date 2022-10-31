@@ -20,8 +20,8 @@ public class BillBoardManager : MonoBehaviour
     public TextMeshProUGUI MyTeamText;
     public TextMeshProUGUI AliveText;
     
-    public TextMeshProUGUI AttackTeamCount;
-    public TextMeshProUGUI DefenseTeamCount;
+    public TextMeshProUGUI AttackTeamCount, AttackTeamAlive;
+    public TextMeshProUGUI DefenseTeamCount, DefenseTeamAlive;
 
     public List<TextMeshProUGUI> DefenseSpawnText = new List<TextMeshProUGUI>();
     public List<TextMeshProUGUI> AttackSpawnsText = new List<TextMeshProUGUI>();
@@ -43,8 +43,14 @@ public class BillBoardManager : MonoBehaviour
             AttackSpawnsText[i].text = AttackSpawns[i] + ":  " + GetGameBool(AttackSpawns[i]);
         }
 
-        AttackTeamCount.text = "Attack Team Count: " + InGameManager.instance.SideCount(Team.Attack);
-        DefenseTeamCount.text = "Defense Team Count: " + InGameManager.instance.SideCount(Team.Defense);
+        if (AllPlayersLoaded())
+        {
+            AttackTeamCount.text = "Attack Team Count: " + InGameManager.instance.SideCount(Team.Attack);
+            DefenseTeamCount.text = "Defense Team Count: " + InGameManager.instance.SideCount(Team.Defense);
+
+            AttackTeamAlive.text = "Attack Team Alive: " + InGameManager.instance.TotalAlive(Team.Attack);
+            DefenseTeamAlive.text = "Defense Team Alive: " + InGameManager.instance.TotalAlive(Team.Defense);
+        }
 
         if (Exists(PlayerTeam, PhotonNetwork.LocalPlayer))
             MyTeamText.text = "MyTeam: " + GetPlayerTeam(PhotonNetwork.LocalPlayer).ToString();
@@ -53,7 +59,13 @@ public class BillBoardManager : MonoBehaviour
         if (Exists(PlayerHealth, PhotonNetwork.LocalPlayer))
             AliveText.text = "Alive: " + Alive(PhotonNetwork.LocalPlayer).ToString();
     }
-
+    bool AllPlayersLoaded()
+    {
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            if (Exists(PlayerHealth, PhotonNetwork.PlayerList[i]) == false || Exists(PlayerTeam, PhotonNetwork.PlayerList[i]) == false)
+                return false;
+        return true;
+    }
     #region Singleton + Classes
     public static BillBoardManager instance;
     void Awake() { instance = this; }
@@ -95,17 +107,34 @@ public class BillBoardManager : MonoBehaviour
                 float Left = InGameManager.instance.FinishTime - FinishTimer;
                 DisplayVictory.text = "Started!  Time Left: " + Left;
             }
+            
             else if (state == GameState.Finished)
             {
-                DisplayVictory.text = OnWin(InGameManager.instance.result);
+                if(Exists(GameOutcome, null))
+                    if(GetGameResult() != Result.UnDefined)
+                        DisplayVictory.text = OnWin(GetGameResult());
+                    else
+                        DisplayVictory.text = "and the winner is...";
+                else
+                    DisplayVictory.text = "and the winner is...";
+
+
             }
+            
         }
 
+    }
+    public void SetOutcome(Result result)
+    {
+        //DisplayVictory.text = OnWin(result);
     }
     public string OnWin(Result result)
     {
         Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer);
+        //Debug.Log(result.ToString());
+        //Debug.Log(team.ToString());
         return GetWinnerText() + " Won so you: " + GetPlayerWonText();
+
         string GetWinnerText()
         {
             return (result == Result.AttackWon) ? "Attack" : "Defense";

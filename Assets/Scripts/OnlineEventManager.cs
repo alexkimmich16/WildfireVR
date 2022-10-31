@@ -28,17 +28,32 @@ public class OnlineEventManager : MonoBehaviour
     public const byte RestartCode = 2;
     public static void RestartEvent()
     {
+        Debug.Log("pt1");
         object[] content = new object[] { };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
         PhotonNetwork.RaiseEvent(RestartCode, content, raiseEventOptions, SendOptions.SendReliable);
+        Debug.Log("pt2");
     }
     #endregion
+    
+    #region GameStates
+    public const byte FinishedCode = 3;
+    public static void FinishEvent(Result result)
+    {
+        //Debug.Log(result.ToString());
+        object[] content = new object[] { result };
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
+        PhotonNetwork.RaiseEvent(FinishedCode, content, raiseEventOptions, SendOptions.SendReliable);
+    }
+    #endregion
+    
     #region basic
     private void OnEnable() { PhotonNetwork.NetworkingClient.EventReceived += ReceiveNewState; }
     private void OnDisable() { PhotonNetwork.NetworkingClient.EventReceived -= ReceiveNewState; }
 
     public void ReceiveNewState(EventData photonEvent)
     {
+        Debug.Log("pt3: " + photonEvent.Code);
         if (photonEvent.Code == PushFire)
         {
             object[] data = (object[])photonEvent.CustomData;
@@ -48,6 +63,7 @@ public class OnlineEventManager : MonoBehaviour
         }
         if(photonEvent.Code == RestartCode)
         {
+            Debug.Log("restart");
             bool Relocate = false; //reset team?
             if (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator)  //if i'm a spectator and theres room fill
             {
@@ -76,6 +92,15 @@ public class OnlineEventManager : MonoBehaviour
                 }
                 
             }
+        }
+        if(photonEvent.Code == FinishedCode)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            Result result = (Result)data[0];
+            Debug.Log(result.ToString());
+            BillBoardManager.instance.SetOutcome(result);
+            
+            //SetOutcome
         }
     }
     #endregion

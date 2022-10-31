@@ -18,6 +18,8 @@ namespace Odin
         public static string GameFinishTimer = "FinishTimer";
         public static string GameStateText = "State";
 
+        public static string GameOutcome = "Outcome";
+
         public static List<string> AttackSpawns = new List<string>() { "Attack0", "Attack1", "Attack2" };
         public static List<string> DefenseSpawns = new List<string>() { "Defense0", "Defense1", "Defense2" };
 
@@ -111,6 +113,16 @@ namespace Odin
                 return 100;
             }
         }
+        public static Result GetGameResult()
+        {
+            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(GameOutcome, out object temp))
+                return (Result)temp;
+            else
+            {
+                Debug.LogError("GetHash.GetInt.OfRoom with string: " + GameOutcome + " has not been set");
+                return Result.UnDefined;
+            }
+        }
         public static int GetPlayerInt(string text, Player player)
         {
             if (player.CustomProperties.TryGetValue(text, out object temp))
@@ -168,10 +180,16 @@ namespace Odin
             }
             
         }
-        
+
         #endregion
         #region NetworkSet
-
+        public static void SetGameResult(Result result)
+        {
+            //Debug.Log("Setfloat");
+            Hashtable TeamHash = new Hashtable();
+            TeamHash.Add(GameOutcome, result);
+            PhotonNetwork.CurrentRoom.SetCustomProperties(TeamHash);
+        }
         public static void SetGameFloat(string text, float Num)
         {
             //Debug.Log("Setfloat");

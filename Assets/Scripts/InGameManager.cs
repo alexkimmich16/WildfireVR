@@ -47,8 +47,6 @@ public class InGameManager : MonoBehaviour
     public List<TeamInfo> Teams = new List<TeamInfo>();
     //public List<Transform> SpectatorSpawns = new List<Transform>();
 
-    public Result result;
-
     [Header("Debug")]
     public bool ShouldDebug;
     public GameState CurrentState;
@@ -100,15 +98,14 @@ public class InGameManager : MonoBehaviour
         {
             if(OnGameEnd != null)
                 OnGameEnd();
-            SetGameFloat(GameFinishTimer, 0f);
-            Debug.Log("Outcome: " + EndResult().ToString());
-            result = EndResult();
-            //set board
-
-            //BillBoardManager.instance.OnWin(EndResult());
-            BillBoardManager.instance.SetResetButton(true);
-            BillBoardManager.instance.SetChangeButton(false);
-            //stop game
+            if (PhotonNetwork.IsMasterClient)
+            {
+                SetGameFloat(GameFinishTimer, 0f);
+                //.Log("Outcome: " + EndResult().ToString());
+                SetGameResult(EndResult());
+                OnlineEventManager.FinishEvent(EndResult());
+            }
+            
         }
         //set odin stat
         SetGameState(state);
@@ -284,8 +281,10 @@ public class InGameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        Debug.Log("re");
         if (GetGameState() != GameState.Finished)
             return;
+        Debug.Log("start");
         OnlineEventManager.RestartEvent(); //tell all to restart, master will reset stats
     }
     #endregion
@@ -301,7 +300,7 @@ public class InGameManager : MonoBehaviour
         else if (DefenseTeamAlive > AttackTeamAlive)
             return Result.DefenseWon;
         else
-            return Result.Tie;
+            return Result.UnDefined;
     }
     public int SideCount(Team team)
     {
@@ -466,5 +465,5 @@ public enum Result
 {
     AttackWon = 0,
     DefenseWon = 1,
-    Tie = 2,
+    UnDefined = 2,
 }
