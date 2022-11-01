@@ -12,7 +12,6 @@ public class OnlineEventManager : MonoBehaviour
 
     #region Fire
     public float FireForce;
-    public static void TriggerFirePushEvent(Vector3 Pos) { FirePushEvent(Pos); }
     public delegate void FirePush(Vector3 Pos);
     public static event FirePush FirePushEvent;
     public const byte PushFire = 1;
@@ -26,13 +25,11 @@ public class OnlineEventManager : MonoBehaviour
     #endregion
     #region Restart
     public const byte RestartCode = 2;
-    public static void RestartEvent()
+    public void RestartEvent()
     {
-        Debug.Log("pt1");
         object[] content = new object[] { };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
         PhotonNetwork.RaiseEvent(RestartCode, content, raiseEventOptions, SendOptions.SendReliable);
-        Debug.Log("pt2");
     }
     #endregion
     
@@ -48,17 +45,18 @@ public class OnlineEventManager : MonoBehaviour
     #endregion
     
     #region basic
-    private void OnEnable() { PhotonNetwork.NetworkingClient.EventReceived += ReceiveNewState; }
-    private void OnDisable() { PhotonNetwork.NetworkingClient.EventReceived -= ReceiveNewState; }
+    private void OnEnable() { PhotonNetwork.NetworkingClient.EventReceived += OnEvent; }
+    private void OnDisable() { PhotonNetwork.NetworkingClient.EventReceived -= OnEvent; }
 
-    public void ReceiveNewState(EventData photonEvent)
+    private void OnEvent(EventData photonEvent)
     {
-        Debug.Log("pt3: " + photonEvent.Code);
         if (photonEvent.Code == PushFire)
         {
+            Debug.Log("push");
             object[] data = (object[])photonEvent.CustomData;
             Vector3 pos = (Vector3)data[0];
-            FirePushEvent(pos);
+            if(FirePushEvent != null)
+                FirePushEvent(pos);
             //FireController.TriggerFirePushEvent(pos);
         }
         if(photonEvent.Code == RestartCode)
@@ -67,7 +65,7 @@ public class OnlineEventManager : MonoBehaviour
             bool Relocate = false; //reset team?
             if (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator)  //if i'm a spectator and theres room fill
             {
-                //give me a team
+                InGameManager.instance.SpawnSequence();
             }
             SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);// reset health
             InGameManager.instance.RespawnToSpawnPoint();//respawn

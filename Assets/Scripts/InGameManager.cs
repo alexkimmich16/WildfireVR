@@ -281,11 +281,11 @@ public class InGameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        Debug.Log("re");
+        //Debug.Log("pt0.1");
         if (GetGameState() != GameState.Finished)
             return;
-        Debug.Log("start");
-        OnlineEventManager.RestartEvent(); //tell all to restart, master will reset stats
+        //Debug.Log("pt0.2");
+        OnlineEventManager.instance.RestartEvent(); //tell all to restart, master will reset stats
     }
     #endregion
     #region Info

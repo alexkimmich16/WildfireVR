@@ -9,13 +9,13 @@ public class KeycodeTesting : MonoBehaviour
 
 
     public bool useTesting;
+    public int DamageAmount;
     public bool KeypadTesting()
     {
         return useTesting;
     }
     public TODO keycodes;
 
-    // Update is called once per frame
     void Update()
     {
         if (useTesting == false)
@@ -33,13 +33,14 @@ public class KeycodeTesting : MonoBehaviour
             AIMagicControl.instance.Flames[(int)Side.Right].StopFire();
 
         if (Input.GetKeyDown(KeyCode.G))
-            NetworkManager.instance.LocalTakeDamage(5);
+            NetworkManager.instance.LocalTakeDamage(DamageAmount);
 
         if (Input.GetKeyDown(KeyCode.Z))
             AIMagicControl.instance.Fireballs[(int)Side.Right].SpawnFireball(false);
 
         if (Input.GetKeyDown(KeyCode.R))
             InGameManager.instance.RestartGame();
+
         /*
         if (Input.GetKeyDown(KeyCode.P))
             SetFlames(true);

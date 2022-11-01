@@ -6,7 +6,6 @@ using Photon.Pun;
 public class FlameObject : MonoBehaviour
 {
     public VFXHolder VFX;
-    public FlameCollision FlameCol;
     private void Start()
     {
         GetComponent<PhotonDestroy>().DestoryEvent += OnDestory;

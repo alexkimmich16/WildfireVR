@@ -10282,7 +10282,6 @@ MonoBehaviour:
     Spawns:
     - Point: {fileID: 948580842}
       ListNum: 3
-  result: 2
   ShouldDebug: 0
   CurrentState: 0
   Health: 
@@ -20131,6 +20130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useTesting: 1
+  DamageAmount: 25
   keycodes: {fileID: 11400000, guid: e6221537a3cfaf74d8db3d6078e564b1, type: 2}
 --- !u!4 &1328164612
 Transform:
@@ -22653,7 +22653,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Active: 1
-  AlwaysTrue: 0
+  AlwaysTrue: 1
   frames:
     CanCast: 1
     trackType: 0
@@ -28833,6 +28833,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1835095470}
   m_CullTransparentMesh: 1
+--- !u!1 &1835492537
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1835492539}
+  - component: {fileID: 1835492538}
+  m_Layer: 0
+  m_Name: onlineEvent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1835492538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1835492537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be2d41f86b5519e48b3cd99c360d959f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FireForce: 5
+--- !u!4 &1835492539
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1835492537}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.977596, y: 43.351448, z: 1.8635616}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1837788293 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9214979555277635036, guid: d9ef2c837b6e4a544aa9aea747f847b8,
@@ -32197,7 +32242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Active: 1
-  AlwaysTrue: 0
+  AlwaysTrue: 1
   frames:
     CanCast: 1
     trackType: 0

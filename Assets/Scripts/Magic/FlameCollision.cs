@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using UnityEngine.
+using Photon.Pun;
 public class FlameCollision : MonoBehaviour
 {
     public ParticleSystem fire;
@@ -9,6 +9,7 @@ public class FlameCollision : MonoBehaviour
     public Transform Example;
     public void PushFire(Vector3 PushPos)
     {
+        Debug.Log("pushfire");
         // GetParticles is allocation free because we reuse the m_Particles buffer between updates
         ParticleSystem.Particle[] m_Particles = new ParticleSystem.Particle[fire.main.maxParticles];
         int numParticlesAlive = fire.GetParticles(m_Particles);
@@ -33,10 +34,12 @@ public class FlameCollision : MonoBehaviour
     
     private void OnParticleCollision(GameObject other)
     {
-        Debug.Log("Collisison");
+        if (GetComponent<PhotonView>())
+            return; 
+
         if(other.tag == "VRPerson")
         {
-            Debug.Log("DAMAGE!");
+            Debug.Log("PlayerCollission");
             FireController.DamageShardHit(other);
         }
             

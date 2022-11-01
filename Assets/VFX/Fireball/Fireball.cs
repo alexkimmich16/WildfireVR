@@ -39,11 +39,10 @@ public class Fireball : MonoBehaviour
     //public float LifeTime = 3;
     void Update()
     {
-        if (Absorbing == false)
+        if (Absorbing == true)
             return;
         if (GetComponent<PhotonView>().IsMine == false)
             return;
-
         RB.velocity = transform.forward * Time.deltaTime * Speed;
     }
 
