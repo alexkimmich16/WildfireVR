@@ -85,6 +85,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         
         if (SceneLoader.BattleScene() == true)
         {
+            
             SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);
             if (Initialized() == false)
             {
@@ -114,6 +115,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
             SetGameInt(AttackTeamCount, 0);
             SetGameInt(DefenseTeamCount, 0);
+
+            SetGameInt(DoorState, (int)SequenceState.Waiting);
 
             for (int i = 0; i < DoorManager.instance.Doors.Count; i++)
             {
@@ -156,7 +159,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         InGameManager.instance.SetNewPosition(SpawnInfo);
 
 
-        ///seperate body from rig before respawn
+        ///seperate body from rig 
+        ///pause for 2 seconds as you watch youself fall down
+        /// respawn to spectator
         StartCoroutine(NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetComponent<PlayerControl>().RagdollRespawn());
     }
 }

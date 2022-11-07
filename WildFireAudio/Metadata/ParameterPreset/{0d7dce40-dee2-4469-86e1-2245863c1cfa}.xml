@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{0d7dce40-dee2-4469-86e1-2245863c1cfa}">
+		<property name="name">
+			<value>ElevatorState</value>
+		</property>
+		<relationship name="folder">
+			<destination>{7b6df51f-5259-4c36-b290-bf986f9e3587}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{13cff96a-d214-4437-be6b-95081c317269}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{13cff96a-d214-4437-be6b-95081c317269}">
+		<property name="parameterType">
+			<value>2</value>
+		</property>
+		<property name="maximum">
+			<value>7</value>
+		</property>
+		<property name="enumerationLabels">
+			<value>Waiting</value>
+			<value>ElevatorMove</value>
+			<value>OpenInDoor</value>
+			<value>OpenOutDoor</value>
+			<value>WaitingForAllExit</value>
+			<value>Closing</value>
+			<value>Finished</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

@@ -87,42 +87,34 @@ public class BillBoardManager : MonoBehaviour
             else
                 Health[i].gameObject.SetActive(false);
         }
-        if (Initialized())
+        if (!Initialized())
+            return;
+
+        GameState state = GetGameState();
+        if (state == GameState.Waiting)
         {
-            GameState state = GetGameState();
-            if (state == GameState.Waiting)
-            {
-                DisplayVictory.text = "Waiting For Players";
-            }
-            else if (state == GameState.CountDown)
-            {
-                float WarmupTimer = GetGameFloat("WarmupTimer");
-                float adjustedTime = InGameManager.instance.WarmupTime - WarmupTimer;
-                string TimeText = adjustedTime.ToString("F2");
-                DisplayVictory.text = "Starting in: " + TimeText + " Seconds";
-            }
-            else if (state == GameState.Active)
-            {
-                float FinishTimer = GetGameFloat("FinishTimer");
-                float Left = InGameManager.instance.FinishTime - FinishTimer;
-                DisplayVictory.text = "Started!  Time Left: " + Left;
-            }
-            
-            else if (state == GameState.Finished)
-            {
-                if(Exists(GameOutcome, null))
-                    if(GetGameResult() != Result.UnDefined)
-                        DisplayVictory.text = OnWin(GetGameResult());
-                    else
-                        DisplayVictory.text = "and the winner is...";
-                else
-                    DisplayVictory.text = "and the winner is...";
-
-
-            }
-            
+            DisplayVictory.text = "Waiting For Players";
+        }
+        else if (state == GameState.CountDown)
+        {
+            float WarmupTimer = GetGameFloat("WarmupTimer");
+            float adjustedTime = InGameManager.instance.WarmupTime - WarmupTimer;
+            string TimeText = adjustedTime.ToString("F2");
+            DisplayVictory.text = "Starting in: " + TimeText + " Seconds";
+        }
+        else if (state == GameState.Active)
+        {
+            float FinishTimer = GetGameFloat("FinishTimer");
+            float Left = InGameManager.instance.FinishTime - FinishTimer;
+            DisplayVictory.text = "Started!  Time Left: " + Left;
         }
 
+        else if (state == GameState.Finished)
+        {
+            if (Exists(GameOutcome, null))
+                if (GetGameResult() != Result.UnDefined)
+                    DisplayVictory.text = OnWin(GetGameResult());
+        }
     }
     public void SetOutcome(Result result)
     {
@@ -133,7 +125,12 @@ public class BillBoardManager : MonoBehaviour
         Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer);
         //Debug.Log(result.ToString());
         //Debug.Log(team.ToString());
-        return GetWinnerText() + " Won so you: " + GetPlayerWonText();
+
+        if(team != Team.Spectator)//player
+            return GetWinnerText() + " Won so you: " + GetPlayerWonText();
+        else//spectator
+            return GetWinnerText() + " Won";
+
 
         string GetWinnerText()
         {

@@ -7,7 +7,7 @@ using static Odin.Net;
 
 public class PlayerControl : MonoBehaviourPunCallbacks
 {
-    public int Health;
+    //public int Health;
     public static int MaxHealth = 100;
     public static float DeathTime = 1f;
     public delegate void DisolveAll();
@@ -17,7 +17,6 @@ public class PlayerControl : MonoBehaviourPunCallbacks
     {
         disolveEvent();
         yield return new WaitForSeconds(DeathTime);
-        Health = MaxHealth;
 
         //enable ragdoll mode
         //seperate from player

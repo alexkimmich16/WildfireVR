@@ -4,11 +4,13 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
-public enum SoundTypes
+public enum SoundType
 {
-    Start = 0,
-    During = 1,
+    Elevator = 0,
+    Effect = 1,
+    Crowd = 2,
 }
+/*
 [System.Serializable]
 public class Audio
 {
@@ -19,6 +21,8 @@ public class Audio
     [Range(0.0f, 1f)]
     public float Volume = 1;
 }
+*/
+
 public class SoundManager : MonoBehaviour
 {
     #region Singleton + classes
@@ -39,98 +43,66 @@ public class SoundManager : MonoBehaviour
     #endregion
 
     private Transform Parent;
-    public List<Audio> AudioClips = new List<Audio>();
-    public bool UseSounds;
+    //public List<Audio> AudioClips = new List<Audio>();
+    public bool EnableSounds;
 
-    public bool UseCrowdSounds;
-    public bool UseElevatorSounds;
-
-
+    public bool EnableEffectSounds;
+    public bool EnableElevatorSounds;
+    public bool EnableCrowdSounds;
     
     [Header("BasicAmbience")]
-    public GameObject AmbienceOBJ;
-    public GameObject RoarOBJ;
+    //public GameObject AmbienceOBJ;
+    //public GameObject RoarOBJ;
+    [Header("References")]
+    private FMOD.Studio.EventInstance ElevatorInstance;
+    public FMODUnity.EventReference ElevatorRef;
 
+    
+
+    private FMOD.Studio.EventInstance CrowdInstance;
+    public FMODUnity.EventReference CrowdRef;
+
+    [Header("Misc")]
     public float TimeAfterRoar;
-
-    public AnimationCurve RoarCurve;
-    public AnimationCurve AmbienceCurve;
-
-    public AudioClip Ambience;
-    public AudioClip Roar;
-    public AudioClip Boo;
-
     public List<AudioClip> CrowdShouts;
-    [Header("Elevator")]
-    public AudioClip ElevatorRising;
-    public AudioClip ElevatorStop;
-    public AudioClip InDoorRising;
-    public AudioClip InDoorStop;
-    public AudioClip OutDoorRising;
-    public AudioClip OutDoorStop;
 
-    public AudioClip InDoorDrop;
-    public AudioClip OutDoorDrop;
+    
 
-    public List<GameObject> ActiveElevatorSounds;
-
-    ///public Transform ElevatorSoundPos;
-
-    public void PlayAudio(string Name, GameObject ToParent)
+    public bool CanPlaySound(SoundType type)
     {
-        //Debug.Log("PT1");
-        if (UseSounds == true)
-        {
-            if (ToParent != null)
-            {
-                Parent = ToParent.transform;
-            }
-            //Debug.Log("PT2" + AudioClips.Count);
-            for (int i = 0; i < AudioClips.Count; i++)
-            {
-                //Debug.Log("PT3");
-                if (Name == AudioClips[i].Name)
-                {
-                    //Debug.Log("PT4");
-                    SpawnSound(AudioClips[i].Sound, AudioClips[i].Volume, false);
-                    if (AudioClips[i].type == SoundTypes.Start)
-                    {
-                        //SpawnSound(AudioClips[i].Sound, AudioClips[i].Volume, false);
-                        //SpawnAudio(i, false);
-                    }
-                    else if (AudioClips[i].type == SoundTypes.During)
-                    {
-                        //SpawnAudio(i, true);
-                    }           
-                    return;
-                }
-            }
-        }
-        
-        
+        if (type == SoundType.Elevator)
+            return EnableSounds && EnableElevatorSounds;
+        if (type == SoundType.Effect)
+            return EnableSounds && EnableEffectSounds;
+        if (type == SoundType.Crowd)
+            return EnableSounds && EnableCrowdSounds;
+
+        return true;
     }
     
     private void OnInitialize()
     {
-        if (UseCrowdSounds == true)
+        if (CanPlaySound(SoundType.Elevator))
         {
-            AmbienceOBJ = SpawnSound(Ambience, 1f, true);
-            Destroy(AmbienceOBJ.GetComponent<PhotonView>());
-            Destroy(AmbienceOBJ.GetComponent<MagicalFX.FX_LifeTime>());
-            AmbienceOBJ.GetComponent<AudioSource>().Play();
-            AmbienceOBJ.name = "Ambience";
+            ElevatorInstance = FMODUnity.RuntimeManager.CreateInstance(ElevatorRef);
+            //FMODUnity.RuntimeManager.AttachInstanceToGameObject(FlameThrowerSound, GetComponent<Transform>());
+            ElevatorInstance.start();
 
-            RoarOBJ = SpawnSound(Roar, 1f, false);
-            RoarOBJ.name = "Roar";
-            Destroy(RoarOBJ.GetComponent<PhotonView>());
-            Destroy(RoarOBJ.GetComponent<MagicalFX.FX_LifeTime>());
-
+        }
+        if (CanPlaySound(SoundType.Effect))
+        {
+            //DoorManager.OnDoorChange += ElevatorSound;v
             NetworkPlayer.TakeDamage += OnPlayerHit;
         }
-        if (UseElevatorSounds == true)
+        if (CanPlaySound(SoundType.Crowd))
         {
-            DoorManager.OnDoorChange += ElevatorSound;
+
         }
+    }
+
+    public void SetDoorAudio(int State)
+    {
+        ElevatorInstance.setParameterByName("ElevatorState", State);
     }
     private void Start()
     {
@@ -138,73 +110,22 @@ public class SoundManager : MonoBehaviour
     }
     private void Update()
     {
-        if (UseCrowdSounds == true && Initialized())
-            UpdateCrowd();
+        if (!Initialized())
+            return;
+        if (CanPlaySound(SoundType.Elevator))
+        {
+            //ElevatorInstance.setParameterByName("ElevatorState", (int)GetGameInt(DoorState));
+
+        }
+        
+        
+        //if (CanPlaySound(SoundType.Crowd) && Initialized())
+            //UpdateCrowd();
+
+
+
         //if (UseElevatorSounds == true)
             //UpdateElevator();
-    }
-
-    public GameObject SpawnSound(AudioClip sound, float Volume, bool Loop)
-    {
-        //if (Initialized() == false)
-            //return null;
-
-        GameObject SpawnObject = PhotonNetwork.Instantiate("Sound", Vector3.zero, transform.rotation);
-        if(Loop == true)
-            Destroy(SpawnObject.GetComponent<MagicalFX.FX_LifeTime>());
-        SpawnObject.GetComponent<AudioSource>().clip = sound;
-        SpawnObject.GetComponent<AudioSource>().volume = Volume;
-        SpawnObject.GetComponent<AudioSource>().loop = Loop;
-        SpawnObject.GetComponent<AudioSource>().Play();
-        return SpawnObject;
-    }
-    public void ElevatorSound(SequenceState state)
-    {
-        for (int i = 0; i < ActiveElevatorSounds.Count; i++)
-            Destroy(ActiveElevatorSounds[i]);
-        ActiveElevatorSounds.Clear();
-        if (state == SequenceState.Waiting || state == SequenceState.ElevatorMove)
-        {
-            //repeat ElevatorRising
-            if(ElevatorRising != null)
-                ActiveElevatorSounds.Add(SpawnSound(ElevatorRising, 1f, true));
-        }
-        if (state == SequenceState.OpenInDoor)
-        {
-            //play ElevatorStop
-            if (ElevatorStop != null)
-                ActiveElevatorSounds.Add(SpawnSound(ElevatorStop, 1f, false));
-
-            //repeat InDoorRising
-            if (InDoorRising != null)
-                ActiveElevatorSounds.Add(SpawnSound(InDoorRising, 1f, true));
-        }
-        if (state == SequenceState.OpenOutDoor)
-        {
-            //play InDoorStop
-            if (InDoorStop != null)
-                ActiveElevatorSounds.Add(SpawnSound(InDoorStop, 1f, false));
-
-            //repeat OutDoorRising
-            if (OutDoorRising != null)
-                ActiveElevatorSounds.Add(SpawnSound(OutDoorRising, 1f, true));
-        }
-        if (state == SequenceState.WaitingForAllExit)
-        {
-            //play OutDoorStop
-            if (OutDoorStop != null)
-                ActiveElevatorSounds.Add(SpawnSound(OutDoorStop, 1f, false));
-        }
-        if (state == SequenceState.Closing)
-        {
-            //repeat InDoorDrop
-            if (InDoorDrop != null)
-                ActiveElevatorSounds.Add(SpawnSound(InDoorDrop, 1f, false));
-
-            //repeat OutDoorDrop
-            if (OutDoorDrop != null)
-                ActiveElevatorSounds.Add(SpawnSound(OutDoorDrop, 1f, false));
-        }
     }
     public void OnPlayerDeath()
     {
@@ -213,45 +134,12 @@ public class SoundManager : MonoBehaviour
 
     public void OnPlayerHit()
     {
-        RoarOBJ.GetComponent<AudioSource>().Play();
-        TimeAfterRoar = 0f;
+        //RoarOBJ.GetComponent<AudioSource>().Play();
+        //TimeAfterRoar = 0f;
     }
 
     public void OnPlayerLeave()
     {
         ///booooooo
-    }
-    public void UpdateCrowd()
-    {
-        TimeAfterRoar += Time.deltaTime;
-        AmbienceOBJ.GetComponent<AudioSource>().volume = AmbienceCurve.Evaluate(TimeAfterRoar);
-        RoarOBJ.GetComponent<AudioSource>().volume = RoarCurve.Evaluate(TimeAfterRoar);
-        //RoarCurve
-        //if (Input.GetKeyDown(KeyCode.D))
-        //OnPlayerDeath();
-        if (Input.GetKeyDown(KeyCode.H))
-            OnPlayerHit();
-        //if (Input.GetKeyDown(KeyCode.L))
-        //OnPlayerLeave();
-    }
-
-    public void SpawnAudio(int Num, bool ShouldParent)
-    {
-        if (ShouldParent == false)
-        {
-            GameObject Sound = PhotonNetwork.Instantiate("Sound", Vector3.zero, transform.rotation);
-            Sound.GetComponent<AudioSource>().clip = AudioClips[Num].Sound;
-            Sound.GetComponent<AudioSource>().volume = AudioClips[Num].Volume;
-            Sound.GetComponent<AudioSource>().Play();
-        }
-        else
-        {
-            GameObject Sound = PhotonNetwork.Instantiate("ParentSound", Vector3.zero, transform.rotation);
-            Sound.transform.parent = Parent;
-            Sound.GetComponent<AudioSource>().clip = AudioClips[Num].Sound;
-            Sound.GetComponent<AudioSource>().volume = AudioClips[Num].Volume;
-            Sound.GetComponent<AudioSource>().Play();
-            Parent = null;
-        }
     }
 }

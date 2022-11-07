@@ -41,6 +41,17 @@ public class KeycodeTesting : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
             InGameManager.instance.RestartGame();
 
+        if (Input.GetKeyDown(KeyCode.T))
+            InGameManager.instance.StartGame();
+
+        if (Input.GetKeyDown(KeyCode.C))
+            InGameManager.instance.CancelStartup();
+
+        if (Input.GetKeyDown(KeyCode.J))
+            InGameManager.instance.JoinAsSpectator();
+
+        if (Input.GetKeyDown(KeyCode.H))
+            SoundManager.instance.OnPlayerHit();
         /*
         if (Input.GetKeyDown(KeyCode.P))
             SetFlames(true);

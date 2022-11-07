@@ -60,7 +60,7 @@ public class Fireball : MonoBehaviour
         if(Flash != null)
             GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
 
-        SoundManager.instance.PlayAudio("FireballExplosion", null);
+        //SoundManager.instance.PlayAudio("FireballExplosion", null);
 
         //gameObject.GetComponent<PhotonDestroy>().LifeTime = 5f;
         //gameObject.GetComponent<PhotonDestroy>().Timer = 0f;

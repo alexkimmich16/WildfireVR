@@ -48,6 +48,10 @@ public class FlameCollision : MonoBehaviour
     private void Start()
     {
         OnlineEventManager.FirePushEvent += PushFire;
-        transform.parent.GetComponent<PhotonDestroy>().DestoryEvent += UnsubscribeToFire;
+        if (transform.parent != null)
+            if(transform.parent.GetComponent<PhotonDestroy>())
+                transform.parent.GetComponent<PhotonDestroy>().DestoryEvent += UnsubscribeToFire;
+        else if (GetComponent<PhotonDestroy>())
+            GetComponent<PhotonDestroy>().DestoryEvent += UnsubscribeToFire;
     }
 }

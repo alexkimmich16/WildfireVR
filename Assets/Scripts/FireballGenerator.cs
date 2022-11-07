@@ -27,6 +27,6 @@ public class FireballGenerator : MonoBehaviour
     {
         GameObject Current = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(Spell.Fireball, false)), Spawn.position, Spawn.rotation);
         //GameObject Current = PhotonNetwork.Instantiate("RealFireball", Spawn.position, Spawn.rotation);
-        //Current.GetComponent<Fireball>().Speed = Speed;
+        Current.GetComponent<Fireball>().Speed = Speed;
     }
 }

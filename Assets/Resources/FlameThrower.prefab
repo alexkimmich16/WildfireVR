@@ -4898,7 +4898,6 @@ MonoBehaviour:
   fire: {fileID: 58292936881470260}
   Push: 0
   Example: {fileID: 0}
-  Force: 22.4
 --- !u!1 &58292937700656454
 GameObject:
   m_ObjectHideFlags: 0
@@ -24491,9 +24490,13 @@ MonoBehaviour:
     ParticalSystem:
     - {fileID: 58292936881470260}
     - {fileID: 58292938412173441}
-  DestoryStop: 1
-  FlameCol: {fileID: 584730511}
-  FlameParent: {fileID: 0}
+  EventRef:
+    Guid:
+      Data1: -609046774
+      Data2: 1262913594
+      Data3: 473926047
+      Data4: 1987163963
+    Path: event:/FlameThrower
 --- !u!114 &-530231042916774742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24508,4 +24511,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LifeTime: 4.42
   Timer: 0
-  photonView: {fileID: 0}

@@ -50,10 +50,8 @@ public class SceneLoader : MonoBehaviour
     }
     public void SearchForInstance()
     {
-        if(InfoSave.instance != null)
-            DestroyList.Add(InfoSave.instance.gameObject);
-        if (SoundManager.instance != null)
-            DestroyList.Add(SoundManager.instance.gameObject);
+        //if (SoundManager.instance != null)
+            //DestroyList.Add(SoundManager.instance.gameObject);
         if (SceneLoader.instance != null)
             DestroyList.Add(SceneLoader.instance.gameObject);
         

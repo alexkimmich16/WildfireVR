@@ -11,6 +11,7 @@ public class SpawnPoint
 {
     public Transform Point;
     public int ListNum;
+    public Team team;
 }
 
 [System.Serializable]
@@ -18,6 +19,13 @@ public class TeamInfo
 {
     public string Side;
     public List<SpawnPoint> Spawns = new List<SpawnPoint>();
+}
+
+public enum Team
+{
+    Attack = 0,
+    Defense = 1,
+    Spectator = 2,
 }
 
 #endregion
@@ -54,6 +62,7 @@ public class InGameManager : MonoBehaviour
     private void Start()
     {
         NetworkManager.Initialize += SpawnSequence;
+        DoorManager.OnDoorReset += RespawnToSpawnPoint;
     }
     #region StateEvents
     public delegate void StateEvent();
@@ -73,7 +82,6 @@ public class InGameManager : MonoBehaviour
     {
         return true;
     }
-    
     public void SetNewGameState(GameState state)
     {
         //for each individually
@@ -125,9 +133,7 @@ public class InGameManager : MonoBehaviour
         GameState state = GetGameState();
         if (state == GameState.Waiting)
         {
-            if (Attack >= MinPlayers && Defense >= MinPlayers)
-                SetNewGameState(GameState.CountDown);
-            else if (Attack + Defense >= MinPlayers * 2 && BalenceTeams == true)
+            if (Attack + Defense >= MinPlayers * 2 && BalenceTeams == true)
                 ManageTeam();
         }
         if (state == GameState.CountDown)
@@ -211,7 +217,7 @@ public class InGameManager : MonoBehaviour
                 Team team = GetPlayerTeam(PhotonNetwork.PlayerList[i]);
                 if (team == Team.Attack)
                     AttackCount += 1;
-                else
+                else if(team == Team.Defense)
                     DefenseCount += 1;
             }
         }
@@ -221,21 +227,28 @@ public class InGameManager : MonoBehaviour
     
     void Update()
     {
-        if (NetworkManager.HasConnected())
+        if (!NetworkManager.HasConnected())
+            return;
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        if (!Initialized())
+            return;
+
+        ProgressTime();
+        if (LastTotalPlayers > PhotonNetwork.PlayerList.Length && LastTotalPlayers != 0)
         {
-            if (PhotonNetwork.IsMasterClient && Initialized())
-            {
-                ProgressTime();
-                if (LastTotalPlayers > PhotonNetwork.PlayerList.Length && LastTotalPlayers != 0)
-                {
-                    RemovePlayer();
-                }
-                LastTotalPlayers = PhotonNetwork.PlayerList.Length;
-                ReCalculateTeamSize();
-            }
+            RemovePlayer();
+        }
+        LastTotalPlayers = PhotonNetwork.PlayerList.Length;
+        ReCalculateTeamSize();
+    }
+    public void JoinAsSpectator()
+    {
+        if(GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator && GetGameState() == GameState.Waiting)
+        {
+            SpawnSequence();
         }
     }
-
     public IEnumerator SpawnSequenceCorotine()//get appropriate team, spawn, set online
     {
         Team team = BestTeam();
@@ -247,7 +260,24 @@ public class InGameManager : MonoBehaviour
     }
     public void RespawnToSpawnPoint()
     {
-        AIMagicControl.instance.Rig.position = GetSpawnGivenIndex(GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer)).position;//respawn
+        if(Exists(PlayerSpawn, PhotonNetwork.LocalPlayer))
+            AIMagicControl.instance.Rig.position = GetSpawnGivenIndex(GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer)).position;//respawn
+        //else
+            //spectatorrespawnm
+    }
+    public void StartGame()
+    {
+        if (SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers)
+            SetNewGameState(GameState.CountDown);
+    }
+    public void CancelStartup()
+    {
+        if (GetGameState() == GameState.CountDown)
+        {
+            SetNewGameState(GameState.Waiting);
+            SetGameFloat(GameWarmupTimer, 0);
+        }
+            
     }
     public void SpawnSequence()
     {
@@ -255,7 +285,7 @@ public class InGameManager : MonoBehaviour
     }
     public void SetNewPosition(SpawnPoint SpawnInfo)
     {
-        Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer);
+        Team team = SpawnInfo.team;
         Vector3 SpawnPos = realSpawn(team);
         if(team == Team.Attack || team == Team.Defense)
             SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
