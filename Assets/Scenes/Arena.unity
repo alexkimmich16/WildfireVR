@@ -27910,13 +27910,6 @@ MonoBehaviour:
   EnableEffectSounds: 1
   EnableElevatorSounds: 1
   EnableCrowdSounds: 0
-  ElevatorRef:
-    Guid:
-      Data1: -1481068166
-      Data2: 1091150827
-      Data3: -504478046
-      Data4: 1415097924
-    Path: event:/Elevator
   CrowdRef:
     Guid:
       Data1: -125635866
@@ -27924,6 +27917,34 @@ MonoBehaviour:
       Data3: 224269485
       Data4: 602960430
     Path: event:/CrowdAmbience
+  ElevatorRef:
+    Guid:
+      Data1: -1481068166
+      Data2: 1091150827
+      Data3: -504478046
+      Data4: 1415097924
+    Path: event:/Elevator
+  FireballRef:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  FlamesRef:
+    Guid:
+      Data1: -609046774
+      Data2: 1262913594
+      Data3: 473926047
+      Data4: 1987163963
+    Path: event:/FlameThrower
+  BlockRef:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   TimeAfterRoar: 0
   CrowdShouts: []
 --- !u!1001 &1790013708

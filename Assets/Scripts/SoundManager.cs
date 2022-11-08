@@ -54,13 +54,8 @@ public class SoundManager : MonoBehaviour
     //public GameObject AmbienceOBJ;
     //public GameObject RoarOBJ;
     [Header("References")]
-    private FMOD.Studio.EventInstance ElevatorInstance;
-    public FMODUnity.EventReference ElevatorRef;
-
-    
-
-    private FMOD.Studio.EventInstance CrowdInstance;
-    public FMODUnity.EventReference CrowdRef;
+    private FMOD.Studio.EventInstance CrowdInstance, ElevatorInstance;
+    public FMODUnity.EventReference CrowdRef, ElevatorRef, FireballRef, FlamesRef, BlockRef;
 
     [Header("Misc")]
     public float TimeAfterRoar;

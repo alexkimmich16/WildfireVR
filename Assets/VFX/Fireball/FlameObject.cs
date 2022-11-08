@@ -7,13 +7,12 @@ public class FlameObject : MonoBehaviour
 {
     public VFXHolder VFX;
     private FMOD.Studio.EventInstance FlameThrowerSound;
-    public FMODUnity.EventReference EventRef;
     private void Start()
     {
         GetComponent<PhotonDestroy>().DestoryEvent += OnDestory;
         if (GetComponent<PhotonView>() && SoundManager.instance.CanPlaySound(SoundType.Effect))
         {
-            FlameThrowerSound = FMODUnity.RuntimeManager.CreateInstance(EventRef);
+            FlameThrowerSound = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.FlamesRef);
             FMODUnity.RuntimeManager.AttachInstanceToGameObject(FlameThrowerSound, GetComponent<Transform>());
             FlameThrowerSound.start();
             FlameThrowerSound.setParameterByName("Exit", 0f);
