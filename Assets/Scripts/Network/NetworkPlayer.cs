@@ -49,10 +49,6 @@ public class NetworkPlayer : MonoBehaviourPun
             Right.gameObject.SetActive(TestingSelf);
             SkinRenderer.SetActive(TestingSelf);
 
-            //transform.position = Rig
-            //transform.position = new Vector3(Rig.position.x, transform.position.y, Rig.position.z);
-            //MapPosition(transform, Rig);
-            //AtFloor.CustomUpdate();
             transform.position = CharacterDisplay.position;
             //MapPosition(transform, CharacterDisplay);
             MapPosition(Head, RigHead);
@@ -74,29 +70,6 @@ public class NetworkPlayer : MonoBehaviourPun
     {
         target.position = rigTrans.position;
         target.rotation = rigTrans.rotation;
-    }
-
-    public void RespawnAll()
-    {
-        photonView.RPC("FindSpotRPC", RpcTarget.All);
-        //Team team = 
-
-    }
-
-    [PunRPC]
-    void FindSpotRPC()
-    {
-        //reset my position
-        DoorManager.instance.UpdateElevator();
-        Debug.Log("RPC");
-        BillBoardManager.instance.SetResetButton(false);
-        Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer);
-        SpawnPoint SpawnInfo = InGameManager.instance.FindSpawn(team);
-        InGameManager.instance.SetNewPosition(SpawnInfo);
-        Debug.Log("newpos: " + SpawnInfo.ListNum);
-        SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
-        Debug.Log("RPC Respawn at: " + SpawnInfo.ListNum + " Team: " + team.ToString());
-        //InGameManager.instance.FoundSpawn = true;
     }
 
     [PunRPC]

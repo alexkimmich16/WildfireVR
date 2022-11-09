@@ -6,51 +6,34 @@ public class FireAbsorb : MonoBehaviour
 {
     public static FireAbsorb instance;
     void Awake() { instance = this; }
+   
+    [Header("Stats")]
+
     public Side side;
     public bool CanCast;
-    public Rigidbody Fire;
-
     [Range(0,1)]
     public float FireDecaySpeed;
     public float AbsorbThreshold;
+    public float AbsorbStartSpeed;
 
     [Range(0, 360)]
     public float MaxAngle;
     public Vector3 HandRotOffset;
 
+    [Header("References")]
+    public Rigidbody Fire;
     public bool FireballControl;
+
     [Header("Testing")]
     public bool TestBubble = false;
     public GameObject BubbleDisplay;
-    private void OnTriggerEnter(Collider other)
+    
+    public void OnAbsorbStart(Transform Fireball)
     {
-        //Debug.Log(other.name);
-        if (other.GetComponent<Fireball>())
-        {
-            Debug.Log("works: " + other.name);
-            other.GetComponent<Fireball>().SetAbsorbed(true);
-            DetectAbsorbStart(other.GetComponent<Rigidbody>());
-        }
-    }
-
-    public void DetectAbsorbStart(Rigidbody Fireball)
-    {
-        Fire = Fireball;
-        //Debug.Log(Vector3.Angle(Fireball.velocity.normalized, Hand.transform.eulerAngles));
-
-        ///hand is facing fireball
-        ///
-        /*
-        if (Vector3.Angle(Fireball.velocity.normalized, Hand.transform.eulerAngles + HandRotOffset) < MaxAngle)
-        {
-            Fire = Fireball;
-            //face 
-        }
-        else
-        {
-            FailedAbsorb();
-        }
-        */
+        Debug.Log("works: " + Fireball.name);
+        Fireball.GetComponent<Fireball>().SetAbsorbed(true);
+        Fire = Fireball.GetComponent<Rigidbody>();
+        Fireball.GetComponent<PhotonView>().RPC("ChangeSpeed", RpcTarget.All, AbsorbStartSpeed);
     }
 
     void Update()

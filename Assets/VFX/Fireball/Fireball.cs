@@ -11,6 +11,7 @@ public class Fireball : MonoBehaviour
 {
     //[HideInInspector]
     public float Speed;
+    
     [HideInInspector]
     public static int Damage = 5;
 
@@ -21,16 +22,9 @@ public class Fireball : MonoBehaviour
 
     public bool Absorbing;
 
-    //public float TrailRate, BallRate;
-
     public VFXHolder VFX;
 
-    //public VisualEffect Trail;
-    //public VisualEffect Ball;
-
-    //public bool Collided;
-
-
+    private FMOD.Studio.EventInstance FireballSound;
     public void SetAbsorbed(bool State)
     {
         Absorbing = State;
@@ -39,11 +33,16 @@ public class Fireball : MonoBehaviour
     //public float LifeTime = 3;
     void Update()
     {
-        if (Absorbing == true)
-            return;
         if (GetComponent<PhotonView>().IsMine == false)
             return;
-        RB.velocity = transform.forward * Time.deltaTime * Speed;
+        if (Absorbing == true)
+        {
+            //direction towards hand(graudal or isntant)
+        }
+        else
+        {
+            RB.velocity = transform.forward * Time.deltaTime * Speed;
+        }
     }
 
     /// <summary>
@@ -53,35 +52,33 @@ public class Fireball : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
+        
         if (Absorbing == true)
             return;
         if(Explosion != null)
             GameObject.Instantiate(Explosion, this.transform.position, this.transform.rotation);
         if(Flash != null)
             GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
-
-        //SoundManager.instance.PlayAudio("FireballExplosion", null);
-
-        //gameObject.GetComponent<PhotonDestroy>().LifeTime = 5f;
-        //gameObject.GetComponent<PhotonDestroy>().Timer = 0f;
-
+        Debug.Log("collide");
         gameObject.GetComponent<SphereCollider>().enabled = false;
 
         VFX.SetNewState(false);
-        
+
+        if (SoundManager.instance.CanPlaySound(SoundType.Effect))
+            FireballSound.setParameterByName("Exit", 1f);
+
         if (col.collider.tag == "HitBox")
         {
             NetworkManager.instance.LocalTakeDamage(Damage);
         }
         GetComponent<PhotonDestroy>().DoDestroy();
+
+
     }
-    public PhotonView MyPhotonView()
+    [PunRPC]
+    public void ChangeSpeed(float speed)
     {
-        for (int i = 0; i < NetworkManager.instance.PlayerPhotonViews.Count; i++)
-            if (NetworkManager.instance.PlayerPhotonViews[i].IsMine)
-                return NetworkManager.instance.PlayerPhotonViews[i];
-        Debug.LogError("Could Not Get PhotonView");
-        return null;
+        Speed = speed;
     }
     public void Bounce(Vector3 collisionNormal)
     {
@@ -92,6 +89,9 @@ public class Fireball : MonoBehaviour
     private void Start()
     {
         RB = GetComponent<Rigidbody>();
-        //Speed = FireballController.instance.Speed;
+        FireballSound = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.FireballRef);
+        FMODUnity.RuntimeManager.AttachInstanceToGameObject(FireballSound, GetComponent<Transform>());
+        FireballSound.start();
+        FireballSound.setParameterByName("Exit", 0f);
     }
 }

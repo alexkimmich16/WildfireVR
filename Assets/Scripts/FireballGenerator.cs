@@ -11,22 +11,21 @@ public class FireballGenerator : MonoBehaviour
     public bool Active;
     void Update()
     {
-        if(Active == true)
+        if (!Active)
+            return;
+        Timer += Time.deltaTime;
+        Spawn.LookAt(Camera.main.transform);
+        if (Timer > MaxTime)
         {
-            Timer += Time.deltaTime;
-            Spawn.LookAt(Camera.main.transform);
-            if (Timer > MaxTime)
-            {
-                SpawnFireball();
-                Timer = 0;
-            }
+            SpawnFireball();
+            Timer = 0;
         }
     }
 
     public void SpawnFireball()
     {
-        GameObject Current = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(Spell.Fireball, false)), Spawn.position, Spawn.rotation);
-        //GameObject Current = PhotonNetwork.Instantiate("RealFireball", Spawn.position, Spawn.rotation);
-        Current.GetComponent<Fireball>().Speed = Speed;
+        //GameObject Current = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(Spell.Fireball, true)), Spawn.position, Spawn.rotation);
+        GameObject Current = PhotonNetwork.Instantiate((AIMagicControl.instance.spells.SpellName(Spell.Fireball, true)), Spawn.position, Spawn.rotation);
+        Current.GetPhotonView().RPC("ChangeSpeed", RpcTarget.All, Speed);
     }
 }
