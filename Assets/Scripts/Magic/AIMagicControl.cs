@@ -61,7 +61,15 @@ public class AIMagicControl : MonoBehaviour
     {
         return Hands[(int)side].GetComponent<HandActions>();
     }
-
+    public bool HoldingFire()
+    {
+        return Absorbs[0].FireballControl == true || Absorbs[1].FireballControl == true;
+    }
+    public void ResetHoldingFires()
+    {
+        for (int i = 0; i < Absorbs.Count; i++)
+            Absorbs[i].ResetHolding();
+    }
     public bool IsBlocking()
     {
         return Blocks[0].Active == true && Blocks[1].Active == true;

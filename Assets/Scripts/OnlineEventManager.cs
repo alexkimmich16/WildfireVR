@@ -56,6 +56,16 @@ public class OnlineEventManager : MonoBehaviour
         PhotonNetwork.RaiseEvent(DoorCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
     #endregion
+    #region PlaySound
+    public const byte SoundCode = 5;
+    public static void SoundEvent(int SoundIndex)
+    {
+        //Debug.Log(result.ToString());
+        object[] content = new object[] { SoundIndex };
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
+        PhotonNetwork.RaiseEvent(SoundCode, content, raiseEventOptions, SendOptions.SendReliable);
+    }
+    #endregion
     #region basic
     private void OnEnable() { PhotonNetwork.NetworkingClient.EventReceived += OnEvent; }
     private void OnDisable() { PhotonNetwork.NetworkingClient.EventReceived -= OnEvent; }
@@ -114,6 +124,20 @@ public class OnlineEventManager : MonoBehaviour
             object[] data = (object[])photonEvent.CustomData;
             int state = (int)data[0];
             SoundManager.instance.SetDoorAudio(state);
+        }
+        if (photonEvent.Code == SoundCode)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            /*
+            if ((int)data[0] == 0)
+                SoundManager.instance.OnPlayerHit();
+            else if ((int)data[0] == 1)
+                SoundManager.instance.OnPlayerDeath();
+            else if ((int)data[0] == 1)
+                SoundManager.instance.OnPlayerLeave();
+            else if ((int)data[0] == 1)
+                SoundManager.instance.OnPlayerHit();
+            */
         }
     }
     #endregion

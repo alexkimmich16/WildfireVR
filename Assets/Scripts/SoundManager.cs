@@ -55,7 +55,8 @@ public class SoundManager : MonoBehaviour
     //public GameObject RoarOBJ;
     [Header("References")]
     private FMOD.Studio.EventInstance CrowdInstance, ElevatorInstance;
-    public FMODUnity.EventReference CrowdRef, ElevatorRef, FireballRef, FlamesRef, BlockRef;
+    public FMODUnity.EventReference CrowdRef, ElevatorRef, FireballRef, FlamesRef, BlockRef, TakeDamageRef;
+    public FMODUnity.EventReference DeathRef, PlayerLeftRef;
 
     [Header("Misc")]
     public float TimeAfterRoar;
@@ -80,9 +81,7 @@ public class SoundManager : MonoBehaviour
         if (CanPlaySound(SoundType.Elevator))
         {
             ElevatorInstance = FMODUnity.RuntimeManager.CreateInstance(ElevatorRef);
-            //FMODUnity.RuntimeManager.AttachInstanceToGameObject(FlameThrowerSound, GetComponent<Transform>());
             ElevatorInstance.start();
-
         }
         if (CanPlaySound(SoundType.Effect))
         {
@@ -101,17 +100,14 @@ public class SoundManager : MonoBehaviour
     }
     private void Start()
     {
-        NetworkManager.Initialize += OnInitialize;
+        //NetworkManager.Initialize += OnInitialize;
+        //NetworkManager.Initialize += OnPlayerLeave();
+        //NetworkManager.Initialize += OnPlayerDeath();
     }
     private void Update()
     {
         if (!Initialized())
             return;
-        if (CanPlaySound(SoundType.Elevator))
-        {
-            //ElevatorInstance.setParameterByName("ElevatorState", (int)GetGameInt(DoorState));
-
-        }
         
         
         //if (CanPlaySound(SoundType.Crowd) && Initialized())

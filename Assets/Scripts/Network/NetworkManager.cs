@@ -41,6 +41,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public delegate void initializeEvent();
     public static event initializeEvent Initialize;
 
+    public float AfterDeathWait;
+
     void Start()
     {
         ConnectToServer();
@@ -141,6 +143,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         int BeforeHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
         int NewHealth = BeforeHealth - Damage;
         OnTakeDamage(Damage);
+        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("TakeDamage", RpcTarget.All);
         NetworkPlayer.TakeDamageEventMethod();
         if (NewHealth > 0)
         {
@@ -149,19 +152,22 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         else
         {
             SetPlayerInt(PlayerHealth, 0, PhotonNetwork.LocalPlayer);
-            OnDeath();
+            StartCoroutine(MainPLayerDeath());
         }
         
     }
-    public void OnDeath()
+    public IEnumerator MainPLayerDeath()
     {
+        //my network player death
+        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("PlayerDied", RpcTarget.All);
+
+        //physical ragdoll death
+
+
+        //wait to find spawn
+        yield return new WaitForSeconds(AfterDeathWait);
         SpawnPoint SpawnInfo = InGameManager.instance.FindSpawn(Team.Spectator);
         InGameManager.instance.SetNewPosition(SpawnInfo);
-
-
-        ///seperate body from rig 
-        ///pause for 2 seconds as you watch youself fall down
-        /// respawn to spectator
-        StartCoroutine(NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetComponent<PlayerControl>().RagdollRespawn());
+        
     }
 }

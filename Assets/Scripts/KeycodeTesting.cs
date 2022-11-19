@@ -36,7 +36,7 @@ public class KeycodeTesting : MonoBehaviour
             NetworkManager.instance.LocalTakeDamage(DamageAmount);
 
         if (Input.GetKeyDown(KeyCode.Z))
-            AIMagicControl.instance.Fireballs[(int)Side.Right].SpawnFireball(false);
+            AIMagicControl.instance.Fireballs[(int)Side.Right].SpawnFireball();
 
         if (Input.GetKeyDown(KeyCode.R))
             InGameManager.instance.RestartGame();
@@ -50,8 +50,8 @@ public class KeycodeTesting : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.J))
             InGameManager.instance.JoinAsSpectator();
 
-        if (Input.GetKeyDown(KeyCode.H))
-            SoundManager.instance.OnPlayerHit();
+        if (Input.GetKeyDown(KeyCode.P))
+            NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetComponent<Ragdoll>().EnableRagdoll();
         /*
         if (Input.GetKeyDown(KeyCode.P))
             SetFlames(true);

@@ -10,9 +10,49 @@ public class PlayerControl : MonoBehaviourPunCallbacks
     //public int Health;
     public static int MaxHealth = 100;
     public static float DeathTime = 1f;
+
+    
     public delegate void DisolveAll();
     public event DisolveAll disolveEvent;
+
+    private FMOD.Studio.EventInstance TakeDamageInstance;
+    private FMOD.Studio.EventInstance DeathInstance;
+
     
+
+    [PunRPC]
+    public void SetEyes(Eyes eyes) { GetComponent<MultiplayerEyes>().ChangeEyes(eyes); }
+    [PunRPC]
+    public void MotionDone(Spell spell) { FirePillar.CallStartFire(spell); }
+    [PunRPC]
+    public void PlayerDied()
+    {
+        GetComponent<Ragdoll>().EnableRagdoll();
+        if (SoundManager.instance.CanPlaySound(SoundType.Effect))
+        {
+            DeathInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.DeathRef);
+            FMODUnity.RuntimeManager.AttachInstanceToGameObject(DeathInstance, GetComponent<Transform>());
+            DeathInstance.start();
+        }
+            
+    }
+    [PunRPC]
+    public void TakeDamage()
+    {
+        if (SoundManager.instance.CanPlaySound(SoundType.Effect))
+        {
+            TakeDamageInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.TakeDamageRef);
+            FMODUnity.RuntimeManager.AttachInstanceToGameObject(TakeDamageInstance, GetComponent<Transform>());
+            TakeDamageInstance.start();
+        }
+        
+    }
+
+
+
+
+
+
     public IEnumerator DisolveRespawn()
     {
         disolveEvent();
@@ -32,31 +72,6 @@ public class PlayerControl : MonoBehaviourPunCallbacks
         }
         */
     }
-
-    public IEnumerator RagdollRespawn()
-    {
-        gameObject.GetPhotonView().RPC("PlayerDied", RpcTarget.All);
-        //camera grey to floor(post processing)
-        yield return new WaitForSeconds(DeathTime);
-    }
-
-    [PunRPC]
-    public void SetEyes(Eyes eyes) { GetComponent<MultiplayerEyes>().ChangeEyes(eyes); }
-    [PunRPC]
-    public void MotionDone(Spell spell) { FirePillar.CallStartFire(spell); }
-    [PunRPC]
-    public void PlayerDied()
-    {
-        //ragdoll
-        GetComponent<Ragdoll>().EnableRagdoll();
-    }
-
-
-
-
-
-
-
     /*
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

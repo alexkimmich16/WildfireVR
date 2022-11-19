@@ -69,7 +69,7 @@ public class FireballController : MonoBehaviour
         {
             //ControlPos = AIMagicControl.instance.Hands[(int)side].localPosition;
             StartCoroutine(WaitForClose());
-            SpawnFireball(FireAbsorb.instance.FireballControl);
+            SpawnFireball();
             ///FireAbsorb.instance.StopHoldingFireball();
         }
         StartPos = AIMagicControl.instance.Hands[(int)side].localPosition;
@@ -118,14 +118,17 @@ public class FireballController : MonoBehaviour
         side = GetComponent<LearningAgent>().side;
     }
 
-    public void SpawnFireball(bool Redirect)
+    public void SpawnFireball()
     {
         if (InGameManager.instance.CanDoMagic() == false || frames.CanCast == false)
             return;
-
+        
         EyeController.instance.ChangeEyes(Eyes.Fire);
         ///direction of controller forward
-        Spell spell = (Redirect) ? Spell.BlueFireball : Spell.Fireball;
+        Spell spell = (AIMagicControl.instance.HoldingFire()) ? Spell.BlueFireball : Spell.Fireball;
+        if (AIMagicControl.instance.HoldingFire())
+            AIMagicControl.instance.ResetHoldingFires();
+
         if (SpawnOnline)
         {
             OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(spell, true), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation());
