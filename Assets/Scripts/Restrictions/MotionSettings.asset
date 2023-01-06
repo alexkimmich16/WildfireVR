@@ -1,0 +1,229 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64f787c9140a74341b9b5d1cb9e9b23c, type: 3}
+  m_Name: MotionSettings
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  Iteration: 1
+  MotionRestrictions:
+  - Motion: Fireball
+    WeightedValueThreshold: 1
+    Restrictions:
+    - Label: speed
+      Active: 1
+      Weight: 1
+      restriction: 0
+      CheckType: 0
+      MaxSafe: 53.32
+      MinSafe: 5.3
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: 0, y: 0, z: 0}
+      ExcludeHeight: 0
+      UseAxisList: 
+      ShouldDebug: 0
+      Value: 0.030020434
+    - Label: hand straight
+      Active: 1
+      Weight: 1
+      restriction: 1
+      CheckType: 1
+      MaxSafe: 50.6
+      MinSafe: 0
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: 0, y: 0, z: 1}
+      ExcludeHeight: 0
+      UseAxisList: 
+      ShouldDebug: 0
+      Value: 74.87649
+    - Label: headforwardvel
+      Active: 1
+      Weight: 1
+      restriction: 1
+      CheckType: 0
+      MaxSafe: 50.6
+      MinSafe: 0
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: 0, y: 0, z: 1}
+      ExcludeHeight: 0
+      UseAxisList: 
+      ShouldDebug: 0
+      Value: 42.27158
+  - Motion: Flames
+    WeightedValueThreshold: 0.8
+    Restrictions:
+    - Label: speed
+      Active: 1
+      Weight: 1
+      restriction: 0
+      CheckType: 0
+      MaxSafe: 53.32
+      MinSafe: 5.3
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: 0, y: 0, z: 0}
+      ExcludeHeight: 0
+      UseAxisList: 
+      ShouldDebug: 0
+      Value: 0.030020434
+    - Label: hand straight
+      Active: 1
+      Weight: 1
+      restriction: 1
+      CheckType: 1
+      MaxSafe: 50.6
+      MinSafe: 0
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: 0, y: 0, z: 1}
+      ExcludeHeight: 0
+      UseAxisList: 
+      ShouldDebug: 0
+      Value: 74.87649
+    - Label: headforwardvel
+      Active: 1
+      Weight: 1
+      restriction: 1
+      CheckType: 0
+      MaxSafe: 50.6
+      MinSafe: 0
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: -1, y: 0, z: 0}
+      ExcludeHeight: 0
+      UseAxisList: 
+      ShouldDebug: 0
+      Value: 57.747
+    - Label: handfacehead (facehead)
+      Active: 1
+      Weight: 0.5
+      restriction: 2
+      CheckType: 0
+      MaxSafe: 25
+      MinSafe: 0
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: -1, y: 0, z: 0}
+      ExcludeHeight: 1
+      UseAxisList: 000000000100000002000000
+      ShouldDebug: 0
+      Value: 41.549423
+    - Label: handfacehead (flat)
+      Active: 1
+      Weight: 0.5
+      restriction: 2
+      CheckType: 0
+      MaxSafe: 25
+      MinSafe: 0
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: 0, y: 1, z: 0}
+      ExcludeHeight: 1
+      UseAxisList: 000000000100000002000000
+      ShouldDebug: 1
+      Value: 150.18097
+  - Motion: FlameBlock
+    WeightedValueThreshold: 1
+    Restrictions:
+    - Label: speed
+      Active: 1
+      Weight: 1
+      restriction: 0
+      CheckType: 0
+      MaxSafe: 2
+      MinSafe: 0
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: 0, y: 0, z: 0}
+      ExcludeHeight: 0
+      UseAxisList: 
+      ShouldDebug: 0
+      Value: 0.030020434
+    - Label: handfacehead
+      Active: 1
+      Weight: 1
+      restriction: 2
+      CheckType: 0
+      MaxSafe: 50.3
+      MinSafe: 0
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: -1, y: 0, z: 0}
+      ExcludeHeight: 1
+      UseAxisList: 000000000100000002000000
+      ShouldDebug: 0
+      Value: 41.549423
+    - Label: not too far
+      Active: 1
+      Weight: 1
+      restriction: 3
+      CheckType: 0
+      MaxSafe: 0.34
+      MinSafe: 0
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: 0, y: 0, z: 0}
+      ExcludeHeight: 0
+      UseAxisList: 0000000002000000
+      ShouldDebug: 0
+      Value: 0.5216863
+    - Label: Not Too High
+      Active: 1
+      Weight: 1
+      restriction: 3
+      CheckType: 0
+      MaxSafe: 0.15
+      MinSafe: 0
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: 0, y: 0, z: 0}
+      ExcludeHeight: 0
+      UseAxisList: 01000000
+      ShouldDebug: 0
+      Value: 0.043186963
+    - Label: Not Crossed
+      Active: 1
+      Weight: 1
+      restriction: 4
+      CheckType: 0
+      MaxSafe: 180
+      MinSafe: 0
+      MinFalloff: 0
+      MaxFalloff: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: 0, y: 0, z: 0}
+      ExcludeHeight: 0
+      UseAxisList: 000000000100000002000000
+      ShouldDebug: 0
+      Value: 13.547823

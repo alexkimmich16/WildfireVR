@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 7668540880469159257}
   - component: {fileID: 7668540880469159255}
   - component: {fileID: 7668540880469159254}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: handle_Low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &7668540880469159257
 Transform:
@@ -94,12 +94,12 @@ GameObject:
   - component: {fileID: 7668540880555181441}
   - component: {fileID: 7668540880555181471}
   - component: {fileID: 7668540880555181470}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: base_Low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &7668540880555181441
 Transform:
@@ -177,12 +177,12 @@ GameObject:
   - component: {fileID: 7668540880719429945}
   - component: {fileID: 7668540880719429943}
   - component: {fileID: 7668540880719429942}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: twist_Low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &7668540880719429945
 Transform:
@@ -260,12 +260,12 @@ GameObject:
   - component: {fileID: 7668540880738795253}
   - component: {fileID: 7668540880738795251}
   - component: {fileID: 7668540880738795250}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: firePit_Low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &7668540880738795253
 Transform:
@@ -343,12 +343,12 @@ GameObject:
   - component: {fileID: 7668540880863415229}
   - component: {fileID: 7668540880863415227}
   - component: {fileID: 7668540880863415226}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: part2_Low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &7668540880863415229
 Transform:
@@ -426,12 +426,12 @@ GameObject:
   - component: {fileID: 7668540881004477695}
   - component: {fileID: 7668540881004477693}
   - component: {fileID: 7668540881004477692}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: holders_Low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &7668540881004477695
 Transform:
@@ -509,12 +509,12 @@ GameObject:
   - component: {fileID: 7668540881255933655}
   - component: {fileID: 7668540881255933653}
   - component: {fileID: 7668540881255933652}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: holders_Low1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &7668540881255933655
 Transform:
@@ -592,12 +592,12 @@ GameObject:
   - component: {fileID: 7668540881545105054}
   - component: {fileID: 7668540881545105052}
   - component: {fileID: 7668540881545105055}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Area Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &7668540881545105054
 Transform:
@@ -607,7 +607,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7668540881545105025}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.015, y: 0.0701, z: 0.114}
+  m_LocalPosition: {x: -0, y: 0.029, z: 0.156}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -626,8 +626,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 697.7
-  m_Range: 28.9
+  m_Intensity: 502.7
+  m_Range: 12.02
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -660,18 +660,18 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 261879
+    m_Bits: 524288
   m_RenderingLayerMask: 1
   m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 0
-  m_ColorTemperature: 1500
+  m_BounceIntensity: 2.9
+  m_ColorTemperature: 1928
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0.19140625, y: NaN, z: 12, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -705,12 +705,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7668540881767508317}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: WallTorch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &7668540881767508317
 Transform:
@@ -749,12 +749,12 @@ GameObject:
   - component: {fileID: 7668540881786892186}
   - component: {fileID: 7668540881786892184}
   - component: {fileID: 7668540881786892187}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: part1_Low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &7668540881786892186
 Transform:
@@ -832,12 +832,12 @@ GameObject:
   - component: {fileID: 7668540882127584616}
   - component: {fileID: 7668540882127584614}
   - component: {fileID: 7668540882127584617}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: wallMount_Low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &7668540882127584616
 Transform:
@@ -912,24 +912,68 @@ PrefabInstance:
     m_TransformParent: {fileID: 7668540881767508317}
     m_Modifications:
     - target: {fileID: 108416, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 108416, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 108416, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 135976, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: m_Layer
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 135976, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 135976, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 141908, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
       propertyPath: m_Name
       value: TorchFire
       objectReference: {fileID: 0}
     - target: {fileID: 141908, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 141908, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 141908, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 143338, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 143338, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 151864, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: m_Layer
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 151864, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 151864, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 436324, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.0031
       objectReference: {fileID: 0}
     - target: {fileID: 466118, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
       propertyPath: m_RootOrder
@@ -987,6 +1031,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 19825676, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: InitialModule.startRotationX.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19825676, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: InitialModule.startRotationY.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 19844934, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
       propertyPath: ShapeModule.type
       value: 4
@@ -1034,6 +1086,30 @@ PrefabInstance:
     - target: {fileID: 19876796, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
       propertyPath: InitialModule.startRotationY.minMaxState
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19882238, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: ShapeModule.type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 19882238, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: ShapeModule.angle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19882238, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: ShapeModule.radius.value
+      value: 0.0001
+      objectReference: {fileID: 0}
+    - target: {fileID: 19882238, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: ShapeModule.radiusThickness
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19882238, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 19882238, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 19882238, guid: 6b1b539cbd4ba764dabf69f0ae48b764, type: 3}
       propertyPath: InitialModule.startRotationX.minMaxState
