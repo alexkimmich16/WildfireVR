@@ -25,9 +25,8 @@ namespace RestrictionSystem
         public SingleInfo GetControllerInfo(Side side)
         {
             ResetStats();
-            Vector3 CamPos = Cam.localPosition;
             TestCam[(int)side].position = Vector3.zero;
-            TestHand[(int)side].position = TestHand[(int)side].position - CamPos;
+            TestHand[(int)side].position = TestHand[(int)side].position - Cam.localPosition;
 
             float YDifference = -Cam.localRotation.eulerAngles.y;
 
@@ -60,13 +59,18 @@ namespace RestrictionSystem
 
         void Start()
         {
-            StartCoroutine(ManageLists(1 / 60));
+            StartCoroutine(ManageLists(1f / 60f));
+            //InvokeRepeating("ManageLists", 0f, 1f/60f);
         }
-
-        // Update is called once per frame
-        void Update()
+        public SingleInfo PastFrame(Side side)
         {
-
+            List<SingleInfo> SideList = (side == Side.right) ? RightInfo : LeftInfo;
+            return SideList[SideList.Count - FramesAgo];
+        }
+        public SingleInfo PastFrame(Side side, int FramesAgo)
+        {
+            List<SingleInfo> SideList = (side == Side.right) ? RightInfo : LeftInfo;
+            return SideList[SideList.Count - FramesAgo];
         }
         IEnumerator ManageLists(float Interval)
         {
@@ -75,33 +79,30 @@ namespace RestrictionSystem
                 RightInfo.Add(GetControllerInfo(Side.right));
                 if (RightInfo.Count > MaxStoreInfo)
                     RightInfo.RemoveAt(0);
-
                 LeftInfo.Add(GetControllerInfo(Side.left));
                 if (LeftInfo.Count > MaxStoreInfo)
                     LeftInfo.RemoveAt(0);
 
-                if(LeftInfo.Count > MaxStoreInfo - 1)
+                if (LeftInfo.Count > MaxStoreInfo - 1)
                     RestrictionManager.instance.TriggerFrameEvents();
 
                 yield return new WaitForSeconds(Interval);
             }
         }
-        public SingleInfo PastFrame(Side side)
-        {
-            List<SingleInfo> SideList = (side == Side.right) ? RightInfo : LeftInfo;
-            return SideList[SideList.Count - FramesAgo];
-        }
+        public bool AtMax() { return LeftInfo.Count > MaxStoreInfo - 1; }
     }
     [System.Serializable]
     public class SingleInfo
     {
         public Vector3 HeadPos, HeadRot, HandPos, HandRot;
+        public float CurrentTime;
         public SingleInfo(Vector3 HandPosStat, Vector3 HandRotStat, Vector3 HeadPosStat, Vector3 HeadRotStat)
         {
             HeadPos = HeadPosStat;
             HeadRot = HeadRotStat;
             HandPos = HandPosStat;
             HandRot = HandRotStat;
+            CurrentTime = Time.timeSinceLevelLoad;
         }
     }
 }

@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
 using static Odin.Net;
-using ExitGames.Client.Photon;
+using Sirenix.OdinInspector;
 #region Classes
 [System.Serializable]
 public class SpawnPoint
@@ -12,13 +11,6 @@ public class SpawnPoint
     public Transform Point;
     public int ListNum;
     public Team team;
-}
-
-[System.Serializable]
-public class TeamInfo
-{
-    public string Side;
-    public List<SpawnPoint> Spawns = new List<SpawnPoint>();
 }
 
 public enum Team
@@ -29,12 +21,10 @@ public enum Team
 }
 
 #endregion
-public class InGameManager : MonoBehaviour
+public class InGameManager : SerializedMonoBehaviour
 {
-    #region Singleton
     public static InGameManager instance;
     void Awake() { instance = this; }
-    #endregion
     
     //[Header("Misc")]
     [Header("Players")]
@@ -43,48 +33,52 @@ public class InGameManager : MonoBehaviour
    
     public bool BalenceTeams = false;
     public bool MagicBeforeStart = false;
-    
+    public bool AlwaysCast = true;
+
     [Header("Time")]
     public float WarmupTime = 5f;
     public float FinishTime = 200f;
+
+    public bool ChooseAttackOnEven = true;
     [Header("Output")]
 
-    public int LastTotalPlayers;
-
-    //attack first
-    public List<TeamInfo> Teams = new List<TeamInfo>();
     //public List<Transform> SpectatorSpawns = new List<Transform>();
 
     [Header("Debug")]
     public bool ShouldDebug;
     public GameState CurrentState;
-    public List<int> Health;
-    private void Start()
-    {
-        NetworkManager.Initialize += SpawnSequence;
-        DoorManager.OnDoorReset += RespawnToSpawnPoint;
-    }
     #region StateEvents
     public delegate void StateEvent();
     public event StateEvent OnStartCountdown;
     public event StateEvent OnGameStart;
     public event StateEvent OnGameEnd;
 
-    //public delegate void Outcome(Result result);
-    //public event Outcome OnOutcome;
+    [ReadOnly] public float Timer;
 
-
-    private float Timer;
-
-    public float ElevatorSpawnOffset;
+    
 
     public bool CanMove()
     {
         return true;
     }
+    public Team BestTeamForSpawn()
+    {
+        if (GetGameState() != GameState.Waiting)
+            return Team.Spectator;
+
+        int AttCount = SideCount(Team.Attack);
+        int DefCount = SideCount(Team.Defense);
+        if (AttCount == MaxPlayers && DefCount == MaxPlayers)
+            return Team.Spectator;
+        else if (AttCount == DefCount)
+            return ChooseAttackOnEven ? Team.Attack : (Team)Random.Range(0, 2);
+        else
+            return AttCount > DefCount ? Team.Defense : Team.Attack;
+    }
     public void SetNewGameState(GameState state)
     {
         //for each individually
+        Debug.Log(state);
         Timer = 0f;
         if(state == GameState.Waiting)
         {
@@ -92,15 +86,15 @@ public class InGameManager : MonoBehaviour
         }
         else if (state == GameState.CountDown)
         {
-            if(OnStartCountdown != null)
+            Timer = WarmupTime;
+            if (OnStartCountdown != null)
                 OnStartCountdown();
         }
         else if (state == GameState.Active)
         {
             if (OnGameStart != null)
                 OnGameStart();
-            SetGameFloat(GameWarmupTimer, 0f);
-            //BillBoardManager.instance.SetChangeButton(false);
+            Timer = FinishTime;
         }
         else if (state == GameState.Finished)
         {
@@ -122,109 +116,26 @@ public class InGameManager : MonoBehaviour
     #endregion
     public void ProgressTime()
     {
-        if(ShouldDebug)
-            CurrentState = GetGameState();
-        float WarmupTimer = GetGameFloat(GameWarmupTimer);
-        float FinishTimer = GetGameFloat(GameFinishTimer);
-        int Attack = SideCount(Team.Attack);
-        int Defense = SideCount(Team.Defense);
+        CurrentState = GetGameState();
         //Debug.Log("Attack: " + Attack + "  Defense: " + Defense);
-        
+
         GameState state = GetGameState();
-        if (state == GameState.Waiting)
-        {
-            if (Attack + Defense >= MinPlayers * 2 && BalenceTeams == true)
-                ManageTeam();
-        }
-        if (state == GameState.CountDown)
-        {
-            //BillBoardManager.instance.SetChangeButton(true);
-            if (Timer > WarmupTime)
-            {
-                SetNewGameState(GameState.Active);
-                SetGameFloat(GameWarmupTimer, 0);
-                Timer = 0;
-            }
-            else
-            {
-                Timer += Time.deltaTime;
-                SetGameFloat(GameWarmupTimer, Timer);
-            }
+        //Debug.Log("state: " + state);
+        Timer -= (state == GameState.CountDown || (state == GameState.Active && DoorManager.instance.Sequence == SequenceState.WaitingForAllExit)) ? Time.deltaTime : 0;
+        SetGameFloat(GameWarmupTimer, state == GameState.CountDown ? Timer : 0);
+        SetGameFloat(GameFinishTimer, state == GameState.Active ? Timer : 0);
+        
+
+        if (state == GameState.Waiting && SideCount(Team.Attack) + SideCount(Team.Defense) >= MinPlayers * 2 && BalenceTeams == true)
+            ManageTeam();
+
+        bool NextRestrictionReady = (state == GameState.CountDown) || (state == GameState.Active);
+        if (NextRestrictionReady && Timer < 0)
+            SetNewGameState((GameState)((int)state) + 1);
                 
-        }
-        if (state == GameState.Active)
-        {
-            //Debug.Log("Att: " + AttackAlive + "  Def: " + DefenseAlive + " FinishTimer: " + FinishTimer);
-            if (Timer > FinishTime || TotalAlive(Team.Attack) == 0 || TotalAlive(Team.Defense) == 0)
-            {
-                SetNewGameState(GameState.Finished);
-                Timer = 0;
-                SetGameFloat(GameFinishTimer, 0);
-            }
-            else
-            {
-                Timer += Time.deltaTime;
-                SetGameFloat(GameFinishTimer, Timer);
-            }
-        }
-        /*
-        void UpdateTimer(string TimerName)
-        {
-            Timer += Time.deltaTime;
-            SetGameFloat(TimerName, Timer);
-        }
-        */
+        else if (state == GameState.Active && (TotalAlive(Team.Attack) == 0 || TotalAlive(Team.Defense) == 0))
+            SetNewGameState(GameState.Finished);
     }
-    public void RemovePlayer()
-    {
-        Debug.Log("playerleft");
-        List<int> Current = new List<int>();
-        for (int i = 0; i < 2; i++)
-        {
-            if (GetGameBool(DefenseSpawns[i]) == true)
-                Current.Add(i);
-            if (GetGameBool(AttackSpawns[i]) == true)
-                Current.Add(i + 3);
-        }
-
-        List<int> All = new List<int>();
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-            All.Add(GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer));
-
-        if (Current.Count == All.Count)
-            return;
-
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-        {
-            int PlayerSpawnID = GetPlayerInt(PlayerSpawn, PhotonNetwork.PlayerList[i]);
-            if (!Current.Contains(PlayerSpawnID))
-            {
-                string spawnID = GetNameWithNumber(PlayerSpawnID);
-                SetGameBool(spawnID, false);
-            }
-        }
-
-        ReCalculateTeamSize();
-    }
-    public void ReCalculateTeamSize()
-    {
-        int AttackCount = 0;
-        int DefenseCount = 0;
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-        {
-            if(Exists(PlayerTeam, PhotonNetwork.PlayerList[i]))
-            {
-                Team team = GetPlayerTeam(PhotonNetwork.PlayerList[i]);
-                if (team == Team.Attack)
-                    AttackCount += 1;
-                else if(team == Team.Defense)
-                    DefenseCount += 1;
-            }
-        }
-        SetGameInt(AttackTeamCount, AttackCount);
-        SetGameInt(DefenseTeamCount, DefenseCount);
-    }
-    
     void Update()
     {
         if (!NetworkManager.HasConnected())
@@ -235,36 +146,8 @@ public class InGameManager : MonoBehaviour
             return;
 
         ProgressTime();
-        if (LastTotalPlayers > PhotonNetwork.PlayerList.Length && LastTotalPlayers != 0)
-        {
-            RemovePlayer();
-        }
-        LastTotalPlayers = PhotonNetwork.PlayerList.Length;
-        ReCalculateTeamSize();
     }
-    public void JoinAsSpectator()
-    {
-        if(GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator && GetGameState() == GameState.Waiting)
-        {
-            SpawnSequence();
-        }
-    }
-    public IEnumerator SpawnSequenceCorotine()//get appropriate team, spawn, set online
-    {
-        Team team = BestTeam();
-        SetPlayerTeam(team, PhotonNetwork.LocalPlayer);
-        yield return new WaitWhile(() => Exists(PlayerTeam, PhotonNetwork.LocalPlayer) == false); //wait for team
-        SpawnPoint SpawnInfo = FindSpawn(team);
-        SetNewPosition(SpawnInfo);
-        ///enable view
-    }
-    public void RespawnToSpawnPoint()
-    {
-        if(Exists(PlayerSpawn, PhotonNetwork.LocalPlayer))
-            AIMagicControl.instance.Rig.position = GetSpawnGivenIndex(GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer)).position;//respawn
-        //else
-            //spectatorrespawnm
-    }
+
     public void StartGame()
     {
         if (SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers)
@@ -277,35 +160,8 @@ public class InGameManager : MonoBehaviour
             SetNewGameState(GameState.Waiting);
             SetGameFloat(GameWarmupTimer, 0);
         }
-            
     }
-    public void SpawnSequence()
-    {
-        StartCoroutine(SpawnSequenceCorotine()); 
-    }
-    public void SetNewPosition(SpawnPoint SpawnInfo)
-    {
-        Team team = SpawnInfo.team;
-        Vector3 SpawnPos = realSpawn(team);
-        if(team == Team.Attack || team == Team.Defense)
-            SetPlayerInt(PlayerSpawn, SpawnInfo.ListNum, PhotonNetwork.LocalPlayer);
-        AIMagicControl.instance.Rig.position = SpawnPos;
-
-        Vector3 realSpawn(Team team)
-        {
-            if (team == Team.Attack || team == Team.Defense)
-                return new Vector3(SpawnInfo.Point.position.x, GetGameFloat(DoorNames[0]) + ElevatorSpawnOffset, SpawnInfo.Point.position.z);
-            else
-                return SpawnInfo.Point.position;
-        }
-    }
-    public Transform GetSpawnGivenIndex(int Index)//get point based on online code
-    {
-        if (Index < Teams[0].Spawns.Count)
-            return Teams[0].Spawns[Index].Point;
-        else
-            return Teams[1].Spawns[Index - Teams[0].Spawns.Count].Point;
-    }
+   
     #region SequenceManage
 
 
@@ -325,73 +181,31 @@ public class InGameManager : MonoBehaviour
         int DefenseTeamAlive = TotalAlive(Team.Defense);
         if(ShouldDebug)
             Debug.Log("Def: " + DefenseTeamAlive + "Att: " + AttackTeamAlive);
-        if (AttackTeamAlive > DefenseTeamAlive)
-            return Result.AttackWon;
-        else if (DefenseTeamAlive > AttackTeamAlive)
-            return Result.DefenseWon;
-        else
-            return Result.UnDefined;
+        if (AttackTeamAlive != DefenseTeamAlive)
+            return AttackTeamAlive > DefenseTeamAlive ? Result.AttackWon : Result.DefenseWon;
+        return Result.UnDefined;
     }
     public int SideCount(Team team)
     {
-        if (team == Team.Attack)
-            return GetGameInt(AttackTeamCount);
-        else if (team == Team.Defense)
-            return GetGameInt(DefenseTeamCount);
-        Debug.LogError("SideCount Error!");
-        return 0;
+        int Count = 0;
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            if (Exists(PlayerTeam, PhotonNetwork.PlayerList[i]))
+                if (GetPlayerTeam(PhotonNetwork.PlayerList[i]) == team)
+                    Count += 1;
+        return Count;
     }
-    public Team BestTeam()
-    {
-        if(GetGameState() != GameState.Waiting)
-            return Team.Spectator;
-
-        int AttCount = SideCount(Team.Attack);
-        int DefCount = SideCount(Team.Defense);
-        if (AttCount == MaxPlayers && DefCount == MaxPlayers)
-            return Team.Spectator;
-        if (AttCount > DefCount)
-            return Team.Defense;
-        else if (AttCount < DefCount)
-            return Team.Attack;
-        else
-        {
-            int Rand = Random.Range(0, 2);
-            if (Rand == 0)
-                return Team.Attack;
-            else
-                return Team.Defense;
-        }
-
-    }
-    public SpawnPoint FindSpawn(Team team)
-    {
-        int Side = (int)team;
-        if (team == Team.Spectator)
-            return Teams[Side].Spawns[Random.Range(0, Teams[Side].Spawns.Count)];
-        for (int i = 0; i < Teams[Side].Spawns.Count; i++)
-        {
-            string SpawnString;
-            if (team == Team.Attack)
-                SpawnString = AttackSpawns[i];
-            else
-                SpawnString = DefenseSpawns[i];
-            if (GetGameBool(SpawnString) == false)
-            {
-                SetGameBool(SpawnString, true);
-                return Teams[Side].Spawns[i];
-            }
-        }
-        
-        Debug.LogError("Could not find spawn of type: " + team.ToString());
-        return null;
-    }
+    
+    
     public bool CanDoMagic()
     {
         /*
         if (Initialized() == false || PhotonNetwork.CurrentRoom == null)
             return false;
         */
+        if (AlwaysCast == false)
+            return false;
+        if (AIMagicControl.instance.AllActive() == false)
+            return false;
         if (Exists(PlayerTeam, PhotonNetwork.LocalPlayer) == false)
             return false;
         if (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator)
@@ -411,18 +225,11 @@ public class InGameManager : MonoBehaviour
         {
             if(ShouldDebug)
                 Debug.Log("Team: " + GetPlayerTeam(PhotonNetwork.PlayerList[i]) + "  Alive: " + Alive(PhotonNetwork.PlayerList[i]));
-            if (Alive(PhotonNetwork.PlayerList[i]) && GetPlayerTeam(PhotonNetwork.PlayerList[i]) == team)
-                AliveNum += 1;
+            if(Exists(PlayerTeam, PhotonNetwork.PlayerList[i]) && Exists(PlayerHealth, PhotonNetwork.PlayerList[i]))
+                if (Alive(PhotonNetwork.PlayerList[i]) && GetPlayerTeam(PhotonNetwork.PlayerList[i]) == team)
+                    AliveNum += 1;
         }
         return AliveNum;
-    }
-    public string GetNameWithNumber(int Index)
-    {
-        if (Index < 3)
-            return AttackSpawns[Index];
-        else
-            return DefenseSpawns[Index - 3];
-        //ebug.LogError("Could not Spawn With Index: " + Index);
     }
     /*
     public void ChangePlayerSide(int PlayerNum)

@@ -34,6 +34,9 @@ public class NetworkPlayer : MonoBehaviourPun
         RigHead = AIMagicControl.instance.CamOffset;
         RigLeft = AIMagicControl.instance.PositionObjectives[(int)Side.left]; //rig.transform.Find("Camera Offset/LeftHand Controller");
         RigRight = AIMagicControl.instance.PositionObjectives[(int)Side.right]; //rig.transform.Find("Camera Offset/RightHand Controller");
+
+        transform.SetParent(NetworkManager.instance.playerList);
+
         if (photonView.IsMine)
         {
             //AtFloor.IsActive = false;

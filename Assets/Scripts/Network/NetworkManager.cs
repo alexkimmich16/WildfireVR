@@ -31,7 +31,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     static int MaxHealth = 100;
     public bool DebugScript = false;
     //public List<PlayerInfo> info = new List<PlayerInfo>();
-    public List<PlayerStats> Players = new List<PlayerStats>();
+    //public List<PlayerStats> Players = new List<PlayerStats>();
     public int InGame;
     public List<PhotonView> PlayerPhotonViews;
 
@@ -39,10 +39,24 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public event DamageEvent OnTakeDamage;
 
     public delegate void initializeEvent();
-    public static event initializeEvent Initialize;
+    public static event initializeEvent OnInitialized;
 
     public float AfterDeathWait;
 
+    public List<GameObject> GetPlayers()
+    {
+        List<GameObject> Players = new List<GameObject>();
+        for (int i = 0; i < playerList.childCount; ++i)
+            Players.Add(playerList.GetChild(i).gameObject);
+        return Players;
+    }
+    public List<GameObject> Players;
+    public Transform playerList;
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+    }
     void Start()
     {
         ConnectToServer();
@@ -77,55 +91,37 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         yield return new WaitWhile(() => Initialized() == false);
         if(DebugScript)
             Debug.Log("init: " + Initialized());
-        Initialize();
+        if(OnInitialized != null)
+            OnInitialized();
     }
 
     public override void OnJoinedRoom()
     {
         if (DebugScript == true)
             Debug.Log("joined a room");
-        
-        if (SceneLoader.BattleScene() == true)
+
+        SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);
+        if (Initialized() == false)
         {
-            
-            SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);
-            if (Initialized() == false)
-            {
-                InitializeAllGameStats();
-            }
-            
+            InitializeAllGameStats();
         }
-        // Initialize();
-        //Debug.Log(Initialized());
-        //base.OnJoinedRoom();
-        //Initialize();
         StartCoroutine(WaitForInitalized());
-        InGameManager.instance.ReCalculateTeamSize();
         base.OnJoinedRoom();
         void InitializeAllGameStats()
         {
+            //Debug.Log("set");
+            
             SetGameFloat(GameWarmupTimer, 0f);
             SetGameFloat(GameFinishTimer, 0f);
             SetGameState(GameState.Waiting);
 
-            SetGameBool(AttackSpawns[0], false);
-            SetGameBool(AttackSpawns[1], false);
-            SetGameBool(AttackSpawns[2], false);
-            SetGameBool(DefenseSpawns[0], false);
-            SetGameBool(DefenseSpawns[1], false);
-            SetGameBool(DefenseSpawns[2], false);
-
-            SetGameInt(AttackTeamCount, 0);
-            SetGameInt(DefenseTeamCount, 0);
-
             SetGameInt(DoorState, (int)SequenceState.Waiting);
-
+            
             for (int i = 0; i < DoorManager.instance.Doors.Count; i++)
             {
                 Vector3 Local = DoorManager.instance.Doors[i].OBJ.localPosition;
                 DoorManager.instance.Doors[i].OBJ.localPosition = new Vector3(Local.x, DoorManager.instance.Doors[i].MinMax.x, Local.z);
                 SetGameFloat(DoorNames[i], DoorManager.instance.Doors[i].OBJ.localPosition.y);
-                
             }
 
             if(InGameManager.instance.ShouldDebug)
@@ -136,38 +132,33 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (DebugScript == true)
             Debug.Log("a new player joined");
+
         base.OnPlayerEnteredRoom(newPlayer);
     }
+    
     public void LocalTakeDamage(int Damage)
     {
+        if (DebugScript == true)
+            Debug.Log("TakeDamage: " + Damage);
         int BeforeHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
-        int NewHealth = BeforeHealth - Damage;
+        int NewHealth = BeforeHealth - Damage > 0 ? BeforeHealth - Damage : 0;
         OnTakeDamage(Damage);
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("TakeDamage", RpcTarget.All);
         NetworkPlayer.TakeDamageEventMethod();
-        if (NewHealth > 0)
-        {
-            SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);
-        }
-        else
-        {
-            SetPlayerInt(PlayerHealth, 0, PhotonNetwork.LocalPlayer);
+        SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);
+        if(NewHealth == 0)
             StartCoroutine(MainPlayerDeath());
-        }
-        
     }
     public IEnumerator MainPlayerDeath()
     {
         //my network player death
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("PlayerDied", RpcTarget.All);
 
-        //physical ragdoll death
+        ///physical ragdoll death
 
 
         //wait to find spawn
         yield return new WaitForSeconds(AfterDeathWait);
-        SpawnPoint SpawnInfo = InGameManager.instance.FindSpawn(Team.Spectator);
-        InGameManager.instance.SetNewPosition(SpawnInfo);
-        
+        SpawnManager.instance.SetNewPosition(Team.Spectator);
     }
 }

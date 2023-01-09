@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
+using Sirenix.OdinInspector;
 [System.Serializable]
 public class Door
 {
@@ -12,7 +13,7 @@ public class Door
     public float Speed;
     public Vector2 MinMax;
 }
-public class DoorManager : MonoBehaviour
+public class DoorManager : SerializedMonoBehaviour
 {
     public static DoorManager instance;
     void Awake() { instance = this; }
@@ -33,9 +34,21 @@ public class DoorManager : MonoBehaviour
     [Header("Doors")]
     public List<Door> Doors = new List<Door>();
 
-    public GameObject ElevatorEnterPreventor;
-    public List<Collider> ElevatorColliders;
-    public bool Inelevator;
+    public Vector2 ElevatorPreventorSizeLock;
+    public float IncreaseSizeSpeed;
+    public List<BoxCollider> ElevatorPreventors;
+    public void SetElevatorPreventors(bool state)
+    {
+        for (int i = 0; i < ElevatorPreventors.Count; i++)
+            ElevatorPreventors[i].gameObject.SetActive(state);
+    }
+    public void IncreaseElevatorPreventorsSize()
+    {
+        for (int i = 0; i < ElevatorPreventors.Count; i++)
+            ElevatorPreventors[i].size = new Vector3(ElevatorPreventors[i].size.x + (Time.deltaTime * IncreaseSizeSpeed), ElevatorPreventors[i].size.y, ElevatorPreventors[i].size.z);
+    }
+    //public List<Collider> ElevatorColliders;
+
 
     public float DropAmount;
 
@@ -46,6 +59,11 @@ public class DoorManager : MonoBehaviour
     public float Timer;
     public int Low, High;
     public bool Sent = false;
+
+    [ReadOnly] public bool PlayersOutOfElevator;
+    [ReadOnly] public bool InElevator;
+    public float ElevatorSpawnOffset = -36.2f;
+    public float ZOutOfDoor = 43f;
     public IEnumerator WaitUntilDoorReset()//get appropriate team, spawn, set online
     {
         yield return new WaitWhile(() => GetGameFloat(DoorNames[0]) != Doors[0].MinMax.x); //wait for team
@@ -61,8 +79,6 @@ public class DoorManager : MonoBehaviour
             {
                 Doors[i].OBJ.localPosition = new Vector3(0, Doors[i].MinMax.x, 0);
                 SetGameFloat(DoorNames[i], Doors[i].OBJ.localPosition.y);
-                //if(i == 0)
-                    //Debug.Log()
             }
         }
         
@@ -71,7 +87,7 @@ public class DoorManager : MonoBehaviour
 
     public void OnRestart()
     {
-        ElevatorEnterPreventor.SetActive(false);
+        SetElevatorPreventors(false);
         ResetDoors();
     }
     public void StartSequence()
@@ -82,8 +98,6 @@ public class DoorManager : MonoBehaviour
             
             Doors[0].OBJ.Translate(Vector3.up * -DropAmount);
         }
-            
-
     }
     private void Start()
     {
@@ -111,9 +125,16 @@ public class DoorManager : MonoBehaviour
     {
         Sent = false;
         Timer = 0f;
-        if (AddToTimer) { Times.Add(Timer);  }
-        if(state == SequenceState.Waiting)
+        if (AddToTimer)
+            Times.Add(Timer);
+
+        if (state == SequenceState.Waiting)
             OnlineEventManager.DoorEvent((int)state);
+
+
+        if(state == SequenceState.WaitingForAllExit)
+            SetElevatorPreventors(true);
+
         Sequence = state;
         SetGameInt(DoorState, (int)state);
         if (OnDoorChange != null)
@@ -124,23 +145,15 @@ public class DoorManager : MonoBehaviour
         Vector3 Local = Doors[DoorNum].OBJ.localPosition;
         Doors[DoorNum].OBJ.localPosition = new Vector3(Local.x, GetGameFloat(DoorNames[DoorNum]), Local.z);
     }
-    public bool AllExited()
+    public bool AllExitedElevator()
     {
-        List<GameObject> AllPlayers = new List<GameObject>(ZoneController.instance.Players1);
-        AllPlayers.AddRange(ZoneController.instance.Players2);
-        for (int i = 0; i < ElevatorColliders.Count; i++)
-            for (int j = 0; j < AllPlayers.Count; j++)
-                if (ElevatorColliders[i].bounds.Contains(AllPlayers[j].transform.GetChild(0).position))
-                    return false;
+        List<GameObject> players = NetworkManager.instance.GetPlayers();
+        for (int i = 0; i < players.Count; i++)
+            if (players[i].transform.position.z > ZOutOfDoor || players[i].transform.position.z < -ZOutOfDoor) // in elevator
+                return false;
         return true;
     }
-    bool PlayerInElevator()
-    {
-        for (int i = 0; i < ElevatorColliders.Count; i++)
-            if (ElevatorColliders[i].bounds.Contains(Camera.main.transform.position))
-                return true;
-        return false;
-    }
+    bool PlayerInElevator() { return Camera.main.transform.position.z > ZOutOfDoor || Camera.main.transform.position.z < -ZOutOfDoor; }
 
     private bool Closed1;
     private bool Closed2;
@@ -153,32 +166,24 @@ public class DoorManager : MonoBehaviour
     {
         if (Initialized() == false)
             return;
+        PlayersOutOfElevator = AllExitedElevator();
         UpdateEarlySounds();
-        
-        void UpdateEarlySounds()
-        {
-            Timer += Time.deltaTime;
-            if (AddToTimer)
-                return;
-            int state = (int)Sequence;
-            //Debug.Log("State: " + state);
-            if (state > Low == false || state < High == false)
-                return;
-            if (Times[state - 1] - Timer  < EarlyTimeDelay && Sent == false)
-            {
-                Sent = true;
-                //Debug.Log("send: " + state);
-                OnlineEventManager.DoorEvent(state + 1);
-            }
-        }
             
-        Inelevator = PlayerInElevator();
+
+
+        
+            
+        InElevator = PlayerInElevator();
         //GetGameInt(DoorState)
         if (GetGameInt(DoorState) == (int)SequenceState.Waiting)
         {
-            ElevatorEnterPreventor.SetActive(false);
+            SetElevatorPreventors(false);
             float offset = Time.time * StoneScrollSpeed;
             Wall.GetComponent<Renderer>().materials[0].SetTextureOffset("_BaseMap", new Vector2(offset, 0));
+        }
+        else if (GetGameInt(DoorState) == (int)SequenceState.WaitingForAllExit && ElevatorPreventors[0].size.x < ElevatorPreventorSizeLock.y)
+        {
+            IncreaseElevatorPreventorsSize();
         }
 
         if (PhotonNetwork.IsMasterClient)
@@ -203,13 +208,9 @@ public class DoorManager : MonoBehaviour
             }
             if (Sequence == SequenceState.WaitingForAllExit)
             {
-                if (AllExited())
+                if (AllExitedElevator())
                 {
                     SetNewSequenceState(SequenceState.Closing);
-                }
-                if (PlayerInElevator() == false)
-                {
-                    ElevatorEnterPreventor.SetActive(true);
                 }
             }
             if (Sequence == SequenceState.Closing)
@@ -230,6 +231,23 @@ public class DoorManager : MonoBehaviour
         }
         else
             UpdateElevator();
+
+        void UpdateEarlySounds()
+        {
+            Timer += Time.deltaTime;
+            if (AddToTimer)
+                return;
+            int state = (int)Sequence;
+            //Debug.Log("State: " + state);
+            if (state > Low == false || state < High == false)
+                return;
+            if (Times[state - 1] - Timer < EarlyTimeDelay && Sent == false)
+            {
+                Sent = true;
+                //Debug.Log("send: " + state);
+                OnlineEventManager.DoorEvent(state + 1);
+            }
+        }
     }
 }
 public enum SequenceState

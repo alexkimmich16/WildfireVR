@@ -31,16 +31,16 @@ MonoBehaviour:
       Weight: 1
       restriction: 0
       CheckType: 0
-      MaxSafe: 53.32
-      MinSafe: 5.3
-      MinFalloff: 0
-      MaxFalloff: 0
+      MaxSafe: 119.2
+      MinSafe: 5.98
+      MinFalloff: 7.97
+      MaxFalloff: 168.08
       Offset: {x: 0, y: 0, z: 0}
       Direction: {x: 0, y: 0, z: 0}
       ExcludeHeight: 0
       UseAxisList: 
       ShouldDebug: 0
-      Value: 0.030020434
+      Value: 2.4180162
     - Label: hand straight
       Active: 1
       Weight: 1
@@ -55,7 +55,7 @@ MonoBehaviour:
       ExcludeHeight: 0
       UseAxisList: 
       ShouldDebug: 0
-      Value: 74.87649
+      Value: 19.670301
     - Label: headforwardvel
       Active: 1
       Weight: 1
@@ -70,7 +70,7 @@ MonoBehaviour:
       ExcludeHeight: 0
       UseAxisList: 
       ShouldDebug: 0
-      Value: 42.27158
+      Value: 36.23677
   - Motion: Flames
     WeightedValueThreshold: 0.8
     Restrictions:
@@ -79,16 +79,16 @@ MonoBehaviour:
       Weight: 1
       restriction: 0
       CheckType: 0
-      MaxSafe: 53.32
-      MinSafe: 5.3
-      MinFalloff: 0
-      MaxFalloff: 0
+      MaxSafe: 129.6
+      MinSafe: 8.78
+      MinFalloff: 7.97
+      MaxFalloff: 168.08
       Offset: {x: 0, y: 0, z: 0}
       Direction: {x: 0, y: 0, z: 0}
       ExcludeHeight: 0
       UseAxisList: 
       ShouldDebug: 0
-      Value: 0.030020434
+      Value: 2.4180162
     - Label: hand straight
       Active: 1
       Weight: 1
@@ -103,7 +103,7 @@ MonoBehaviour:
       ExcludeHeight: 0
       UseAxisList: 
       ShouldDebug: 0
-      Value: 74.87649
+      Value: 19.670301
     - Label: headforwardvel
       Active: 1
       Weight: 1
@@ -118,7 +118,7 @@ MonoBehaviour:
       ExcludeHeight: 0
       UseAxisList: 
       ShouldDebug: 0
-      Value: 57.747
+      Value: 59.26939
     - Label: handfacehead (facehead)
       Active: 1
       Weight: 0.5
@@ -133,7 +133,7 @@ MonoBehaviour:
       ExcludeHeight: 1
       UseAxisList: 000000000100000002000000
       ShouldDebug: 0
-      Value: 41.549423
+      Value: 123.15143
     - Label: handfacehead (flat)
       Active: 1
       Weight: 0.5
@@ -148,7 +148,7 @@ MonoBehaviour:
       ExcludeHeight: 1
       UseAxisList: 000000000100000002000000
       ShouldDebug: 1
-      Value: 150.18097
+      Value: 59.320168
   - Motion: FlameBlock
     WeightedValueThreshold: 1
     Restrictions:
@@ -166,7 +166,7 @@ MonoBehaviour:
       ExcludeHeight: 0
       UseAxisList: 
       ShouldDebug: 0
-      Value: 0.030020434
+      Value: 2.4180162
     - Label: handfacehead
       Active: 1
       Weight: 1
@@ -181,7 +181,7 @@ MonoBehaviour:
       ExcludeHeight: 1
       UseAxisList: 000000000100000002000000
       ShouldDebug: 0
-      Value: 41.549423
+      Value: 123.15143
     - Label: not too far
       Active: 1
       Weight: 1
@@ -196,7 +196,7 @@ MonoBehaviour:
       ExcludeHeight: 0
       UseAxisList: 0000000002000000
       ShouldDebug: 0
-      Value: 0.5216863
+      Value: 0.6289294
     - Label: Not Too High
       Active: 1
       Weight: 1
@@ -211,7 +211,7 @@ MonoBehaviour:
       ExcludeHeight: 0
       UseAxisList: 01000000
       ShouldDebug: 0
-      Value: 0.043186963
+      Value: 0.42479563
     - Label: Not Crossed
       Active: 1
       Weight: 1
@@ -226,4 +226,4 @@ MonoBehaviour:
       ExcludeHeight: 0
       UseAxisList: 000000000100000002000000
       ShouldDebug: 0
-      Value: 13.547823
+      Value: 252.75922

@@ -63,6 +63,7 @@ namespace RestrictionSystem
             for (int i = 0; i < 2; i++)
                 if (NewFrameMotion != null)
                     NewFrameMotion(GetCurrentMotion(PR.PastFrame((Side)i), PastFrameRecorder.instance.GetControllerInfo((Side)i)), (Side)i);
+            
         }
         //[ListDrawerSettings(DraggableItems = false, ShowIndexLabels = true, ListElementLabelName = "Title")] public List<MotionRestriction> MotionRestrictions;
         public MotionSettings RestrictionSettings;
@@ -109,6 +110,7 @@ namespace RestrictionSystem
                     ErrorString = ErrorString + ((CurrentSpell)WorkingList[i]).ToString() + ", ";
                 }
                 Debug.LogError(ErrorString);
+                //return CurrentSpell.Flames;
             }
 
             return CurrentSpell.Nothing;

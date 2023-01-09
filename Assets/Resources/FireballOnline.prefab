@@ -30,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 128683162094914729}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -2.04, y: 2.29, z: -6.21}
+  m_LocalPosition: {x: 8.25, y: 2.29, z: -7.37}
   m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -66,6 +66,7 @@ MonoBehaviour:
     - {fileID: 7382733242415984707}
     - {fileID: 5229383862806365316}
     - {fileID: 3579771685081960363}
+  FireballSphere: {fileID: 2492401939447835445}
 --- !u!54 &128683162094914743
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -107,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36fd64cd9e4c21047800ee8fe8ed0ae6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LifeTime: 70.1
+  LifeTime: 7.98
   Timer: 0
 --- !u!114 &7144189571648307523
 MonoBehaviour:
@@ -165,7 +166,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1121088560073000139
 Transform:
   m_ObjectHideFlags: 0
@@ -5012,7 +5013,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &285283227048529814
 Transform:
   m_ObjectHideFlags: 0
@@ -9756,7 +9757,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7872161150681943857
 Transform:
   m_ObjectHideFlags: 0
@@ -9789,7 +9790,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6761538685767396752
 Transform:
   m_ObjectHideFlags: 0
@@ -10638,21 +10639,39 @@ ParticleSystem:
     serializedVersion: 4
     rateOverTime:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 1
       scalar: 500
-      minScalar: 10
+      minScalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
           outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 0.02670217
+          value: 0
+          inSlope: 4.40411
+          outSlope: 4.40411
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.06729522
+        - serializedVersion: 3
+          time: 0.41888344
+          value: 1
+          inSlope: 0.042173345
+          outSlope: 0.042173345
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.19712052
         - serializedVersion: 3
           time: 1
           value: 1
@@ -10749,7 +10768,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 100
+        scalar: 0
         minScalar: 30
         maxCurve:
           serializedVersion: 2

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using RestrictionSystem;
 public class KeycodeTesting : MonoBehaviour
 {
     public static KeycodeTesting instance;
@@ -48,15 +48,15 @@ public class KeycodeTesting : MonoBehaviour
             InGameManager.instance.CancelStartup();
 
         if (Input.GetKeyDown(KeyCode.J))
-            InGameManager.instance.JoinAsSpectator();
+            SpawnManager.instance.JoinAsSpectator();
 
+        //if (Input.GetKeyDown(KeyCode.P))
+            //NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetComponent<Ragdoll>().EnableRagdoll();
+        
         if (Input.GetKeyDown(KeyCode.P))
-            NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetComponent<Ragdoll>().EnableRagdoll();
-        /*
-        if (Input.GetKeyDown(KeyCode.P))
-            SetFlames(true);
+            FireController.instance.RecieveNewState(Side.right, false);
         if (Input.GetKeyDown(KeyCode.O))
-            SetFlames(false);
-        */
+            FireController.instance.RecieveNewState(Side.right, true);
+
     }
 }

@@ -84,7 +84,6 @@ public class OnlineEventManager : MonoBehaviour
         if(photonEvent.Code == RestartCode)
         {
             Debug.Log("restart");
-            bool Relocate = false; //reset team?
             //InGameManager.instance.RespawnToSpawnPoint();//respawn
             SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);// reset health
             RestartEventCallback();
@@ -94,20 +93,6 @@ public class OnlineEventManager : MonoBehaviour
                 //game
                 SetGameState(GameState.Waiting);
                 //doors
-               
-
-                //for all players in stand, assign random team, and teleport, and allow them to switch in cooldown
-                if (Relocate)
-                {
-                    for (int i = 0; i < InGameManager.instance.Teams[0].Spawns.Count; i++)
-                    {
-                        string AttackText = "Attack" + i;
-                        string DefenseText = "Defense" + i;
-                        SetGameBool(AttackText, false);
-                        SetGameBool(DefenseText, false);
-                    }
-                }
-                
             }
         }
         if(photonEvent.Code == FinishedCode)

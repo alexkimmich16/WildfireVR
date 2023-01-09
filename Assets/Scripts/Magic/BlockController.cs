@@ -2,38 +2,57 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using RestrictionSystem;
+using static Odin.Net;
+using Photon.Pun;
+
+
+/// <summary>
+/// constentobjects idea no respawn just 1 on and off
+/// </summary>
 public class BlockController : MonoBehaviour
 {
-    public bool Active;
-    public bool AlwaysTrue;
+    public static BlockController instance;
+    void Awake() { instance = this; }
+    public List<bool> Active;
 
-    [Header("Stats")]
-
-    private Side side;
-    //public Transform Spawn;
-    //p//ublic Transform Hand;
-    //Active = false;
-    //SetNewState(false);
-    public void BlockFire()
+    
+    public GameObject BlockVFXObject;
+    public float FlameDistanceFromHead = 2f;
+    public bool Testing;
+    public bool IsBlocking() { return Active[0] == true && Active[1] == true; }
+    public bool HalfBlocking() { return Active[0] == true || Active[1] == true; }
+    public void RecieveNewState(Side side, bool StartOrFinish)
     {
-        //get nearby fires 
-        //if close block?
+        //Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
+        Active[(int)side] = StartOrFinish;
+        BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, Testing ? HalfBlocking() : IsBlocking());
     }
-    public void SetNewState(bool NewState)
-    {
-
-    }
+    //get rid of individual magic 
+    //
+    /// <summary>
+    /// make online
+    /// </summary>
     private void Start()
     {
-        ///gameObject.GetComponent<LearningAgent>().NewState += OnNewState;
-        //gameObject.GetComponent<LearningAgent>().NewState += frames.AddToList;
-        //side = GetComponent<LearningAgent>().side;
+        MagicReactor.BlockCast += RecieveNewState;
+        NetworkManager.OnInitialized += InitializeBlockObject;
+    }
+    public void InitializeBlockObject()
+    {
+        BlockVFXObject = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentSpell.FlameBlock, true), Vector3.zero, Quaternion.identity);
+        BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
     }
     private void Update()
     {
-        if (Active == false)
+        if (BlockVFXObject == null)
             return;
-    }
+        Vector3 ForwardRot = Quaternion.Euler(new Vector3(0, AIMagicControl.instance.Cam.eulerAngles.y, 0)) * Vector3.forward;
+        Vector3 Pos = AIMagicControl.instance.Cam.position + (ForwardRot * FlameDistanceFromHead);
+        BlockVFXObject.transform.position = Pos;
 
-    
+        BlockVFXObject.transform.rotation = AIMagicControl.instance.Cam.rotation;
+
+        SetPlayerBool(Blocking, IsBlocking(), PhotonNetwork.LocalPlayer);
+        
+    }
 }

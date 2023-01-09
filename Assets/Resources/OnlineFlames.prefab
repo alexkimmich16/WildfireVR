@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 58292936881470263}
   - component: {fileID: 58292936881470260}
   - component: {fileID: 58292936881470261}
+  - component: {fileID: 7310548607070442462}
   m_Layer: 0
   m_Name: Explosion
   m_TagString: Untagged
@@ -4882,6 +4883,20 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &7310548607070442462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 58292936881470258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a932fd9c75540fc41b62ae4bd27a2bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fire: {fileID: 58292936881470260}
+  Damage: 0
 --- !u!1 &58292937700656454
 GameObject:
   m_ObjectHideFlags: 0
@@ -24432,7 +24447,6 @@ GameObject:
   - component: {fileID: -530231042916774742}
   - component: {fileID: 1545638919380530457}
   - component: {fileID: 6437820956946422509}
-  - component: {fileID: 5202329622265452702}
   m_Layer: 0
   m_Name: OnlineFlames
   m_TagString: Untagged
@@ -24477,13 +24491,6 @@ MonoBehaviour:
     ParticalSystem:
     - {fileID: 58292936881470260}
     - {fileID: 58292938412173441}
-  EventRef:
-    Guid:
-      Data1: -609046774
-      Data2: 1262913594
-      Data3: 473926047
-      Data4: 1987163963
-    Path: event:/FlameThrower
 --- !u!114 &-530231042916774742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24537,18 +24544,3 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
---- !u!114 &5202329622265452702
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1267622881173442705}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a932fd9c75540fc41b62ae4bd27a2bba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fire: {fileID: 58292936881470260}
-  Push: 0
-  Example: {fileID: 0}

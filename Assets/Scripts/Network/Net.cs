@@ -12,7 +12,6 @@ namespace Odin
         public static string PlayerTeam = "Team";
         //public static string PlayerAlive = "Alive";
         public static string PlayerHealth = "Health";
-        public static string PlayerSpawn = "SpawnNum";
 
         public static string GameWarmupTimer = "WarmupTimer";
         public static string GameFinishTimer = "FinishTimer";
@@ -20,19 +19,14 @@ namespace Odin
 
         public static string GameOutcome = "Outcome";
 
-        public static List<string> AttackSpawns = new List<string>() { "Attack0", "Attack1", "Attack2" };
-        public static List<string> DefenseSpawns = new List<string>() { "Defense0", "Defense1", "Defense2" };
-
-        public static string AttackTeamCount = "AttackTeam";
-        public static string DefenseTeamCount = "DefenseTeam";
+        //public static string AttackTeamCount = "AttackTeam";
+        //public static string DefenseTeamCount = "DefenseTeam";
 
         public static List<string> DoorNames = new List<string>() { "ElevatorHeight", "InnerGateHeight", "OuterGateHeight" };
 
         public static string DoorState = "DoorState";
 
         public static string Blocking = "Blocking";
-
-
 
         public static bool Alive(Player player)
         {
@@ -51,13 +45,9 @@ namespace Odin
             //all exists
             bool Timers = Exists(GameWarmupTimer, null) == true && Exists(GameFinishTimer, null) == true;
 
-            bool Spawns = true;
-            for (int i = 0; i < 2; i++)
-                if (Exists(AttackSpawns[i], null) == false || Exists(DefenseSpawns[i], null) == false)
-                    Spawns = false;
-
-            bool Counts = Exists(AttackTeamCount, null) == true && Exists(DefenseTeamCount, null);
-            return Timers && Spawns && Counts;
+            bool Other = Exists(DoorState, null) == true;
+            //Debug.Log(Timers + " " + Counts);
+            return Timers && Other;
         }
         public static int GetLocal()
         {
@@ -164,21 +154,9 @@ namespace Odin
                     return false;
                 if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(text))
                     return true;
-                else
-                {
-                    return false;
-                }
+                return false;
             }
-            else
-            {
-                if (player.CustomProperties.ContainsKey(text))
-                    return true;
-                else
-                {
-                    return false;
-                }
-            }
-            
+            return player.CustomProperties.ContainsKey(text);
         }
 
         #endregion

@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Odin.Net;
-using Photon.Pun;
-using Photon.Realtime;
+
 using UnityEngine.XR;
 public enum SpellType
 {
@@ -15,49 +13,53 @@ public class AIMagicControl : MonoBehaviour
     void Awake() { instance = this; }
     public static AIMagicControl instance;
 
-    public XRNode inputSource;
-
-    //public NewControllerInfo Info;
-
     public List<Transform> PositionObjectives;
-    public List<Transform> Hands;
     public List<Transform> Spawn;
+    public List<Transform> Hands;
+    public List<Transform> IdlePositions;
     public Transform Rig;
-    public Rigidbody PlayerRB;
     public Transform Cam;
     public Transform CamOffset;
     public Transform MyCharacterDisplay;
     public SpellContainer spells;
     
 
-    public bool PlayerInHeadset;
+    public bool HeadsetActive;
+    public bool LeftHandActive;
+    public bool RightHandActive;
 
-    //public List<FireController> Flames;
-    //public List<FireballController> Fireballs;
-    public List<FireAbsorb> Absorbs;
-    public List<BlockController> Blocks;
-
-    public float DirectionLeaniency;
-    public float DirectionForceThreshold;
-
-
-    public bool HoldingFire()
-    {
-        return Absorbs[0].FireballControl == true || Absorbs[1].FireballControl == true;
-    }
-    public void ResetHoldingFires()
-    {
-        for (int i = 0; i < Absorbs.Count; i++)
-            Absorbs[i].ResetHolding();
-    }
-    public bool IsBlocking()
-    {
-        return Blocks[0].Active == true && Blocks[1].Active == true;
-    }
+    private bool HasCalled = false;
+    public bool AllActive() { return HeadsetActive && LeftHandActive || RightHandActive; }
+    
     private void Update()
     {
-        SetPlayerBool(Blocking, IsBlocking(), PhotonNetwork.LocalPlayer);
-        InputDevice device = InputDevices.GetDeviceAtXRNode(inputSource);
-        device.TryGetFeatureValue(CommonUsages.userPresence, out PlayerInHeadset);
+        InputDevices.GetDeviceAtXRNode(XRNode.Head).TryGetFeatureValue(CommonUsages.isTracked, out HeadsetActive);
+        InputDevices.GetDeviceAtXRNode(XRNode.RightHand).TryGetFeatureValue(CommonUsages.isTracked, out RightHandActive);
+        InputDevices.GetDeviceAtXRNode(XRNode.LeftHand).TryGetFeatureValue(CommonUsages.isTracked, out LeftHandActive);
+
+        if (!HeadsetActive)
+            Set(Cam, IdlePositions[0]);
+        if (!RightHandActive)
+            Set(Hands[0], IdlePositions[1]);
+        if (!LeftHandActive)
+            Set(Hands[1], IdlePositions[2]);
+        /*
+        if (!AllActive())
+        {
+            if (HasCalled == false && Initialized() && Exists(PlayerTeam, PhotonNetwork.LocalPlayer))
+            {
+                HasCalled = true;
+                Vector3 Spawn = SpawnManager.instance.Spawns[(int)GetPlayerTeam(PhotonNetwork.LocalPlayer)].position;
+                Rig.position = new Vector3(Spawn.x, 1f + DoorManager.instance.Doors[0].OBJ.position.y, Spawn.z);
+            }
+            
+        }
+        */
+
+        void Set(Transform ToSet, Transform Reference)
+        {
+            ToSet.position = Reference.position;
+            ToSet.rotation = Reference.rotation;
+        }
     }
 }

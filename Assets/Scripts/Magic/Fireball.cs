@@ -9,7 +9,6 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Fireball : MonoBehaviour
 {
-    //[HideInInspector]
     public float Speed;
     
     [HideInInspector]
@@ -25,6 +24,10 @@ public class Fireball : MonoBehaviour
     public VFXHolder VFX;
 
     private FMOD.Studio.EventInstance FireballSound;
+    public GameObject FireballSphere;
+    //public ParticleSystem PS;
+    //public Animation Curve;
+    //private int MaxParticleEmit;
     public void SetAbsorbed(bool State)
     {
         Absorbing = State;
@@ -33,6 +36,9 @@ public class Fireball : MonoBehaviour
     //public float LifeTime = 3;
     void Update()
     {
+        //PS. = MaxParticleEmit * Curve.get
+
+
         if (GetComponent<PhotonView>().IsMine == false)
             return;
         if (Absorbing == true)
@@ -43,6 +49,7 @@ public class Fireball : MonoBehaviour
         {
             RB.velocity = transform.forward * Time.deltaTime * Speed;
         }
+
     }
 
     /// <summary>
@@ -52,29 +59,30 @@ public class Fireball : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
-        
         if (Absorbing == true)
             return;
         if(Explosion != null)
             GameObject.Instantiate(Explosion, this.transform.position, this.transform.rotation);
         if(Flash != null)
             GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
-        Debug.Log("collide");
-        gameObject.GetComponent<SphereCollider>().enabled = false;
-
-        VFX.SetNewState(false);
-
-        if (SoundManager.instance.CanPlaySound(SoundType.Effect))
-            FireballSound.setParameterByName("Exit", 1f);
 
         if (col.collider.tag == "HitBox")
-        {
             NetworkManager.instance.LocalTakeDamage(Damage);
-        }
-        GetComponent<PhotonDestroy>().DoDestroy();
-
-
+        gameObject.GetComponent<PhotonView>().RPC("OnHit", RpcTarget.All);
+        VFX.SetNewState(false);
+        FireballSphere.SetActive(false);
+        GetComponent<PhotonDestroy>().StartCountdown();
     }
+
+    [PunRPC]
+    public void OnHit()
+    {
+        VFX.SetNewState(false);
+        if (SoundManager.instance.CanPlaySound(SoundType.Effect))
+            FireballSound.setParameterByName("Exit", 1f);
+        gameObject.GetComponent<SphereCollider>().enabled = false;
+    }
+
     [PunRPC]
     public void ChangeSpeed(float speed)
     {
@@ -89,9 +97,13 @@ public class Fireball : MonoBehaviour
     private void Start()
     {
         RB = GetComponent<Rigidbody>();
-        FireballSound = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.FireballRef);
-        FMODUnity.RuntimeManager.AttachInstanceToGameObject(FireballSound, GetComponent<Transform>());
-        FireballSound.start();
-        FireballSound.setParameterByName("Exit", 0f);
+        if(SoundManager.instance.EnableEffectSounds && SoundManager.instance.EnableSounds)
+        {
+            FireballSound = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.FireballRef);
+            FMODUnity.RuntimeManager.AttachInstanceToGameObject(FireballSound, GetComponent<Transform>());
+            FireballSound.start();
+            FireballSound.setParameterByName("Exit", 0f);
+        }
+        //MaxParticleEmit = PS.
     }
 }

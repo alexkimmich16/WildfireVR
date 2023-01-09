@@ -19,7 +19,7 @@ public class FirePillar : MonoBehaviour
 
     public void StartFlame(CurrentSpell spell)
     {
-        Debug.Log("recieved");
+        //Debug.Log("recieved");
         if(spell == CurrentSpell.Flames || spell == CurrentSpell.Fireball)
         {
             VFX.SetNewState(true);
@@ -35,7 +35,7 @@ public class FirePillar : MonoBehaviour
 
     public IEnumerator WaitEndFire()
     {
-        Debug.Log("wait");
+        //Debug.Log("wait");
         yield return new WaitForSeconds(StopTime);
         VFX.SetNewState(false);
     }

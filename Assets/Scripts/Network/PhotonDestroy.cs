@@ -19,9 +19,15 @@ public class PhotonDestroy : MonoBehaviour
         if (DestoryEvent != null)
             DestoryEvent();
         if (GetComponent<PhotonView>() != null)
-            PhotonNetwork.Destroy(gameObject);
+            GetComponent<PhotonView>().RPC("DestroyOnline", RpcTarget.All);
         else
             Destroy(gameObject);
+    }
+    [PunRPC]
+    public void DestroyOnline()
+    {
+        if(GetComponent<PhotonView>().IsMine)
+            PhotonNetwork.Destroy(gameObject);
     }
     void Update()
     {

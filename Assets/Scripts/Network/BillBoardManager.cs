@@ -23,9 +23,6 @@ public class BillBoardManager : MonoBehaviour
     public TextMeshProUGUI AttackTeamCount, AttackTeamAlive;
     public TextMeshProUGUI DefenseTeamCount, DefenseTeamAlive;
 
-    public List<TextMeshProUGUI> DefenseSpawnText = new List<TextMeshProUGUI>();
-    public List<TextMeshProUGUI> AttackSpawnsText = new List<TextMeshProUGUI>();
-
 
 
     public void UpdateWall()
@@ -36,12 +33,6 @@ public class BillBoardManager : MonoBehaviour
         StateText.text = GetGameState().ToString();
         WarmupTimeText.text = "WarmupTime: " + GetGameFloat(GameWarmupTimer).ToString();
         FinishTimeText.text = "FinishTime: " + GetGameFloat(GameFinishTimer).ToString();
-
-        for (int i = 0; i < DefenseSpawns.Count; i++)
-        {
-            DefenseSpawnText[i].text = DefenseSpawns[i] + ":  " + GetGameBool(DefenseSpawns[i]);
-            AttackSpawnsText[i].text = AttackSpawns[i] + ":  " + GetGameBool(AttackSpawns[i]);
-        }
 
         if (AllPlayersLoaded())
         {
@@ -54,8 +45,6 @@ public class BillBoardManager : MonoBehaviour
 
         if (Exists(PlayerTeam, PhotonNetwork.LocalPlayer))
             MyTeamText.text = "MyTeam: " + GetPlayerTeam(PhotonNetwork.LocalPlayer).ToString();
-        if (Exists(PlayerSpawn, PhotonNetwork.LocalPlayer))
-            MyPlayerSpawnText.text = "PlayerSpawn: " + GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer).ToString();
         if (Exists(PlayerHealth, PhotonNetwork.LocalPlayer))
             AliveText.text = "Alive: " + Alive(PhotonNetwork.LocalPlayer).ToString();
     }
@@ -97,10 +86,7 @@ public class BillBoardManager : MonoBehaviour
         }
         else if (state == GameState.CountDown)
         {
-            float WarmupTimer = GetGameFloat("WarmupTimer");
-            float adjustedTime = InGameManager.instance.WarmupTime - WarmupTimer;
-            string TimeText = adjustedTime.ToString("F2");
-            DisplayVictory.text = "Starting in: " + TimeText + " Seconds";
+            DisplayVictory.text = "Starting in: " + GetGameFloat(GameWarmupTimer).ToString("F2") + " Seconds";
         }
         else if (state == GameState.Active)
         {

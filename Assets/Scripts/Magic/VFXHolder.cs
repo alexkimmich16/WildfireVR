@@ -7,7 +7,18 @@ public class VFXHolder
 {
     public VisualEffect VFXGraph;
     public List<ParticleSystem> ParticalSystem;
-
+    public VFXHolder(VisualEffect VFXGraphStat, List<ParticleSystem> ParticalSystemStat)
+    {
+        VFXGraph = VFXGraphStat;
+        ParticalSystem = ParticalSystemStat;
+    }
+    public VFXHolder(ParticleSystem[] ParticalSystemStat)
+    {
+        List<ParticleSystem> PartipleList = new List<ParticleSystem>();
+        for (int i = 0; i < ParticalSystemStat.Length; i++)
+            PartipleList.Add(ParticalSystemStat[i]);
+        ParticalSystem = PartipleList;
+    }
     public void SetNewState(bool NewState)
     {
         if (VFXGraph != null)

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using static Odin.Net;
 public class FireballGenerator : MonoBehaviour
 {
     public float MaxTime;
@@ -11,7 +12,7 @@ public class FireballGenerator : MonoBehaviour
     public bool Active;
     void Update()
     {
-        if (!Active)
+        if (!Active || !Initialized())
             return;
         Timer += Time.deltaTime;
         Spawn.LookAt(Camera.main.transform);

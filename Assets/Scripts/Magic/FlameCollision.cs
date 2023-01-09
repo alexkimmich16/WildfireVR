@@ -5,8 +5,7 @@ using Photon.Pun;
 public class FlameCollision : MonoBehaviour
 {
     public ParticleSystem fire;
-    public bool Push;
-    public Transform Example;
+    public int Damage;
     public void PushFire(Vector3 PushPos)
     {
         Debug.Log("pushfire");
@@ -22,27 +21,16 @@ public class FlameCollision : MonoBehaviour
         }
         fire.SetParticles(m_Particles, numParticlesAlive);
     }
-    // Update is called once per frame
-    void Update()
-    {
-        if(Push == true && Example != null)
-        {
-            Push = false;
-            PushFire(Example.position);
-        }
-    }
     
     private void OnParticleCollision(GameObject other)
     {
-        if (GetComponent<PhotonView>())
-            return; 
-
-        if(other.tag == "VRPerson")
+        if (other.tag == "HitBox")
         {
-            Debug.Log("PlayerCollission");
-            //FireController.DamageShardHit(other);
+            if (BlockController.instance.IsBlocking())
+                PushFire(AIMagicControl.instance.Cam.position);
+            else if (!BlockController.instance.IsBlocking())
+                NetworkManager.instance.LocalTakeDamage(Damage);
         }
-            
     }
     public void UnsubscribeToFire() { OnlineEventManager.FirePushEvent -= PushFire; }
     private void Start()

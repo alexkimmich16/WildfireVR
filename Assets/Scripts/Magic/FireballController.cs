@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using RestrictionSystem;
+using UnityEngine.XR;
+using Sirenix.OdinInspector;
 public enum ControlType
 {
     OnMoveHand = 0,
     Constant = 1,
     Directional = 2,
 }
-public class FireballController : MonoBehaviour
+public class FireballController : SerializedMonoBehaviour
 {
     public static FireballController instance;
     private void Awake() { instance = this; }
 
-    public bool SpawnOnline;
     public bool IsControlling;
     [Header("Stats")]
     public float CastDistance;
@@ -23,7 +24,7 @@ public class FireballController : MonoBehaviour
 
     public float DirectionLeaniency;
     
-    private GameObject OnlineFireball, PrivateFireball;
+    private GameObject OnlineFireball;
 
     public float ControlForce;
     public ControlType controlType;
@@ -37,20 +38,32 @@ public class FireballController : MonoBehaviour
     public bool ShouldDebug;
     public float Display;
 
-    public int Min, Max;
-    public GameObject TestOBJ;
+    //public int Min, Max;
+    //public GameObject TestOBJ;
 
     public List<bool> Actives;
     public List<Vector3> StartPos;
     //public bool justHand, Both;
-    public Quaternion SpawnRotation()
+
+    public int FramesAgoRotation = 5;
+
+
+    public float HandDirectionValue, CamDirectionValue;
+    public Vector2 OutPutDir;
+    public Quaternion SpawnRotation(Side side)
     {
-        //Vector3 HandDirection = AIMagicControl.instance.Hands[(int)side].GetComponent<HandActions>().StartEndDirection(Min, Max).normalized;
-        //Vector3 HandDirection = AIMagicControl.instance.Hands[(int)side].GetComponent<HandActions>().StartEndDirection(Min, Max).normalized;
-        //Vector3 AdjustedDir = new Vector3(HandDirection.x, 0, HandDirection.z);
-        //return Quaternion.LookRotation(AdjustedDir);
-        return Quaternion.identity;
-        ///do one from machinelearning
+        SingleInfo StartFrame = PastFrameRecorder.instance.PastFrame(side, FramesAgoRotation);
+        SingleInfo EndFrame = PastFrameRecorder.instance.GetControllerInfo(side);
+
+        Vector3 HandDirection = (StartFrame.HandPos - EndFrame.HandPos).normalized;
+        float HandDirectionValue = ToDegrees(new Vector2(HandDirection.x, HandDirection.z));
+
+        float CamDirectionValue = AIMagicControl.instance.Cam.eulerAngles.y;
+        float Both = HandDirectionValue - CamDirectionValue;
+        Both = Both - 180;
+        Vector2 OutPutDir = ToVector(Both);
+        Vector3 RealOutput = new Vector3(OutPutDir.x * 360f, 0, OutPutDir.y * 360f);
+        return Quaternion.LookRotation(RealOutput);
     }
 
     public void EndCount(Side side)
@@ -69,7 +82,7 @@ public class FireballController : MonoBehaviour
     public void RecieveNewState(Side side, bool IsStart)
     {
         //Debug.Log("NewState: " + State);
-
+        //Debug.Log("side: " + side + "  StartOrFinish: " + IsStart);
         Actives[(int)side] = IsStart;
         if (IsStart)//startcount
         {
@@ -94,32 +107,73 @@ public class FireballController : MonoBehaviour
         
         EyeController.instance.ChangeEyes(Eyes.Fire);
         ///direction of controller forward
-        CurrentSpell spell = (AIMagicControl.instance.HoldingFire()) ? CurrentSpell.Fireball : CurrentSpell.Fireball;
-        if (AIMagicControl.instance.HoldingFire())
-            AIMagicControl.instance.ResetHoldingFires();
+        ///
 
-        if (SpawnOnline)
-        {
-            OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(spell, true), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation());
-            NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentSpell.Fireball);
-        }
-        //PrivateFireball = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(spell, false)), AIMagicControl.instance.Spawn[(int)side].position, AIMagicControl.instance.Hands[(int)side].GetComponent<HandActions>().Velocity);
-        //PrivateFireball = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(spell, false)), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation());
+        ///absorb code
+        //CurrentSpell spell = (AIMagicControl.instance.HoldingFire()) ? CurrentSpell.Fireball : CurrentSpell.Fireball;
+        //if (AIMagicControl.instance.HoldingFire())
+        //AIMagicControl.instance.ResetHoldingFires();
+        OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentSpell.Fireball, true), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation(side));
+        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentSpell.Fireball);
     }
+
+
+    public float ToDegrees(Vector2 value) { return Mathf.Atan2(value.y, value.x) * 180 / Mathf.PI; }
+    public Vector2 ToVector(float value) { return new Vector2(Mathf.Cos(value * Mathf.PI / 180f), Mathf.Sin(value * Mathf.PI / 180f)); }
+    
     private void Update()
     {
-        //if (PositionExample != null)
-            //PositionExample.transform.localPosition = StartPos;
-
-        if (TestOBJ != null)
-        {
-            TestOBJ.transform.rotation = SpawnRotation();
-            //TestOBJ.transform.position = AIMagicControl.instance.Spawn[(int)side].position;
-        }
-        if (IsControlling == false)
+        if (!PastFrameRecorder.instance.AtMax())
             return;
-            //get amount to change normalized
-            //change each frame
+        //SpawnRotation(Side.left);
+        //Output = ToVector(InputAngle);
+        //ReInputAngle = ToDegrees(Output);
+        /*
+        SingleInfo StartFrame = PastFrameRecorder.instance.PastFrame(Side.right, FramesAgoRotation);
+        SingleInfo EndFrame = PastFrameRecorder.instance.GetControllerInfo(Side.right);
+
+        Vector3 HandDirection = (StartFrame.HandPos - EndFrame.HandPos).normalized;
+        HandDirectionValue = ToDegrees(new Vector2(HandDirection.x, HandDirection.z));
+        
+
+        HandDirection.y = 0;
+        CamRot = AIMagicControl.instance.Cam.eulerAngles;
+        CamDirectionValue = CamRot.y;
+        float Both = HandDirectionValue - CamDirectionValue;
+        Both = Both - 180;
+        OutPutDir = ToVector(Both);
+
+        //Vector3 HeadForwardDir = Quaternion.Euler(AIMagicControl.instance.Cam.eulerAngles) * Vector3.forward;
+
+        //HeadForwardTrue = new Vector3(HeadForwardDir.x, 0, HeadForwardDir.z); //this
+
+        //HandDirectionTrue = HandDirection; //this
+
+
+
+
+        InputDevices.GetDeviceAtXRNode(XRNode.RightHand).TryGetFeatureValue(CommonUsages.deviceVelocity, out Vel);
+        Vector3 Trial5 = Vel;
+        Vector3 Trial6 = Vel.normalized;
+
+
+        // Rotate the vector by the angle
+        
+
+        Debug.DrawLine(AIMagicControl.instance.Cam.position, AIMagicControl.instance.Cam.position + (HeadForwardTrue * 3f), Color.yellow);
+
+        Debug.DrawLine(AIMagicControl.instance.Cam.position, AIMagicControl.instance.Cam.position + (HandDirectionTrue * 3f), Color.blue);
+
+        Debug.DrawLine(AIMagicControl.instance.Cam.position, AIMagicControl.instance.Cam.position + (new Vector3(OutPutDir.x, 0, OutPutDir.y) * 3f), Color.black);
+
+        //Debug.DrawLine(AIMagicControl.instance.Cam.position, AIMagicControl.instance.Cam.position + (Trial4 * 3f), Color.blue);
+
+        //Debug.DrawLine(AIMagicControl.instance.Cam.position, AIMagicControl.instance.Cam.position + (Trial5 * 3f), Color.green);
+
+        // Debug.DrawLine(AIMagicControl.instance.Cam.position, AIMagicControl.instance.Cam.position + (Trial6 * 3f), Color.red);
+
+        */
+
     }
     /*
     public IEnumerator WaitForClose()
