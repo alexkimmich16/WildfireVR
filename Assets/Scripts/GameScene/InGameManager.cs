@@ -34,6 +34,7 @@ public class InGameManager : SerializedMonoBehaviour
     public bool BalenceTeams = false;
     public bool MagicBeforeStart = false;
     public bool AlwaysCast = true;
+    public bool AutoStart = true;
 
     [Header("Time")]
     public float WarmupTime = 5f;
@@ -124,7 +125,8 @@ public class InGameManager : SerializedMonoBehaviour
         Timer -= (state == GameState.CountDown || (state == GameState.Active && DoorManager.instance.Sequence == SequenceState.WaitingForAllExit)) ? Time.deltaTime : 0;
         SetGameFloat(GameWarmupTimer, state == GameState.CountDown ? Timer : 0);
         SetGameFloat(GameFinishTimer, state == GameState.Active ? Timer : 0);
-        
+        if (AutoStart && SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers)
+            SetNewGameState(GameState.CountDown);
 
         if (state == GameState.Waiting && SideCount(Team.Attack) + SideCount(Team.Defense) >= MinPlayers * 2 && BalenceTeams == true)
             ManageTeam();

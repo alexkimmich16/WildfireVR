@@ -10,6 +10,12 @@ public class PhotonDestroy : MonoBehaviour
     private bool IsActive;
     public delegate void OnDestory();
     public event OnDestory DestoryEvent;
+    public bool StartCountdownOnStart = false;
+    private void Start()
+    {
+        if (StartCountdownOnStart)
+            StartCountdown();
+    }
     public void StartCountdown()
     {
         IsActive = true;
