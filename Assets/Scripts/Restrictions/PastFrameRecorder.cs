@@ -11,22 +11,23 @@ namespace RestrictionSystem
         [FoldoutGroup("NeatDisplay"), ReadOnly] public List<SingleInfo> RightInfo;
         [FoldoutGroup("NeatDisplay"), ReadOnly] public List<SingleInfo> LeftInfo;
 
-        
-
-        [FoldoutGroup("Test")] public List<Transform> TestMain;
-        [FoldoutGroup("Test")] public List<Transform> TestCam;
-        [FoldoutGroup("Test")] public List<Transform> TestHand;
-
-        [FoldoutGroup("Real")] public List<Transform> PlayerHands;
-        [FoldoutGroup("Real")] public Transform Cam;
-
         public int MaxStoreInfo = 10;
         public int FramesAgo = 10;
+
+        public List<Transform> TestMain;
+        public List<Transform> TestCam;
+        public List<Transform> TestHand;
+
+        public List<Transform> PlayerHands;
+        public Transform Cam;
+
+        public List<bool> UseSides;
         public SingleInfo GetControllerInfo(Side side)
         {
             ResetStats();
+            Vector3 CamPos = Cam.localPosition;
             TestCam[(int)side].position = Vector3.zero;
-            TestHand[(int)side].position = TestHand[(int)side].position - Cam.localPosition;
+            TestHand[(int)side].position = TestHand[(int)side].position - CamPos;
 
             float YDifference = -Cam.localRotation.eulerAngles.y;
 
@@ -59,19 +60,9 @@ namespace RestrictionSystem
 
         void Start()
         {
-            StartCoroutine(ManageLists(1f / 60f));
-            //InvokeRepeating("ManageLists", 0f, 1f/60f);
+            StartCoroutine(ManageLists(1 / 60));
         }
-        public SingleInfo PastFrame(Side side)
-        {
-            List<SingleInfo> SideList = (side == Side.right) ? RightInfo : LeftInfo;
-            return SideList[SideList.Count - FramesAgo];
-        }
-        public SingleInfo PastFrame(Side side, int FramesAgo)
-        {
-            List<SingleInfo> SideList = (side == Side.right) ? RightInfo : LeftInfo;
-            return SideList[SideList.Count - FramesAgo];
-        }
+
         IEnumerator ManageLists(float Interval)
         {
             while (true)
@@ -79,30 +70,40 @@ namespace RestrictionSystem
                 RightInfo.Add(GetControllerInfo(Side.right));
                 if (RightInfo.Count > MaxStoreInfo)
                     RightInfo.RemoveAt(0);
+
                 LeftInfo.Add(GetControllerInfo(Side.left));
                 if (LeftInfo.Count > MaxStoreInfo)
                     LeftInfo.RemoveAt(0);
 
-                if (LeftInfo.Count > MaxStoreInfo - 1)
-                    RestrictionManager.instance.TriggerFrameEvents();
+                
+                if(RightInfo.Count > FramesAgo)
+                    RestrictionManager.instance.TriggerFrameEvents(UseSides);
 
                 yield return new WaitForSeconds(Interval);
             }
         }
-        public bool AtMax() { return LeftInfo.Count > MaxStoreInfo - 1; }
+        public SingleInfo PastFrame(Side side) { return (side == Side.right) ? RightInfo[RightInfo.Count - FramesAgo] : LeftInfo[LeftInfo.Count - FramesAgo]; }
     }
     [System.Serializable]
     public class SingleInfo
     {
         public Vector3 HeadPos, HeadRot, HandPos, HandRot;
-        public float CurrentTime;
+        public float SpawnTime;
         public SingleInfo(Vector3 HandPosStat, Vector3 HandRotStat, Vector3 HeadPosStat, Vector3 HeadRotStat)
         {
+            SpawnTime = Time.timeSinceLevelLoad;
             HeadPos = HeadPosStat;
             HeadRot = HeadRotStat;
             HandPos = HandPosStat;
             HandRot = HandRotStat;
-            CurrentTime = Time.timeSinceLevelLoad;
+        }
+        public SingleInfo(Vector3 HandPosStat, Vector3 HandRotStat, Vector3 HeadPosStat, Vector3 HeadRotStat, float SetTime)
+        {
+            SpawnTime = SetTime;
+            HeadPos = HeadPosStat;
+            HeadRot = HeadRotStat;
+            HandPos = HandPosStat;
+            HandRot = HandRotStat;
         }
     }
 }

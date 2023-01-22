@@ -21,25 +21,20 @@ public class BlockController : MonoBehaviour
     public bool Testing;
     public bool IsBlocking() { return Active[0] == true && Active[1] == true; }
     public bool HalfBlocking() { return Active[0] == true || Active[1] == true; }
-    public void RecieveNewState(Side side, bool StartOrFinish)
+    public void RecieveNewState(Side side, bool StartOrFinish, int Index)
     {
         //Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
         Active[(int)side] = StartOrFinish;
         BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, Testing ? HalfBlocking() : IsBlocking());
     }
-    //get rid of individual magic 
-    //
-    /// <summary>
-    /// make online
-    /// </summary>
     private void Start()
     {
-        MagicReactor.BlockCast += RecieveNewState;
+        ConditionManager.instance.MotionConditions[(int)CurrentLearn.FlameBlock - 1].OnNewState += RecieveNewState;
         NetworkManager.OnInitialized += InitializeBlockObject;
     }
     public void InitializeBlockObject()
     {
-        BlockVFXObject = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentSpell.FlameBlock, true), Vector3.zero, Quaternion.identity);
+        BlockVFXObject = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.FlameBlock, true), Vector3.zero, Quaternion.identity);
         BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
     }
     private void Update()
@@ -49,7 +44,6 @@ public class BlockController : MonoBehaviour
         Vector3 ForwardRot = Quaternion.Euler(new Vector3(0, AIMagicControl.instance.Cam.eulerAngles.y, 0)) * Vector3.forward;
         Vector3 Pos = AIMagicControl.instance.Cam.position + (ForwardRot * FlameDistanceFromHead);
         BlockVFXObject.transform.position = Pos;
-
         BlockVFXObject.transform.rotation = AIMagicControl.instance.Cam.rotation;
 
         SetPlayerBool(Blocking, IsBlocking(), PhotonNetwork.LocalPlayer);

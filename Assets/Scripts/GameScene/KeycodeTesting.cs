@@ -25,7 +25,7 @@ public class KeycodeTesting : MonoBehaviour
             DoorManager.instance.StartSequence();
 
         if (Input.GetKey(KeyCode.D))
-            FirePillar.CallStartFire(CurrentSpell.Flames);
+            FirePillar.CallStartFire(CurrentLearn.Flames);
 
        // if (Input.GetKeyDown(KeyCode.A))
            // AIMagicControl.instance.Flames[(int)Side.Right].StartFire();
@@ -53,10 +53,10 @@ public class KeycodeTesting : MonoBehaviour
         //if (Input.GetKeyDown(KeyCode.P))
             //NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetComponent<Ragdoll>().EnableRagdoll();
         
-        if (Input.GetKeyDown(KeyCode.P))
-            FireController.instance.RecieveNewState(Side.right, false);
-        if (Input.GetKeyDown(KeyCode.O))
-            FireController.instance.RecieveNewState(Side.right, true);
+        //if (Input.GetKeyDown(KeyCode.P))
+            //FireController.instance.RecieveNewState(Side.right, false);
+        //if (Input.GetKeyDown(KeyCode.O))
+            //FireController.instance.RecieveNewState(Side.right, true);
 
     }
 }

@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using UnityEngine.XR;
+using RestrictionSystem;
 public enum SpellType
 {
     Individual = 0,
@@ -29,13 +29,26 @@ public class AIMagicControl : MonoBehaviour
     public bool RightHandActive;
 
     private bool HasCalled = false;
+
+    public List<Material> Materials;
+    public SkinnedMeshRenderer handToChange;
+
     public bool AllActive() { return HeadsetActive && LeftHandActive || RightHandActive; }
     
     private void Update()
     {
+        if (AllActive())
+        {
+            PastFrameRecorder PR = PastFrameRecorder.instance;
+            handToChange.material = Materials[(int)RestrictionManager.instance.GetCurrentMotion(PR.PastFrame(Side.right), PastFrameRecorder.instance.GetControllerInfo(Side.right))]; //set hand
+        }
+        
+
         InputDevices.GetDeviceAtXRNode(XRNode.Head).TryGetFeatureValue(CommonUsages.isTracked, out HeadsetActive);
         InputDevices.GetDeviceAtXRNode(XRNode.RightHand).TryGetFeatureValue(CommonUsages.isTracked, out RightHandActive);
         InputDevices.GetDeviceAtXRNode(XRNode.LeftHand).TryGetFeatureValue(CommonUsages.isTracked, out LeftHandActive);
+
+        PastFrameRecorder.instance.UseSides = new List<bool>() { RightHandActive, LeftHandActive };
 
         if (!HeadsetActive)
             Set(Cam, IdlePositions[0]);

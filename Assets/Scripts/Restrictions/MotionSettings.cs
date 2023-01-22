@@ -12,37 +12,58 @@ namespace RestrictionSystem
         public float Iteration;
 
         [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "Motion")] public List<MotionRestriction> MotionRestrictions;
-    }
-    
 
+        /*
+        public void ResetUnneccicaryInfo()
+        {
+            for (int i = 0; i < MotionConditions.Count; i++)
+            {
+                MotionConditions[i].CurrentStage = new List<int>() {0,0 };
+                MotionConditions[i].WaitingForFalse = new List<bool>() { false, false };
+                for (int j = 0; j < MotionConditions[i].ConditionLists.Count; j++)
+                {
+                    for (int k = 0; k < MotionConditions[i].ConditionLists[j].SingleConditions.Count; k++)
+                    {
+                        MotionConditions[i].ConditionLists[j].SingleConditions[k].LastState = new List<bool>() { false, false };
+                        MotionConditions[i].ConditionLists[j].SingleConditions[k].StartTime = new List<float>() { 0f, 0f } ;
+                        MotionConditions[i].ConditionLists[j].SingleConditions[k].StartPos = new List<Vector3>() { Vector3.zero, Vector3.zero };
+                        MotionConditions[i].ConditionLists[j].SingleConditions[k].Value = new List<float>() { 0f, 0f };
+                    }
+                        
+                }
+            }
+        }
+        */
+    }
     [System.Serializable]
-    public class MotionRestriction
+    public struct MotionRestriction
     {
+        public MotionRestriction(MotionRestriction All)
+        {
+            this.Motion = All.Motion;
+            this.WeightedValueThreshold = All.WeightedValueThreshold;
+            this.Restrictions = new List<SingleRestriction>(All.Restrictions);
+        }
         public string Motion;
 
-        [Range(0f, 1f)] public float WeightedValueThreshold = 0.8f;
+        [Range(0f, 1f)] public float WeightedValueThreshold;
 
 
         [ListDrawerSettings(ListElementLabelName = "Label")]
         public List<SingleRestriction> Restrictions;
-
-        public string Title { get { return Motion; } }
-
     }
     [Serializable]
-    public class SingleRestriction
+    public struct SingleRestriction
     {
         public string Label;
-        public bool Active = true;
-        [ShowIf("Active"), Range(0f, 1f)] public float Weight = 1f;
+        public bool Active;
+        [ShowIf("Active"), Range(0f, 1f)] public float Weight;
         public Restriction restriction;
         [ShowIf("restriction", Restriction.VelocityInDirection)] public VelocityType CheckType;
         public float MaxSafe;
         public float MinSafe;
         public float MinFalloff;
         public float MaxFalloff;
-
-        
 
         private bool RequiresOffset() { return restriction == Restriction.VelocityInDirection || restriction == Restriction.HandFacingHead; }
 
@@ -51,12 +72,8 @@ namespace RestrictionSystem
         [ShowIf("RequiresOffset")] public Vector3 Direction;
 
         [ShowIf("restriction", Restriction.HandFacingHead)] public bool ExcludeHeight;
-        //[ShowIf("VelocityInHandOrHead")] public Vector3 ForwardDirection;
 
-        //[ShowIf("restriction", Restriction.HandFacingHead)] public Axis UseAxis;
-
-
-        [ShowIf("restriction", Restriction.HandHeadDistance)] public List<Axis> UseAxisList = new List<Axis>() { Axis.X, Axis.Y, Axis.Z };
+        [ShowIf("restriction", Restriction.HandHeadDistance)] public List<Axis> UseAxisList;
 
         public bool ShouldDebug;
         [ReadOnly] public float Value;

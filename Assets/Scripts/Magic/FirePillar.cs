@@ -5,7 +5,7 @@ using UnityEngine.VFX;
 public class FirePillar : MonoBehaviour
 {
     //subscribe to on fire event
-    public delegate void StateEvent(CurrentSpell spell);
+    public delegate void StateEvent(RestrictionSystem.CurrentLearn spell);
     public static event StateEvent OnFire;
 
     //public delegate void CountdownEvent();
@@ -15,12 +15,12 @@ public class FirePillar : MonoBehaviour
 
     public VFXHolder VFX;
     //Debug.Log("FLAMEEEE");
-    public static void CallStartFire(CurrentSpell spell) { OnFire(spell);  }
+    public static void CallStartFire(RestrictionSystem.CurrentLearn spell) { OnFire(spell);  }
 
-    public void StartFlame(CurrentSpell spell)
+    public void StartFlame(RestrictionSystem.CurrentLearn spell)
     {
         //Debug.Log("recieved");
-        if(spell == CurrentSpell.Flames || spell == CurrentSpell.Fireball)
+        if(spell == RestrictionSystem.CurrentLearn.Flames || spell == RestrictionSystem.CurrentLearn.Fireball)
         {
             VFX.SetNewState(true);
             StartCoroutine(WaitEndFire());

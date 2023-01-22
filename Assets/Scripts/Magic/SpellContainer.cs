@@ -5,20 +5,22 @@ using UnityEngine;
 public class SpellContainer : ScriptableObject
 {
     public List<SpellHolder> Spells;
-
+    public List<SpellHolder> Variants;
     [System.Serializable]
     public class SpellHolder
     {
-        public CurrentSpell spell;
+        public RestrictionSystem.CurrentLearn spell;
+        public int Variant;
         public GameObject Online;
         public GameObject Offline;
     }
 
-    public string SpellName(CurrentSpell spell, bool Online)
+    public string SpellName(RestrictionSystem.CurrentLearn spell, bool Online) { return Online == true ? Spells[(int)spell].Online.name : Spells[(int)spell].Offline.name; }
+    public string SpellNameVariant(RestrictionSystem.CurrentLearn spell, bool Online, int Varient)
     {
-        if (Online == true)
-            return Spells[(int)spell].Online.name;
-        else
-            return Spells[(int)spell].Offline.name;
+        for (int i = 0; i < Variants.Count; i++)
+            if (Variants[i].spell == spell && Variants[i].Variant == Varient)
+                return Online == true ? Variants[i].Online.name : Variants[i].Offline.name;
+        return "";
     }
 }

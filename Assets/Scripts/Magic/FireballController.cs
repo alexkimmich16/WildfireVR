@@ -18,7 +18,6 @@ public class FireballController : SerializedMonoBehaviour
 
     public bool IsControlling;
     [Header("Stats")]
-    public float CastDistance;
     public float MinDistanceToHead;
     public float StopControllingDistance;
 
@@ -42,7 +41,7 @@ public class FireballController : SerializedMonoBehaviour
     //public GameObject TestOBJ;
 
     public List<bool> Actives;
-    public List<Vector3> StartPos;
+    public List<GameObject> FireballWarmups;
     //public bool justHand, Both;
 
     public int FramesAgoRotation = 5;
@@ -50,9 +49,11 @@ public class FireballController : SerializedMonoBehaviour
 
     public float HandDirectionValue, CamDirectionValue;
     public Vector2 OutPutDir;
+
+    public float WarmupDistFromHand;
     public Quaternion SpawnRotation(Side side)
     {
-        SingleInfo StartFrame = PastFrameRecorder.instance.PastFrame(side, FramesAgoRotation);
+        SingleInfo StartFrame = PastFrameRecorder.instance.PastFrame(side);
         SingleInfo EndFrame = PastFrameRecorder.instance.GetControllerInfo(side);
 
         Vector3 HandDirection = (StartFrame.HandPos - EndFrame.HandPos).normalized;
@@ -66,36 +67,24 @@ public class FireballController : SerializedMonoBehaviour
         return Quaternion.LookRotation(RealOutput);
     }
 
-    public void EndCount(Side side)
+    public void RecieveNewState(Side side, bool IsStart, int Index)
     {
-        if (Vector3.Distance(StartPos[(int)side], AIMagicControl.instance.Hands[(int)side].localPosition) > 0.2 && ShouldDebug)
-            Debug.Log(Vector3.Distance(StartPos[(int)side], AIMagicControl.instance.Hands[(int)side].localPosition));
-        if (Vector3.Distance(StartPos[(int)side], AIMagicControl.instance.Hands[(int)side].localPosition) > CastDistance)
+        if (Index == 0)
         {
-            //ControlPos = AIMagicControl.instance.Hands[(int)side].localPosition;
-            //StartCoroutine(WaitForClose());
+            Actives[(int)side] = IsStart;
+            FireballWarmups[(int)side].GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, IsStart);
+        }
+        else if(Index == 1)
+        {
             SpawnFireball(side);
-            ///FireAbsorb.instance.StopHoldingFireball();
         }
-        StartPos[(int)side] = AIMagicControl.instance.Hands[(int)side].localPosition;
-    }
-    public void RecieveNewState(Side side, bool IsStart)
-    {
-        //Debug.Log("NewState: " + State);
-        //Debug.Log("side: " + side + "  StartOrFinish: " + IsStart);
-        Actives[(int)side] = IsStart;
-        if (IsStart)//startcount
-        {
-            StartPos[(int)side] = AIMagicControl.instance.Hands[(int)side].localPosition;
-        }
-        else     //get distance to 
-        {
-            EndCount(side);
-        }
+        
+        
     }
     private void Start()
     {
-        MagicReactor.FireballCast += RecieveNewState;
+        ConditionManager.instance.MotionConditions[(int)CurrentLearn.Fireball - 1].OnNewState += RecieveNewState;
+        NetworkManager.OnInitialized += InitializeWarmups;
         //gameObject.GetComponent<LearningAgent>().NewState += frames.AddToList;
         //side = GetComponent<LearningAgent>().side;
     }
@@ -113,18 +102,39 @@ public class FireballController : SerializedMonoBehaviour
         //CurrentSpell spell = (AIMagicControl.instance.HoldingFire()) ? CurrentSpell.Fireball : CurrentSpell.Fireball;
         //if (AIMagicControl.instance.HoldingFire())
         //AIMagicControl.instance.ResetHoldingFires();
-        OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentSpell.Fireball, true), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation(side));
-        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentSpell.Fireball);
+        OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, true), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation(side));
+        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Fireball);
     }
 
 
     public float ToDegrees(Vector2 value) { return Mathf.Atan2(value.y, value.x) * 180 / Mathf.PI; }
     public Vector2 ToVector(float value) { return new Vector2(Mathf.Cos(value * Mathf.PI / 180f), Mathf.Sin(value * Mathf.PI / 180f)); }
-    
+
+    public void InitializeWarmups()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            FireballWarmups.Add(PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellNameVariant(CurrentLearn.Fireball, true, 1), Vector3.zero, Quaternion.identity));
+            FireballWarmups[i].GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
+        }
+    }
+
     private void Update()
     {
-        if (!PastFrameRecorder.instance.AtMax())
-            return;
+        if(FireballWarmups.Count == 2)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                Vector3 ForwardRot = Quaternion.Euler(AIMagicControl.instance.Hands[i].eulerAngles) * Vector3.forward;
+                FireballWarmups[i].transform.position = AIMagicControl.instance.Hands[i].position + (WarmupDistFromHand * ForwardRot);
+                FireballWarmups[i].transform.rotation = AIMagicControl.instance.Hands[i].rotation; //forward
+                //FireballWarmups[i].transform.rotation = Quaternion.Euler((PastFrameRecorder.instance.GetControllerInfo((Side)i).HandPos - PastFrameRecorder.instance.PastFrame((Side)i).HandPos).normalized); //velocity
+            }
+                
+        }
+        
+        
+        
         //SpawnRotation(Side.left);
         //Output = ToVector(InputAngle);
         //ReInputAngle = ToDegrees(Output);

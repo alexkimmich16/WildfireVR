@@ -131,20 +131,16 @@ public class FireController : MonoBehaviour
         //Debug.
         EyeController.instance.ChangeEyes(Eyes.Fire);
 
-        //PrivateFire = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(CurrentSpell.Flames, false)), Vector3.zero, Camera.main.transform.rotation);
-        //PrivateFire.GetComponent<FlameObject>().SetFlames(true);
-        //ActiveFires.Add(PrivateFire.GetComponent<FlameObject>());
-        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentSpell.Flames);
+        
+        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Flames);
         //Debug.Log("PT2");
         //Debug.Log("online");
-        OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentSpell.Flames, true), Vector3.zero, Camera.main.transform.rotation);
+        OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, true), Vector3.zero, Camera.main.transform.rotation);
         OnlineFire[(int)side].name = "OnlineFire";
         //OnlineFire[(int)side].GetComponent<FlameObject>().SetFlames(true);
         OnlineFire[(int)side].GetPhotonView().RPC("SetFlamesOnline", RpcTarget.All, true);
-        //OnlineFire.transform.SetParent(transform);
-        //OnlineFire.SetActive(false);
 
-
+        //ActiveFires.Add(PrivateFire.GetComponent<FlameObject>());
         ///add to all fires list
     }
     /*
@@ -178,7 +174,7 @@ public class FireController : MonoBehaviour
     private void Start()
     {
         StartCoroutine(Wait());
-        MagicReactor.FlamesCast += RecieveNewState;
+        ConditionManager.instance.MotionConditions[(int)CurrentLearn.Flames - 1].OnNewState += RecieveNewState;
         //OnlineFire ;
         for (int i = 0; i < 2; i++)
             OnlineFire.Add(null);
@@ -188,10 +184,10 @@ public class FireController : MonoBehaviour
         DamageCooldowns = new List<CooldownInfo>();
     }
 
-    public void RecieveNewState(Side side, bool StartOrFinish)
+    public void RecieveNewState(Side side, bool StartOrFinish, int Index)
     {
         Actives[(int)side] = StartOrFinish;
-        //Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
+        Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
         if (StartOrFinish)
         {
             StartFire(side);
