@@ -5,12 +5,15 @@ using UnityEngine.UI;
 using TMPro;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
-
+using RestrictionSystem;
+using UnityEngine.Events;
+using System.Linq;
 public enum TrainingState
 {
     None = 0,
-    Explaining = 1,
-    PlayerTry = 2,
+    PressedMotion = 1,
+    Explaining = 2,
+    PlayerTry = 3,
 }
 public enum Spell
 {
@@ -39,22 +42,21 @@ public class TrainingManager : SerializedMonoBehaviour
     public static TrainingManager instance;
     void Awake() { instance = this; }
 
-    [EnumToggleButtons] public TrainingState state;
-
+    [EnumToggleButtons, FoldoutGroup("Info")] public TrainingState state;
+    public int MotionNum;
+    public int SideNum;
     //[SerializeField]
     public List<MagicMotionText> Motions = new List<MagicMotionText>();
 
-    [FoldoutGroup("Main")] public string EntryMessage;
-    [FoldoutGroup("Main")] public string StartTrainingMessage;
-    [FoldoutGroup("Main")] public string PlayerTurn;
+    [FoldoutGroup("Text")] public string EntryMessage;
+    [FoldoutGroup("Text")] public string StartTrainingMessage;
+    [FoldoutGroup("Text")] public string PlayerTurn;
 
-    [FoldoutGroup("Main")] public List<string> Successful = new List<string>();
+    [FoldoutGroup("Text")] public List<string> Successful = new List<string>();
 
-    //[FoldoutGroup("Main")] public List<string> IndexToName = new List<string>();
+    public MotionSettings motions;
 
-
-    [FoldoutGroup("Delete")] public List<string> FireballCast = new List<string>();
-    [FoldoutGroup("Delete")] public Dictionary<string, string> NewFireballErrors;
+    public Dictionary<Restriction, string> Errors;
 
     public int CurrentSpell;
     public bool Waiting;
@@ -63,6 +65,7 @@ public class TrainingManager : SerializedMonoBehaviour
     [FoldoutGroup("PracticeStats")] public int CurrentSucessfulMotions;
     [FoldoutGroup("PracticeStats")] public int RequiredSucessfulMotions;
     [FoldoutGroup("PracticeStats")] public MinMaxSliderAttribute SucessfulMotionCount;
+
     public void PressNext()
     {
         Waiting = true;
@@ -77,18 +80,102 @@ public class TrainingManager : SerializedMonoBehaviour
         BufferedText.AddRange(Motions[Num].Instructions);
     }
 
-    
-    
+    public IEnumerator ManageMotionTestSequence()
+    {
+        //start
+        TextDisplay.instance.DisplayMessage(EntryMessage);
+
+        yield return new WaitUntil(() => state == TrainingState.PressedMotion);
+        //just pressed motion
+
+        yield return new WaitUntil(() => state == TrainingState.Explaining);
+
+
+        while(state != TrainingState.Explaining)
+        {
+            if (Waiting)
+            {
+                Waiting = false;
+                TextDisplay.instance.DisplayMessage(BufferedText[0]);
+                BufferedText.RemoveAt(0);
+
+                if (BufferedText.Count == 0)
+                {
+                    TextDisplay.instance.DisplayMessage(PlayerTurn);
+                    state = TrainingState.PlayerTry;
+                }
+            }
+            
+        }
+
+        while (state != TrainingState.PlayerTry)
+        {
+            ///later add debug wrong motion
+            PastFrameRecorder PR = PastFrameRecorder.instance;
+            List<Restriction> RestrictionFails = FailedRestrictions(PR.PastFrame((Side)SideNum), PR.GetControllerInfo((Side)SideNum), motions.MotionRestrictions[CurrentSpell]);
+            List<string> ErrorTexts = RestrictionFails.;
+            for (int i = 0; i < RestrictionFails.Count; i++)
+                ErrorTexts.Add(Errors[RestrictionFails[i]]);
+
+            if (ErrorTexts.Count > 0)
+                TextDisplay.instance.DisplayMessage(ErrorTexts[0]);
+
+            //if (ErrorTexts.Count == 0 && CurrentMotion != (Spell)CurrentSpell) //Wrong but no idea why
+                //TextDisplay.instance.DisplayMessage("i've got no idea why this motion is wrong!");
+
+
+            OnSuccessfulMotion();
+
+            void OnSuccessfulMotion()
+            {
+                string Message = Successful[Random.Range(0, Successful.Count - 1)];
+                CurrentSucessfulMotions += 1;
+                if (CurrentSucessfulMotions == RequiredSucessfulMotions)
+                {
+                    state = TrainingState.None;
+                    TextDisplay.instance.DisplayMessage(EntryMessage);
+                    CurrentSucessfulMotions = 0;
+                    return;
+                }
+                TextDisplay.instance.DisplayMessage(Message + "  " + (RequiredSucessfulMotions - CurrentSucessfulMotions) + " Left");
+            }
+        }
+
+
+        //move to next
+
+
+            //
+    }
+
+    public List<Restriction> FailedRestrictions(SingleInfo frame1, SingleInfo frame2, MotionRestriction restriction)
+    {
+        List<Restriction> Restrictions = new List<Restriction>();
+
+        
+
+        float TotalWeightValue = 0f;
+        float TotalWeight = 0f;
+        for (int i = 0; i < restriction.Restrictions.Count; i++)
+        {
+            RestrictionTest RestrictionType = RestrictionDictionary[restriction.Restrictions[i].restriction];
+            float RawRestrictionValue = RestrictionType.Invoke(restriction.Restrictions[i], frame1, frame2);
+            float RestrictionValue = restriction.Restrictions[i].GetValue(RawRestrictionValue);
+            TotalWeightValue += restriction.Restrictions[i].Active ? RestrictionValue * restriction.Restrictions[i].Weight : 0;
+            TotalWeight += restriction.Restrictions[i].Active ? restriction.Restrictions[i].Weight : 0;
+        }
+        float MinWeightThreshold = restriction.WeightedValueThreshold * TotalWeight;
+        return Restrictions;
+
+    }
+
+    /*
     public void PlayerTest()
     {
         if (state != TrainingState.PlayerTry)
             return;
-        
-        ///when to update??
-        ///on AI changed motion
-        ///on speed stop
 
-        Spell CurrentMotion = Spell.Fireball; ///get spell from controller(currentplaceholder), also will repeat so fix that
+        //Spell CurrentMotion = RestrictionManager.instance.GetCurrentMotion(); ///get spell from controller(currentplaceholder), also will repeat so fix that
         if (IsAnotherMotion(CurrentMotion)) //Another Motion
         {
             TextDisplay.instance.DisplayMessage("try preforming the correct motion: " + ((Spell)CurrentSpell).ToString() + "  and not: " + CurrentMotion.ToString());
@@ -167,33 +254,25 @@ public class TrainingManager : SerializedMonoBehaviour
             return CurrentErrors;
         }
     }
-    public void Explain()
-    {
-        if (state != TrainingState.Explaining || !Waiting)
-            return;
-
-        //move to next
-        Waiting = false;
-        TextDisplay.instance.DisplayMessage(BufferedText[0]);
-        BufferedText.RemoveAt(0);
-
-        if (BufferedText.Count == 0)
-        {
-            TextDisplay.instance.DisplayMessage(PlayerTurn);
-            state = TrainingState.PlayerTry;
-        }
-        //Debug.Log("debug");
-    }
+    */
     void Start()
     {
-        TextDisplay.instance.DisplayMessage(EntryMessage);
+        
+        ManageMotionTestSequence();
     }
-    
+    public void Select(int SelectNum, int Value)
+    {
+        if (SelectNum == 0)
+            state = TrainingState.PressedMotion;
+        else if (SelectNum == 1)
+            state = TrainingState.Explaining;
+        MotionNum = SelectNum == 0 ? Value : MotionNum;
+        SideNum = SelectNum == 1 ? Value : SideNum;
+    }
     private void Update()
     {
         //substitute
-        Explain();
-        PlayerTest();
+       // PlayerTest();
         
 
         if (Input.GetKeyDown(KeyCode.S))
