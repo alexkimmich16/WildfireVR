@@ -197,8 +197,6 @@ namespace RestrictionSystem
         [FoldoutGroup("Values")] public List<Vector3> StartPos = new List<Vector3>() { Vector3.zero, Vector3.zero };
         [FoldoutGroup("Values")] public List<float> Value = new List<float>() { 0, 0 };
         private bool HasAmount() { return condition == Condition.Distance || condition == Condition.Time; }
-
-        
     }
 }
 

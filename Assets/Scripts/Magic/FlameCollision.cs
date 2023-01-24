@@ -6,6 +6,7 @@ public class FlameCollision : MonoBehaviour
 {
     public ParticleSystem fire;
     public int Damage;
+    
     public void PushFire(Vector3 PushPos)
     {
         Debug.Log("pushfire");

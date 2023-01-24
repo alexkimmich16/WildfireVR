@@ -47,7 +47,8 @@ public class Fireball : MonoBehaviour
         }
         else
         {
-            RB.velocity = transform.forward * Time.deltaTime * Speed;
+            if(FireballSphere.activeSelf == true)
+                RB.velocity = transform.forward * Time.deltaTime * Speed;
         }
 
     }
@@ -81,6 +82,7 @@ public class Fireball : MonoBehaviour
         if (SoundManager.instance.CanPlaySound(SoundType.Effect))
             FireballSound.setParameterByName("Exit", 1f);
         gameObject.GetComponent<SphereCollider>().enabled = false;
+        DecalSpawner.instance.SpawnDecalAtPosition(transform.position, Quaternion.Euler(new Vector3(90,0,0)));
     }
 
     [PunRPC]
