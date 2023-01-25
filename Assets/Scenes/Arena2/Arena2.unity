@@ -8272,6 +8272,8 @@ MonoBehaviour:
   Cam: {fileID: 1297422934}
   CamOffset: {fileID: 1050107950}
   MyCharacterDisplay: {fileID: 1031060977}
+  MyCharacterMetarig: {fileID: 441653342}
+  MyCharacterSkin: {fileID: 1933285469}
   spells: {fileID: 11400000, guid: d6f70030ef9113d4c8bdf8eaa5791151, type: 2}
   HeadsetActive: 0
   LeftHandActive: 0
@@ -15657,7 +15659,7 @@ MonoBehaviour:
   DebugScript: 0
   InGame: 0
   PlayerPhotonViews: []
-  AfterDeathWait: 2.03
+  AfterDeathWait: 4.99
   Players: []
   playerList: {fileID: 872711501}
 --- !u!4 &924804818
@@ -16596,11 +16598,8 @@ MonoBehaviour:
     OBJ: {fileID: 69059312}
     Speed: 3
     MinMax: {x: 0, y: 0.11}
-  ElevatorPreventorSizeLock: {x: 0.005, y: 0.73}
-  IncreaseSizeSpeed: 0.05
-  ElevatorPreventors:
-  - {fileID: 1108749859}
-  - {fileID: 1199482242}
+  PushForce: 10
+  BeforePushTime: 5.02
   DropAmount: 0.19
   EarlyTimeDelay: 0.36
   AddToTimer: 0
@@ -22277,6 +22276,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useTesting: 1
   DamageAmount: 25
+  TakeDamage: 116
+  StartSequence: 115
+  Restart: 114
+  StartGame: 103
+  CancelStartup: 99
+  JoinAsSpectator: 106
 --- !u!4 &1328164612
 Transform:
   m_ObjectHideFlags: 0
@@ -30209,9 +30214,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnableSounds: 0
-  EnableEffectSounds: 0
+  EnableEffectSounds: 1
   EnableElevatorSounds: 1
-  EnableCrowdSounds: 0
+  EnableCrowdSounds: 1
   CrowdRef:
     Guid:
       Data1: -125635866
@@ -30247,20 +30252,6 @@ MonoBehaviour:
       Data3: 0
       Data4: 0
     Path: 
-  TakeDamageRef:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  DeathRef:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
   PlayerLeftRef:
     Guid:
       Data1: 0
@@ -30268,6 +30259,44 @@ MonoBehaviour:
       Data3: 0
       Data4: 0
     Path: 
+  DamageRef:
+  - Guid:
+      Data1: -4531064
+      Data2: 1321209284
+      Data3: -1199673928
+      Data4: -1687733680
+    Path: event:/CharInjured1
+  - Guid:
+      Data1: -987671547
+      Data2: 1203275543
+      Data3: 1724745622
+      Data4: 819059275
+    Path: event:/CharInjured2
+  DeathRef:
+  - Guid:
+      Data1: 30136862
+      Data2: 1133991815
+      Data3: -2039266398
+      Data4: -2133617243
+    Path: event:/Death1
+  - Guid:
+      Data1: 253546780
+      Data2: 1211678851
+      Data3: -1605486187
+      Data4: 1838612298
+    Path: event:/Death2
+  - Guid:
+      Data1: 64837424
+      Data2: 1329049720
+      Data3: 1415850625
+      Data4: -160533467
+    Path: event:/Death3
+  - Guid:
+      Data1: 355299356
+      Data2: 1186807105
+      Data3: -1355409240
+      Data4: 1496137132
+    Path: event:/Death4
   TimeAfterRoar: 0
   CrowdShouts: []
 --- !u!1001 &1790013708
@@ -32572,7 +32601,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1933285470
 Transform:
   m_ObjectHideFlags: 0
@@ -55786,6 +55815,16 @@ PrefabInstance:
       objectReference: {fileID: 441653343}
     - target: {fileID: 6766196747847322755, guid: 06f97e6bda8684c4a980b717935d9eed,
         type: 3}
+      propertyPath: Upforce
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6766196747847322755, guid: 06f97e6bda8684c4a980b717935d9eed,
+        type: 3}
+      propertyPath: SideForce
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6766196747847322755, guid: 06f97e6bda8684c4a980b717935d9eed,
+        type: 3}
       propertyPath: Colliders.Array.size
       value: 11
       objectReference: {fileID: 0}
@@ -55849,6 +55888,11 @@ PrefabInstance:
       propertyPath: Colliders.Array.data[10]
       value: 
       objectReference: {fileID: 1935575498016124372}
+    - target: {fileID: 6766196747847322755, guid: 06f97e6bda8684c4a980b717935d9eed,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6766196747847322755, guid: 06f97e6bda8684c4a980b717935d9eed,
         type: 3}
       propertyPath: Rigidbodies.Array.data[0]

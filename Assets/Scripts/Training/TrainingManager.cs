@@ -110,10 +110,11 @@ public class TrainingManager : SerializedMonoBehaviour
 
         while (state != TrainingState.PlayerTry)
         {
+            /*
             ///later add debug wrong motion
             PastFrameRecorder PR = PastFrameRecorder.instance;
             List<Restriction> RestrictionFails = FailedRestrictions(PR.PastFrame((Side)SideNum), PR.GetControllerInfo((Side)SideNum), motions.MotionRestrictions[CurrentSpell]);
-            List<string> ErrorTexts = RestrictionFails.;
+            /// linq //List<string> ErrorTexts = RestrictionFails.;
             for (int i = 0; i < RestrictionFails.Count; i++)
                 ErrorTexts.Add(Errors[RestrictionFails[i]]);
 
@@ -138,7 +139,7 @@ public class TrainingManager : SerializedMonoBehaviour
                     return;
                 }
                 TextDisplay.instance.DisplayMessage(Message + "  " + (RequiredSucessfulMotions - CurrentSucessfulMotions) + " Left");
-            }
+            }*/
         }
 
 
@@ -147,7 +148,7 @@ public class TrainingManager : SerializedMonoBehaviour
 
             //
     }
-
+    /*
     public List<Restriction> FailedRestrictions(SingleInfo frame1, SingleInfo frame2, MotionRestriction restriction)
     {
         List<Restriction> Restrictions = new List<Restriction>();
@@ -168,7 +169,7 @@ public class TrainingManager : SerializedMonoBehaviour
         return Restrictions;
 
     }
-
+    */
     /*
     public void PlayerTest()
     {

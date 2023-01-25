@@ -144,21 +144,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         int NewHealth = BeforeHealth - Damage > 0 ? BeforeHealth - Damage : 0;
         OnTakeDamage(Damage);
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("TakeDamage", RpcTarget.All);
-        NetworkPlayer.TakeDamageEventMethod();
         SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);
         if(NewHealth == 0)
             StartCoroutine(MainPlayerDeath());
     }
     public IEnumerator MainPlayerDeath()
     {
-        //my network player death
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("PlayerDied", RpcTarget.All);
-
-        ///physical ragdoll death
-
+        AIMagicControl.instance.MyCharacterSkin.SetActive(false);
 
         //wait to find spawn
         yield return new WaitForSeconds(AfterDeathWait);
+        AIMagicControl.instance.MyCharacterSkin.SetActive(true);
         SpawnManager.instance.SetNewPosition(Team.Spectator);
     }
 }

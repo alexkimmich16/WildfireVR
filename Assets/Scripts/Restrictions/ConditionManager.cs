@@ -8,8 +8,6 @@ using System;
 
 namespace RestrictionSystem
 {
-    
-
     public enum Condition
     {
         Time = 0,

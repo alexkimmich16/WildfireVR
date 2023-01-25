@@ -133,12 +133,8 @@ public class FireController : MonoBehaviour
 
         
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Flames);
-        //Debug.Log("PT2");
-        //Debug.Log("online");
         OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, true), Vector3.zero, Camera.main.transform.rotation);
         OnlineFire[(int)side].name = "OnlineFire";
-        //OnlineFire[(int)side].GetComponent<FlameObject>().SetFlames(true);
-        OnlineFire[(int)side].GetPhotonView().RPC("SetFlamesOnline", RpcTarget.All, true);
 
         //ActiveFires.Add(PrivateFire.GetComponent<FlameObject>());
         ///add to all fires list

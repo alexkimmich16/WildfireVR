@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using RestrictionSystem;
-using UnityEngine.XR;
 using Sirenix.OdinInspector;
 public enum ControlType
 {

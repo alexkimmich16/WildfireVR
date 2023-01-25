@@ -100,7 +100,7 @@ public class OnlineEventManager : MonoBehaviour
             object[] data = (object[])photonEvent.CustomData;
             Result result = (Result)data[0];
             Debug.Log(result.ToString());
-            BillBoardManager.instance.SetOutcome(result);
+            //BillBoardManager.instance.SetOutcome(result);
             
             //SetOutcome
         }

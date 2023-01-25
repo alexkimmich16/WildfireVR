@@ -10,6 +10,7 @@ public class FlameObject : MonoBehaviour
     private void Start()
     {
         GetComponent<PhotonDestroy>().DestoryEvent += OnDestory;
+        VFX.SetNewState(true);
         if (GetComponent<PhotonView>() && SoundManager.instance.CanPlaySound(SoundType.Effect))
         {
             FlameThrowerSound = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.FlamesRef);
@@ -26,22 +27,11 @@ public class FlameObject : MonoBehaviour
     [PunRPC]
     void SetFlamesOnline(bool NewState)
     {
-        VFX.SetNewState(NewState);
-    }
-
-    public void SetFlames(bool NewState)
-    {
-        if (GetComponent<PhotonView>())
-        {
-            if(SoundManager.instance.CanPlaySound(SoundType.Effect))
-                FlameThrowerSound.setParameterByName("Exit", NewState ? 0f : 1f);
-            GetComponent<PhotonView>().RPC("SetFlamesOnline", RpcTarget.Others, NewState);
-            VFX.SetNewState(false);
-        }
-        else
-            VFX.SetNewState(NewState);
+        if (SoundManager.instance.CanPlaySound(SoundType.Effect))
+            FlameThrowerSound.setParameterByName("Exit", NewState ? 0f : 1f);
 
         if (NewState == false)
             GetComponent<PhotonDestroy>().StartCountdown();
+        VFX.SetNewState(NewState);
     }
 }

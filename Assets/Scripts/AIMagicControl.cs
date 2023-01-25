@@ -21,6 +21,8 @@ public class AIMagicControl : MonoBehaviour
     public Transform Cam;
     public Transform CamOffset;
     public Transform MyCharacterDisplay;
+    public Transform MyCharacterMetarig;
+    public GameObject MyCharacterSkin;
     public SpellContainer spells;
     
 

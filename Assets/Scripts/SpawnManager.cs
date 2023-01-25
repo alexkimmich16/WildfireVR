@@ -11,7 +11,6 @@ public class SpawnManager : MonoBehaviour
     void Awake() { instance = this; }
 
     public List<Transform> Spawns = new List<Transform>();
-
     void Start()
     {
         NetworkManager.OnInitialized += SpawnSequence;
@@ -38,7 +37,6 @@ public class SpawnManager : MonoBehaviour
     }
     public IEnumerator SpawnSequenceCorotine()//get appropriate team, spawn, set online
     {
-        //Debug.Log("spawncorotine1");
         Team team = InGameManager.instance.BestTeamForSpawn();
         SetPlayerTeam(team, PhotonNetwork.LocalPlayer);
         yield return new WaitWhile(() => Exists(PlayerTeam, PhotonNetwork.LocalPlayer) == false); //wait for team

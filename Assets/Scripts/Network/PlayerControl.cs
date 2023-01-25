@@ -15,11 +15,22 @@ public class PlayerControl : MonoBehaviourPunCallbacks
     public delegate void DisolveAll();
     public event DisolveAll disolveEvent;
 
+    public delegate void TakeDamageEvent();
+    public static event TakeDamageEvent OnTakeDamage;
+
     private FMOD.Studio.EventInstance TakeDamageInstance;
     private FMOD.Studio.EventInstance DeathInstance;
 
-    
-
+    public Ragdoll myRagdoll;
+    private void Start()
+    {
+        OnlineEventManager.RestartEventCallback += OnReset;
+    }
+    public void OnReset()
+    {
+        GetComponent<NetworkPlayer>().Dead = false;
+        myRagdoll.DisableRagdoll();
+    }
     [PunRPC]
     public void SetEyes(Eyes eyes) { GetComponent<MultiplayerEyes>().ChangeEyes(eyes); }
     [PunRPC]
@@ -27,46 +38,29 @@ public class PlayerControl : MonoBehaviourPunCallbacks
     [PunRPC]
     public void PlayerDied()
     {
-        GetComponent<Ragdoll>().EnableRagdoll();
+        GetComponent<NetworkPlayer>().Dead = true;
+
+        myRagdoll.EnableRagdoll();
         if (SoundManager.instance.CanPlaySound(SoundType.Effect))
         {
-            DeathInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.DeathRef);
+            DeathInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.RandomSound(SoundManager.instance.DeathRef));
             FMODUnity.RuntimeManager.AttachInstanceToGameObject(DeathInstance, GetComponent<Transform>());
             DeathInstance.start();
         }
-            
     }
+
     [PunRPC]
     public void TakeDamage()
     {
+        OnTakeDamage?.Invoke();
         if (SoundManager.instance.CanPlaySound(SoundType.Effect))
         {
-            TakeDamageInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.TakeDamageRef);
+            TakeDamageInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.RandomSound(SoundManager.instance.DamageRef));
             FMODUnity.RuntimeManager.AttachInstanceToGameObject(TakeDamageInstance, GetComponent<Transform>());
             TakeDamageInstance.start();
         }
-        
     }
 
-    public IEnumerator DisolveRespawn()
-    {
-        disolveEvent();
-        yield return new WaitForSeconds(DeathTime);
-
-        //enable ragdoll mode
-        //seperate from player
-        /*
-        if(HandMagic.Respawn == true && SceneLoader.instance.CurrentSetting == CurrentGame.Testing)
-        {
-            HandMagic.instance.RB.transform.position = HandDebug.instance.Spawn.position;
-        } 
-        else if (HandMagic.Respawn == true && SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
-        {
-            Transform Spawn = InGameManager.instance.SpectatorSpawns[Random.Range(0, InGameManager.instance.SpectatorSpawns.Count)];
-            HandMagic.instance.RB.transform.position = Spawn.position;
-        }
-        */
-    }
     /*
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -84,6 +78,28 @@ public class PlayerControl : MonoBehaviourPunCallbacks
         {
             //Death(true);
             //rpcDeathRPC()
+        }
+        
+    }
+    */
+
+    /*
+    public IEnumerator DisolveRespawn()
+    {
+        disolveEvent();
+        yield return new WaitForSeconds(DeathTime);
+
+        //enable ragdoll mode
+        //seperate from player
+        
+        if(HandMagic.Respawn == true && SceneLoader.instance.CurrentSetting == CurrentGame.Testing)
+        {
+            HandMagic.instance.RB.transform.position = HandDebug.instance.Spawn.position;
+        } 
+        else if (HandMagic.Respawn == true && SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
+        {
+            Transform Spawn = InGameManager.instance.SpectatorSpawns[Random.Range(0, InGameManager.instance.SpectatorSpawns.Count)];
+            HandMagic.instance.RB.transform.position = Spawn.position;
         }
         
     }
