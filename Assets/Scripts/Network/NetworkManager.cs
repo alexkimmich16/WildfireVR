@@ -41,6 +41,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public delegate void initializeEvent();
     public static event initializeEvent OnInitialized;
 
+    public delegate void Fade(bool In);
+    public static event Fade DoFade;
+
     public float AfterDeathWait;
 
     public List<GameObject> GetPlayers()
@@ -84,15 +87,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         roomOptions.IsOpen = true;
         PhotonNetwork.JoinOrCreateRoom("Room 1", roomOptions, TypedLobby.Default);
     }
-
+    
 
     public IEnumerator WaitForInitalized()
     {
         yield return new WaitWhile(() => Initialized() == false);
         if(DebugScript)
             Debug.Log("init: " + Initialized());
-        if(OnInitialized != null)
-            OnInitialized();
+        OnInitialized?.Invoke();
     }
 
     public override void OnJoinedRoom()
@@ -152,10 +154,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("PlayerDied", RpcTarget.All);
         AIMagicControl.instance.MyCharacterSkin.SetActive(false);
-
+        DoFade?.Invoke(false);
         //wait to find spawn
         yield return new WaitForSeconds(AfterDeathWait);
         AIMagicControl.instance.MyCharacterSkin.SetActive(true);
         SpawnManager.instance.SetNewPosition(Team.Spectator);
+        DoFade?.Invoke(true);
     }
 }

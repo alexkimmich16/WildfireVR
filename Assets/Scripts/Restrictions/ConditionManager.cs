@@ -66,7 +66,6 @@ namespace RestrictionSystem
         }
         public void PassValue(bool State, CurrentLearn Motion, Side side)
         {
-            //Debug.Log("Pass: " + State);
             MotionConditions[(int)Motion - 1].PassValueToAll(State, side);
         }
     }

@@ -65,8 +65,10 @@ public class Fireball : MonoBehaviour
 
         if (col.collider.tag == "HitBox")
             NetworkManager.instance.LocalTakeDamage(Damage);
-        gameObject.GetComponent<PhotonView>().RPC("OnHit", RpcTarget.All);
+
         GetComponent<PhotonDestroy>().StartCountdown();
+        gameObject.GetComponent<PhotonView>().RPC("OnHit", RpcTarget.All);
+        
     }
 
     [PunRPC]

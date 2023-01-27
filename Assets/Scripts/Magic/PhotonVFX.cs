@@ -15,6 +15,6 @@ public class PhotonVFX : MonoBehaviour
 
     private void Start()
     {
-        VFX.SetNewState(false);
+        //VFX.SetNewState(false);
     }
 }

@@ -35,12 +35,8 @@ public class FireballController : SerializedMonoBehaviour
     public bool ShouldDebug;
     public float Display;
 
-    //public int Min, Max;
-    //public GameObject TestOBJ;
-
     public List<bool> Actives;
     public List<GameObject> FireballWarmups;
-    //public bool justHand, Both;
 
     public int FramesAgoRotation = 5;
 

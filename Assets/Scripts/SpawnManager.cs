@@ -10,12 +10,20 @@ public class SpawnManager : MonoBehaviour
     public static SpawnManager instance;
     void Awake() { instance = this; }
 
+    public float RespawnTime;
+    public float FadeStartTime;
+
+    public delegate void RespawnEvent();
+    public static event RespawnEvent OnElevatorRespawn;
+
+
     public List<Transform> Spawns = new List<Transform>();
     void Start()
     {
         NetworkManager.OnInitialized += SpawnSequence;
         DoorManager.OnDoorReset += RespawnToSpawnPoint;
     }
+    
     public void JoinAsSpectator()
     {
         if (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator && GetGameState() == GameState.Waiting)
@@ -41,6 +49,7 @@ public class SpawnManager : MonoBehaviour
         SetPlayerTeam(team, PhotonNetwork.LocalPlayer);
         yield return new WaitWhile(() => Exists(PlayerTeam, PhotonNetwork.LocalPlayer) == false); //wait for team
         SetNewPosition(team);
+        OnElevatorRespawn?.Invoke();
         //Debug.Log("spawncorotine2");
         ///enable view
     }
