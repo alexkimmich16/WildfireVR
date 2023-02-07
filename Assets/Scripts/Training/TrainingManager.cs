@@ -140,12 +140,7 @@ public class TrainingManager : SerializedMonoBehaviour
                 TextDisplay.instance.DisplayMessage(Message + "  " + (RequiredSucessfulMotions - CurrentSucessfulMotions) + " Left");
             }
         }
-
-
         //move to next
-
-
-            //
     }
 
     public List<Restriction> FailedRestrictions(SingleInfo frame1, SingleInfo frame2, MotionRestriction restriction)
@@ -168,93 +163,6 @@ public class TrainingManager : SerializedMonoBehaviour
         return Restrictions;
 
     }
-
-    /*
-    public void PlayerTest()
-    {
-        if (state != TrainingState.PlayerTry)
-            return;
-
-        //Spell CurrentMotion = RestrictionManager.instance.GetCurrentMotion(); ///get spell from controller(currentplaceholder), also will repeat so fix that
-        if (IsAnotherMotion(CurrentMotion)) //Another Motion
-        {
-            TextDisplay.instance.DisplayMessage("try preforming the correct motion: " + ((Spell)CurrentSpell).ToString() + "  and not: " + CurrentMotion.ToString());
-            return;
-        }
-
-        //Correct Motion Errors
-        Dictionary<string, bool> ErrorChecks = DetectMotionErrors();
-        List<string> ErrorTexts = new List<string>();
-        foreach (KeyValuePair<string, bool> pair in ErrorChecks)
-        {
-            if(pair.Value == false)
-            {
-                ErrorTexts.Add(Motions[CurrentSpell].Errors[pair.Key]);
-            }
-        }
-
-        if(ErrorTexts.Count > 0)
-        {
-            ///should debug ALL errors in future
-            TextDisplay.instance.DisplayMessage(ErrorTexts[0]);
-            return;
-        }
-
-        if(ErrorTexts.Count == 0 && CurrentMotion != (Spell)CurrentSpell) //Wrong but no idea why
-        {
-            TextDisplay.instance.DisplayMessage("i've got no idea why this motion is wrong!");
-            return;
-        }
-        
-
-        OnSuccessfulMotion();
-
-        void OnSuccessfulMotion()
-        {
-            string Message = Successful[Random.Range(0, Successful.Count - 1)];
-            CurrentSucessfulMotions += 1;
-            if (CurrentSucessfulMotions == RequiredSucessfulMotions)
-            {
-                state = TrainingState.None;
-                TextDisplay.instance.DisplayMessage(EntryMessage);
-                CurrentSucessfulMotions = 0;
-                return;
-            }
-            TextDisplay.instance.DisplayMessage(Message + "  " + (RequiredSucessfulMotions - CurrentSucessfulMotions) + " Left");
-        }
-        bool IsAnotherMotion(Spell PreformedSpell)
-        {
-            return CurrentMotion != (Spell)CurrentSpell && CurrentMotion != Spell.Nothing;
-        }
-        Dictionary<string, bool> DetectMotionErrors()
-        {
-            Dictionary<string, bool> CurrentErrors = new Dictionary<string, bool>();
-            //CurrentErrors.Add(false);
-
-            if ((Spell)CurrentSpell == Spell.Fireball)
-            {
-                CurrentErrors.Add("Crooked", Crooked());
-                CurrentErrors.Add("NotParrelelHand", NotParrelelHand());
-                CurrentErrors.Add("Slow", Slow());
-
-                bool Crooked()
-                {
-                    return false;
-                }
-                bool NotParrelelHand()
-                {
-                    return false;
-                }
-                bool Slow()
-                {
-                    return false;
-                }
-            }
-
-            return CurrentErrors;
-        }
-    }
-    */
     void Start()
     {
         
