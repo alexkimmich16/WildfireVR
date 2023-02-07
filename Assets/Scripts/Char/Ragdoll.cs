@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Ragdoll : MonoBehaviour
+using Sirenix.OdinInspector;
+public class Ragdoll : SerializedMonoBehaviour
 {
     public float Upforce;
     public float SideForce;
@@ -10,11 +10,10 @@ public class Ragdoll : MonoBehaviour
     public Collider[] Colliders;
 
     public RootMotion.FinalIK.VRIK IK;
+
+    [Button(ButtonSizes.Small)]
     public void EnableRagdoll()
     {
-        //seperate from playerw
-        //DISABLE IK
-
         IK.enabled = false;
         foreach (Rigidbody rb in Rigidbodies)
         {

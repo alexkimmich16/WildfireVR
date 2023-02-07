@@ -44,14 +44,15 @@ public class SoundManager : MonoBehaviour
     //public GameObject RoarOBJ;
     [Header("References")]
     private FMOD.Studio.EventInstance CrowdInstance, ElevatorInstance;
-    public FMODUnity.EventReference CrowdRef, ElevatorRef, FireballRef, FlamesRef, BlockRef, TakeDamageRef;
-    public FMODUnity.EventReference DeathRef, PlayerLeftRef;
-
+    public FMODUnity.EventReference CrowdRef, ElevatorRef, FireballRef, FlamesRef, BlockRef;
+    public FMODUnity.EventReference PlayerLeftRef;
+    public List<FMODUnity.EventReference> DamageRef;
+    public List<FMODUnity.EventReference> DeathRef;
     [Header("Misc")]
     public float TimeAfterRoar;
     public List<AudioClip> CrowdShouts;
 
-    
+    public FMODUnity.EventReference RandomSound(List<FMODUnity.EventReference> SoundList) { return SoundList[Random.Range(0, SoundList.Count)]; }
 
     public bool CanPlaySound(SoundType type)
     {
@@ -75,7 +76,7 @@ public class SoundManager : MonoBehaviour
         if (CanPlaySound(SoundType.Effect))
         {
             //DoorManager.OnDoorChange += ElevatorSound;v
-            NetworkPlayer.TakeDamage += OnPlayerHit;
+            //PlayerControl.OnTakeDamage += OnPlayerHit;
         }
         if (CanPlaySound(SoundType.Crowd))
         {
@@ -89,7 +90,7 @@ public class SoundManager : MonoBehaviour
     }
     private void Start()
     {
-        //NetworkManager.Initialize += OnInitialize;
+        NetworkManager.OnInitialized += OnInitialize;
         //NetworkManager.Initialize += OnPlayerLeave();
         //NetworkManager.Initialize += OnPlayerDeath();
     }

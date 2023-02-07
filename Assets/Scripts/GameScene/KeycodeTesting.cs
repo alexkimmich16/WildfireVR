@@ -11,17 +11,19 @@ public class KeycodeTesting : MonoBehaviour
     public bool useTesting;
     public int DamageAmount;
 
-    public bool KeypadTesting()
-    {
-        return useTesting;
-    }
+    public KeyCode TakeDamage;
+    public KeyCode StartSequence;
+    public KeyCode Restart;
+    public KeyCode StartGame;
+    public KeyCode CancelStartup;
+    public KeyCode JoinAsSpectator;
 
     void Update()
     {
         if (useTesting == false)
             return;
         
-        if(Input.GetKeyDown(KeyCode.N))
+        if(Input.GetKeyDown(StartSequence))
             DoorManager.instance.StartSequence();
 
         if (Input.GetKey(KeyCode.D))
@@ -32,22 +34,22 @@ public class KeycodeTesting : MonoBehaviour
        // if (Input.GetKeyDown(KeyCode.S))
             //AIMagicControl.instance.Flames[(int)Side.Right].StopFire();
 
-        if (Input.GetKeyDown(KeyCode.G))
+        if (Input.GetKeyDown(TakeDamage))
             NetworkManager.instance.LocalTakeDamage(DamageAmount);
 
         //if (Input.GetKeyDown(KeyCode.Z))
             //AIMagicControl.instance.Fireballs[(int)Side.Right].SpawnFireball();
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(Restart))
             InGameManager.instance.RestartGame();
 
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(StartGame))
             InGameManager.instance.StartGame();
 
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(CancelStartup))
             InGameManager.instance.CancelStartup();
 
-        if (Input.GetKeyDown(KeyCode.J))
+        if (Input.GetKeyDown(JoinAsSpectator))
             SpawnManager.instance.JoinAsSpectator();
 
         //if (Input.GetKeyDown(KeyCode.P))

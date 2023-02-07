@@ -45,7 +45,7 @@ public class FireController : MonoBehaviour
 
     [Header("VFX")]
 
-    private List<GameObject> OnlineFire = new List<GameObject>();
+    public List<GameObject> OnlineFire = new List<GameObject>();
     //public GameObject PrivateFire;
 
     [Header("Lists")]
@@ -63,50 +63,6 @@ public class FireController : MonoBehaviour
             if (DamageCooldowns[i].Target == hitAttempt)
                 return true;
         return false;
-    }
-    public List<Transform> CheckForTargets()
-    {
-        List<Transform> TrueColliders = new List<Transform>();
-        
-        for (int i = 0; i < 2; i++)
-        {
-            Collider[] Colliders = Physics.OverlapSphere(AIMagicControl.instance.PositionObjectives[i].transform.position, TargetCheckDistance);
-            for (int j = 0; j < Colliders.Length; j++)
-                if (Colliders[j].gameObject.GetComponent<PhotonView>())
-                    if (Colliders[j].gameObject.layer == LayerMask.NameToLayer("PlayerSee") && Colliders[j].gameObject.GetComponent<PhotonView>().IsMine == false)
-                        TrueColliders.Add(Colliders[j].transform);
-        }
-            
-        return TrueColliders;
-    }
-    public IEnumerator Wait()
-    {
-        while (false == false)
-        {
-            Targets = CheckForTargets();
-            yield return new WaitForSeconds(CheckInterval);
-        }
-    }
-    public void DamageShardHit(GameObject Hit)
-    {
-        if (IsCooldown(Hit.transform.parent))
-            return;
-        Debug.Log("doDamage");
-        PhotonView EnemyPhoton = Hit.transform.parent.GetComponent<PhotonView>();
-        if (EnemyPhoton.IsMine)
-            return;
-
-        //if blocking
-        if (GetPlayerBool(Blocking, EnemyPhoton.Owner))
-        {
-            OnlineEventManager.PushFireOnlineEvent(Hit.transform.parent.position);
-            return;
-        }
-        EnemyPhoton.RPC("takeDamage", RpcTarget.All, 2);
-
-        CooldownInfo NewTime = new CooldownInfo();
-        NewTime.Target = Hit.transform.parent;
-        DamageCooldowns.Add(NewTime);
     }
 
     #region StartStop
@@ -133,12 +89,8 @@ public class FireController : MonoBehaviour
 
         
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Flames);
-        //Debug.Log("PT2");
-        //Debug.Log("online");
         OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, true), Vector3.zero, Camera.main.transform.rotation);
         OnlineFire[(int)side].name = "OnlineFire";
-        //OnlineFire[(int)side].GetComponent<FlameObject>().SetFlames(true);
-        OnlineFire[(int)side].GetPhotonView().RPC("SetFlamesOnline", RpcTarget.All, true);
 
         //ActiveFires.Add(PrivateFire.GetComponent<FlameObject>());
         ///add to all fires list
@@ -173,14 +125,10 @@ public class FireController : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(Wait());
         ConditionManager.instance.MotionConditions[(int)CurrentLearn.Flames - 1].OnNewState += RecieveNewState;
         //OnlineFire ;
         for (int i = 0; i < 2; i++)
             OnlineFire.Add(null);
-            //gameObject.GetComponent<LearningAgent>().NewState += frames.AddToList;
-            //gameObject.GetComponent<LearningAgent>().NewState += OnNewState;
-            //side = GetComponent<LearningAgent>().side;
         DamageCooldowns = new List<CooldownInfo>();
     }
 
@@ -238,25 +186,6 @@ public class FireController : MonoBehaviour
             
         }
             
-    }
-    void CheckArriveTimes()
-    {
-        foreach (ShardInfo shard in Shards)
-        {
-            shard.Timer += Time.deltaTime;
-            shard.CurrentPos = shard.SentRot * ShardSpeed * Time.deltaTime;
-            for (int j = 0; j < Targets.Count; j++)
-            {
-                if (Vector3.Distance(shard.CurrentPos, Targets[j].position) < CollisionDistance)
-                {
-                    DamageShardHit(Targets[j].gameObject);
-                    Shards.Remove(shard);
-                    continue;
-                }
-            }
-            if (shard.Timer > ShardLifetime)
-                Shards.Remove(shard);
-        }
     }
     /*
     public void SpawnFireCode()

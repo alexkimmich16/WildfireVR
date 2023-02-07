@@ -372,10 +372,9 @@ GameObject:
   - component: {fileID: 2883858983786084664}
   - component: {fileID: 5272293459400824933}
   - component: {fileID: 802789730534011270}
-  - component: {fileID: 2099352641000150228}
   - component: {fileID: 8907784592987666268}
   - component: {fileID: 5371750711294747581}
-  - component: {fileID: 8558799165604210686}
+  - component: {fileID: 2099352641000150228}
   m_Layer: 16
   m_Name: Network Player
   m_TagString: VRPerson
@@ -418,6 +417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 187b9101e83540b4eb9b525227e054ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myRagdoll: {fileID: 7144818632856302518}
 --- !u!114 &2883858983786084664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,7 +461,7 @@ MonoBehaviour:
   Right: {fileID: 1062120216902390105}
   SkinRenderer: {fileID: 4497312430490286746}
   TestingSelf: 0
-  AtFloor: {fileID: 8558799165604210686}
+  Dead: 0
 --- !u!114 &802789730534011270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -481,24 +481,6 @@ MonoBehaviour:
   AutoCreateRecorderIfNotFound: 0
   UsePrimaryRecorder: 1
   SetupDebugSpeaker: 0
---- !u!114 &2099352641000150228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8105980944445082301}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 541a76f9c03874323b5154b14ac00427, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spline: {fileID: 0}
-  Speed: 0
-  lookForward: 0
-  reverse: 0
-  currentDistance: 0
-  currentClampedDistance: 0
 --- !u!114 &8907784592987666268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -530,7 +512,7 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 0
---- !u!114 &8558799165604210686
+--- !u!114 &2099352641000150228
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -539,14 +521,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 8105980944445082301}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a3c1a85e5bb5954eab478b50e6cf2d8, type: 3}
+  m_Script: {fileID: 11500000, guid: 541a76f9c03874323b5154b14ac00427, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FloorHeight: 0.13
-  ElevatorOffset: -5.26
-  NetworkOBJ: {fileID: 0}
-  IsActive: 0
-  RestrictAll: 0
+  spline: {fileID: 0}
+  Speed: 0
+  lookForward: 0
+  reverse: 0
+  currentDistance: 0
+  currentClampedDistance: 0
 --- !u!1 &8461358418908909968
 GameObject:
   m_ObjectHideFlags: 0
@@ -8312,6 +8295,12 @@ PrefabInstance:
       objectReference: {fileID: 2186134951724915565}
     - target: {fileID: 6766196747847322755, guid: 06f97e6bda8684c4a980b717935d9eed,
         type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 6766196747847322755, guid: 06f97e6bda8684c4a980b717935d9eed,
+        type: 3}
+    - target: {fileID: 6766196747847322755, guid: 06f97e6bda8684c4a980b717935d9eed,
+        type: 3}
       propertyPath: Rigidbodies.Array.data[0]
       value: 
       objectReference: {fileID: 6840378603448049541}
@@ -8967,6 +8956,18 @@ Rigidbody:
     type: 3}
   m_PrefabInstance: {fileID: 4521933601245904693}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7144818632856302518 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6766196747847322755, guid: 06f97e6bda8684c4a980b717935d9eed,
+    type: 3}
+  m_PrefabInstance: {fileID: 4521933601245904693}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd0df0a29d5942a4caf96f70540617f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!54 &7312069390891720106 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 6609194048243737247, guid: 06f97e6bda8684c4a980b717935d9eed,

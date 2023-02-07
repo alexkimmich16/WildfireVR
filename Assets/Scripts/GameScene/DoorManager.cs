@@ -34,20 +34,9 @@ public class DoorManager : SerializedMonoBehaviour
     [Header("Doors")]
     public List<Door> Doors = new List<Door>();
 
-    public Vector2 ElevatorPreventorSizeLock;
-    public float IncreaseSizeSpeed;
-    public List<BoxCollider> ElevatorPreventors;
-    public void SetElevatorPreventors(bool state)
-    {
-        for (int i = 0; i < ElevatorPreventors.Count; i++)
-            ElevatorPreventors[i].gameObject.SetActive(state);
-    }
-    public void IncreaseElevatorPreventorsSize()
-    {
-        for (int i = 0; i < ElevatorPreventors.Count; i++)
-            ElevatorPreventors[i].size = new Vector3(ElevatorPreventors[i].size.x + (Time.deltaTime * IncreaseSizeSpeed), ElevatorPreventors[i].size.y, ElevatorPreventors[i].size.z);
-    }
-    //public List<Collider> ElevatorColliders;
+    public float PushForce;
+    public float BeforePushTime;
+    private float PushTimer;
 
 
     public float DropAmount;
@@ -64,6 +53,8 @@ public class DoorManager : SerializedMonoBehaviour
     [ReadOnly] public bool InElevator;
     public float ElevatorSpawnOffset = -36.2f;
     public float ZOutOfDoor = 43f;
+
+
     public IEnumerator WaitUntilDoorReset()//get appropriate team, spawn, set online
     {
         yield return new WaitWhile(() => GetGameFloat(DoorNames[0]) != Doors[0].MinMax.x); //wait for team
@@ -87,7 +78,6 @@ public class DoorManager : SerializedMonoBehaviour
 
     public void OnRestart()
     {
-        SetElevatorPreventors(false);
         ResetDoors();
     }
     public void StartSequence()
@@ -131,9 +121,8 @@ public class DoorManager : SerializedMonoBehaviour
         if (state == SequenceState.Waiting)
             OnlineEventManager.DoorEvent((int)state);
 
-
-        if(state == SequenceState.WaitingForAllExit)
-            SetElevatorPreventors(true);
+        if(state == SequenceState.Finished)
+            PushTimer = 0f;
 
         Sequence = state;
         SetGameInt(DoorState, (int)state);
@@ -168,22 +157,22 @@ public class DoorManager : SerializedMonoBehaviour
             return;
         PlayersOutOfElevator = AllExitedElevator();
         UpdateEarlySounds();
-            
 
-
-        
-            
         InElevator = PlayerInElevator();
+        
+
         //GetGameInt(DoorState)
         if (GetGameInt(DoorState) == (int)SequenceState.Waiting)
         {
-            SetElevatorPreventors(false);
             float offset = Time.time * StoneScrollSpeed;
             Wall.GetComponent<Renderer>().materials[0].SetTextureOffset("_BaseMap", new Vector2(offset, 0));
         }
-        else if (GetGameInt(DoorState) == (int)SequenceState.WaitingForAllExit && ElevatorPreventors[0].size.x < ElevatorPreventorSizeLock.y)
+
+        if (GetGameInt(DoorState) == (int)SequenceState.WaitingForAllExit)
         {
-            IncreaseElevatorPreventorsSize();
+            PushTimer += Time.deltaTime;
+            if (PlayerInElevator() && PushTimer > BeforePushTime)
+                Camera.main.transform.parent.parent.position += transform.forward * Time.deltaTime * PushForce * (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Defense ? 1 : -1);
         }
 
         if (PhotonNetwork.IsMasterClient)

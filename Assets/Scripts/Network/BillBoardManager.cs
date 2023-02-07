@@ -84,7 +84,7 @@ public class BillBoardManager : MonoBehaviour
         {
             DisplayVictory.text = "Waiting For Players";
         }
-        else if (state == GameState.CountDown)
+        else if (state == GameState.Warmup)
         {
             DisplayVictory.text = "Starting in: " + GetGameFloat(GameWarmupTimer).ToString("F2") + " Seconds";
         }

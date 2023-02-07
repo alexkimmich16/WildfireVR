@@ -11,8 +11,7 @@ public class Fireball : MonoBehaviour
 {
     public float Speed;
     
-    [HideInInspector]
-    public static int Damage = 5;
+    public int Damage = 5;
 
     [HideInInspector]
     public GameObject Explosion, Flash, DestoryAudio;
@@ -36,9 +35,6 @@ public class Fireball : MonoBehaviour
     //public float LifeTime = 3;
     void Update()
     {
-        //PS. = MaxParticleEmit * Curve.get
-
-
         if (GetComponent<PhotonView>().IsMine == false)
             return;
         if (Absorbing == true)
@@ -69,16 +65,17 @@ public class Fireball : MonoBehaviour
 
         if (col.collider.tag == "HitBox")
             NetworkManager.instance.LocalTakeDamage(Damage);
-        gameObject.GetComponent<PhotonView>().RPC("OnHit", RpcTarget.All);
-        VFX.SetNewState(false);
-        FireballSphere.SetActive(false);
+
         GetComponent<PhotonDestroy>().StartCountdown();
+        gameObject.GetComponent<PhotonView>().RPC("OnHit", RpcTarget.All);
+        
     }
 
     [PunRPC]
     public void OnHit()
     {
         VFX.SetNewState(false);
+        FireballSphere.SetActive(false);
         if (SoundManager.instance.CanPlaySound(SoundType.Effect))
             FireballSound.setParameterByName("Exit", 1f);
         gameObject.GetComponent<SphereCollider>().enabled = false;

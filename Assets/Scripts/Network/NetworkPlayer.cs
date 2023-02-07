@@ -20,13 +20,8 @@ public class NetworkPlayer : MonoBehaviourPun
 
     public GameObject SkinRenderer;
     public bool TestingSelf;
-
-    public delegate void StateEvent();
-    public static event StateEvent TakeDamage;
-
-    public CamAtFloor AtFloor;
-    //public XR
-    public static void TakeDamageEventMethod() { if (TakeDamage != null){ TakeDamage(); } }
+    public bool Dead;
+    
 
     void Start()
     {
@@ -36,27 +31,26 @@ public class NetworkPlayer : MonoBehaviourPun
         RigRight = AIMagicControl.instance.PositionObjectives[(int)Side.right]; //rig.transform.Find("Camera Offset/RightHand Controller");
 
         transform.SetParent(NetworkManager.instance.playerList);
-
-        if (photonView.IsMine)
-        {
-            //AtFloor.IsActive = false;
-        }
     }
 
     void Update()
     {
         if (photonView.IsMine)
         {
-            Head.gameObject.SetActive(TestingSelf);
-            Left.gameObject.SetActive(TestingSelf);
-            Right.gameObject.SetActive(TestingSelf);
-            SkinRenderer.SetActive(TestingSelf);
+            Head.gameObject.SetActive(TestingSelf || Dead);
+            Left.gameObject.SetActive(TestingSelf || Dead);
+            Right.gameObject.SetActive(TestingSelf || Dead);
+            SkinRenderer.SetActive(TestingSelf || Dead);
 
-            transform.position = CharacterDisplay.position;
             //MapPosition(transform, CharacterDisplay);
-            MapPosition(Head, RigHead);
-            MapPosition(Left, RigLeft);
-            MapPosition(Right, RigRight);
+            if (!Dead)
+            {
+                transform.position = CharacterDisplay.position;
+                MapPosition(Head, RigHead);
+                MapPosition(Left, RigLeft);
+                MapPosition(Right, RigRight);
+            }
+            
         }
         if (SceneLoader.instance.CurrentSetting != CurrentGame.Battle)
             return;
@@ -75,14 +69,5 @@ public class NetworkPlayer : MonoBehaviourPun
         target.rotation = rigTrans.rotation;
     }
 
-    [PunRPC]
-    public void takeDamage(int damg)
-    {
-        if (photonView.IsMine)
-        {
-            NetworkManager.instance.LocalTakeDamage(damg);
-            Debug.Log("Take Damage");
-            TakeDamageEventMethod();
-        }
-    }
+    
 }

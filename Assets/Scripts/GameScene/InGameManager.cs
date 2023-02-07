@@ -56,7 +56,7 @@ public class InGameManager : SerializedMonoBehaviour
 
     [ReadOnly] public float Timer;
 
-    
+    //private bool StartedCountdown = false;
 
     public bool CanMove()
     {
@@ -67,32 +67,34 @@ public class InGameManager : SerializedMonoBehaviour
         if (GetGameState() != GameState.Waiting)
             return Team.Spectator;
 
-        int AttCount = SideCount(Team.Attack);
-        int DefCount = SideCount(Team.Defense);
-        if (AttCount == MaxPlayers && DefCount == MaxPlayers)
+        if (SideCount(Team.Attack) == MaxPlayers && SideCount(Team.Defense) == MaxPlayers)
             return Team.Spectator;
-        else if (AttCount == DefCount)
+        else if (SideCount(Team.Attack) == SideCount(Team.Defense))
             return ChooseAttackOnEven ? Team.Attack : (Team)Random.Range(0, 2);
         else
-            return AttCount > DefCount ? Team.Defense : Team.Attack;
+            return SideCount(Team.Attack) > SideCount(Team.Defense) ? Team.Defense : Team.Attack;
     }
     public void SetNewGameState(GameState state)
     {
         //for each individually
         Debug.Log(state);
+        //Debug.Log("newstate: " + state);
         Timer = 0f;
         if(state == GameState.Waiting)
         {
             //restart
+            //StartedCountdown = false;
         }
-        else if (state == GameState.CountDown)
+        else if (state == GameState.Warmup)
         {
+            //StartedCountdown = true;
             Timer = WarmupTime;
             if (OnStartCountdown != null)
                 OnStartCountdown();
         }
         else if (state == GameState.Active)
         {
+            //StartedCountdown = false;
             if (OnGameStart != null)
                 OnGameStart();
             Timer = FinishTime;
@@ -103,10 +105,9 @@ public class InGameManager : SerializedMonoBehaviour
                 OnGameEnd();
             if (PhotonNetwork.IsMasterClient)
             {
-                SetGameFloat(GameFinishTimer, 0f);
-                //.Log("Outcome: " + EndResult().ToString());
+                //SetGameFloat(GameFinishTimer, 0f);
                 SetGameResult(EndResult());
-                OnlineEventManager.FinishEvent(EndResult());
+                //OnlineEventManager.FinishEvent(EndResult());
             }
             
         }
@@ -122,16 +123,16 @@ public class InGameManager : SerializedMonoBehaviour
 
         GameState state = GetGameState();
         //Debug.Log("state: " + state);
-        Timer -= (state == GameState.CountDown || (state == GameState.Active && DoorManager.instance.Sequence == SequenceState.WaitingForAllExit)) ? Time.deltaTime : 0;
-        SetGameFloat(GameWarmupTimer, state == GameState.CountDown ? Timer : 0);
+        Timer -= (state == GameState.Warmup || (state == GameState.Active && (int)DoorManager.instance.Sequence >= (int)SequenceState.WaitingForAllExit)) ? Time.deltaTime : 0;
+        SetGameFloat(GameWarmupTimer, state == GameState.Warmup ? Timer : 0);
         SetGameFloat(GameFinishTimer, state == GameState.Active ? Timer : 0);
-        if (AutoStart && SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers)
-            SetNewGameState(GameState.CountDown);
+        if (AutoStart && SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers && GetGameState() == GameState.Waiting)
+            SetNewGameState(GameState.Warmup);
 
         if (state == GameState.Waiting && SideCount(Team.Attack) + SideCount(Team.Defense) >= MinPlayers * 2 && BalenceTeams == true)
             ManageTeam();
 
-        bool NextRestrictionReady = (state == GameState.CountDown) || (state == GameState.Active);
+        bool NextRestrictionReady = (state == GameState.Warmup) || (state == GameState.Active);
         if (NextRestrictionReady && Timer < 0)
             SetNewGameState((GameState)((int)state) + 1);
                 
@@ -152,12 +153,12 @@ public class InGameManager : SerializedMonoBehaviour
 
     public void StartGame()
     {
-        if (SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers)
-            SetNewGameState(GameState.CountDown);
+        if (SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers && GetGameState() == GameState.Waiting)
+            SetNewGameState(GameState.Warmup);
     }
     public void CancelStartup()
     {
-        if (GetGameState() == GameState.CountDown)
+        if (GetGameState() == GameState.Warmup)
         {
             SetNewGameState(GameState.Waiting);
             SetGameFloat(GameWarmupTimer, 0);
@@ -165,14 +166,10 @@ public class InGameManager : SerializedMonoBehaviour
     }
    
     #region SequenceManage
-
-
     public void RestartGame()
     {
-        //Debug.Log("pt0.1");
         if (GetGameState() != GameState.Finished)
             return;
-        //Debug.Log("pt0.2");
         OnlineEventManager.instance.RestartEvent(); //tell all to restart, master will reset stats
     }
     #endregion
@@ -204,8 +201,9 @@ public class InGameManager : SerializedMonoBehaviour
         if (Initialized() == false || PhotonNetwork.CurrentRoom == null)
             return false;
         */
-        if (AlwaysCast == false)
-            return false;
+
+        if (AlwaysCast == true)
+            return true;
         if (AIMagicControl.instance.AllActive() == false)
             return false;
         if (Exists(PlayerTeam, PhotonNetwork.LocalPlayer) == false)
@@ -219,6 +217,8 @@ public class InGameManager : SerializedMonoBehaviour
             return MagicBeforeStart;
         else
             return false;
+
+        
     }
     public int TotalAlive(Team team)
     {
@@ -296,7 +296,7 @@ public class InGameManager : SerializedMonoBehaviour
 public enum GameState
 {
     Waiting = 0,
-    CountDown = 1,
+    Warmup = 1,
     Active = 2,
     Finished = 3,
 }

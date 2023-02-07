@@ -41,6 +41,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public delegate void initializeEvent();
     public static event initializeEvent OnInitialized;
 
+    public delegate void Fade(bool In);
+    public static event Fade DoFade;
+
     public float AfterDeathWait;
 
     public List<GameObject> GetPlayers()
@@ -84,15 +87,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         roomOptions.IsOpen = true;
         PhotonNetwork.JoinOrCreateRoom("Room 1", roomOptions, TypedLobby.Default);
     }
-
+    
 
     public IEnumerator WaitForInitalized()
     {
         yield return new WaitWhile(() => Initialized() == false);
         if(DebugScript)
             Debug.Log("init: " + Initialized());
-        if(OnInitialized != null)
-            OnInitialized();
+        OnInitialized?.Invoke();
     }
 
     public override void OnJoinedRoom()
@@ -144,21 +146,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         int NewHealth = BeforeHealth - Damage > 0 ? BeforeHealth - Damage : 0;
         OnTakeDamage(Damage);
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("TakeDamage", RpcTarget.All);
-        NetworkPlayer.TakeDamageEventMethod();
         SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);
         if(NewHealth == 0)
             StartCoroutine(MainPlayerDeath());
     }
     public IEnumerator MainPlayerDeath()
     {
-        //my network player death
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("PlayerDied", RpcTarget.All);
-
-        ///physical ragdoll death
-
-
+        AIMagicControl.instance.MyCharacterSkin.SetActive(false);
+        DoFade?.Invoke(false);
         //wait to find spawn
         yield return new WaitForSeconds(AfterDeathWait);
+        AIMagicControl.instance.MyCharacterSkin.SetActive(true);
         SpawnManager.instance.SetNewPosition(Team.Spectator);
+        DoFade?.Invoke(true);
     }
 }
