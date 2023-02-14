@@ -63,6 +63,11 @@ namespace RestrictionSystem
             StartCoroutine(ManageLists(1 / 60));
         }
 
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
         IEnumerator ManageLists(float Interval)
         {
             while (true)

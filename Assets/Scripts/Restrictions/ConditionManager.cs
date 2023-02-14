@@ -8,6 +8,8 @@ using System;
 
 namespace RestrictionSystem
 {
+    
+
     public enum Condition
     {
         Time = 0,
@@ -66,6 +68,7 @@ namespace RestrictionSystem
         }
         public void PassValue(bool State, CurrentLearn Motion, Side side)
         {
+            //Debug.Log("Pass: " + State);
             MotionConditions[(int)Motion - 1].PassValueToAll(State, side);
         }
     }
@@ -194,6 +197,8 @@ namespace RestrictionSystem
         [FoldoutGroup("Values")] public List<Vector3> StartPos = new List<Vector3>() { Vector3.zero, Vector3.zero };
         [FoldoutGroup("Values")] public List<float> Value = new List<float>() { 0, 0 };
         private bool HasAmount() { return condition == Condition.Distance || condition == Condition.Time; }
+
+        
     }
 }
 

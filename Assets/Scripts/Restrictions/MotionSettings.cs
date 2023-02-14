@@ -41,12 +41,10 @@ namespace RestrictionSystem
         public MotionRestriction(MotionRestriction All)
         {
             this.Motion = All.Motion;
-            this.WeightedValueThreshold = All.WeightedValueThreshold;
             this.Restrictions = new List<SingleRestriction>(All.Restrictions);
         }
         public string Motion;
-
-        [Range(0f, 1f)] public float WeightedValueThreshold;
+        //public CurrentLearn Motion;
 
 
         [ListDrawerSettings(ListElementLabelName = "Label")]
@@ -57,7 +55,6 @@ namespace RestrictionSystem
     {
         public string Label;
         public bool Active;
-        [ShowIf("Active"), Range(0f, 1f)] public float Weight;
         public Restriction restriction;
         [ShowIf("restriction", Restriction.VelocityInDirection)] public VelocityType CheckType;
         public float MaxSafe;
@@ -66,6 +63,7 @@ namespace RestrictionSystem
         public float MaxFalloff;
 
         private bool RequiresOffset() { return restriction == Restriction.VelocityInDirection || restriction == Restriction.HandFacingHead; }
+        private bool RequiresAxisList() { return restriction == Restriction.HandHeadDistance || restriction == Restriction.VelocityThreshold; }
 
 
         [ShowIf("RequiresOffset")] public Vector3 Offset;
@@ -73,15 +71,13 @@ namespace RestrictionSystem
 
         [ShowIf("restriction", Restriction.HandFacingHead)] public bool ExcludeHeight;
 
-        [ShowIf("restriction", Restriction.HandHeadDistance)] public List<Axis> UseAxisList;
+        [ShowIf("RequiresAxisList")] public List<Axis> UseAxisList;
 
         public bool ShouldDebug;
         [ReadOnly] public float Value;
         public float GetValue(float Input)
         {
-            //if()
             Value = Input;
-            //Debug.Log("Label: " + Label);
             if (Input < MaxSafe && Input > MinSafe)
                 return 1f;
             else if (Input < MinFalloff || Input > MaxFalloff)

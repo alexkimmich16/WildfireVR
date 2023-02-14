@@ -9,7 +9,8 @@ public class FlameObject : MonoBehaviour
     private void Start()
     {
         GetComponent<PhotonDestroy>().DestoryEvent += OnDestory;
-        GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, true);
+        //GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, true);
+        GetComponent<PhotonVFX>().VFX.SetNewState(true);
         if (GetComponent<PhotonView>() && SoundManager.instance.CanPlaySound(SoundType.Effect))
         {
             FlameThrowerSound = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.FlamesRef);
