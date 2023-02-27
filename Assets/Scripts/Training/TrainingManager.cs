@@ -113,7 +113,8 @@ public class TrainingManager : SerializedMonoBehaviour
             ///later add debug wrong motion
             PastFrameRecorder PR = PastFrameRecorder.instance;
             List<Restriction> RestrictionFails = FailedRestrictions(PR.PastFrame((Side)SideNum), PR.GetControllerInfo((Side)SideNum), motions.MotionRestrictions[CurrentSpell]);
-            List<string> ErrorTexts = RestrictionFails.;
+            //List<string> ErrorTexts = RestrictionFails.;
+            List<string> ErrorTexts = new List<string>();
             for (int i = 0; i < RestrictionFails.Count; i++)
                 ErrorTexts.Add(Errors[RestrictionFails[i]]);
 
@@ -148,7 +149,7 @@ public class TrainingManager : SerializedMonoBehaviour
         List<Restriction> Restrictions = new List<Restriction>();
 
         
-
+        /*
         float TotalWeightValue = 0f;
         float TotalWeight = 0f;
         for (int i = 0; i < restriction.Restrictions.Count; i++)
@@ -160,6 +161,7 @@ public class TrainingManager : SerializedMonoBehaviour
             TotalWeight += restriction.Restrictions[i].Active ? restriction.Restrictions[i].Weight : 0;
         }
         float MinWeightThreshold = restriction.WeightedValueThreshold * TotalWeight;
+        */
         return Restrictions;
 
     }
