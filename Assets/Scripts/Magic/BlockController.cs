@@ -34,7 +34,7 @@ public class BlockController : MonoBehaviour
     }
     public void InitializeBlockObject()
     {
-        BlockVFXObject = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.FlameBlock, true), Vector3.zero, Quaternion.identity);
+        BlockVFXObject = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.FlameBlock, 0), Vector3.zero, Quaternion.identity);
         BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
     }
     private void Update()

@@ -96,7 +96,7 @@ public class FireballController : SerializedMonoBehaviour
         //CurrentSpell spell = (AIMagicControl.instance.HoldingFire()) ? CurrentSpell.Fireball : CurrentSpell.Fireball;
         //if (AIMagicControl.instance.HoldingFire())
         //AIMagicControl.instance.ResetHoldingFires();
-        OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, true), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation(side));
+        OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, 0), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation(side));
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Fireball);
     }
 
@@ -108,7 +108,7 @@ public class FireballController : SerializedMonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            FireballWarmups.Add(PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellNameVariant(CurrentLearn.Fireball, true, 1), Vector3.zero, Quaternion.identity));
+            FireballWarmups.Add(PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, 0), Vector3.zero, Quaternion.identity));
             FireballWarmups[i].GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
         }
     }

@@ -10,17 +10,8 @@ public class SpellContainer : ScriptableObject
     public class SpellHolder
     {
         public RestrictionSystem.CurrentLearn spell;
-        public int Variant;
-        public GameObject Online;
-        public GameObject Offline;
+        public List<GameObject> Levels;
     }
 
-    public string SpellName(RestrictionSystem.CurrentLearn spell, bool Online) { return Online == true ? Spells[(int)spell].Online.name : Spells[(int)spell].Offline.name; }
-    public string SpellNameVariant(RestrictionSystem.CurrentLearn spell, bool Online, int Varient)
-    {
-        for (int i = 0; i < Variants.Count; i++)
-            if (Variants[i].spell == spell && Variants[i].Variant == Varient)
-                return Online == true ? Variants[i].Online.name : Variants[i].Offline.name;
-        return "";
-    }
+    public string SpellName(RestrictionSystem.CurrentLearn spell, int Level) { return Spells[(int)spell].Levels[Level].name; }
 }
