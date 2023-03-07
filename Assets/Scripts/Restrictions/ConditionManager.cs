@@ -17,7 +17,7 @@ namespace RestrictionSystem
         Restriction = 2,
     }
     public delegate bool ConditionWorksAndAdd(SingleConditionInfo Condition, SingleInfo CurrentFrame, SingleInfo PastFrame, bool NewState, Side side);
-    public delegate void OnNewMotionState(Side side, bool NewState, int Index);
+    public delegate void OnNewMotionState(Side side, bool NewState, int Index, int Level);
     
     public class ConditionManager : SerializedMonoBehaviour
     {
@@ -100,7 +100,7 @@ namespace RestrictionSystem
             {
                 for (int i = 0; i < CurrentStage[(int)side]; i++)
                 {
-                    OnNewState?.Invoke(Side.right, false, i);
+                    OnNewState?.Invoke(Side.right, false, i, 0);
                     for (int j = 0; j < ConditionLists[i].SingleConditions.Count; j++)//all conditions that have passed
                     {
                         SingleConditionInfo info = ConditionLists[i].SingleConditions[j];
@@ -113,7 +113,7 @@ namespace RestrictionSystem
             }
             else if(WaitingForFalse[(int)side] == true)
             {
-                OnNewState?.Invoke(Side.right, false, 0);
+                OnNewState?.Invoke(Side.right, false, 0, 0);
             }
             WaitingForFalse[(int)side] = false;
             //Debug.Log("CurrentStage: " + CurrentStage[(int)side]);
@@ -161,7 +161,7 @@ namespace RestrictionSystem
 
             if (AllWorkingSoFar) //ready to move to next
             {
-                OnNewState?.Invoke(side, true, CurrentStage[(int)side]);
+                OnNewState?.Invoke(side, true, CurrentStage[(int)side], 0);
                 //Debug.Log(CurrentStage + " < " + (ConditionLists.Count - 1));
                 if (CurrentStage[(int)side] < ConditionLists.Count - 1)
                 {

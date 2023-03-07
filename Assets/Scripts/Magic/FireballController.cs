@@ -61,7 +61,7 @@ public class FireballController : SerializedMonoBehaviour
         return Quaternion.LookRotation(RealOutput);
     }
 
-    public void RecieveNewState(Side side, bool IsStart, int Index)
+    public void RecieveNewState(Side side, bool IsStart, int Index, int Level)
     {
         if (Index == 0)
         {
@@ -70,7 +70,7 @@ public class FireballController : SerializedMonoBehaviour
         }
         else if(Index == 1)
         {
-            SpawnFireball(side);
+            SpawnFireball(side, Level);
         }
         
         
@@ -83,7 +83,7 @@ public class FireballController : SerializedMonoBehaviour
         //side = GetComponent<LearningAgent>().side;
     }
 
-    public void SpawnFireball(Side side)
+    public void SpawnFireball(Side side, int Level)
     {
         if (InGameManager.instance.CanDoMagic() == false)
             return;
@@ -96,7 +96,7 @@ public class FireballController : SerializedMonoBehaviour
         //CurrentSpell spell = (AIMagicControl.instance.HoldingFire()) ? CurrentSpell.Fireball : CurrentSpell.Fireball;
         //if (AIMagicControl.instance.HoldingFire())
         //AIMagicControl.instance.ResetHoldingFires();
-        OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, 0), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation(side));
+        OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, Level), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation(side));
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Fireball);
     }
 

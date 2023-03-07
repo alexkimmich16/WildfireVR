@@ -21,7 +21,7 @@ public class BlockController : MonoBehaviour
     public bool Testing;
     public bool IsBlocking() { return Active[0] == true && Active[1] == true; }
     public bool HalfBlocking() { return Active[0] == true || Active[1] == true; }
-    public void RecieveNewState(Side side, bool StartOrFinish, int Index)
+    public void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level)
     {
         //Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
         Active[(int)side] = StartOrFinish;

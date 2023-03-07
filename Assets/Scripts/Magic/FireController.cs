@@ -79,7 +79,7 @@ public class FireController : MonoBehaviour
         }
         EyeController.instance.ChangeEyes(Eyes.Fire);
     }
-    public void StartFire(Side side)
+    public void StartFire(Side side, int Level)
     {
         //Debug.Log(InGameManager.instance.CanDoMagic());
         if (InGameManager.instance.CanDoMagic() == false)
@@ -89,7 +89,7 @@ public class FireController : MonoBehaviour
 
         
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Flames);
-        OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, 0), Vector3.zero, Camera.main.transform.rotation);
+        OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, Level), Vector3.zero, Camera.main.transform.rotation);
         OnlineFire[(int)side].name = "OnlineFire";
 
         //ActiveFires.Add(PrivateFire.GetComponent<FlameObject>());
@@ -132,13 +132,13 @@ public class FireController : MonoBehaviour
         DamageCooldowns = new List<CooldownInfo>();
     }
 
-    public void RecieveNewState(Side side, bool StartOrFinish, int Index)
+    public void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level)
     {
         Actives[(int)side] = StartOrFinish;
         Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
         if (StartOrFinish)
         {
-            StartFire(side);
+            StartFire(side, Level);
         }
         else
         {
