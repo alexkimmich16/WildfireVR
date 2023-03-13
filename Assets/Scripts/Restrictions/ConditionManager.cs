@@ -8,8 +8,6 @@ using System;
 
 namespace RestrictionSystem
 {
-    
-
     public enum Condition
     {
         Time = 0,
@@ -32,6 +30,7 @@ namespace RestrictionSystem
         public MotionSettings RestrictionSettings;
         [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "Motion")] public List<MotionConditionInfo> MotionConditions;
 
+        #region Checks
         public static bool TimeWorksAndAdd(SingleConditionInfo Condition, SingleInfo CurrentFrame, SingleInfo PastFrame, bool NewState, Side side)
         {
             if (Condition.LastState[(int)side] == false && NewState == true)
@@ -66,7 +65,8 @@ namespace RestrictionSystem
             }
             return false;
         }
-        public void PassValue(bool State, CurrentLearn Motion, Side side)
+        #endregion
+        public void PassValueIsActive(bool State, CurrentLearn Motion, Side side)
         {
             //Debug.Log("Pass: " + State);
             MotionConditions[(int)Motion - 1].PassValueToAll(State, side);
@@ -92,7 +92,6 @@ namespace RestrictionSystem
             public string Label;
             [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "Label")] public List<SingleConditionInfo> SingleConditions;
         }
-
         public void ResetAll(Side side)
         {
             //Debug.Log("")
@@ -100,7 +99,7 @@ namespace RestrictionSystem
             {
                 for (int i = 0; i < CurrentStage[(int)side]; i++)
                 {
-                    OnNewState?.Invoke(Side.right, false, i, 0);
+                    OnNewState?.Invoke(side, false, i, 1);
                     for (int j = 0; j < ConditionLists[i].SingleConditions.Count; j++)//all conditions that have passed
                     {
                         SingleConditionInfo info = ConditionLists[i].SingleConditions[j];
@@ -113,7 +112,7 @@ namespace RestrictionSystem
             }
             else if(WaitingForFalse[(int)side] == true)
             {
-                OnNewState?.Invoke(Side.right, false, 0, 0);
+                OnNewState?.Invoke(side, false, 0, 1);
             }
             WaitingForFalse[(int)side] = false;
             //Debug.Log("CurrentStage: " + CurrentStage[(int)side]);
@@ -125,9 +124,6 @@ namespace RestrictionSystem
         {
             if(State == false || WaitingForFalse[(int)side] == true)
             {
-                //if(WaitingForFalse[(int)side] == true)
-
-                
                 if(State == false)
                 {
                     ResetAll(side);
@@ -146,9 +142,6 @@ namespace RestrictionSystem
                     SingleConditionInfo info = ConditionLists[CurrentStage[(int)side]].SingleConditions[i];
                     ConditionWorksAndAdd WorkingConditionAndUpdate = ConditionManager.ConditionDictionary[info.condition];
 
-                    //SingleInfo CurrentFrame = MotionEditor.instance.display.GetFrameInfo(false);
-                    //SingleInfo PastFrame = MotionEditor.instance.display.GetFrameInfo(true);
-
                     bool Working = WorkingConditionAndUpdate.Invoke(info, PastFrameRecorder.instance.GetControllerInfo(side), PastFrameRecorder.instance.PastFrame(side), State, side); ///velocity error here
                     //bool Working = WorkingConditionAndUpdate.Invoke(info, MotionEditor.instance.display.GetFrameInfo(false), MotionEditor.instance.display.GetFrameInfo(true), State, side); ///velocity error here
                     if (Working == false)
@@ -161,7 +154,7 @@ namespace RestrictionSystem
 
             if (AllWorkingSoFar) //ready to move to next
             {
-                OnNewState?.Invoke(side, true, CurrentStage[(int)side], 0);
+                OnNewState?.Invoke(side, true, CurrentStage[(int)side] , 1);
                 //Debug.Log(CurrentStage + " < " + (ConditionLists.Count - 1));
                 if (CurrentStage[(int)side] < ConditionLists.Count - 1)
                 {
@@ -197,8 +190,6 @@ namespace RestrictionSystem
         [FoldoutGroup("Values")] public List<Vector3> StartPos = new List<Vector3>() { Vector3.zero, Vector3.zero };
         [FoldoutGroup("Values")] public List<float> Value = new List<float>() { 0, 0 };
         private bool HasAmount() { return condition == Condition.Distance || condition == Condition.Time; }
-
-        
     }
 }
 

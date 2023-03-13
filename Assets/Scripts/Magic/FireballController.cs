@@ -45,6 +45,7 @@ public class FireballController : SerializedMonoBehaviour
     public Vector2 OutPutDir;
 
     public float WarmupDistFromHand;
+
     public Quaternion SpawnRotation(Side side)
     {
         SingleInfo StartFrame = PastFrameRecorder.instance.PastFrame(side);
@@ -63,6 +64,9 @@ public class FireballController : SerializedMonoBehaviour
 
     public void RecieveNewState(Side side, bool IsStart, int Index, int Level)
     {
+        if (IsStart == false && Index == 0 && ShouldDebug)
+            Debug.Log("StopCharge");
+        
         if (Index == 0)
         {
             Actives[(int)side] = IsStart;
@@ -70,7 +74,9 @@ public class FireballController : SerializedMonoBehaviour
         }
         else if(Index == 1)
         {
+            FireballWarmups[(int)side].GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
             SpawnFireball(side, Level);
+
         }
         
         
@@ -108,7 +114,7 @@ public class FireballController : SerializedMonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            FireballWarmups.Add(PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, 0), Vector3.zero, Quaternion.identity));
+            FireballWarmups.Add(PhotonNetwork.Instantiate(AIMagicControl.instance.spells.FireballWarmup.name, Vector3.zero, Quaternion.identity));
             FireballWarmups[i].GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
         }
     }
@@ -126,58 +132,6 @@ public class FireballController : SerializedMonoBehaviour
             }
                 
         }
-        
-        
-        
-        //SpawnRotation(Side.left);
-        //Output = ToVector(InputAngle);
-        //ReInputAngle = ToDegrees(Output);
-        /*
-        SingleInfo StartFrame = PastFrameRecorder.instance.PastFrame(Side.right, FramesAgoRotation);
-        SingleInfo EndFrame = PastFrameRecorder.instance.GetControllerInfo(Side.right);
-
-        Vector3 HandDirection = (StartFrame.HandPos - EndFrame.HandPos).normalized;
-        HandDirectionValue = ToDegrees(new Vector2(HandDirection.x, HandDirection.z));
-        
-
-        HandDirection.y = 0;
-        CamRot = AIMagicControl.instance.Cam.eulerAngles;
-        CamDirectionValue = CamRot.y;
-        float Both = HandDirectionValue - CamDirectionValue;
-        Both = Both - 180;
-        OutPutDir = ToVector(Both);
-
-        //Vector3 HeadForwardDir = Quaternion.Euler(AIMagicControl.instance.Cam.eulerAngles) * Vector3.forward;
-
-        //HeadForwardTrue = new Vector3(HeadForwardDir.x, 0, HeadForwardDir.z); //this
-
-        //HandDirectionTrue = HandDirection; //this
-
-
-
-
-        InputDevices.GetDeviceAtXRNode(XRNode.RightHand).TryGetFeatureValue(CommonUsages.deviceVelocity, out Vel);
-        Vector3 Trial5 = Vel;
-        Vector3 Trial6 = Vel.normalized;
-
-
-        // Rotate the vector by the angle
-        
-
-        Debug.DrawLine(AIMagicControl.instance.Cam.position, AIMagicControl.instance.Cam.position + (HeadForwardTrue * 3f), Color.yellow);
-
-        Debug.DrawLine(AIMagicControl.instance.Cam.position, AIMagicControl.instance.Cam.position + (HandDirectionTrue * 3f), Color.blue);
-
-        Debug.DrawLine(AIMagicControl.instance.Cam.position, AIMagicControl.instance.Cam.position + (new Vector3(OutPutDir.x, 0, OutPutDir.y) * 3f), Color.black);
-
-        //Debug.DrawLine(AIMagicControl.instance.Cam.position, AIMagicControl.instance.Cam.position + (Trial4 * 3f), Color.blue);
-
-        //Debug.DrawLine(AIMagicControl.instance.Cam.position, AIMagicControl.instance.Cam.position + (Trial5 * 3f), Color.green);
-
-        // Debug.DrawLine(AIMagicControl.instance.Cam.position, AIMagicControl.instance.Cam.position + (Trial6 * 3f), Color.red);
-
-        */
-
     }
     /*
     public IEnumerator WaitForClose()

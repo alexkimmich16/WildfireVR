@@ -35,6 +35,7 @@ public class InGameManager : SerializedMonoBehaviour
     public bool MagicBeforeStart = false;
     public bool AlwaysCast = true;
     public bool AutoStart = true;
+    
 
     [Header("Time")]
     public float WarmupTime = 5f;

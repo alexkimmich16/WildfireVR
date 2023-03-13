@@ -14,11 +14,14 @@ public class FirePillar : MonoBehaviour
     public float StopTime;
 
     public VFXHolder VFX;
+    public static bool AbleToActivate;
     //Debug.Log("FLAMEEEE");
     public static void CallStartFire(RestrictionSystem.CurrentLearn spell) { OnFire(spell);  }
 
     public void StartFlame(RestrictionSystem.CurrentLearn spell)
     {
+        if (!AbleToActivate)
+            return;
         //Debug.Log("recieved");
         if(spell == RestrictionSystem.CurrentLearn.Flames || spell == RestrictionSystem.CurrentLearn.Fireball)
         {

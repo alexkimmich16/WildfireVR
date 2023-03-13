@@ -46,6 +46,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public float AfterDeathWait;
 
+    public bool CanRecieveDamage = true;
+
     public List<GameObject> GetPlayers()
     {
         List<GameObject> Players = new List<GameObject>();
@@ -140,6 +142,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     
     public void LocalTakeDamage(int Damage)
     {
+        if (!CanRecieveDamage)
+        {
+            Debug.Log("Should have felt: " + Damage + " Damage");
+            return;
+        }
+            
         if (DebugScript == true)
             Debug.Log("TakeDamage: " + Damage);
         int BeforeHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);

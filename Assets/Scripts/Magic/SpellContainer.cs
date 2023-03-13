@@ -5,7 +5,7 @@ using UnityEngine;
 public class SpellContainer : ScriptableObject
 {
     public List<SpellHolder> Spells;
-    public List<SpellHolder> Variants;
+    public GameObject FireballWarmup;
     [System.Serializable]
     public class SpellHolder
     {
@@ -13,5 +13,5 @@ public class SpellContainer : ScriptableObject
         public List<GameObject> Levels;
     }
 
-    public string SpellName(RestrictionSystem.CurrentLearn spell, int Level) { return Spells[(int)spell].Levels[Level].name; }
+    public string SpellName(RestrictionSystem.CurrentLearn spell, int Level) { return Spells[(int)spell - 1].Levels[Level].name; }
 }

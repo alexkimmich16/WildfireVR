@@ -41,10 +41,13 @@ public class AIMagicControl : MonoBehaviour
     {
         if (AllActive())
         {
+            
             PastFrameRecorder PR = PastFrameRecorder.instance;
-            List<CurrentLearn> TrueMotions = RestrictionManager.instance.AllWorkingMotions(PR.PastFrame(Side.right), PR.GetControllerInfo(Side.right));
-            CurrentLearn DisplayMotion = TrueMotions.Count == 0 ? CurrentLearn.Nothing : TrueMotions[0];
-            handToChange.material = Materials[(int)DisplayMotion]; //set hand
+            
+            //List<CurrentLearn> TrueMotions = RestrictionManager.instance.AllWorkingMotions(PR.PastFrame(Side.right), PR.GetControllerInfo(Side.right));
+            //CurrentLearn DisplayMotion = TrueMotions.Count == 0 ? CurrentLearn.Nothing : TrueMotions[0];
+            handToChange.material = Materials[RestrictionManager.instance.MotionWorks(PR.PastFrame(Side.right), PastFrameRecorder.instance.GetControllerInfo(Side.right), CurrentLearn.Flames) ? 1 : 0]; //set hand
+            
         }
         
 

@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: Spells
   m_EditorClassIdentifier: 
   Spells:
-  - spell: 0
-    Levels: []
   - spell: 1
     Levels:
     - {fileID: 3443238484576286459, guid: 608c408ff18c8dc489a17e3afb50bd99, type: 3}
@@ -28,7 +26,10 @@ MonoBehaviour:
     - {fileID: 636388138774296741, guid: 564545f57f092364ea65c2886c5ce47f, type: 3}
     - {fileID: 6603030085609867111, guid: b11ccd1d55090bf4f8a56492246ae209, type: 3}
   - spell: 3
-    Levels: []
-  Variants:
-  - spell: 1
-    Levels: []
+    Levels:
+    - {fileID: 8978893156680012180, guid: 9824cdae6f0912f4da45f20ec483f64d, type: 3}
+    - {fileID: 8978893156680012180, guid: 9824cdae6f0912f4da45f20ec483f64d, type: 3}
+    - {fileID: 8978893156680012180, guid: 9824cdae6f0912f4da45f20ec483f64d, type: 3}
+    - {fileID: 8978893156680012180, guid: 9824cdae6f0912f4da45f20ec483f64d, type: 3}
+  FireballWarmup: {fileID: 8978893156680012180, guid: a519d63c6a766e8418972ecff134c0f8,
+    type: 3}

@@ -135,7 +135,7 @@ public class FireController : MonoBehaviour
     public void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level)
     {
         Actives[(int)side] = StartOrFinish;
-        Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
+        //Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
         if (StartOrFinish)
         {
             StartFire(side, Level);
@@ -156,24 +156,10 @@ public class FireController : MonoBehaviour
                     DamageCooldowns.Remove(DamageCooldowns[i]);
             }
     }
-    
-    public void DoDebugSpheres()
-    {
-        if (ShouldDebug == false)
-            return;
-        for (int i = 0; i < Shards.Count; i++)
-        {
-            if (DebugSpheres.Count > i)
-                DebugSpheres[i].position = Shards[i].CurrentPos;
-            else
-                DebugSpheres[i].position = new Vector3(1000, 1000, 1000);
-        }
-    }
     private void Update()
     {
         ManageEnemyCooldown();
 
-        DoDebugSpheres();
         for (int i = 0; i < 2; i++)
         {
             Quaternion Rot = Quaternion.LookRotation(AIMagicControl.instance.PositionObjectives[i].transform.position - AIMagicControl.instance.Cam.position);

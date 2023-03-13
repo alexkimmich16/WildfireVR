@@ -63,7 +63,7 @@ public class Fireball : MonoBehaviour
         if(Flash != null)
             GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
 
-        if (col.collider.tag == "HitBox")
+        if (col.collider.tag == "HitBox" && !GetComponent<PhotonView>().IsMine)
             NetworkManager.instance.LocalTakeDamage(Damage);
 
         GetComponent<PhotonDestroy>().StartCountdown();
