@@ -16,7 +16,7 @@ public class FirePillar : MonoBehaviour
     public VFXHolder VFX;
     public static bool AbleToActivate;
     //Debug.Log("FLAMEEEE");
-    public static void CallStartFire(RestrictionSystem.CurrentLearn spell) { OnFire(spell);  }
+    public static void CallStartFire(RestrictionSystem.CurrentLearn spell) { if (AbleToActivate) { OnFire(spell); }  }
 
     public void StartFlame(RestrictionSystem.CurrentLearn spell)
     {
@@ -31,7 +31,8 @@ public class FirePillar : MonoBehaviour
     }
     void Start()
     {
-        OnFire += StartFlame;
+        if(AbleToActivate)
+            OnFire += StartFlame;
         VFX.SetNewState(false);
         //OnFire(Spell.Flames);
     }

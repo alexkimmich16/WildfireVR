@@ -10,21 +10,15 @@ public class FlameObject : MonoBehaviour
     {
         GetComponent<PhotonDestroy>().DestoryEvent += OnDestory;
         //GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, true);
-        GetComponent<PhotonVFX>().VFX.SetNewState(true);
+        //GetComponent<PhotonVFX>().VFX.SetNewState(true);
+        GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, true);
+
         if (GetComponent<PhotonView>() && SoundManager.instance.CanPlaySound(SoundType.Effect))
         {
             FlameThrowerSound = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.FlamesRef);
             FMODUnity.RuntimeManager.AttachInstanceToGameObject(FlameThrowerSound, GetComponent<Transform>());
             FlameThrowerSound.start();
             FlameThrowerSound.setParameterByName("Exit", 0f);
-        }
-            
-    }
-    private void Update()
-    {
-        if(GetComponent<PhotonView>().IsMine && !FireController.instance.OnlineFire.Contains(gameObject))
-        {
-            gameObject.GetComponent<PhotonView>().RPC("SetFlamesOnline", RpcTarget.All, false);
         }
     }
     public void OnDestory()

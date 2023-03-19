@@ -57,18 +57,20 @@ namespace RestrictionSystem
         };
         public MotionSettings RestrictionSettings;
         public Coefficents coefficents;
+        
         public void TriggerFrameEvents(List<bool> Sides)
         {
             PastFrameRecorder PR = PastFrameRecorder.instance;
             for (int i = 0; i < 2; i++)
             {
-                if (Sides[0] == false && Sides[0] == false)
+                if (Sides[0] == false && Sides[1] == false)
                     return;
                 for (int j = 1; j < coefficents.RegressionStats.Count + 1; j++)
                 {
+                    //Debug.Log("test");
                     bool Works = MotionWorks(PR.PastFrame((Side)i), PastFrameRecorder.instance.GetControllerInfo((Side)i), (CurrentLearn)j);
                     if (Sides[i] == true)
-                        ConditionManager.instance.PassValueIsActive(Works, (CurrentLearn)j, (Side)i);
+                        ConditionManager.instance.PassValue(Works, (CurrentLearn)j, (Side)i);
                 }
             }
         }
@@ -93,21 +95,6 @@ namespace RestrictionSystem
             bool Correct = Guess;
             return Correct;
         }
-        public static bool MotionWorks(SingleInfo frame1, SingleInfo frame2, MotionRestriction restriction)
-        {
-            float TotalWeightValue = 0f;//all working weights
-            for (int i = 0; i < restriction.Restrictions.Count; i++)
-            {
-                RestrictionTest RestrictionType = RestrictionDictionary[restriction.Restrictions[i].restriction];
-                float RawRestrictionValue = RestrictionType.Invoke(restriction.Restrictions[i], frame1, frame2);
-                restriction.Restrictions[i].Value = RawRestrictionValue;
-                float RestrictionValue = restriction.Restrictions[i].GetValue(RawRestrictionValue);
-
-                if (restriction.Restrictions[i].Active)
-                    TotalWeightValue += RestrictionValue * restriction.Restrictions[i].Weight;
-            }
-            return TotalWeightValue >= 1;
-        }
         public static Vector3 EliminateAxis(List<Axis> AllAxis, Vector3 Value) { return new Vector3(AllAxis.Contains(Axis.X) ? Value.x : 0, AllAxis.Contains(Axis.Y) ? Value.y : 0, AllAxis.Contains(Axis.Z) ? Value.z : 0); }
         #region Values
         public static float VelocityMagnitude(SingleRestriction restriction, SingleInfo frame1, SingleInfo frame2)
@@ -129,7 +116,7 @@ namespace RestrictionSystem
             if (restriction.ShouldDebug)
             {
                 //Debug.DrawLine(frame2.HandPos, frame2.HandPos + EliminateAxis(restriction.UseAxisList, (frame2.HandPosType(restriction.UseLocalHandPos) - frame1.HandPosType(restriction.UseLocalHandPos)).normalized) * DebugRestrictions.instance.LineLength, Color.yellow);
-               // Debug.DrawLine(frame2.HandPos, frame2.HandPos + (forwardDir * DebugRestrictions.instance.LineLength), Color.red);
+                //Debug.DrawLine(frame2.HandPos, frame2.HandPos + (forwardDir * DebugRestrictions.instance.LineLength), Color.red);
             }
             //restriction.Value = AngleDistance;
             return AngleDistance;

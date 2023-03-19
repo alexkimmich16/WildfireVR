@@ -9,7 +9,7 @@ using Photon.Pun;
 /// <summary>
 /// constentobjects idea no respawn just 1 on and off
 /// </summary>
-public class BlockController : MonoBehaviour
+public class BlockController : SpellClass
 {
     public static BlockController instance;
     void Awake() { instance = this; }
@@ -29,11 +29,11 @@ public class BlockController : MonoBehaviour
     }
     private void Start()
     {
-        ConditionManager.instance.MotionConditions[(int)CurrentLearn.FlameBlock - 1].OnNewState += RecieveNewState;
         NetworkManager.OnInitialized += InitializeBlockObject;
     }
     public void InitializeBlockObject()
     {
+        ConditionManager.instance.conditions.MotionConditions[(int)CurrentLearn.FlameBlock - 1].OnNewState += RecieveNewState;
         BlockVFXObject = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.FlameBlock, 0), Vector3.zero, Quaternion.identity);
         BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
     }

@@ -9,7 +9,7 @@ public enum ControlType
     Constant = 1,
     Directional = 2,
 }
-public class FireballController : SerializedMonoBehaviour
+public class FireballController : SpellClass
 {
     public static FireballController instance;
     private void Awake() { instance = this; }
@@ -83,10 +83,7 @@ public class FireballController : SerializedMonoBehaviour
     }
     private void Start()
     {
-        ConditionManager.instance.MotionConditions[(int)CurrentLearn.Fireball - 1].OnNewState += RecieveNewState;
         NetworkManager.OnInitialized += InitializeWarmups;
-        //gameObject.GetComponent<LearningAgent>().NewState += frames.AddToList;
-        //side = GetComponent<LearningAgent>().side;
     }
 
     public void SpawnFireball(Side side, int Level)
@@ -112,6 +109,7 @@ public class FireballController : SerializedMonoBehaviour
 
     public void InitializeWarmups()
     {
+        ConditionManager.instance.conditions.MotionConditions[(int)CurrentLearn.Fireball - 1].OnNewState += RecieveNewState;
         for (int i = 0; i < 2; i++)
         {
             FireballWarmups.Add(PhotonNetwork.Instantiate(AIMagicControl.instance.spells.FireballWarmup.name, Vector3.zero, Quaternion.identity));

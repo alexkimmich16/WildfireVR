@@ -33,6 +33,9 @@ public class PlayerControl : MonoBehaviourPunCallbacks
     }
     [PunRPC]
     public void SetEyes(Eyes eyes) { GetComponent<MultiplayerEyes>().ChangeEyes(eyes); }
+
+
+
     [PunRPC]
     public void MotionDone(RestrictionSystem.CurrentLearn spell) { FirePillar.CallStartFire(spell); }
     [PunRPC]

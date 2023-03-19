@@ -33,29 +33,53 @@ public class AIMagicControl : MonoBehaviour
     private bool HasCalled = false;
 
     public List<Material> Materials;
-    public SkinnedMeshRenderer handToChange;
+    public List<SkinnedMeshRenderer> handsToChange;
 
     public bool AllActive() { return HeadsetActive && LeftHandActive || RightHandActive; }
     
     private void Update()
     {
-        if (AllActive())
-        {
-            
-            PastFrameRecorder PR = PastFrameRecorder.instance;
-            
-            //List<CurrentLearn> TrueMotions = RestrictionManager.instance.AllWorkingMotions(PR.PastFrame(Side.right), PR.GetControllerInfo(Side.right));
-            //CurrentLearn DisplayMotion = TrueMotions.Count == 0 ? CurrentLearn.Nothing : TrueMotions[0];
-            handToChange.material = Materials[RestrictionManager.instance.MotionWorks(PR.PastFrame(Side.right), PastFrameRecorder.instance.GetControllerInfo(Side.right), CurrentLearn.Flames) ? 1 : 0]; //set hand
-            
-        }
-        
-
         InputDevices.GetDeviceAtXRNode(XRNode.Head).TryGetFeatureValue(CommonUsages.isTracked, out HeadsetActive);
         InputDevices.GetDeviceAtXRNode(XRNode.RightHand).TryGetFeatureValue(CommonUsages.isTracked, out RightHandActive);
         InputDevices.GetDeviceAtXRNode(XRNode.LeftHand).TryGetFeatureValue(CommonUsages.isTracked, out LeftHandActive);
 
-        PastFrameRecorder.instance.UseSides = new List<bool>() { RightHandActive, LeftHandActive };
+        if (AllActive())
+        {
+            
+            PastFrameRecorder PR = PastFrameRecorder.instance;
+
+            //List<CurrentLearn> TrueMotions = RestrictionManager.instance.AllWorkingMotions(PR.PastFrame(Side.right), PR.GetControllerInfo(Side.right));
+            //CurrentLearn DisplayMotion = TrueMotions.Count == 0 ? CurrentLearn.Nothing : TrueMotions[0];
+            for (int i = 0; i < handsToChange.Count; i++)
+            {
+                handsToChange[i].material = Materials[GetMatTestNum((Side)i)]; //set hand
+            }
+                
+
+            int GetMatTestNum(Side side)
+            {
+                List<int> Working = new List<int>();
+                for (int j = 1; j < RestrictionManager.instance.coefficents.RegressionStats.Count + 1; j++)
+                {
+                    bool Works = RestrictionManager.instance.MotionWorks(PR.PastFrame(side), PastFrameRecorder.instance.GetControllerInfo(side), (CurrentLearn)j);
+                    if (Works)
+                        Working.Add(j);
+                }
+                if (Working.Count == 0)
+                    return 0;
+                else if (Working.Count == 1)
+                    return Working[0];
+                else
+                    return RestrictionManager.instance.coefficents.RegressionStats.Count + 1;
+
+            }
+
+        }
+        
+
+        
+
+        //PastFrameRecorder.instance.UseSides = new List<bool>() { RightHandActive, LeftHandActive };
 
         if (!HeadsetActive)
             Set(Cam, IdlePositions[0]);
