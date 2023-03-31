@@ -90,10 +90,8 @@ public class FireController : SpellClass
 
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Flames);
         OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, Level), Vector3.zero, Camera.main.transform.rotation);
-        OnlineFire[(int)side].name = "OnlineFire";
-
-        //ActiveFires.Add(PrivateFire.GetComponent<FlameObject>());
-        ///add to all fires list
+        //OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, Level), Vector3.zero, Camera.main.transform.rotation);
+        //OnlineFire[(int)side].name = "OnlineFire";
     }
     #endregion
     public void InitializeWarmups()
@@ -162,10 +160,6 @@ public class FireController : SpellClass
                 IsCountingDelay[i] = false;
             }
         }
-
-            
-
-        //if ()
         ManageEnemyCooldown();
 
         for (int i = 0; i < 2; i++)

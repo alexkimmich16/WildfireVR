@@ -106,7 +106,6 @@ public class FireballController : SpellClass
 
     public float ToDegrees(Vector2 value) { return Mathf.Atan2(value.y, value.x) * 180 / Mathf.PI; }
     public Vector2 ToVector(float value) { return new Vector2(Mathf.Cos(value * Mathf.PI / 180f), Mathf.Sin(value * Mathf.PI / 180f)); }
-
     public void InitializeWarmups()
     {
         ConditionManager.instance.conditions.MotionConditions[(int)CurrentLearn.Fireball - 1].OnNewState += RecieveNewState;

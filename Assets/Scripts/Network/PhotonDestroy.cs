@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 public class PhotonDestroy : MonoBehaviour
 {
+   
     public float LifeTime;
     public float Timer;
     private bool IsActive;
