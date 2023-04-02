@@ -46,12 +46,12 @@ MonoBehaviour:
           ShouldDebug: 0
           Value: 0
         Range: {x: 0, y: 0}
-        LastState: 0100
+        LastState: 0000
         StartTime:
         - 0
         - 0
         StartPos:
-        - {x: -0.5815592, y: -0.24318123, z: 0.613204}
+        - {x: -0.047991753, y: -0.0838995, z: 0.49785423}
         - {x: 0, y: 0, z: 0}
         Value:
         - 0
@@ -72,11 +72,11 @@ MonoBehaviour:
           UseLocalHandRot: 0
           Offset: {x: 0, y: 0, z: 0}
           Direction: {x: 0, y: 0, z: 0}
-          UseAxisList: 000000000100000002000000
+          UseAxisList: 0000000002000000
           ShouldDebug: 0
           Value: 0.4684659
-        Range: {x: 0.29, y: 2}
-        LastState: 0000
+        Range: {x: 0.35, y: 0}
+        LastState: 0100
         StartTime:
         - 0
         - 0
@@ -84,35 +84,7 @@ MonoBehaviour:
         - {x: 0, y: 0, z: 0}
         - {x: 0, y: 0, z: 0}
         Value:
-        - 0
-        - 0
-      - Label: 
-        condition: 1
-        Amount: 0.22
-        WaitSide: 0
-        restriction:
-          Label: 
-          Active: 0
-          restriction: 0
-          checkType: 0
-          OtherDirection: {x: 0, y: 0, z: 0}
-          UseLocalHandPos: 0
-          UseLocalHandRot: 0
-          Offset: {x: 0, y: 0, z: 0}
-          Direction: {x: 0, y: 0, z: 0}
-          UseAxisList: 
-          ShouldDebug: 0
-          Value: 0
-        Range: {x: 0, y: 0}
-        LastState: 0000
-        StartTime:
-        - 0
-        - 0
-        StartPos:
-        - {x: 0, y: 0, z: 0}
-        - {x: 0, y: 0, z: 0}
-        Value:
-        - 0
+        - 1.3598319
         - 0
     ProhibitList: []
     CurrentStage: 0000000000000000
@@ -154,7 +126,7 @@ MonoBehaviour:
     ProhibitList:
     - Label: Wait For Multiple False Frames
       condition: 4
-      Amount: 30
+      Amount: 4
       WaitSide: 1
       restriction:
         Label: 

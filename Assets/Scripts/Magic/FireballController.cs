@@ -90,7 +90,7 @@ public class FireballController : SpellClass
     {
         if (InGameManager.instance.CanDoMagic() == false)
             return;
-        
+        Debug.Log("Spawn");
         EyeController.instance.ChangeEyes(Eyes.Fire);
         ///direction of controller forward
         ///

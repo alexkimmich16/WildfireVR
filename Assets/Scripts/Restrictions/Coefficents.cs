@@ -11,15 +11,26 @@ namespace RestrictionSystem
     }
 
     [System.Serializable]
-    public class RegressionInfo
+    public struct RegressionInfo
     {
         public float Intercept;
         public List<DegreeList> Coefficents;
 
         [System.Serializable]
-        public class DegreeList
+        public struct DegreeList
         {
             public List<float> Degrees;
+        }
+
+        public float[] GetCoefficents()
+        {
+            float[] ReturnValue = new float[(this.Coefficents.Count * this.Coefficents[0].Degrees.Count) + 1];
+            ReturnValue[0] = Intercept;
+            for (int i = 0; i < this.Coefficents.Count; i++)
+                for (int j = 0; j < this.Coefficents[i].Degrees.Count; j++)
+                    ReturnValue[j] = Coefficents[i].Degrees[j];
+
+            return ReturnValue;
         }
     }
 }
