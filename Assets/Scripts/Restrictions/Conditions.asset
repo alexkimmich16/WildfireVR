@@ -51,7 +51,7 @@ MonoBehaviour:
         - 0
         - 0
         StartPos:
-        - {x: 0, y: 0, z: 0}
+        - {x: 0.19832802, y: -0.13520908, z: 0.43171978}
         - {x: 0, y: 0, z: 0}
         Value:
         - 0
@@ -75,8 +75,8 @@ MonoBehaviour:
           UseAxisList: 0000000002000000
           ShouldDebug: 0
           Value: 0.4684659
-        Range: {x: 0, y: 0.35}
-        LastState: 0000
+        Range: {x: 0.35, y: 1.1}
+        LastState: 0100
         StartTime:
         - 0
         - 0
@@ -84,11 +84,11 @@ MonoBehaviour:
         - {x: 0, y: 0, z: 0}
         - {x: 0, y: 0, z: 0}
         Value:
-        - 0
+        - 0.42626837
         - 0
       - Label: StartPos
         condition: 1
-        Amount: 0.04
+        Amount: 0.1
         WaitSide: 0
         restriction:
           Label: 
@@ -104,15 +104,15 @@ MonoBehaviour:
           ShouldDebug: 0
           Value: 0
         Range: {x: 0, y: 0}
-        LastState: 0000
+        LastState: 0100
         StartTime:
         - 0
         - 0
         StartPos:
-        - {x: 0, y: 0, z: 0}
+        - {x: 0.18691635, y: -0.15906525, z: 0.29274845}
         - {x: 0, y: 0, z: 0}
         Value:
-        - 0
+        - 0.109942116
         - 0
     ProhibitList: []
     CurrentStage: 0000000000000000
