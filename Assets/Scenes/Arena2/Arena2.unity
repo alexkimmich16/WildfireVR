@@ -12024,6 +12024,7 @@ GameObject:
   - component: {fileID: 981501668}
   - component: {fileID: 981501670}
   - component: {fileID: 981501671}
+  - component: {fileID: 981501672}
   m_Layer: 0
   m_Name: PostProcessing
   m_TagString: Untagged
@@ -12107,6 +12108,23 @@ MonoBehaviour:
   color: {r: 0, g: 0, b: 0, a: 0}
   CurrentAlpha: 0
   Volume: {fileID: 981501668}
+--- !u!114 &981501672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 981501667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: ded96fa69ad16444c9698c174f8b33cd, type: 2}
 --- !u!4 &983391137 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1935575498661705321, guid: 06f97e6bda8684c4a980b717935d9eed,
