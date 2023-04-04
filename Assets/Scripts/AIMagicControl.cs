@@ -30,8 +30,6 @@ public class AIMagicControl : MonoBehaviour
     public bool LeftHandActive;
     public bool RightHandActive;
 
-    private bool HasCalled = false;
-
     public List<Material> Materials;
     public List<SkinnedMeshRenderer> handsToChange;
 
@@ -60,11 +58,8 @@ public class AIMagicControl : MonoBehaviour
             {
                 List<int> Working = new List<int>();
                 for (int j = 1; j < RestrictionManager.instance.coefficents.RegressionStats.Count + 1; j++)
-                {
-                    bool Works = RestrictionManager.instance.MotionWorks(PR.PastFrame(side), PastFrameRecorder.instance.GetControllerInfo(side), (CurrentLearn)j);
-                    if (Works)
+                    if (RestrictionManager.instance.MotionWorks(PR.PastFrame(side), PastFrameRecorder.instance.GetControllerInfo(side), (CurrentLearn)j))
                         Working.Add(j);
-                }
                 if (Working.Count == 0)
                     return 0;
                 else if (Working.Count == 1)
@@ -87,18 +82,6 @@ public class AIMagicControl : MonoBehaviour
             Set(Hands[0], IdlePositions[1]);
         if (!LeftHandActive)
             Set(Hands[1], IdlePositions[2]);
-        /*
-        if (!AllActive())
-        {
-            if (HasCalled == false && Initialized() && Exists(PlayerTeam, PhotonNetwork.LocalPlayer))
-            {
-                HasCalled = true;
-                Vector3 Spawn = SpawnManager.instance.Spawns[(int)GetPlayerTeam(PhotonNetwork.LocalPlayer)].position;
-                Rig.position = new Vector3(Spawn.x, 1f + DoorManager.instance.Doors[0].OBJ.position.y, Spawn.z);
-            }
-            
-        }
-        */
 
         void Set(Transform ToSet, Transform Reference)
         {

@@ -12,11 +12,6 @@ public class PhotonDestroy : MonoBehaviour
     public delegate void OnDestory();
     public event OnDestory DestoryEvent;
     public bool StartCountdownOnStart = false;
-    private void Start()
-    {
-        if (StartCountdownOnStart)
-            StartCountdown();
-    }
     public void StartCountdown()
     {
         IsActive = true;
@@ -43,6 +38,13 @@ public class PhotonDestroy : MonoBehaviour
         Timer += Time.deltaTime;
         if (Timer > LifeTime)
             DoDestroy();
+    }
+    private void OnEnable()
+    {
+        if (StartCountdownOnStart)
+            StartCountdown();
+        IsActive = false;
+        Timer = 0f;
     }
 }
 //Int myVariable = ( someBoolValueOrStatementHere ) ? 1 : 0;

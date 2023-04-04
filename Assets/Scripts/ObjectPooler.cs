@@ -2,58 +2,70 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-
-public class ObjectPooler : MonoBehaviourPunCallbacks//, IPunPrefabPool
+[System.Serializable]
+public class PoolType
 {
-    public GameObject objectToPool;
+    public GameObject PoolObject;
+    public int PoolSize;
+    public Queue<GameObject> objectPool;
+}
+public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
+{
+    public static ObjectPooler instance;
+    private void Awake() { instance = this; }
+
     public bool ShouldPool;
-    public int poolSize = 10;
-    public static float CurrentTime = 0.05f;
-    private float MyTime = 0f;
-    public Queue<GameObject> objectPool = new Queue<GameObject>();
-    
+
+    public List<PoolType> Pools;
     private void Start()
     {
         NetworkManager.OnInitialized += WaitToPool;
-        MyTime = CurrentTime;
-        CurrentTime += 0.05f;
     }
-    public void WaitToPool() { Invoke("InitalizePool", MyTime); }
+    public void WaitToPool() { Invoke("InitalizePool", 0.05f); }
     public void InitalizePool()
     {
-        // Instantiate objects in the object pool
         if (!ShouldPool)
             return;
-        DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
-        for (int i = 0; i < poolSize; i++)
+
+        for (int i = 0; i < Pools.Count; i++)
         {
-            GameObject obj = PhotonNetwork.Instantiate(objectToPool.name, Vector3.zero, Quaternion.identity);
-            obj.SetActive(false);
-            objectPool.Enqueue(obj);
+            Pools[i].objectPool = new Queue<GameObject>();
+            for (int j = 0; j < Pools[i].PoolSize; j++)
+            {
+                GameObject obj = PhotonNetwork.Instantiate(Pools[i].PoolObject.name, Vector3.zero, Quaternion.identity);
+                obj.SetActive(false);
+                Pools[i].objectPool.Enqueue(obj);
+            }
         }
-        //PhotonNetwork.PrefabPool = this;
+            
+        PhotonNetwork.PrefabPool = this;
     }
-    /*
+    
 
     // IPunPrefabPool implementation
     public GameObject Instantiate(string prefabId, Vector3 position, Quaternion rotation)
     {
         // Check if the requested prefab matches the object we want to pool
-        if (prefabId == objectToPool.name)
+        for (int i = 0; i < Pools.Count; i++)
         {
-            // Check if the object pool is empty, instantiate a new object and add it to the pool
-            if (objectPool.Count == 0)
+            if (prefabId == Pools[i].PoolObject.name)
             {
-                GameObject obj = PhotonNetwork.Instantiate(objectToPool.name, Vector3.zero, Quaternion.identity);
-                obj.SetActive(false);
-                objectPool.Enqueue(obj);
-            }
+                // Check if the object pool is empty, instantiate a new object and add it to the pool
+                if (Pools[i].objectPool.Count == 0)
+                {
+                    GameObject obj = PhotonNetwork.Instantiate(Pools[i].PoolObject.name, position, rotation);
+                    obj.SetActive(false);
+                    Pools[i].objectPool.Enqueue(obj);
+                }
 
-            // Dequeue an object from the pool and return it
-            GameObject pooledObject = objectPool.Dequeue();
-            pooledObject.SetActive(true);
-            return pooledObject;
+                // Dequeue an object from the pool and return it
+                GameObject pooledObject = Pools[i].objectPool.Dequeue();
+                pooledObject.SetActive(true);
+
+                return pooledObject;
+            }
         }
+        
         Debug.LogWarning("Trying to instantiate a prefab that is not included in the object pool!");
         // If the requested prefab is not the one we want to pool, return null
         return null;
@@ -65,7 +77,15 @@ public class ObjectPooler : MonoBehaviourPunCallbacks//, IPunPrefabPool
         gameObject.SetActive(false);
         gameObject.transform.position = Vector3.zero;
         gameObject.transform.rotation = Quaternion.identity;
-        objectPool.Enqueue(gameObject);
+
+        for (int i = 0; i < Pools.Count; i++)
+        {
+            if (gameObject.name == Pools[i].PoolObject.name + "(Clone)")
+            {
+                Pools[i].objectPool.Enqueue(gameObject);
+            }
+        }
+                
     }
-    */
+    
 }

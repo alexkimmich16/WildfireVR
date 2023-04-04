@@ -21,6 +21,8 @@ public class KeycodeTesting : MonoBehaviour
     public KeyCode Fireball;
     public KeyCode Flames;
 
+    //public ob
+
     void Update()
     {
         if (useTesting == false)

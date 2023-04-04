@@ -24,9 +24,7 @@ public class Fireball : MonoBehaviour
 
     private FMOD.Studio.EventInstance FireballSound;
     public GameObject FireballSphere;
-    //public ParticleSystem PS;
-    //public Animation Curve;
-    //private int MaxParticleEmit;
+
     public void SetAbsorbed(bool State)
     {
         Absorbing = State;
@@ -48,11 +46,6 @@ public class Fireball : MonoBehaviour
         }
 
     }
-
-    /// <summary>
-    /// on absorb parent + keep position
-    /// watch for disance to unparent
-    /// </summary>
 
     void OnCollisionEnter(Collision col)
     {
@@ -93,16 +86,21 @@ public class Fireball : MonoBehaviour
         transform.eulerAngles = New;
         //rb.velocity = direction * Mathf.Max(speed, minVelocity);
     }
-    private void Start()
+    private void OnEnable()
     {
+        //Debug.Log("start");
+        VFX.SetNewState(true);//potentail problem
         RB = GetComponent<Rigidbody>();
-        if(SoundManager.instance.EnableEffectSounds && SoundManager.instance.EnableSounds)
+        if (SoundManager.instance.EnableEffectSounds && SoundManager.instance.EnableSounds)
         {
             FireballSound = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.FireballRef);
             FMODUnity.RuntimeManager.AttachInstanceToGameObject(FireballSound, GetComponent<Transform>());
             FireballSound.start();
             FireballSound.setParameterByName("Exit", 0f);
         }
+
+        FireballSphere.SetActive(true);
+        gameObject.GetComponent<SphereCollider>().enabled = true;
         //MaxParticleEmit = PS.
     }
 }
