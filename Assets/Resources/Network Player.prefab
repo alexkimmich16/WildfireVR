@@ -8297,7 +8297,8 @@ PrefabInstance:
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 6766196747847322755, guid: 06f97e6bda8684c4a980b717935d9eed,
+        type: 3}
     - target: {fileID: 6766196747847322755, guid: 06f97e6bda8684c4a980b717935d9eed,
         type: 3}
       propertyPath: Rigidbodies.Array.data[0]
@@ -8356,7 +8357,7 @@ PrefabInstance:
     - target: {fileID: 6766196747847322755, guid: 06f97e6bda8684c4a980b717935d9eed,
         type: 3}
       propertyPath: serializationData.SerializedFormat
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06f97e6bda8684c4a980b717935d9eed, type: 3}

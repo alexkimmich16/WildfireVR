@@ -3,9 +3,10 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
+public class ObjectPooler : MonoBehaviourPunCallbacks//, IPunPrefabPool
 {
     public GameObject objectToPool;
+    public bool ShouldPool;
     public int poolSize = 10;
     public static float CurrentTime = 0.05f;
     private float MyTime = 0f;
@@ -21,6 +22,8 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
     public void InitalizePool()
     {
         // Instantiate objects in the object pool
+        if (!ShouldPool)
+            return;
         DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
         for (int i = 0; i < poolSize; i++)
         {
@@ -30,6 +33,7 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
         }
         //PhotonNetwork.PrefabPool = this;
     }
+    /*
 
     // IPunPrefabPool implementation
     public GameObject Instantiate(string prefabId, Vector3 position, Quaternion rotation)
@@ -63,4 +67,5 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
         gameObject.transform.rotation = Quaternion.identity;
         objectPool.Enqueue(gameObject);
     }
+    */
 }
