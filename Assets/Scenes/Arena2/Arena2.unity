@@ -3360,6 +3360,7 @@ GameObject:
   - component: {fileID: 289370769}
   - component: {fileID: 289370776}
   - component: {fileID: 289370777}
+  - component: {fileID: 289370778}
   m_Layer: 7
   m_Name: XR Rig
   m_TagString: Player
@@ -3483,6 +3484,29 @@ MonoBehaviour:
   m_CameraFloorOffsetObject: {fileID: 337182812}
   m_RequestedTrackingOriginMode: 1
   m_CameraYOffset: 1
+--- !u!114 &289370778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289370768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5aca1fc346609b54dbb0adba4664854b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_System: {fileID: 289370773}
+  m_MoveSpeed: 1
+  m_EnableStrafe: 1
+  m_UseGravity: 1
+  m_GravityApplicationMode: 0
+  m_ForwardSource: {fileID: 0}
+  m_InputBinding: 0
+  m_Controllers:
+  - {fileID: 1308381502}
+  m_DeadzoneMin: 0.125
+  m_DeadzoneMax: 0.925
 --- !u!1 &294267496
 GameObject:
   m_ObjectHideFlags: 0
@@ -22428,7 +22452,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bfa6e516703cdf449adfc26cb77f61c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnableSounds: 1
+  EnableSounds: 0
   EnableEffectSounds: 1
   EnableElevatorSounds: 0
   EnableCrowdSounds: 0
