@@ -18,16 +18,16 @@ MonoBehaviour:
     m_Value: -0.16
   contrast:
     m_OverrideState: 1
-    m_Value: 34.5
+    m_Value: 26.6
   colorFilter:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 0.7259313, b: 0.6761006, a: 1}
+    m_Value: {r: 1, g: 0.80143887, b: 0.6745098, a: 1}
   hueShift:
     m_OverrideState: 0
-    m_Value: -0.98
+    m_Value: 1
   saturation:
     m_OverrideState: 0
-    m_Value: -0.39
+    m_Value: 2.6
 --- !u!114 &-1662964468560968289
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -40,7 +40,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5485954d14dfb9a4c8ead8edb0ded5b1, type: 3}
   m_Name: LiftGammaGain
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   lift:
     m_OverrideState: 0
     m_Value: {x: 0.98848575, y: 1, z: 0.9192183, w: 0}
