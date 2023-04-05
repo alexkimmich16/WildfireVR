@@ -12,22 +12,29 @@ public class FadeManager : SerializedMonoBehaviour
     public bool FadeRising;
     [ReadOnly]public float CurrentFadeValue;
     public float FadeSpeed;
-    public Vector2 MaxMinFade;
+    private Vector2 MaxMinFade;
+    private float MaxFade;
 
     public bool DoFade;
 
     public Volume Volume;
     private void Start()
     {
-        if(!DoFade)
+        
+        
+            
+        SpawnManager.OnElevatorRespawn += OnStart;
+        MaxMinFade.x = -10f;
+        if (Volume.profile.TryGet<ColorAdjustments>(out ColorAdjustments Color))
+            MaxMinFade = new Vector2(MaxMinFade.x, Color.postExposure.value);
+
+        if (!DoFade)
             SetFade(Mathf.Clamp(100f, MaxMinFade.x, MaxMinFade.y));
         else
         {
             CurrentFadeValue = MaxMinFade.x;
             NetworkManager.DoFade += ChangeFade;
         }
-            
-        SpawnManager.OnElevatorRespawn += OnStart;
     }
     public void OnStart() { FadeRising = true; }
     public void ChangeFade(bool In) { FadeRising = In; }
@@ -48,7 +55,6 @@ public class FadeManager : SerializedMonoBehaviour
         {
             Color.postExposure.overrideState = true;
             Color.postExposure.value = NewValue;
-
         }
     }
 }
