@@ -3497,7 +3497,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_System: {fileID: 289370773}
-  m_MoveSpeed: 1
+  m_MoveSpeed: 4.41
   m_EnableStrafe: 1
   m_UseGravity: 1
   m_GravityApplicationMode: 0
@@ -3544,6 +3544,13 @@ MonoBehaviour:
   - PoolObject: {fileID: 1267622881173442705, guid: 7a7492023bd23154db5a95268b72b960,
       type: 3}
     PoolSize: 10
+  - PoolObject: {fileID: 4003765403520468668, guid: 1efa9e99a2a1c144287152d7886bbae7,
+      type: 3}
+    PoolSize: 20
+  ReferencePool:
+  - {fileID: 8978893156680012180, guid: 9824cdae6f0912f4da45f20ec483f64d, type: 3}
+  - {fileID: 8105980944445082301, guid: 1d71e149ffe3c2c49991d9d15733c82f, type: 3}
+  - {fileID: 8978893156680012180, guid: a519d63c6a766e8418972ecff134c0f8, type: 3}
 --- !u!4 &294267498
 Transform:
   m_ObjectHideFlags: 0
@@ -12215,7 +12222,7 @@ MonoBehaviour:
   - DoorName: Inner
     OBJ: {fileID: 6346801409010900691}
     Speed: 3
-    MinMax: {x: 0.2548791, y: 0.3632}
+    MinMax: {x: 0, y: 0.123}
   - DoorName: Outer
     OBJ: {fileID: 69059312}
     Speed: 3
@@ -58135,7 +58142,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8678925235226999236}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.123, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

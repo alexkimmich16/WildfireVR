@@ -16,16 +16,40 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
 
     public bool ShouldPool;
 
+    //public float PoolWait;
+
     public List<PoolType> Pools;
+
+    public List<GameObject> ReferencePool;
+
+    public DefaultPool RefPool;
+
     private void Start()
     {
-        NetworkManager.OnInitialized += WaitToPool;
+        NetworkManager.OnInitialized += InitalizePool;
     }
-    public void WaitToPool() { Invoke("InitalizePool", 0.05f); }
+    //public void WaitToPool() { Invoke("InitalizePool", PoolWait); }
     public void InitalizePool()
     {
         if (!ShouldPool)
             return;
+
+        RefPool = PhotonNetwork.PrefabPool as DefaultPool;
+        Debug.Log("c: " + RefPool.ResourceCache.Count);
+
+        //Debug.Log("PhotonNetwork.PrefabPool: " + PrefabPoolSet());
+        if (PrefabPoolSet())
+            return;
+
+
+        if (RefPool != null && this.ReferencePool != null)
+            foreach (GameObject prefab in this.ReferencePool)
+                if(!RefPool.ResourceCache.ContainsKey(prefab.name))
+                    RefPool.ResourceCache.Add(prefab.name, prefab);
+
+
+        
+        
 
         for (int i = 0; i < Pools.Count; i++)
         {
@@ -37,7 +61,13 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
                 Pools[i].objectPool.Enqueue(obj);
             }
         }
-            
+        /*
+        for (int i = 0; i < UnPooled.Count; i++)
+        {
+            UnPooled[i]
+        }
+        */
+        //PhotonNetwork.PrefabPool.
         PhotonNetwork.PrefabPool = this;
     }
     
@@ -46,6 +76,11 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
     public GameObject Instantiate(string prefabId, Vector3 position, Quaternion rotation)
     {
         // Check if the requested prefab matches the object we want to pool
+        //Debug.Log("PrefabSpawn: " + prefabId);
+        
+        
+        
+
         for (int i = 0; i < Pools.Count; i++)
         {
             if (prefabId == Pools[i].PoolObject.name)
@@ -65,8 +100,16 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
                 return pooledObject;
             }
         }
-        
-        Debug.LogWarning("Trying to instantiate a prefab that is not included in the object pool!");
+
+        for (int i = 0; i < ReferencePool.Count; i++)
+        {
+            if (prefabId == ReferencePool[i].name)
+            {
+                return RefPool.Instantiate(prefabId, position, rotation);
+            }
+        }
+
+        Debug.LogWarning("Trying to instantiate: " + prefabId + " that is not included in the object pool!");
         // If the requested prefab is not the one we want to pool, return null
         return null;
     }
@@ -87,5 +130,19 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
         }
                 
     }
-    
+
+    private void Update()
+    {
+        //if(Started)
+            //Debug.Log("PhotonNetwork.PrefabPool: " + PhotonNetwork.PrefabPool.GetType());
+            //Debug.Log("PhotonNetwork.PrefabPool Set: " + PrefabPoolSet());
+
+    }
+    //public bool PrefabPoolSet() { return !(PhotonNetwork.PrefabPool is DefaultPool); }
+    public bool PrefabPoolSet()
+    {
+        if ((PhotonNetwork.PrefabPool is DefaultPool) == false)
+            return false;
+        return (PhotonNetwork.PrefabPool as DefaultPool).ResourceCache.Count == ReferencePool.Count + Pools.Count;
+    }
 }

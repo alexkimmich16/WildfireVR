@@ -99,7 +99,7 @@ public class FireballController : SpellClass
         //CurrentSpell spell = (AIMagicControl.instance.HoldingFire()) ? CurrentSpell.Fireball : CurrentSpell.Fireball;
         //if (AIMagicControl.instance.HoldingFire())
         //AIMagicControl.instance.ResetHoldingFires();
-        OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, Level), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation(side));
+        OnlineFireball = PhotonNetwork.PrefabPool.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, Level), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation(side));
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Fireball);
     }
 

@@ -13,16 +13,12 @@ public class FadeManager : SerializedMonoBehaviour
     [ReadOnly]public float CurrentFadeValue;
     public float FadeSpeed;
     private Vector2 MaxMinFade;
-    private float MaxFade;
 
     public bool DoFade;
 
     public Volume Volume;
     private void Start()
-    {
-        
-        
-            
+    { 
         SpawnManager.OnElevatorRespawn += OnStart;
         MaxMinFade.x = -10f;
         if (Volume.profile.TryGet<ColorAdjustments>(out ColorAdjustments Color))

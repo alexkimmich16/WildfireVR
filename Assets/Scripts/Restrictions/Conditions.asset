@@ -51,7 +51,7 @@ MonoBehaviour:
         - 0
         - 0
         StartPos:
-        - {x: -0.098558426, y: -0.06953001, z: 0.59951496}
+        - {x: 0, y: 0, z: 0}
         - {x: 0, y: 0, z: 0}
         Value:
         - 0
@@ -76,7 +76,7 @@ MonoBehaviour:
           ShouldDebug: 0
           Value: 0.4684659
         Range: {x: 0.5, y: 1.1}
-        LastState: 0100
+        LastState: 0000
         StartTime:
         - 0
         - 0
@@ -84,7 +84,7 @@ MonoBehaviour:
         - {x: 0, y: 0, z: 0}
         - {x: 0, y: 0, z: 0}
         Value:
-        - 0.3612422
+        - 0
         - 0
       - Label: StartPos
         condition: 1
@@ -104,15 +104,15 @@ MonoBehaviour:
           ShouldDebug: 0
           Value: 0
         Range: {x: 0, y: 0}
-        LastState: 0100
+        LastState: 0000
         StartTime:
         - 0
         - 0
         StartPos:
-        - {x: 0.14225101, y: -0.1542263, z: 0.34026623}
+        - {x: 0, y: 0, z: 0}
         - {x: 0, y: 0, z: 0}
         Value:
-        - 0.17128474
+        - 0
         - 0
       - Label: 
         condition: 0
@@ -132,15 +132,15 @@ MonoBehaviour:
           ShouldDebug: 0
           Value: 0
         Range: {x: 0, y: 0}
-        LastState: 0100
+        LastState: 0000
         StartTime:
-        - 434.09073
+        - 0
         - 0
         StartPos:
         - {x: 0, y: 0, z: 0}
         - {x: 0, y: 0, z: 0}
         Value:
-        - 440.56033
+        - 0
         - 0
     ProhibitList: []
     CurrentStage: 0000000000000000
@@ -182,7 +182,7 @@ MonoBehaviour:
     ProhibitList:
     - Label: Wait For Multiple False Frames
       condition: 4
-      Amount: 14.98
+      Amount: 1.97
       WaitSide: 1
       restriction:
         Label: 
