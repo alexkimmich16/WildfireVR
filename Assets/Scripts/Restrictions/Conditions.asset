@@ -46,15 +46,15 @@ MonoBehaviour:
           ShouldDebug: 0
           Value: 0
         Range: {x: 0, y: 0}
-        LastState: 0000
+        LastState: 0100
         StartTime:
         - 0
         - 0
         StartPos:
-        - {x: 0, y: 0, z: 0}
+        - {x: 0.012349129, y: -0.026264668, z: -0.5241108}
         - {x: 0, y: 0, z: 0}
         Value:
-        - 0
+        - 0.055729065
         - 0
     - StateToActivate: ShootFireball
       SingleConditions:
@@ -72,11 +72,11 @@ MonoBehaviour:
           UseLocalHandRot: 0
           Offset: {x: 0, y: 0, z: 0}
           Direction: {x: 0, y: 0, z: 0}
-          UseAxisList: 000000000200000001000000
+          UseAxisList: 0000000002000000
           ShouldDebug: 0
           Value: 0.4684659
         Range: {x: 0.5, y: 1.1}
-        LastState: 0000
+        LastState: 0100
         StartTime:
         - 0
         - 0
@@ -84,7 +84,7 @@ MonoBehaviour:
         - {x: 0, y: 0, z: 0}
         - {x: 0, y: 0, z: 0}
         Value:
-        - 0
+        - 0.5233749
         - 0
       - Label: StartPos
         condition: 1
@@ -104,15 +104,15 @@ MonoBehaviour:
           ShouldDebug: 0
           Value: 0
         Range: {x: 0, y: 0}
-        LastState: 0000
+        LastState: 0100
         StartTime:
         - 0
         - 0
         StartPos:
-        - {x: 0, y: 0, z: 0}
+        - {x: 0.12942982, y: -0.15115547, z: 0.2648964}
         - {x: 0, y: 0, z: 0}
         Value:
-        - 0
+        - 0.29171464
         - 0
       - Label: 
         condition: 0
@@ -132,15 +132,15 @@ MonoBehaviour:
           ShouldDebug: 0
           Value: 0
         Range: {x: 0, y: 0}
-        LastState: 0000
+        LastState: 0100
         StartTime:
-        - 0
+        - 17.65852
         - 0
         StartPos:
         - {x: 0, y: 0, z: 0}
         - {x: 0, y: 0, z: 0}
         Value:
-        - 0
+        - 20.975945
         - 0
     ProhibitList: []
     CurrentStage: 0000000000000000
