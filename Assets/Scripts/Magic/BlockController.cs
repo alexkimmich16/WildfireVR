@@ -15,7 +15,6 @@ public class BlockController : SpellClass
     void Awake() { instance = this; }
     public List<bool> Active;
 
-    
     public GameObject BlockVFXObject;
     public float FlameDistanceFromHead = 2f;
     public bool Testing;
@@ -42,7 +41,7 @@ public class BlockController : SpellClass
     {
         ConditionManager.instance.conditions.MotionConditions[(int)CurrentLearn.FlameBlock - 1].OnNewState += RecieveNewState;
         BlockVFXObject = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.FlameBlock, 0), Vector3.zero, Quaternion.identity);
-        BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
+        BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.AllBuffered, false);
     }
     private void Update()
     {
