@@ -31,8 +31,8 @@ public class BillBoardManager : MonoBehaviour
             return;
 
         StateText.text = GetGameState().ToString();
-        WarmupTimeText.text = "WarmupTime: " + GetGameFloat(GameWarmupTimer).ToString();
-        FinishTimeText.text = "FinishTime: " + GetGameFloat(GameFinishTimer).ToString();
+        WarmupTimeText.text = "WarmupTime: " + InGameManager.instance.Timer.ToString();
+        FinishTimeText.text = "FinishTime: " + InGameManager.instance.Timer.ToString();
 
         if (AllPlayersLoaded())
         {
@@ -86,12 +86,12 @@ public class BillBoardManager : MonoBehaviour
         }
         else if (state == GameState.Warmup)
         {
-            DisplayVictory.text = "Starting in: " + GetGameFloat(GameWarmupTimer).ToString("F2") + " Seconds";
+            DisplayVictory.text = "Starting in: " + InGameManager.instance.Timer.ToString("F2") + " Seconds";
         }
         else if (state == GameState.Active)
         {
-            float FinishTimer = GetGameFloat("FinishTimer");
-            float Left = InGameManager.instance.FinishTime - FinishTimer;
+            //float FinishTimer = GetGameFloat("FinishTimer");
+            float Left = InGameManager.instance.FinishTime - InGameManager.instance.Timer;
             DisplayVictory.text = "Started!  Time Left: " + Left;
         }
 

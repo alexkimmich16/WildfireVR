@@ -13,8 +13,8 @@ namespace Odin
         //public static string PlayerAlive = "Alive";
         public static string PlayerHealth = "Health";
 
-        public static string GameWarmupTimer = "WarmupTimer";
-        public static string GameFinishTimer = "FinishTimer";
+        //public static string GameWarmupTimer = "WarmupTimer";
+        //public static string GameFinishTimer = "FinishTimer";
         public static string GameStateText = "State";
 
         public static string GameOutcome = "Outcome";
@@ -27,6 +27,8 @@ namespace Odin
         public static string DoorState = "DoorState";
 
         public static string Blocking = "Blocking";
+
+        public static bool ShouldDebug = true;
 
         public static bool Alive(Player player)
         {
@@ -42,12 +44,7 @@ namespace Odin
         }
         public static bool Initialized()
         {
-            //all exists
-            bool Timers = Exists(GameWarmupTimer, null) == true && Exists(GameFinishTimer, null) == true;
-
-            bool Other = Exists(DoorState, null) == true;
-            //Debug.Log(Timers + " " + Counts);
-            return Timers && Other;
+            return Exists(DoorState, null) == true;
         }
         public static int GetLocal()
         {
@@ -163,38 +160,42 @@ namespace Odin
         #region NetworkSet
         public static void SetGameResult(Result result)
         {
-            //Debug.Log("Setfloat");
+            if (ShouldDebug) Debug.Log("SetGameResult");
             Hashtable TeamHash = new Hashtable();
             TeamHash.Add(GameOutcome, result);
             PhotonNetwork.CurrentRoom.SetCustomProperties(TeamHash);
         }
         public static void SetGameFloat(string text, float Num)
         {
-            //Debug.Log("Setfloat");
+            if(ShouldDebug)Debug.Log("SetGameFloat");
             Hashtable TeamHash = new Hashtable();
             TeamHash.Add(text, Num);
             PhotonNetwork.CurrentRoom.SetCustomProperties(TeamHash);
         }
         public static void SetGameState(GameState state)
         {
+            if (ShouldDebug) Debug.Log("SetGameState");
             Hashtable TeamHash = new Hashtable();
             TeamHash.Add(GameStateText, state);
             PhotonNetwork.CurrentRoom.SetCustomProperties(TeamHash);
         }
         public static void SetPlayerTeam(Team team, Player player)
         {
+            if (ShouldDebug) Debug.Log("SetPlayerTeam");
             Hashtable TeamHash = new Hashtable();
             TeamHash.Add(PlayerTeam, team);
             player.SetCustomProperties(TeamHash);
         }
         public static void SetPlayerBool(string text, bool State, Player player)
         {
+            if (ShouldDebug) Debug.Log("SetPlayerBool");
             Hashtable HealthHash = new Hashtable();
             HealthHash.Add(text, State);
             player.SetCustomProperties(HealthHash);
         }
         public static void SetGameBool(string text, bool State)
         {
+            if (ShouldDebug) Debug.Log("SetGameBool");
             Hashtable HealthHash = new Hashtable();
             //Debug.Log("set");
             HealthHash.Add(text, State);
@@ -202,12 +203,14 @@ namespace Odin
         }
         public static void SetPlayerInt(string text, int SetNum, Player player)
         {
+            if (ShouldDebug) Debug.Log("SetPlayerInt");
             Hashtable HealthHash = new Hashtable();
             HealthHash.Add(text, SetNum);
             player.SetCustomProperties(HealthHash);
         }
         public static void SetGameInt(string text, int SetNum)
         {
+            if (ShouldDebug) Debug.Log("SetGameInt");
             Hashtable HealthHash = new Hashtable();
             HealthHash.Add(text, SetNum);
             PhotonNetwork.CurrentRoom.SetCustomProperties(HealthHash);

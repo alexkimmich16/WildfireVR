@@ -18,13 +18,14 @@ public class EyeController : MonoBehaviour
     private float TimeLeft;
     public List<GameObject> AllEyes;
     public List<Material> EyeMats;
+    public bool AllowEyeChange;
     public void ChangeEyes(Eyes eyes)
     {
         if(eyes != Eyes.None)
             TimeLeft = ColorTime;
         for (var i = 0; i < AllEyes.Count; i++)
             AllEyes[i].GetComponent<SkinnedMeshRenderer>().material = EyeMats[(int)eyes];
-        if(NetworkPlayerSpawner.instance.SpawnedPlayerPrefab != null)
+        if(NetworkPlayerSpawner.instance.SpawnedPlayerPrefab != null && AllowEyeChange)
             NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("SetEyes", RpcTarget.All, eyes);
     }
 

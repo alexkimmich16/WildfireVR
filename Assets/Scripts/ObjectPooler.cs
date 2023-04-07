@@ -32,7 +32,7 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
             return;
 
         RefPool = PhotonNetwork.PrefabPool as DefaultPool;
-        Debug.Log("c: " + RefPool.ResourceCache.Count);
+        //Debug.Log("c: " + RefPool.ResourceCache.Count);
 
         //Debug.Log("PhotonNetwork.PrefabPool: " + PrefabPoolSet());
         if (PrefabPoolSet())

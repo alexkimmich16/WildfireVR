@@ -115,8 +115,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             //Debug.Log("set");
             
-            SetGameFloat(GameWarmupTimer, 0f);
-            SetGameFloat(GameFinishTimer, 0f);
+            //SetGameFloat(GameWarmupTimer, 0f);
+            //SetGameFloat(GameFinishTimer, 0f);
             SetGameState(GameState.Waiting);
 
             SetGameInt(DoorState, (int)SequenceState.Waiting);

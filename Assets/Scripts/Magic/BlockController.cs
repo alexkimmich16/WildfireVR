@@ -19,13 +19,20 @@ public class BlockController : SpellClass
     public GameObject BlockVFXObject;
     public float FlameDistanceFromHead = 2f;
     public bool Testing;
+
+    private bool LastFrameBlocking;
     public bool IsBlocking() { return Active[0] == true && Active[1] == true; }
     public bool HalfBlocking() { return Active[0] == true || Active[1] == true; }
     public void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level)
     {
         //Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
         Active[(int)side] = StartOrFinish;
-        BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, Testing ? HalfBlocking() : IsBlocking());
+        if (IsBlocking() != LastFrameBlocking)//onchangestate
+        {
+            BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, Testing ? HalfBlocking() : IsBlocking());
+            SetPlayerBool(Blocking, IsBlocking(), PhotonNetwork.LocalPlayer);
+        }
+        LastFrameBlocking = IsBlocking();
     }
     private void Start()
     {
@@ -46,7 +53,7 @@ public class BlockController : SpellClass
         BlockVFXObject.transform.position = Pos;
         BlockVFXObject.transform.rotation = AIMagicControl.instance.Cam.rotation;
 
-        SetPlayerBool(Blocking, IsBlocking(), PhotonNetwork.LocalPlayer);
+        
         
     }
 }

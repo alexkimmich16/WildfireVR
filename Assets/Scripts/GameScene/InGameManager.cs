@@ -59,6 +59,13 @@ public class InGameManager : SerializedMonoBehaviour
 
     //private bool StartedCountdown = false;
 
+
+
+    /// <summary>
+    /// MAKE SURE OWNERSHIP DOESN"T PASS TO SOMEONE WHO JUST JOINED
+    /// IF THERES NOONE ELSE RESTART THE GAME!!!
+    /// </summary>
+    /// <returns></returns>
     public bool CanMove()
     {
         return true;
@@ -78,7 +85,8 @@ public class InGameManager : SerializedMonoBehaviour
     public void SetNewGameState(GameState state)
     {
         //for each individually
-        Debug.Log(state);
+        CurrentState = state;
+        Debug.Log("Recieve: " + state.ToString());
         //Debug.Log("newstate: " + state);
         Timer = 0f;
         if(state == GameState.Waiting)
@@ -90,20 +98,17 @@ public class InGameManager : SerializedMonoBehaviour
         {
             //StartedCountdown = true;
             Timer = WarmupTime;
-            if (OnStartCountdown != null)
-                OnStartCountdown();
+            OnStartCountdown?.Invoke();
         }
         else if (state == GameState.Active)
         {
             //StartedCountdown = false;
-            if (OnGameStart != null)
-                OnGameStart();
+            OnGameStart?.Invoke();
             Timer = FinishTime;
         }
         else if (state == GameState.Finished)
         {
-            if(OnGameEnd != null)
-                OnGameEnd();
+            OnGameEnd?.Invoke();
             if (PhotonNetwork.IsMasterClient)
             {
                 //SetGameFloat(GameFinishTimer, 0f);
@@ -119,33 +124,46 @@ public class InGameManager : SerializedMonoBehaviour
     #endregion
     public void ProgressTime()
     {
-        CurrentState = GetGameState();
+        //CurrentState = GetGameState();
         //Debug.Log("Attack: " + Attack + "  Defense: " + Defense);
 
-        GameState state = GetGameState();
-        //Debug.Log("state: " + state);
-        Timer -= (state == GameState.Warmup || (state == GameState.Active && (int)DoorManager.instance.Sequence >= (int)SequenceState.WaitingForAllExit)) ? Time.deltaTime : 0;
-        SetGameFloat(GameWarmupTimer, state == GameState.Warmup ? Timer : 0);
-        SetGameFloat(GameFinishTimer, state == GameState.Active ? Timer : 0);
-        if (AutoStart && SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers && GetGameState() == GameState.Waiting)
-            SetNewGameState(GameState.Warmup);
 
-        if (state == GameState.Waiting && SideCount(Team.Attack) + SideCount(Team.Defense) >= MinPlayers * 2 && BalenceTeams == true)
+        if (AutoStart && SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers && CurrentState == GameState.Waiting)
+            OnlineEventManager.NewState(GameState.Warmup, Result.UnDefined);
+
+        if (CurrentState == GameState.Waiting && SideCount(Team.Attack) + SideCount(Team.Defense) >= MinPlayers * 2 && BalenceTeams == true)
             ManageTeam();
-
-        bool NextRestrictionReady = (state == GameState.Warmup) || (state == GameState.Active);
-        if (NextRestrictionReady && Timer < 0)
-            SetNewGameState((GameState)((int)state) + 1);
-                
-        else if (state == GameState.Active && (TotalAlive(Team.Attack) == 0 || TotalAlive(Team.Defense) == 0))
-            SetNewGameState(GameState.Finished);
+        
+        if(CurrentState == GameState.Warmup)
+        {
+            Timer -= Time.deltaTime;
+            if (Timer < 0)
+                OnlineEventManager.NewState(GameState.Active, Result.UnDefined);
+        }
+        
+        //OnlineEventManager.NewState(GameState.Finished, Result.UnDefined);
+        //else if (state == GameState.Active && (TotalAlive(Team.Attack) == 0 || TotalAlive(Team.Defense) == 0))     
+        else if (CurrentState == GameState.Active)
+        {
+            if((int)DoorManager.instance.Sequence >= (int)SequenceState.WaitingForAllExit)
+            {
+                Timer -= Time.deltaTime;
+                //SetGameFloat(GameFinishTimer, Timer);
+                if (TotalAlive(Team.Attack) == 0 || TotalAlive(Team.Defense) == 0 || Timer < 0)
+                {
+                    OnlineEventManager.NewState(GameState.Finished, Result.UnDefined);
+                }
+            }
+            
+        }
+            
     }
     void Update()
     {
         if (!NetworkManager.HasConnected())
             return;
-        if (!PhotonNetwork.IsMasterClient)
-            return;
+        //if (!PhotonNetwork.IsMasterClient)
+            //return;
         if (!Initialized())
             return;
 
@@ -155,14 +173,15 @@ public class InGameManager : SerializedMonoBehaviour
     public void StartGame()
     {
         if (SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers && GetGameState() == GameState.Waiting)
-            SetNewGameState(GameState.Warmup);
+            OnlineEventManager.NewState(GameState.Warmup, Result.UnDefined);
     }
     public void CancelStartup()
     {
         if (GetGameState() == GameState.Warmup)
         {
-            SetNewGameState(GameState.Waiting);
-            SetGameFloat(GameWarmupTimer, 0);
+            OnlineEventManager.NewState(GameState.Waiting, Result.UnDefined);
+            //SetNewGameState(GameState.Waiting);
+            //SetGameFloat(GameWarmupTimer, 0);
         }
     }
    
