@@ -27,6 +27,7 @@ public class FlameCollision : MonoBehaviour
     {
         if (other.tag == "HitBox")
         {
+            
             if (BlockController.instance.IsBlocking())
                 PushFire(AIMagicControl.instance.Cam.position);
             else if (!BlockController.instance.IsBlocking())
@@ -34,7 +35,7 @@ public class FlameCollision : MonoBehaviour
         }
     }
     public void UnsubscribeToFire() { OnlineEventManager.FirePushEvent -= PushFire; }
-    private void Start()
+    private void OnEnable()
     {
         OnlineEventManager.FirePushEvent += PushFire;
         if (transform.parent != null)

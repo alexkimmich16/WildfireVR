@@ -7,6 +7,7 @@ public class PoolType
 {
     public GameObject PoolObject;
     public int PoolSize;
+    //public bool ForceRecycle;
     public Queue<GameObject> objectPool;
 }
 public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
@@ -66,7 +67,10 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
         {
             if (prefabId == Pools[i].PoolObject.name)
             {
+                //if (Pools[i].ForceRecycle)
                 // Check if the object pool is empty, instantiate a new object and add it to the pool
+
+
                 if (Pools[i].objectPool.Count == 0)
                 {
                     

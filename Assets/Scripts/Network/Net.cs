@@ -22,7 +22,7 @@ namespace Odin
         //public static string AttackTeamCount = "AttackTeam";
         //public static string DefenseTeamCount = "DefenseTeam";
 
-        public static List<string> DoorNames = new List<string>() { "ElevatorHeight", "InnerGateHeight", "OuterGateHeight" };
+        //public static List<string> DoorNames = new List<string>() { "ElevatorHeight", "InnerGateHeight", "OuterGateHeight" };
 
         public static string DoorState = "DoorState";
 

@@ -22,9 +22,6 @@ public class DoorManager : SerializedMonoBehaviour
     public float StoneScrollSpeed;
     public Transform Wall;
 
-    public delegate void DoorEvent(SequenceState state);
-    public static event DoorEvent OnDoorChange;
-
     public delegate void DoorReset();
     public static event DoorReset OnDoorReset;
 
@@ -41,10 +38,6 @@ public class DoorManager : SerializedMonoBehaviour
 
     public float DropAmount;
 
-    public float EarlyTimeDelay;
-    public bool AddToTimer = true;
-    public List<float> Times;
-
     public float Timer;
     public int Low, High;
     public bool Sent = false;
@@ -54,10 +47,11 @@ public class DoorManager : SerializedMonoBehaviour
     public float ElevatorSpawnOffset = -36.2f;
     public float ZOutOfDoor = 43f;
 
+    public bool Finished;
 
     public IEnumerator WaitUntilDoorReset()//get appropriate team, spawn, set online
     {
-        yield return new WaitWhile(() => GetGameFloat(DoorNames[0]) != Doors[0].MinMax.x); //wait for team
+        yield return new WaitWhile(() => Doors[0].OBJ.localPosition.y != Doors[0].MinMax.x); //wait for team
         OnDoorReset();
         ///enable view
     }
@@ -65,26 +59,22 @@ public class DoorManager : SerializedMonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            SetNewSequenceState(SequenceState.Waiting);
+            OnlineEventManager.DoorEvent(SequenceState.Waiting);
             for (int i = 0; i < Doors.Count; i++)
             {
                 Doors[i].OBJ.localPosition = new Vector3(0, Doors[i].MinMax.x, 0);
-                SetGameFloat(DoorNames[i], Doors[i].OBJ.localPosition.y);
+                //SetGameFloat(DoorNames[i], Doors[i].OBJ.localPosition.y);
             }
         }
         
         StartCoroutine(WaitUntilDoorReset());
     }
 
-    public void OnRestart()
-    {
-        ResetDoors();
-    }
     public void StartSequence()
     {
         if(Sequence == SequenceState.Waiting)
         {
-            SetNewSequenceState(SequenceState.ElevatorMove);
+            OnlineEventManager.DoorEvent(SequenceState.ElevatorMove);
             
             Doors[0].OBJ.Translate(Vector3.up * -DropAmount);
         }
@@ -92,7 +82,9 @@ public class DoorManager : SerializedMonoBehaviour
     private void Start()
     {
         InGameManager.instance.OnGameStart += StartSequence;
-        OnlineEventManager.RestartEventCallback += OnRestart;
+        OnlineEventManager.RestartEventCallback += ResetDoors;
+        for (int i = 0; i < Doors.Count; i++)
+            Doors[i].OBJ.localPosition = new Vector3(0, Doors[i].MinMax.x, 0);
     }
     //private bool PlayerInElevator;
     public void MoveDoor(int DoorNum, out bool Completed, bool Opening)
@@ -100,39 +92,28 @@ public class DoorManager : SerializedMonoBehaviour
         if (Opening == true)
         {
             Doors[DoorNum].OBJ.Translate(Vector3.up * Time.deltaTime * Doors[DoorNum].Speed);
-            SetGameFloat(DoorNames[DoorNum], Doors[DoorNum].OBJ.localPosition.y);
             Completed = Doors[DoorNum].OBJ.localPosition.y > Doors[DoorNum].MinMax.y;
         }
         else
         {
             Doors[DoorNum].OBJ.Translate(Vector3.down * Time.deltaTime * SlamSpeed);
-            SetGameFloat(DoorNames[DoorNum], Doors[DoorNum].OBJ.localPosition.y);
             Completed = Doors[DoorNum].OBJ.localPosition.y < Doors[DoorNum].MinMax.x;
         }
         
     }
-    public void SetNewSequenceState(SequenceState state)
+    public void RecieveOnlineDoorState(SequenceState state)
     {
-        Sent = false;
         Timer = 0f;
-        if (AddToTimer)
-            Times.Add(Timer);
 
         if (state == SequenceState.Waiting)
-            OnlineEventManager.DoorEvent((int)state);
+            OnlineEventManager.DoorEvent(state);
 
         if(state == SequenceState.Finished)
             PushTimer = 0f;
 
         Sequence = state;
+        Finished = false;
         SetGameInt(DoorState, (int)state);
-        if (OnDoorChange != null)
-            OnDoorChange(state);
-    }
-    public void SetPosition(int DoorNum)
-    {
-        Vector3 Local = Doors[DoorNum].OBJ.localPosition;
-        Doors[DoorNum].OBJ.localPosition = new Vector3(Local.x, GetGameFloat(DoorNames[DoorNum]), Local.z);
     }
     public bool AllExitedElevator()
     {
@@ -146,81 +127,61 @@ public class DoorManager : SerializedMonoBehaviour
 
     private bool Closed1;
     private bool Closed2;
-    public void UpdateElevator()
-    {
-        for (int i = 0; i < Doors.Count; i++)
-            SetPosition(i);
-    }
+    
     void Update()
     {
         if (Initialized() == false)
             return;
         PlayersOutOfElevator = AllExitedElevator();
-        UpdateEarlySounds();
-
         InElevator = PlayerInElevator();
-        
 
-        //GetGameInt(DoorState)
-        if (GetGameInt(DoorState) == (int)SequenceState.Waiting)
+        //UpdateEarlySounds();
+
+
+        if (Sequence == SequenceState.Waiting)//WallChaange
         {
             float offset = Time.time * StoneScrollSpeed;
             Wall.GetComponent<Renderer>().materials[0].SetTextureOffset("_BaseMap", new Vector2(offset, 0));
         }
-
-        if (GetGameInt(DoorState) == (int)SequenceState.WaitingForAllExit)
+        if (Sequence == SequenceState.WaitingForAllExit)//Push
         {
             PushTimer += Time.deltaTime;
             if (PlayerInElevator() && PushTimer > BeforePushTime)
                 Camera.main.transform.parent.parent.position += transform.forward * Time.deltaTime * PushForce * (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Defense ? 1 : -1);
         }
 
-        if (PhotonNetwork.IsMasterClient)
+        //MoveElevator
+        if((Sequence == SequenceState.ElevatorMove || Sequence == SequenceState.OpenInDoor || Sequence == SequenceState.OpenOutDoor) && !Finished)
         {
-            if (Sequence == SequenceState.ElevatorMove)
+            MoveDoor((int)Sequence - 1, out Finished, true);
+            if (Finished && PhotonNetwork.IsMasterClient)
+                OnlineEventManager.DoorEvent((SequenceState)((int)Sequence + 1));
+        }
+        //Wait for exit
+        if (Sequence == SequenceState.WaitingForAllExit)
+        {
+            if (AllExitedElevator())
             {
-                MoveDoor(0, out bool Finshed, true);
-                if (Finshed)
-                    SetNewSequenceState(SequenceState.OpenInDoor);
-            }
-            if (Sequence == SequenceState.OpenInDoor)
-            {
-                MoveDoor(1, out bool Finshed, true);
-                if (Finshed)
-                    SetNewSequenceState(SequenceState.OpenOutDoor);
-            }
-            if (Sequence == SequenceState.OpenOutDoor)
-            {
-                MoveDoor(2, out bool Finshed, true);
-                if (Finshed)
-                    SetNewSequenceState(SequenceState.WaitingForAllExit);
-            }
-            if (Sequence == SequenceState.WaitingForAllExit)
-            {
-                if (AllExitedElevator())
-                {
-                    SetNewSequenceState(SequenceState.Closing);
-                }
-            }
-            if (Sequence == SequenceState.Closing)
-            {
-                //slam
-                if (Closed1 == false)
-                    MoveDoor(1, out Closed1, false);
-                if (Closed2 == false)
-                    MoveDoor(2, out Closed2, false);
-
-                if (Closed1 == true && Closed2 == true)
-                {
-                    Closed1 = false;
-                    Closed2 = false;
-                    SetNewSequenceState(SequenceState.Finished);
-                }
+                OnlineEventManager.DoorEvent(SequenceState.Closing);
             }
         }
-        else
-            UpdateElevator();
+        if (Sequence == SequenceState.Closing)
+        {
+            //slam
+            if (Closed1 == false)
+                MoveDoor(1, out Closed1, false);
+            if (Closed2 == false)
+                MoveDoor(2, out Closed2, false);
 
+            if (Closed1 == true && Closed2 == true)
+            {
+                Closed1 = false;
+                Closed2 = false;
+                if(PhotonNetwork.IsMasterClient)
+                    OnlineEventManager.DoorEvent(SequenceState.Finished);
+            }
+        }
+        /*
         void UpdateEarlySounds()
         {
             Timer += Time.deltaTime;
@@ -234,9 +195,10 @@ public class DoorManager : SerializedMonoBehaviour
             {
                 Sent = true;
                 //Debug.Log("send: " + state);
-                OnlineEventManager.DoorEvent(state + 1);
+                OnlineEventManager.DoorEvent((SequenceState)(state + 1));
             }
         }
+        */
     }
 }
 public enum SequenceState

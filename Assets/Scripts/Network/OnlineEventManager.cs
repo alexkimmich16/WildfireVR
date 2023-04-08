@@ -56,10 +56,10 @@ public class OnlineEventManager : MonoBehaviour
     #endregion
     #region DoorStates
     public const byte DoorCode = 4;
-    public static void DoorEvent(int state)
+    public static void DoorEvent(SequenceState state)
     {
         //Debug.Log(result.ToString());
-        object[] content = new object[] { state };
+        object[] content = new object[] { (int)state };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
         PhotonNetwork.RaiseEvent(DoorCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
@@ -122,6 +122,7 @@ public class OnlineEventManager : MonoBehaviour
             object[] data = (object[])photonEvent.CustomData;
             int state = (int)data[0];
             SoundManager.instance.SetDoorAudio(state);
+            DoorManager.instance.RecieveOnlineDoorState((SequenceState)state);
         }
         if (photonEvent.Code == SoundCode)
         {
