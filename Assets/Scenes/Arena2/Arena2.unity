@@ -3378,8 +3378,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.45
-  m_Height: 1
+  m_Radius: 0.29
+  m_Height: 1.47
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &289370770
@@ -3482,7 +3482,7 @@ MonoBehaviour:
   m_Camera: {fileID: 1297422940}
   m_OriginBaseGameObject: {fileID: 289370768}
   m_CameraFloorOffsetObject: {fileID: 337182812}
-  m_RequestedTrackingOriginMode: 1
+  m_RequestedTrackingOriginMode: 2
   m_CameraYOffset: 1
 --- !u!114 &289370778
 MonoBehaviour:
@@ -12220,7 +12220,7 @@ MonoBehaviour:
   Doors:
   - DoorName: Elevator
     OBJ: {fileID: 9062918174966249546}
-    Speed: 4.24
+    Speed: 2.97
     MinMax: {x: -0.3, y: 0.073}
   - DoorName: Inner
     OBJ: {fileID: 6346801409010900691}
@@ -22468,7 +22468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bfa6e516703cdf449adfc26cb77f61c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnableSounds: 1
+  EnableSounds: 0
   EnableEffectSounds: 1
   EnableElevatorSounds: 0
   EnableCrowdSounds: 0
