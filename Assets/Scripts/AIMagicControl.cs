@@ -57,7 +57,7 @@ public class AIMagicControl : MonoBehaviour
             int GetMatTestNum(Side side)
             {
                 List<int> Working = new List<int>();
-                for (int j = 1; j < RestrictionManager.instance.coefficents.RegressionStats.Count + 1; j++)
+                for (int j = 1; j < RestrictionManager.instance.RestrictionSettings.Coefficents.Count + 1; j++)
                     if (RestrictionManager.instance.MotionWorks(PR.PastFrame(side), PastFrameRecorder.instance.GetControllerInfo(side), (CurrentLearn)j))
                         Working.Add(j);
                 if (Working.Count == 0)
@@ -65,7 +65,7 @@ public class AIMagicControl : MonoBehaviour
                 else if (Working.Count == 1)
                     return Working[0];
                 else
-                    return RestrictionManager.instance.coefficents.RegressionStats.Count + 1;
+                    return RestrictionManager.instance.RestrictionSettings.Coefficents.Count + 1;
 
             }
 

@@ -5,14 +5,15 @@ using Sirenix.OdinInspector;
 using System;
 namespace RestrictionSystem
 {
-    
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/MotionSettings", order = 2)]
     public class MotionSettings : SerializedScriptableObject
     {
-        public float Iteration;
-
+        [ListDrawerSettings(ShowIndexLabels = true)] public List<RegressionInfo> Coefficents;
         [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "Motion")] public List<MotionRestriction> MotionRestrictions;
+        [ListDrawerSettings(ShowIndexLabels = true), Range(0f,1f)] public List<float> CutoffValues;
     }
+
+    
     [System.Serializable]
     public class MotionRestriction
     {

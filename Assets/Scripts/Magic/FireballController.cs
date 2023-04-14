@@ -62,24 +62,26 @@ public class FireballController : SpellClass
         return Quaternion.LookRotation(RealOutput);
     }
 
-    public void RecieveNewState(Side side, bool IsStart, int Index, int Level)
+    public void RecieveNewState(Side side, bool State, int Index, int Level)
     {
-        if (IsStart == false && Index == 0 && ShouldDebug)
-            Debug.Log("StopCharge");
+        //Debug.Log("State: " + State + "  Index: " + Index);
         
+        
+        //if (State == false && Index == 0 && ShouldDebug)
+            //Debug.Log("StopCharge");
+
         if (Index == 0)
         {
-            Actives[(int)side] = IsStart;
-            FireballWarmups[(int)side].GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, IsStart);
+            Actives[(int)side] = State;
+            FireballWarmups[(int)side].GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, State);
         }
-        else if(Index == 1)
+
+        if (State == true && Index == 1)
         {
+
             FireballWarmups[(int)side].GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
             SpawnFireball(side, Level);
-
         }
-        
-        
     }
     private void Start()
     {
@@ -90,7 +92,7 @@ public class FireballController : SpellClass
     {
         if (InGameManager.instance.CanDoMagic() == false)
             return;
-        Debug.Log("Spawn");
+        //Debug.Log("Spawn");
         EyeController.instance.ChangeEyes(Eyes.Fire);
         ///direction of controller forward
         ///
