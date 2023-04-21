@@ -17,18 +17,21 @@ public class BlockController : SpellClass
 
     public GameObject BlockVFXObject;
     public float FlameDistanceFromHead = 2f;
-    public bool Testing;
+
+    public bool HalfBlocks;
+    public bool AlwaysTrue;
 
     private bool LastFrameBlocking;
-    public bool IsBlocking() { return Active[0] == true && Active[1] == true; }
+    public bool ProperBlock() { return Active[0] == true && Active[1] == true; }
     public bool HalfBlocking() { return Active[0] == true || Active[1] == true; }
+    public bool IsBlocking() { return AlwaysTrue ? true : HalfBlocks ? HalfBlocking() : ProperBlock(); }
     public void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level)
     {
         //Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
         Active[(int)side] = StartOrFinish;
         if (IsBlocking() != LastFrameBlocking)//onchangestate
         {
-            BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, Testing ? HalfBlocking() : IsBlocking());
+            BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, IsBlocking());
             SetPlayerBool(Blocking, IsBlocking(), PhotonNetwork.LocalPlayer);
         }
         LastFrameBlocking = IsBlocking();

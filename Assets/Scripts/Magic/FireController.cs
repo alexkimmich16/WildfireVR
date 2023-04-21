@@ -23,12 +23,9 @@ public class FireController : SpellClass
     public bool ShouldDebug;
 
     [Header("DamageStats")]
-    public FireDetectType DamageType;
-    public float Spread;
     public float EnemyCooldownTime;
     public int Damage;
     public float CastCooldowntime;
-    public float MinVelocity;
    
 
     [Header("CodeDetect")]
@@ -51,7 +48,6 @@ public class FireController : SpellClass
     public float TimeDelay = 0.3f;
     private List<float> DelayTimer;
     public List<bool> IsCountingDelay;
-
     public bool IsCooldown(Transform hitAttempt)
     {
         for (int i = 0; i < DamageCooldowns.Count; i++)

@@ -105,6 +105,16 @@ public class DoorManager : SerializedMonoBehaviour
     {
         Timer = 0f;
 
+        //manage stop rigidbody movement and clipping
+        AIMagicControl.instance.Rig.transform.parent = state == SequenceState.ElevatorMove ? Doors[0].OBJ : null;
+        if (state == SequenceState.ElevatorMove)
+            AIMagicControl.instance.Rig.GetComponent<Rigidbody>().constraints |= RigidbodyConstraints.FreezePositionY;
+        else
+            AIMagicControl.instance.Rig.GetComponent<Rigidbody>().constraints &= ~RigidbodyConstraints.FreezePositionY;
+
+
+
+
         if (state == SequenceState.Waiting)
             OnlineEventManager.DoorEvent(state);
 
@@ -128,7 +138,7 @@ public class DoorManager : SerializedMonoBehaviour
     private bool Closed1;
     private bool Closed2;
     
-    void Update()
+    void FixedUpdate()
     {
         if (Initialized() == false)
             return;
@@ -145,9 +155,9 @@ public class DoorManager : SerializedMonoBehaviour
         }
         if (Sequence == SequenceState.WaitingForAllExit)//Push
         {
-            PushTimer += Time.deltaTime;
+            PushTimer += Time.fixedDeltaTime;
             if (PlayerInElevator() && PushTimer > BeforePushTime)
-                Camera.main.transform.parent.parent.position += transform.forward * Time.deltaTime * PushForce * (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Defense ? 1 : -1);
+                Camera.main.transform.parent.parent.position += transform.forward * Time.fixedDeltaTime * PushForce * (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Defense ? 1 : -1);
         }
 
         //MoveElevator

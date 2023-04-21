@@ -7,8 +7,9 @@ public class PoolType
 {
     public GameObject PoolObject;
     public int PoolSize;
-    //public bool ForceRecycle;
+    public bool ForceRecycle;
     public Queue<GameObject> objectPool;
+    public Queue<GameObject> toDestory;
 }
 public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
 {
@@ -44,10 +45,13 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
             foreach (GameObject prefab in this.ReferencePool)
                 if(!RefPool.ResourceCache.ContainsKey(prefab.name))
                     RefPool.ResourceCache.Add(prefab.name, prefab);
-
+        
         for (int i = 0; i < Pools.Count; i++)
         {
             Pools[i].objectPool = new Queue<GameObject>();
+
+            if(Pools[i].ForceRecycle)
+                Pools[i].toDestory = new Queue<GameObject>();
             for (int j = 0; j < Pools[i].PoolSize; j++)
             {
                 GameObject obj = PhotonNetwork.Instantiate(Pools[i].PoolObject.name, Vector3.zero, Quaternion.identity);
@@ -69,19 +73,37 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
             {
                 //if (Pools[i].ForceRecycle)
                 // Check if the object pool is empty, instantiate a new object and add it to the pool
-
+                
 
                 if (Pools[i].objectPool.Count == 0)
                 {
-                    
-                    //GameObject obj = PhotonNetwork.Instantiate(prefabId, position, rotation);
-                    GameObject obj = RefPool.Instantiate(prefabId, position, rotation);
-                    obj.SetActive(false);
-                    Pools[i].objectPool.Enqueue(obj);
+                    if (Pools[i].ForceRecycle)
+                    {
+                        //grab oldest object
+                        GameObject obj = Pools[i].toDestory.Dequeue();
+
+                        Pools[i].objectPool.Enqueue(obj); 
+                        //cue object
+                        //
+                    }
+                    else
+                    {
+                        //GameObject obj = PhotonNetwork.Instantiate(prefabId, position, rotation);
+                        GameObject obj = RefPool.Instantiate(prefabId, position, rotation);
+                        obj.SetActive(false);
+                        Pools[i].objectPool.Enqueue(obj);
+                    }
+                        
                 }
+
+                
+
 
                 // Dequeue an object from the pool and return it
                 GameObject pooledObject = Pools[i].objectPool.Dequeue();
+
+                if (Pools[i].ForceRecycle)
+                    Pools[i].objectPool.Enqueue(pooledObject);
 
                 pooledObject.transform.position = position;
                 pooledObject.transform.rotation = rotation;

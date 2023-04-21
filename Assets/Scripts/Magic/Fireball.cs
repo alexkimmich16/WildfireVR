@@ -10,8 +10,6 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class Fireball : MonoBehaviour
 {
     public float Speed;
-    
-    public int Damage = 5;
 
     [HideInInspector]
     public GameObject Explosion, Flash, DestoryAudio;
@@ -55,9 +53,14 @@ public class Fireball : MonoBehaviour
             GameObject.Instantiate(Explosion, this.transform.position, this.transform.rotation);
         if(Flash != null)
             GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
+        //Debug.Log("Tag: " + col.collider.tag);
 
-        if (col.collider.tag == "HitBox" && !GetComponent<PhotonView>().IsMine)
-            NetworkManager.instance.LocalTakeDamage(Damage);
+        if (col.collider.tag == "HitBox")
+        {
+            NetworkManager.instance.LocalTakeDamage(FireballController.instance.Damage);
+            Debug.Log("IsMine");
+        }
+        Debug.Log("IsMine2");
 
         GetComponent<PhotonDestroy>().StartCountdown();
         gameObject.GetComponent<PhotonView>().RPC("OnHit", RpcTarget.All);
@@ -73,6 +76,7 @@ public class Fireball : MonoBehaviour
             FireballSound.setParameterByName("Exit", 1f);
         gameObject.GetComponent<SphereCollider>().enabled = false;
         DecalSpawner.instance.SpawnDecalAtPosition(transform.position, Quaternion.Euler(new Vector3(90,0,0)));
+        Debug.Log("onhit");
     }
 
     [PunRPC]
@@ -101,6 +105,13 @@ public class Fireball : MonoBehaviour
 
         FireballSphere.SetActive(true);
         gameObject.GetComponent<SphereCollider>().enabled = true;
+
+        AmbientVFX.instance.Actives.Add(transform);
+        //add to controller
         //MaxParticleEmit = PS.
+    }
+    private void OnDisable()
+    {
+        AmbientVFX.instance.Actives.Remove(transform);
     }
 }

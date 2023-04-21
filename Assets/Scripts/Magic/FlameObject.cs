@@ -32,4 +32,14 @@ public class FlameObject : MonoBehaviour
             FlameThrowerSound.setParameterByName("Exit", NewState ? 0f : 1f);
         gameObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, NewState);
     }
+
+
+    private void OnEnable()
+    {
+        AmbientVFX.instance.Actives.Add(transform);
+    }
+    private void OnDisable()
+    {
+        AmbientVFX.instance.Actives.Remove(transform);
+    }
 }

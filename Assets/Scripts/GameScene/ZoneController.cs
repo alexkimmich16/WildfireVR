@@ -69,6 +69,14 @@ public class ZoneController : MonoBehaviour
 
         //set magic line to half
         MagicLinePos = 0.5f;
+
+        if (!UseZones)
+        {
+            Zone1Weak.SetActive(false);
+            Zone2Weak.SetActive(false);
+            Zone1Strong.SetActive(false);
+            Zone2Strong.SetActive(false);
+        }
     }
     
     public void SetPosition(GameObject obj, Vector2 pos)
@@ -84,16 +92,6 @@ public class ZoneController : MonoBehaviour
     {
         if (UseZones)
             UpdateZones();
-        else
-        {
-            Zone1Weak.SetActive(false);
-            Zone2Weak.SetActive(false);
-            Zone1Strong.SetActive(false);
-            Zone2Strong.SetActive(false);
-        }
-
-
-
     }
 
     public void UpdateZones()

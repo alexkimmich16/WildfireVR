@@ -5,7 +5,6 @@ using Photon.Pun;
 public class FlameCollision : MonoBehaviour
 {
     public ParticleSystem fire;
-    public int Damage;
     
     public void PushFire(Vector3 PushPos)
     {
@@ -25,13 +24,13 @@ public class FlameCollision : MonoBehaviour
     
     private void OnParticleCollision(GameObject other)
     {
-        if (other.tag == "HitBox")
+        //Debug.Log("Tag: " + other.t);
+        if (other.transform == AIMagicControl.instance.Rig)
         {
-            
             if (BlockController.instance.IsBlocking())
                 PushFire(AIMagicControl.instance.Cam.position);
             else if (!BlockController.instance.IsBlocking())
-                NetworkManager.instance.LocalTakeDamage(Damage);
+                NetworkManager.instance.LocalTakeDamage(FireController.instance.Damage);
         }
     }
     public void UnsubscribeToFire() { OnlineEventManager.FirePushEvent -= PushFire; }

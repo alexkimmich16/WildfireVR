@@ -16,10 +16,13 @@ public class FireballController : SpellClass
 
     public bool IsControlling;
     [Header("Stats")]
+    public int Damage;
     public float MinDistanceToHead;
     public float StopControllingDistance;
 
     public float DirectionLeaniency;
+
+
     
     private GameObject OnlineFireball;
 

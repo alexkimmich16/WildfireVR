@@ -32,8 +32,8 @@ public class DecalCreator : MonoBehaviour
                 Vector3 YAxisView = (collisionEvents[i].normal * Multiplier).normalized;
                 Vector3 ZAxisView = new Vector3(1, 0, 0);
 
-
-                DecalSpawner.instance.SpawnDecalAtPosition(collisionEvents[i].intersection, Quaternion.Euler(new Vector3(90, 0, 0)));
+                Vector3 Position = new Vector3(collisionEvents[i].intersection.x, 0, collisionEvents[i].intersection.z);
+                DecalSpawner.instance.SpawnDecalAtPosition(Position, Quaternion.Euler(new Vector3(90, 0, 0)));
                 //DecalSpawner.instance.SpawnDecalAtPosition(collisionEvents[i].intersection, Quaternion.LookRotation(ZAxisView, YAxisView));
                 //collisionEvents[i].
             }
