@@ -85,7 +85,7 @@ public class FireController : SpellClass
         
 
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Flames);
-        OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, Level), Vector3.zero, Camera.main.transform.rotation);
+        OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, Level), GetPos(side), GetRot(side));
         //OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, Level), Vector3.zero, Camera.main.transform.rotation);
         //OnlineFire[(int)side].name = "OnlineFire";
     }
@@ -143,6 +143,8 @@ public class FireController : SpellClass
                     DamageCooldowns.Remove(DamageCooldowns[i]);
             }
     }
+    public Quaternion GetRot(Side side) { return Quaternion.LookRotation(AIMagicControl.instance.PositionObjectives[(int)side].transform.position - AIMagicControl.instance.Cam.position); }
+    public Vector3 GetPos(Side side) { return AIMagicControl.instance.PositionObjectives[(int)side].position; }
     private void Update()
     {
         for (int i = 0; i < 2; i++)
@@ -160,12 +162,10 @@ public class FireController : SpellClass
 
         for (int i = 0; i < 2; i++)
         {
-            Quaternion Rot = Quaternion.LookRotation(AIMagicControl.instance.PositionObjectives[i].transform.position - AIMagicControl.instance.Cam.position);
-            Vector3 Pos = AIMagicControl.instance.PositionObjectives[i].position;
             if(OnlineFire[i] != null)
             {
-                OnlineFire[i].transform.position = Pos;
-                OnlineFire[i].transform.rotation = Rot;
+                OnlineFire[i].transform.position = GetPos((Side)i);
+                OnlineFire[i].transform.rotation = GetRot((Side)i);
             }
             
         }

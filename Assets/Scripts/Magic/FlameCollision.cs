@@ -25,6 +25,8 @@ public class FlameCollision : MonoBehaviour
     private void OnParticleCollision(GameObject other)
     {
         //Debug.Log("Tag: " + other.t);
+        if (transform.parent.GetComponent<PhotonView>().IsMine)
+            return;
         if (other.transform == AIMagicControl.instance.Rig)
         {
             if (BlockController.instance.IsBlocking())
