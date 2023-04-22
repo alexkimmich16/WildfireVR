@@ -57,11 +57,7 @@ namespace RestrictionSystem
             {Restriction.HandToHeadAngle, HandToHeadAngle},
         };
         public MotionSettings RestrictionSettings;
-        //[Range(0f,1f)]public float CutoffValue = 0.5f;
-        //public Coefficents coefficents;
 
-
-        
         public void TriggerFrameEvents(List<bool> Sides)
         {
             PastFrameRecorder PR = PastFrameRecorder.instance;
