@@ -29,7 +29,7 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
     }
     public override void OnLeftRoom()
     {
-        //base.OnLeftRoom();
+        base.OnLeftRoom();
 
         NetworkManager.instance.PlayerPhotonViews.Remove(SpawnedPlayerPrefab.GetComponent<PhotonView>());
         PhotonNetwork.Destroy(SpawnedPlayerPrefab);

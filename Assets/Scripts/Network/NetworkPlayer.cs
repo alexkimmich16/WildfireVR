@@ -55,12 +55,6 @@ public class NetworkPlayer : MonoBehaviourPun
         if (SceneLoader.instance.CurrentSetting != CurrentGame.Battle)
             return;
         //if()
-        if (transform.position.x < ZoneController.instance.MagicLineWorldPos(ZoneController.instance.MagicLinePos))
-            if (!Contains(ZoneController.instance.Players1, gameObject))
-                ZoneController.instance.Players1.Add(gameObject);
-            else if (transform.position.x > ZoneController.instance.MagicLineWorldPos(ZoneController.instance.MagicLinePos))
-                if (!Contains(ZoneController.instance.Players2, gameObject))
-                    ZoneController.instance.Players2.Add(gameObject);
     }
 
     void MapPosition(Transform target,Transform rigTrans)

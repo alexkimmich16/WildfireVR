@@ -50,6 +50,7 @@ public class InGameManager : SerializedMonoBehaviour
     public bool ShouldDebug;
     public GameState CurrentState;
     #region StateEvents
+
     public delegate void StateEvent();
     public event StateEvent OnStartCountdown;
     public event StateEvent OnGameStart;
@@ -66,10 +67,6 @@ public class InGameManager : SerializedMonoBehaviour
     /// IF THERES NOONE ELSE RESTART THE GAME!!!
     /// </summary>
     /// <returns></returns>
-    public bool CanMove()
-    {
-        return true;
-    }
     public Team BestTeamForSpawn()
     {
         if (GetGameState() != GameState.Waiting)
@@ -82,11 +79,12 @@ public class InGameManager : SerializedMonoBehaviour
         else
             return SideCount(Team.Attack) > SideCount(Team.Defense) ? Team.Defense : Team.Attack;
     }
+    //called by OnlineEventmanager
     public void SetNewGameState(GameState state)
     {
         //for each individually
         CurrentState = state;
-        Debug.Log("Recieve: " + state.ToString());
+        //Debug.Log("Recieve: " + state.ToString());
         //Debug.Log("newstate: " + state);
         Timer = 0f;
         if(state == GameState.Waiting)
@@ -96,13 +94,11 @@ public class InGameManager : SerializedMonoBehaviour
         }
         else if (state == GameState.Warmup)
         {
-            //StartedCountdown = true;
-            Timer = WarmupTime;
             OnStartCountdown?.Invoke();
+            Timer = WarmupTime;
         }
         else if (state == GameState.Active)
         {
-            //StartedCountdown = false;
             OnGameStart?.Invoke();
             Timer = FinishTime;
         }
@@ -117,17 +113,17 @@ public class InGameManager : SerializedMonoBehaviour
             }
             
         }
-        //set odin stat
         SetGameState(state);
-        //NewStateEvent((int)state);
     }
     #endregion
+    public bool Playable()
+    {
+        bool AboveMin = SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers;
+        bool CloseInSize = Mathf.Abs(SideCount(Team.Attack) - SideCount(Team.Defense)) < 2;
+        return AboveMin && CloseInSize;
+    }
     public void ProgressTime()
     {
-        //CurrentState = GetGameState();
-        //Debug.Log("Attack: " + Attack + "  Defense: " + Defense);
-
-
         if (AutoStart && SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers && CurrentState == GameState.Waiting)
             OnlineEventManager.NewState(GameState.Warmup, Result.UnDefined);
 
@@ -162,8 +158,6 @@ public class InGameManager : SerializedMonoBehaviour
     {
         if (!NetworkManager.HasConnected())
             return;
-        //if (!PhotonNetwork.IsMasterClient)
-            //return;
         if (!Initialized())
             return;
 
@@ -188,9 +182,9 @@ public class InGameManager : SerializedMonoBehaviour
     #region SequenceManage
     public void RestartGame()
     {
-        if (GetGameState() != GameState.Finished)
-            return;
-        OnlineEventManager.instance.RestartEvent(); //tell all to restart, master will reset stats
+        if (GetGameState() == GameState.Finished)//only restart on finish
+            OnlineEventManager.instance.RestartEvent();
+        //tell all to restart, master will reset stats
     }
     #endregion
     #region Info
@@ -217,11 +211,6 @@ public class InGameManager : SerializedMonoBehaviour
     
     public bool CanDoMagic()
     {
-        /*
-        if (Initialized() == false || PhotonNetwork.CurrentRoom == null)
-            return false;
-        */
-
         if (AlwaysCast == true)
             return true;
         if (AIMagicControl.instance.AllActive() == false)

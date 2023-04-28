@@ -22,8 +22,6 @@ public class PhotonDestroy : MonoBehaviour
 
         if (GetComponent<PhotonView>() != null && GetComponent<PhotonView>().IsMine)
             DestroyOnline();
-        else if(PhotonNetwork.IsMasterClient)
-            Destroy(gameObject);
     }
     [PunRPC]
     public void DestroyOnline()
@@ -33,18 +31,35 @@ public class PhotonDestroy : MonoBehaviour
     }
     void Update()
     {
+        if(transform.position == Vector3.zero)
+            gameObject.SetActive(false);
+        
         if (!CountdownIsActive)
             return;
         Timer += Time.deltaTime;
         if (Timer > LifeTime)
             DoDestroy();
     }
+    private void OnDisable()
+    {
+        Timer = 0f;
+        CountdownIsActive = false;
+    }
     private void OnEnable()
     {
-        if (StartCountdownOnStart)
-            StartCountdown();
-        CountdownIsActive = false;
-        Timer = 0f;
+        if(StartCountdownOnStart)
+            CountdownIsActive = true;
+    }
+    
+    private void Start()
+    {
+        //gameObject.SetActive(false);
+        /*
+        if (GetComponent<PhotonView>().IsMine)
+        {
+            Debug.Log("ISmine");
+            PhotonNetwork.Destroy(gameObject);
+        }
+            */
     }
 }
-//Int myVariable = ( someBoolValueOrStatementHere ) ? 1 : 0;

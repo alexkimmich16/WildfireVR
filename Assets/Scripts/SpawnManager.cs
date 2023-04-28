@@ -21,7 +21,6 @@ public class SpawnManager : MonoBehaviour
     void Start()
     {
         NetworkManager.OnInitialized += SpawnSequence;
-        DoorManager.OnDoorReset += RespawnToSpawnPoint;
     }
     
     public void JoinAsSpectator()
@@ -37,13 +36,18 @@ public class SpawnManager : MonoBehaviour
         Vector3 SpawnPos = Spawns[(int)team].position;
         AIMagicControl.instance.Rig.position = SpawnPos;
     }
-    
+    public void RespawnToTeam()
+    {
+        Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer);
+        if (team != Team.Spectator)
+            SetNewPosition(team);
+    }
     public void SpawnSequence()
     {
         //Debug.Log("startcorotine");
-        StartCoroutine(SpawnSequenceCorotine());
+        StartCoroutine(FirstSpawnSequence());
     }
-    public IEnumerator SpawnSequenceCorotine()//get appropriate team, spawn, set online
+    public IEnumerator FirstSpawnSequence()//get appropriate team, spawn, set online
     {
         Team team = InGameManager.instance.BestTeamForSpawn();
         SetPlayerTeam(team, PhotonNetwork.LocalPlayer);
@@ -52,10 +56,5 @@ public class SpawnManager : MonoBehaviour
         OnElevatorRespawn?.Invoke();
         //Debug.Log("spawncorotine2");
         ///enable view
-    }
-    //ElevatorOffset + DoorManager.instance.Doors[0].OBJ.position.y
-    public void RespawnToSpawnPoint()
-    {
-        SetNewPosition(GetPlayerTeam(PhotonNetwork.LocalPlayer));
     }
 }

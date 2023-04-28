@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
 using Sirenix.OdinInspector;
+using System.Linq;
 [System.Serializable]
 public class Door
 {
@@ -22,9 +23,6 @@ public class DoorManager : SerializedMonoBehaviour
     public float StoneScrollSpeed;
     public Transform Wall;
 
-    public delegate void DoorReset();
-    public static event DoorReset OnDoorReset;
-
     [Header("States")]
     public SequenceState Sequence;
 
@@ -33,7 +31,6 @@ public class DoorManager : SerializedMonoBehaviour
 
     public float PushForce;
     public float BeforePushTime;
-    private float PushTimer;
 
 
     public float DropAmount;
@@ -49,25 +46,16 @@ public class DoorManager : SerializedMonoBehaviour
 
     public bool Finished;
 
-    public IEnumerator WaitUntilDoorReset()//get appropriate team, spawn, set online
-    {
-        yield return new WaitWhile(() => Doors[0].OBJ.localPosition.y != Doors[0].MinMax.x); //wait for team
-        OnDoorReset();
-        ///enable view
-    }
+    private bool IsCounting;
+
     public void ResetDoors()
     {
-        if (PhotonNetwork.IsMasterClient)
+        for (int i = 0; i < Doors.Count; i++)
         {
-            OnlineEventManager.DoorEvent(SequenceState.Waiting);
-            for (int i = 0; i < Doors.Count; i++)
-            {
-                Doors[i].OBJ.localPosition = new Vector3(0, Doors[i].MinMax.x, 0);
-                //SetGameFloat(DoorNames[i], Doors[i].OBJ.localPosition.y);
-            }
+            Doors[i].OBJ.localPosition = new Vector3(0, Doors[i].MinMax.x, 0);
+            //SetGameFloat(DoorNames[i], Doors[i].OBJ.localPosition.y);
         }
-        
-        StartCoroutine(WaitUntilDoorReset());
+        OnlineEventManager.DoorEvent(SequenceState.Waiting);
     }
 
     public void StartSequence()
@@ -99,7 +87,6 @@ public class DoorManager : SerializedMonoBehaviour
             Doors[DoorNum].OBJ.Translate(Vector3.down * Time.deltaTime * SlamSpeed);
             Completed = Doors[DoorNum].OBJ.localPosition.y < Doors[DoorNum].MinMax.x;
         }
-        
     }
     public void RecieveOnlineDoorState(SequenceState state)
     {
@@ -112,32 +99,30 @@ public class DoorManager : SerializedMonoBehaviour
         else
             AIMagicControl.instance.Rig.GetComponent<Rigidbody>().constraints &= ~RigidbodyConstraints.FreezePositionY;
 
-
-
-
-        if (state == SequenceState.Waiting)
-            OnlineEventManager.DoorEvent(state);
-
-        if(state == SequenceState.Finished)
-            PushTimer = 0f;
+        //if (state == SequenceState.Waiting)
+            //OnlineEventManager.DoorEvent(state);
 
         Sequence = state;
         Finished = false;
         SetGameInt(DoorState, (int)state);
     }
-    public bool AllExitedElevator()
-    {
-        List<GameObject> players = NetworkManager.instance.GetPlayers();
-        for (int i = 0; i < players.Count; i++)
-            if (players[i].transform.position.z > ZOutOfDoor || players[i].transform.position.z < -ZOutOfDoor) // in elevator
-                return false;
-        return true;
-    }
+    public bool AllExitedElevator() { return NetworkManager.instance.GetPlayers().All(x => x.transform.position.z < ZOutOfDoor && x.transform.position.z > -ZOutOfDoor); }
+
     bool PlayerInElevator() { return Camera.main.transform.position.z > ZOutOfDoor || Camera.main.transform.position.z < -ZOutOfDoor; }
 
     private bool Closed1;
     private bool Closed2;
-    
+    public IEnumerator PushOutOfElevator()
+    {
+        yield return new WaitForSeconds(BeforePushTime);
+        while (PlayerInElevator() && InGameManager.instance.CurrentState != GameState.Finished && Sequence == SequenceState.WaitingForAllExit)
+        {
+            Camera.main.transform.parent.parent.position += transform.forward * Time.deltaTime * PushForce * (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Defense ? 1 : -1);
+            yield return new WaitForEndOfFrame();
+        }
+            
+        IsCounting = false;
+    }
     void FixedUpdate()
     {
         if (Initialized() == false)
@@ -153,11 +138,10 @@ public class DoorManager : SerializedMonoBehaviour
             float offset = Time.time * StoneScrollSpeed;
             Wall.GetComponent<Renderer>().materials[0].SetTextureOffset("_BaseMap", new Vector2(offset, 0));
         }
-        if (Sequence == SequenceState.WaitingForAllExit)//Push
+        if (Sequence == SequenceState.WaitingForAllExit && !IsCounting)
         {
-            PushTimer += Time.fixedDeltaTime;
-            if (PlayerInElevator() && PushTimer > BeforePushTime)
-                Camera.main.transform.parent.parent.position += transform.forward * Time.fixedDeltaTime * PushForce * (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Defense ? 1 : -1);
+            StartCoroutine(PushOutOfElevator());
+            IsCounting = true;
         }
 
         //MoveElevator

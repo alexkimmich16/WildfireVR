@@ -91,8 +91,15 @@ public class BillBoardManager : MonoBehaviour
         else if (state == GameState.Active)
         {
             //float FinishTimer = GetGameFloat("FinishTimer");
-            float Left = InGameManager.instance.FinishTime - InGameManager.instance.Timer;
-            DisplayVictory.text = "Started!  Time Left: " + Left;
+            if (DoorManager.instance.Sequence > SequenceState.OpenOutDoor)
+            {
+                DisplayVictory.text = "Started!  Time Left: " + InGameManager.instance.Timer;
+            }
+            else
+            {
+                DisplayVictory.text = "Waiting For Doors To Open";
+            }
+            
         }
 
         else if (state == GameState.Finished)

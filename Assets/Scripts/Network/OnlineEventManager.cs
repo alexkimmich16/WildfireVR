@@ -41,14 +41,14 @@ public class OnlineEventManager : MonoBehaviour
     public static bool ChangingState;
     public static void NewState(GameState state, Result result)
     {
-        Debug.Log("TrySet: " + state.ToString());
+        //Debug.Log("TrySet: " + state.ToString());
 
         if (ChangingState == true || !PhotonNetwork.IsMasterClient)
             return;
 
         ChangingState = true;
 
-
+        Debug.Log("sentGame: " + state.ToString());
         object[] content = state != GameState.Finished ? new object[] { state } : new object[] { state, result };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
         PhotonNetwork.RaiseEvent(NewStateCode, content, raiseEventOptions, SendOptions.SendReliable);
@@ -59,6 +59,7 @@ public class OnlineEventManager : MonoBehaviour
     public static void DoorEvent(SequenceState state)
     {
         //Debug.Log(result.ToString());
+        //Debug.Log("sentDoor: " + state.ToString());
         object[] content = new object[] { (int)state };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
         PhotonNetwork.RaiseEvent(DoorCode, content, raiseEventOptions, SendOptions.SendReliable);
@@ -92,10 +93,12 @@ public class OnlineEventManager : MonoBehaviour
         }
         if(photonEvent.Code == RestartCode)
         {
-            Debug.Log("restart");
+            //Debug.Log("restart");
             //InGameManager.instance.RespawnToSpawnPoint();//respawn
             SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);// reset health
             RestartEventCallback();
+            SpawnManager.instance.RespawnToTeam();// moveback to team
+            
             InGameManager.instance.SetNewGameState(GameState.Waiting);
         }
         if(photonEvent.Code == NewStateCode)
@@ -104,13 +107,13 @@ public class OnlineEventManager : MonoBehaviour
             
             object[] data = (object[])photonEvent.CustomData;
             GameState NewState = (GameState)data[0];
-            Debug.Log("ReceiveState: " + NewState.ToString());
+            //Debug.Log("ReceiveState: " + NewState.ToString());
             InGameManager.instance.SetNewGameState(NewState);
             if (NewState == GameState.Finished)
             {
                 
-                Result result = (Result)data[0];
-                Debug.Log(result.ToString());
+                //Result result = (Result)data[0];
+                //Debug.Log(result.ToString());
             }
             
             //BillBoardManager.instance.SetOutcome(result);

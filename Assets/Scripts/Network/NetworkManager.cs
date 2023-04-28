@@ -61,6 +61,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
+
+        //if able to simpily reset
+        if(InGameManager.instance.CurrentState == GameState.Warmup && !InGameManager.instance.Playable())
+        {
+            //if alters game 
+            InGameManager.instance.CancelStartup();
+        }
+
     }
     void Start()
     {
@@ -113,10 +121,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         void InitializeAllGameStats()
         {
-            //Debug.Log("set");
-            
-            //SetGameFloat(GameWarmupTimer, 0f);
-            //SetGameFloat(GameFinishTimer, 0f);
             SetGameState(GameState.Waiting);
 
             SetGameInt(DoorState, (int)SequenceState.Waiting);
@@ -125,7 +129,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             {
                 Vector3 Local = DoorManager.instance.Doors[i].OBJ.localPosition;
                 DoorManager.instance.Doors[i].OBJ.localPosition = new Vector3(Local.x, DoorManager.instance.Doors[i].MinMax.x, Local.z);
-                //SetGameFloat(DoorNames[i], DoorManager.instance.Doors[i].OBJ.localPosition.y);
             }
 
             if(InGameManager.instance.ShouldDebug)
@@ -147,11 +150,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log("Should have felt: " + Damage + " Damage");
             return;
         }
+        if (GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer) == 0)
+            return;
             
         if (DebugScript == true)
             Debug.Log("TakeDamage: " + Damage);
         int BeforeHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
-        int NewHealth = BeforeHealth - Damage > 0 ? BeforeHealth - Damage : 0;
+        int NewHealth = Mathf.Clamp(BeforeHealth - Damage, 0, 100);
         OnTakeDamage(Damage);
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("TakeDamage", RpcTarget.All);
         SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);

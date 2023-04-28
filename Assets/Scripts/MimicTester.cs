@@ -6,6 +6,8 @@ using static Odin.Net;
 using RestrictionSystem;
 public class MimicTester : MonoBehaviour
 {
+    public static MimicTester instance;
+    void Awake() { instance = this; }
     public float MaxTime;
     public float FireballSpeed;
     public Transform Spawn;
@@ -18,6 +20,8 @@ public class MimicTester : MonoBehaviour
 
     private bool PastState;
     public GameObject Flame;
+
+    public float AccelerateSpeed;
     void Update()
     {
         if (!Active || !Initialized())

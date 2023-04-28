@@ -13,7 +13,6 @@ public class Fireball : MonoBehaviour
 
     [HideInInspector]
     public GameObject Explosion, Flash, DestoryAudio;
-    [HideInInspector]
     public Rigidbody RB;
 
     public bool Absorbing;
@@ -23,11 +22,18 @@ public class Fireball : MonoBehaviour
     private FMOD.Studio.EventInstance FireballSound;
     public GameObject FireballSphere;
 
+    public float TimeActive;
+    public float AccelerateSpeed;
+    public float StartTime;
+
     public void SetAbsorbed(bool State)
     {
         Absorbing = State;
         VFX.SetNewState(false);
     }
+
+    private Vector3 ForwardInfo;
+
     //public float LifeTime = 3;
     void Update()
     {
@@ -39,32 +45,37 @@ public class Fireball : MonoBehaviour
         }
         else
         {
-            if(FireballSphere.activeSelf == true)
-                RB.velocity = transform.forward * Time.deltaTime * Speed;
+            if (FireballSphere.activeSelf)
+            {
+                //transform.position += transform.forward * Time.deltaTime * Speed * Mathf.Pow(TimeActive, AccelerateSpeed);
+                transform.forward = ForwardInfo;
+                RB.velocity = transform.forward * Time.deltaTime * Speed * Mathf.Pow(TimeActive, MimicTester.instance.AccelerateSpeed);
+                TimeActive += Time.deltaTime;
+            }
+
         }
 
     }
-
     void OnCollisionEnter(Collision col)
     {
         if (Absorbing == true)
             return;
-        if(Explosion != null)
+        if (Explosion != null)
             GameObject.Instantiate(Explosion, this.transform.position, this.transform.rotation);
-        if(Flash != null)
+        if (Flash != null)
             GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
         //Debug.Log("Tag: " + col.collider.tag);
 
         if (col.collider.tag == "HitBox")
         {
             NetworkManager.instance.LocalTakeDamage(FireballController.instance.Damage);
-            Debug.Log("IsMine");
+            //Debug.Log("IsMine");
         }
-        Debug.Log("IsMine2");
+        //Debug.Log("IsMine2");
 
         GetComponent<PhotonDestroy>().StartCountdown();
         gameObject.GetComponent<PhotonView>().RPC("OnHit", RpcTarget.All);
-        
+
     }
 
     [PunRPC]
@@ -75,8 +86,8 @@ public class Fireball : MonoBehaviour
         if (SoundManager.instance.CanPlaySound(SoundType.Effect))
             FireballSound.setParameterByName("Exit", 1f);
         gameObject.GetComponent<SphereCollider>().enabled = false;
-        DecalSpawner.instance.SpawnDecalAtPosition(transform.position, Quaternion.Euler(new Vector3(90,0,0)));
-        Debug.Log("onhit");
+        DecalSpawner.instance.SpawnDecalAtPosition(transform.position, Quaternion.Euler(new Vector3(90, 0, 0)));
+        //Debug.Log("onhit");
     }
 
     [PunRPC]
@@ -93,6 +104,8 @@ public class Fireball : MonoBehaviour
     private void OnEnable()
     {
         //Debug.Log("start");
+        ForwardInfo = transform.forward;
+        TimeActive = StartTime;
         VFX.SetNewState(true);//potentail problem
         RB = GetComponent<Rigidbody>();
         if (SoundManager.instance.EnableEffectSounds && SoundManager.instance.EnableSounds)
