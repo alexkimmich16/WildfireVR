@@ -59,7 +59,6 @@ public class FireController : SpellClass
     #region StartStop
     public void StopFire(Side side)
     {
-        
         if (OnlineFire[(int)side] != null)
         {
             OnlineFire[(int)side].GetPhotonView().RPC("SetFlamesOnline", RpcTarget.All, false);
@@ -111,7 +110,7 @@ public class FireController : SpellClass
     public void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level)
     {
         Actives[(int)side] = StartOrFinish;
-        Debug.Log("StartOrFinish: " + StartOrFinish);
+        //Debug.Log("StartOrFinish: " + StartOrFinish);
         //Debug.Log("Set: " + StartOrFinish + "  Time: " + Time.timeSinceLevelLoad);
         //Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
 

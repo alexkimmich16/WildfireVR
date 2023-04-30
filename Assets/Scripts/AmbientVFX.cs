@@ -31,11 +31,9 @@ public class AmbientVFX : MonoBehaviour
     {
         for (int i = 0; i < VFXStorage; i++)
         {
-            vfxGraph.SetVector3("PushPos" + i, i < Actives.Count ? Actives[i].position : FarAway());
+            vfxGraph.SetVector3("PushPos" + i, i < Actives.Count ? Actives[i].position : new Vector3(1000f, 1000f, 1000f));
             vfxGraph.SetVector3("PushDir" + i, i < Actives.Count ? Actives[i].forward : Vector3.zero);
         }
         
     }
-
-    public Vector3 FarAway() { return new Vector3(1000f, 1000f, 1000f); }
 }

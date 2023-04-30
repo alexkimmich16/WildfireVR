@@ -10,10 +10,40 @@ namespace RestrictionSystem
     {
         [ListDrawerSettings(ShowIndexLabels = true)] public List<RegressionInfo> Coefficents;
         [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "Motion")] public List<MotionRestriction> MotionRestrictions;
-        [ListDrawerSettings(ShowIndexLabels = true), Range(0f,1f)] public List<float> CutoffValues;
+        [ListDrawerSettings(ShowIndexLabels = true)] public List<FrameLogicInfo> LogicInfo;
+        [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "Motion")] public List<MotionConditionInfo> MotionConditions;
+    }
+    [System.Serializable]
+    public struct RegressionInfo
+    {
+        public float Intercept;
+        public List<DegreeList> Coefficents;
+
+        [System.Serializable]
+        public struct DegreeList
+        {
+            public List<float> Degrees;
+        }
+        public float[] GetCoefficents()
+        {
+            float[] ReturnValue = new float[(Coefficents.Count * Coefficents[0].Degrees.Count) + 1];
+            ReturnValue[0] = Intercept;
+            for (int i = 0; i < Coefficents.Count; i++)
+                for (int j = 0; j < Coefficents[i].Degrees.Count; j++)
+                    ReturnValue[(i * Coefficents[i].Degrees.Count) + j + 1] = Coefficents[i].Degrees[j];
+
+            return ReturnValue;
+        }
+    }
+    [System.Serializable]
+    public class FrameLogicInfo
+    {
+        public bool FrameLogicEnabled = true;
+        public float MostTime = 0.5f;
+        [Range(0, 100f)] public float Spread = 0f;
+        [Range(0f, 1f)] public float CutoffValue = 0.5f;
     }
 
-    
     [System.Serializable]
     public class MotionRestriction
     {

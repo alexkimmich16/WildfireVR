@@ -5,7 +5,6 @@ using Photon.Pun;
 public class FlameCollision : MonoBehaviour
 {
     public ParticleSystem fire;
-    
     public void PushFire(Vector3 PushPos)
     {
         Debug.Log("pushfire");
@@ -27,7 +26,7 @@ public class FlameCollision : MonoBehaviour
         //Debug.Log("Tag: " + other.t);
         if (transform.parent.GetComponent<PhotonView>().IsMine)
             return;
-        if (other.transform == AIMagicControl.instance.Rig)
+        if (other.transform == AIMagicControl.instance.Rig && NetworkManager.instance.FriendlyFireWorks(transform.parent.GetComponent<PhotonView>().Owner, PhotonNetwork.LocalPlayer))
         {
             if (BlockController.instance.IsBlocking())
                 PushFire(AIMagicControl.instance.Cam.position);
@@ -35,14 +34,12 @@ public class FlameCollision : MonoBehaviour
                 NetworkManager.instance.LocalTakeDamage(FireController.instance.Damage);
         }
     }
-    public void UnsubscribeToFire() { OnlineEventManager.FirePushEvent -= PushFire; }
     private void OnEnable()
     {
         OnlineEventManager.FirePushEvent += PushFire;
-        if (transform.parent != null)
-            if(transform.parent.GetComponent<PhotonDestroy>())
-                transform.parent.GetComponent<PhotonDestroy>().DestoryEvent += UnsubscribeToFire;
-        else if (GetComponent<PhotonDestroy>())
-            GetComponent<PhotonDestroy>().DestoryEvent += UnsubscribeToFire;
+    }
+    private void OnDisable()
+    {
+        OnlineEventManager.FirePushEvent -= PushFire;
     }
 }

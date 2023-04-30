@@ -9,7 +9,7 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
     public static NetworkPlayerSpawner instance;
     void Awake() { instance = this; }
     public GameObject SpawnedPlayerPrefab;
-    
+
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
@@ -32,7 +32,21 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
         base.OnLeftRoom();
 
         NetworkManager.instance.PlayerPhotonViews.Remove(SpawnedPlayerPrefab.GetComponent<PhotonView>());
-        PhotonNetwork.Destroy(SpawnedPlayerPrefab);
+        DestroyIfActive(SpawnedPlayerPrefab);
+
+        DestroyIfActive(FireController.instance.OnlineFire[0]);
+        DestroyIfActive(FireController.instance.OnlineFire[1]);
+
+        DestroyIfActive(FireballController.instance.FireballWarmups[0]);
+        DestroyIfActive(FireballController.instance.FireballWarmups[1]);
+
+        DestroyIfActive(BlockController.instance.BlockVFXObject);
+
+        void DestroyIfActive(GameObject obj)
+        {
+            if (obj != null)
+                PhotonNetwork.Destroy(obj);
+        }
     }
 
     //override void ON

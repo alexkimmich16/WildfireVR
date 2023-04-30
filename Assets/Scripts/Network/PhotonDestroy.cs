@@ -9,19 +9,10 @@ public class PhotonDestroy : MonoBehaviour
     public float LifeTime;
     public float Timer;
     private bool CountdownIsActive;
-    public delegate void OnDestory();
-    public event OnDestory DestoryEvent;
     public bool StartCountdownOnStart = false;
     public void StartCountdown()
     {
         CountdownIsActive = true;
-    }
-    public void DoDestroy()
-    {
-        DestoryEvent?.Invoke();
-
-        if (GetComponent<PhotonView>() != null && GetComponent<PhotonView>().IsMine)
-            DestroyOnline();
     }
     [PunRPC]
     public void DestroyOnline()
@@ -38,7 +29,8 @@ public class PhotonDestroy : MonoBehaviour
             return;
         Timer += Time.deltaTime;
         if (Timer > LifeTime)
-            DoDestroy();
+            if (GetComponent<PhotonView>() != null && GetComponent<PhotonView>().IsMine)
+                DestroyOnline();
     }
     private void OnDisable()
     {
@@ -49,17 +41,5 @@ public class PhotonDestroy : MonoBehaviour
     {
         if(StartCountdownOnStart)
             CountdownIsActive = true;
-    }
-    
-    private void Start()
-    {
-        //gameObject.SetActive(false);
-        /*
-        if (GetComponent<PhotonView>().IsMine)
-        {
-            Debug.Log("ISmine");
-            PhotonNetwork.Destroy(gameObject);
-        }
-            */
     }
 }

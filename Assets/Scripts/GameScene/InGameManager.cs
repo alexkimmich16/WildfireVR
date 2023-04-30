@@ -4,14 +4,9 @@ using UnityEngine;
 using Photon.Pun;
 using static Odin.Net;
 using Sirenix.OdinInspector;
+using System.Linq;
+using Photon.Realtime;
 #region Classes
-[System.Serializable]
-public class SpawnPoint
-{
-    public Transform Point;
-    public int ListNum;
-    public Team team;
-}
 
 public enum Team
 {
@@ -116,41 +111,47 @@ public class InGameManager : SerializedMonoBehaviour
         SetGameState(state);
     }
     #endregion
-    public bool Playable()
+
+    public bool AbleToStartGame()
     {
         bool AboveMin = SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers;
         bool CloseInSize = Mathf.Abs(SideCount(Team.Attack) - SideCount(Team.Defense)) < 2;
         return AboveMin && CloseInSize;
     }
+    public bool ShouldEnd()//if m
+    {
+        bool SideGone = TotalAlive(Team.Attack) == 0 || TotalAlive(Team.Defense) == 0;
+        bool TimerDone = Timer < 0 && CurrentState == GameState.Active;
+
+
+        return SideGone || TimerDone;
+    }
     public void ProgressTime()
     {
         if (AutoStart && SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers && CurrentState == GameState.Waiting)
-            OnlineEventManager.NewState(GameState.Warmup, Result.UnDefined);
+            OnlineEventManager.NewState(GameState.Warmup);
 
-        if (CurrentState == GameState.Waiting && SideCount(Team.Attack) + SideCount(Team.Defense) >= MinPlayers * 2 && BalenceTeams == true)
-            ManageTeam();
+        if (CurrentState == GameState.Waiting && BalenceTeams == true && PhotonNetwork.IsMasterClient)
+            BalanceTeams();
         
         if(CurrentState == GameState.Warmup)
         {
             Timer -= Time.deltaTime;
             if (Timer < 0)
-                OnlineEventManager.NewState(GameState.Active, Result.UnDefined);
+                OnlineEventManager.NewState(GameState.Active);
         }
-        
-        //OnlineEventManager.NewState(GameState.Finished, Result.UnDefined);
-        //else if (state == GameState.Active && (TotalAlive(Team.Attack) == 0 || TotalAlive(Team.Defense) == 0))     
-        else if (CurrentState == GameState.Active)
+ 
+        if (CurrentState == GameState.Active)
         {
-            if((int)DoorManager.instance.Sequence >= (int)SequenceState.WaitingForAllExit)
+            if ((int)DoorManager.instance.Sequence >= (int)SequenceState.WaitingForAllExit)
             {
                 Timer -= Time.deltaTime;
-                //SetGameFloat(GameFinishTimer, Timer);
-                if (TotalAlive(Team.Attack) == 0 || TotalAlive(Team.Defense) == 0 || Timer < 0)
+                if (ShouldEnd())
                 {
-                    OnlineEventManager.NewState(GameState.Finished, Result.UnDefined);
+                    OnlineEventManager.NewState(GameState.Finished);
                 }
             }
-            
+
         }
             
     }
@@ -167,13 +168,13 @@ public class InGameManager : SerializedMonoBehaviour
     public void StartGame()
     {
         if (SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers && GetGameState() == GameState.Waiting)
-            OnlineEventManager.NewState(GameState.Warmup, Result.UnDefined);
+            OnlineEventManager.NewState(GameState.Warmup);
     }
     public void CancelStartup()
     {
         if (GetGameState() == GameState.Warmup)
         {
-            OnlineEventManager.NewState(GameState.Waiting, Result.UnDefined);
+            OnlineEventManager.NewState(GameState.Waiting);
             //SetNewGameState(GameState.Waiting);
             //SetGameFloat(GameWarmupTimer, 0);
         }
@@ -242,61 +243,25 @@ public class InGameManager : SerializedMonoBehaviour
         }
         return AliveNum;
     }
-    /*
-    public void ChangePlayerSide(int PlayerNum)
+    
+    //in future call on special action, button, player left, game end etc
+    public void BalanceTeams()
     {
-        Team oldTeam = GetPlayerTeam(PhotonNetwork.PlayerList[PlayerNum]);
-        Team NewTeam;
-        if (oldTeam == Team.Attack)
-            NewTeam = Team.Defense;
-        else
-            NewTeam = Team.Attack;
+        if (SideCount(Team.Attack) + SideCount(Team.Defense) < MinPlayers * 2)
+            return;
 
-        SetPlayerTeam(NewTeam, PhotonNetwork.PlayerList[PlayerNum]);
+        int Difference = SideCount(Team.Attack) - SideCount(Team.Defense);
+        if (Mathf.Abs(Difference) < 2)
+            return;
 
-        // get old team and uncheck old spawn bool
-        string OldTeamName = oldTeam.ToString();
-        int OldSpawnNum = GetPlayerInt(PlayerSpawn, PhotonNetwork.LocalPlayer);
-        if (OldSpawnNum > 2)
-            OldSpawnNum -= 3;
+        Team TeamToDeduct = Difference > 0 ? Team.Attack : Team.Defense;
+        int TeamDifference = SideCount(Team.Attack) - SideCount(Team.Defense);
 
-        string FinalOldSpawn = OldTeamName + OldSpawnNum;
-        //Debug.Log(FinalOldSpawn);
-        SetGameBool(FinalOldSpawn, false);
+        Player player = PhotonNetwork.PlayerList.FirstOrDefault(player => GetPlayerTeam(player) == TeamToDeduct);
 
-        SpawnPoint SpawnInfo = FindSpawn(NewTeam);
-        SetNewPosition(SpawnInfo);
-
-        ReCalculateTeamSize();
-    }
-    */
-    public void ManageTeam()
-    {
-        /*
-        int BalenceCount = SideCount(Team.Attack) - SideCount(Team.Defense);
-        int ToLook = 3;
-        if (BalenceCount < -1)
-            ToLook = 1;
-        else if (BalenceCount > 1)
-            ToLook = 0;
-        for (int i = 0; i < BalenceCount / 2; i++)
-        {
-            bool Found = false;
-            while (Found == false)
-            {
-                int ToRemove = Random.Range(0, PhotonNetwork.PlayerList.Length);
-
-                //GetPlayerTeam
-                var teamVAR = PhotonNetwork.PlayerList[ToRemove].CustomProperties["TEAM"];
-                Team team = (Team)teamVAR;
-                if (ToLook == (int)team)
-                {
-                    Found = true;
-                    ChangePlayerSide(ToRemove);
-                }
-            }
-        }
-        */
+        //Set new player side
+        Team NewTeam = GetPlayerTeam(player) == Team.Attack ? Team.Defense : Team.Attack;
+        SetPlayerTeam(NewTeam, player);
     }
     #endregion
 

@@ -4,6 +4,8 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 public class SpellClass : SerializedMonoBehaviour
 {
+    //public List<>
+    
     void Start()
     {
         

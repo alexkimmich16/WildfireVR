@@ -7,6 +7,7 @@ using TMPro;
 
 public class AudioController : MonoBehaviour
 {
+    /*
     public static int SingletonNum = 2;
     #region Singleton
     public static AudioController instance;
@@ -52,4 +53,5 @@ public class AudioController : MonoBehaviour
             AudioMixers[i].slider.value = PlayerPrefs.GetFloat(AudioMixers[i].Type);
         }
     }
+    */
 }

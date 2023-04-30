@@ -22,100 +22,96 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   Coefficents:
-  - Intercept: 4.530217
+  - Intercept: -10.980837
     Coefficents:
     - Degrees:
-      - 0.29652247
-      - -0.27896047
-      - 0.012704667
+      - 0.7351929
+      - -0.5438324
+      - 0.033732947
     - Degrees:
-      - 1.3732274
-      - -0.41696912
-      - 0.023491032
+      - 3.7266448
+      - -0.85081667
+      - 0.05445322
     - Degrees:
-      - -17.569815
-      - 63.127953
-      - -76.253296
+      - -22.873188
+      - 102.96425
+      - -129.68623
     - Degrees:
-      - -15.060057
-      - 47.291622
-      - -50.392662
+      - 45.418285
+      - -52.939194
+      - -9.880523
     - Degrees:
-      - 0.12925385
-      - -0.0029960207
-      - 0.0000122612
+      - 0.28274253
+      - -0.005707533
+      - 0.000022539934
     - Degrees:
-      - -0.10141025
-      - 0.00097176153
-      - -0.0000032442113
-  - Intercept: -30.897432
+      - -0.14496997
+      - 0.001178561
+      - -0.000002876597
+  - Intercept: -32.90284
     Coefficents:
     - Degrees:
-      - 0.3687722
-      - -0.00035614552
-      - 0.00006511921
+      - 0.42716548
+      - -0.016906912
+      - 0.004929463
     - Degrees:
-      - -0.6856629
-      - 0.44711262
-      - -0.035276998
+      - 2.8034348
+      - -0.29161027
+      - 0.0072028837
     - Degrees:
-      - -0.004057803
-      - -0.00014860429
-      - 0.00000072823485
+      - -0.006021667
+      - -0.00016916778
+      - 0.00000080538285
     - Degrees:
-      - -17.551077
-      - 46.65287
-      - -33.845654
+      - -22.158262
+      - 59.793797
+      - -45.711296
     - Degrees:
-      - 52.555546
-      - -96.83922
-      - 67.168655
+      - 53.388226
+      - -101.237236
+      - 72.577934
     - Degrees:
-      - -0.032800198
-      - -0.00075667474
-      - 0.0000042886613
+      - -0.034626022
+      - -0.0009321072
+      - 0.0000051073057
     - Degrees:
-      - 0.5969592
-      - -0.0044255583
-      - 0.000011185621
+      - 0.5623474
+      - -0.0041218195
+      - 0.000010448588
     - Degrees:
-      - 0.027535543
-      - -0.0010633577
-      - 0.000004305228
-  - Intercept: -123.98645
+      - 0.06721488
+      - -0.0015918927
+      - 0.0000060239468
+  - Intercept: -26.71133
     Coefficents:
     - Degrees:
-      - 4.4673624
-      - -3.616428
-      - 0.1621524
+      - 4.6991873
+      - -2.7781825
+      - 0.16096652
     - Degrees:
-      - -2.4176996
-      - -0.08312128
-      - 0.010598556
+      - -6.8026824
+      - 0.7619672
+      - -0.014955502
     - Degrees:
-      - 1.517984
-      - -0.008970278
-      - 0.000014692109
+      - 0.6442057
+      - -0.0042921747
+      - 0.000008314879
     - Degrees:
-      - 24.709671
-      - -228.86363
-      - 221.68355
+      - -7.0066385
+      - 177.05981
+      - -678.3554
     - Degrees:
-      - 574.36017
-      - -1732.3268
-      - 1357.1025
+      - 0.04121457
+      - 0.00022885951
+      - -0.0000011682149
     - Degrees:
-      - -0.41114414
-      - 0.0035335284
-      - -0.000010471771
+      - 0.0032956747
+      - 0.0032298055
+      - -0.000030882744
     - Degrees:
-      - 0.2791148
-      - -0.0025577408
-      - 0.0000074471955
-    - Degrees:
-      - -0.12416462
-      - 0.0006935231
-      - -0.000000925
+      - 0.2920992
+      - -0.012843759
+      - 0.000073899966
   MotionRestrictions:
   - Motion: Fireball
     Restrictions:
@@ -339,30 +335,6 @@ MonoBehaviour:
       UseAxisList: 01000000
       ShouldDebug: 0
       Value: 0
-    - Label: HorHandDist
-      Active: 0
-      restriction: 3
-      checkType: 0
-      OtherDirection: {x: 0, y: 0, z: 0}
-      UseLocalHandPos: 0
-      UseLocalHandRot: 0
-      Offset: {x: 0, y: 0, z: 0}
-      Direction: {x: 0, y: 0, z: 0}
-      UseAxisList: 0000000002000000
-      ShouldDebug: 0
-      Value: 0
-    - Label: PalmHeadX
-      Active: 0
-      restriction: 2
-      checkType: 0
-      OtherDirection: {x: 0, y: 0, z: 0}
-      UseLocalHandPos: 0
-      UseLocalHandRot: 0
-      Offset: {x: 0, y: 0, z: 0}
-      Direction: {x: -1, y: 0, z: 0}
-      UseAxisList: 0000000001000000
-      ShouldDebug: 0
-      Value: 0
     - Label: PalmHeadY
       Active: 0
       restriction: 2
@@ -387,7 +359,127 @@ MonoBehaviour:
       UseAxisList: 0200000000000000
       ShouldDebug: 0
       Value: 0
-  CutoffValues:
-  - 0.5
-  - 0.5
-  - 0.5
+    - Label: PalmHeadAll
+      Active: 0
+      restriction: 2
+      checkType: 0
+      OtherDirection: {x: 0, y: 0, z: 0}
+      UseLocalHandPos: 0
+      UseLocalHandRot: 0
+      Offset: {x: 0, y: 0, z: 0}
+      Direction: {x: -1, y: 0, z: 0}
+      UseAxisList: 000000000100000002000000
+      ShouldDebug: 0
+      Value: 0
+  LogicInfo:
+  - FrameLogicEnabled: 1
+    MostTime: 0.23
+    Spread: 10.6
+    CutoffValue: 0.5
+  - FrameLogicEnabled: 1
+    MostTime: 0.28
+    Spread: 0.1
+    CutoffValue: 0.5
+  - FrameLogicEnabled: 1
+    MostTime: 0.81
+    Spread: 100
+    CutoffValue: 0.5
+  MotionConditions:
+  - Motion: fireball
+    conditionType: 0
+    ResetOnMax: 1
+    CastLevel: 1
+    ConditionLists:
+    - StateToActivate: FireWarmup
+      RegressionBased: 0
+      Coefficents:
+      - 0.2
+      CutoffValue: 0
+      SingleConditions:
+      - Label: distance
+        condition: 1
+        restriction:
+          Label: 
+          Active: 0
+          restriction: 0
+          checkType: 0
+          OtherDirection: {x: 0, y: 0, z: 0}
+          UseLocalHandPos: 0
+          UseLocalHandRot: 0
+          Offset: {x: 0, y: 0, z: 0}
+          Direction: {x: 0, y: 0, z: 0}
+          UseAxisList: 
+          ShouldDebug: 0
+          Value: 0
+    - StateToActivate: ShootFireball
+      RegressionBased: 1
+      Coefficents:
+      - -5.070752626532226
+      - 50.288225164601045
+      - -87.27125355434805
+      - 53.6272443045024
+      - -54.267070636939934
+      - 179.10454209340514
+      - -181.1753727749183
+      CutoffValue: 0.2
+      SingleConditions:
+      - Label: dist
+        condition: 1
+        restriction:
+          Label: dist from head
+          Active: 1
+          restriction: 3
+          checkType: 0
+          OtherDirection: {x: 0, y: 0, z: 0}
+          UseLocalHandPos: 0
+          UseLocalHandRot: 0
+          Offset: {x: 0, y: 0, z: 0}
+          Direction: {x: 0, y: 0, z: 0}
+          UseAxisList: 000000000100000002000000
+          ShouldDebug: 0
+          Value: 0.4684659
+      - Label: head dist
+        condition: 2
+        restriction:
+          Label: HeadDist
+          Active: 0
+          restriction: 3
+          checkType: 0
+          OtherDirection: {x: 0, y: 0, z: 0}
+          UseLocalHandPos: 0
+          UseLocalHandRot: 0
+          Offset: {x: 0, y: 0, z: 0}
+          Direction: {x: 0, y: 0, z: 0}
+          UseAxisList: 000000000100000002000000
+          ShouldDebug: 0
+          Value: 0
+  - Motion: flames
+    conditionType: 1
+    ResetOnMax: 0
+    CastLevel: 1
+    ConditionLists:
+    - StateToActivate: 
+      RegressionBased: 0
+      Coefficents: []
+      CutoffValue: 0
+      SingleConditions:
+      - Label: 
+        condition: 4
+        restriction:
+          Label: 
+          Active: 0
+          restriction: 0
+          checkType: 0
+          OtherDirection: {x: 0, y: 0, z: 0}
+          UseLocalHandPos: 0
+          UseLocalHandRot: 0
+          Offset: {x: 0, y: 0, z: 0}
+          Direction: {x: 0, y: 0, z: 0}
+          UseAxisList: 
+          ShouldDebug: 0
+          Value: 0
+  - Motion: Block
+    conditionType: 1
+    ResetOnMax: 0
+    CastLevel: 0
+    ConditionLists: []

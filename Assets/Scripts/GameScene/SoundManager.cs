@@ -4,11 +4,15 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
+using UnityEngine.UI;
+using Photon.Voice.Unity;
+using Sirenix.OdinInspector;
 public enum SoundType
 {
     Elevator = 0,
     Effect = 1,
     Crowd = 2,
+    Voice = 3,
 }
 /*
 [System.Serializable]
@@ -23,34 +27,30 @@ public class Audio
 }
 */
 
-public class SoundManager : MonoBehaviour
+public class SoundManager : SerializedMonoBehaviour
 {
     #region Singleton + classes
     public static SoundManager instance;
     void Awake() { instance = this; }
-    
+
     #endregion
+    [FoldoutGroup("Enable")]
+    public bool EnableSounds, EnableEffectSounds, EnableElevatorSounds, EnableCrowdSounds, EnableVoice;
 
-    private Transform Parent;
-    //public List<Audio> AudioClips = new List<Audio>();
-    public bool EnableSounds;
 
-    public bool EnableEffectSounds;
-    public bool EnableElevatorSounds;
-    public bool EnableCrowdSounds;
+    [FoldoutGroup("References")] private FMOD.Studio.EventInstance CrowdInstance, ElevatorInstance;
+    [FoldoutGroup("References")] public FMODUnity.EventReference CrowdRef, ElevatorRef, FireballRef, FlamesRef, BlockRef;
+    [FoldoutGroup("References")] public FMODUnity.EventReference PlayerLeftRef;
+    [FoldoutGroup("References")] public List<FMODUnity.EventReference> DamageRef;
+    [FoldoutGroup("References")] public List<FMODUnity.EventReference> DeathRef;
     
-    [Header("BasicAmbience")]
-    //public GameObject AmbienceOBJ;
-    //public GameObject RoarOBJ;
-    [Header("References")]
-    private FMOD.Studio.EventInstance CrowdInstance, ElevatorInstance;
-    public FMODUnity.EventReference CrowdRef, ElevatorRef, FireballRef, FlamesRef, BlockRef;
-    public FMODUnity.EventReference PlayerLeftRef;
-    public List<FMODUnity.EventReference> DamageRef;
-    public List<FMODUnity.EventReference> DeathRef;
-    [Header("Misc")]
-    public float TimeAfterRoar;
-    public List<AudioClip> CrowdShouts;
+    //public List<AudioClip> CrowdShouts;
+    //public Slider MasterSlider, EffectSlider, ElevatorSlider, VoiceSlider;
+
+    //public Recorder recorder;
+    [Range(0f, 1f), FoldoutGroup("Volume")] public float MasterVolume, EffectVolume, ElevatorVolume, CrowdVolume, VoiceVolume;
+
+    //public static float PercentToDecibles(float Percent) { return Mathf.Lerp(0f, -80f, Percent / 200f); }
 
     public FMODUnity.EventReference RandomSound(List<FMODUnity.EventReference> SoundList) { return SoundList[Random.Range(0, SoundList.Count)]; }
 
@@ -62,15 +62,26 @@ public class SoundManager : MonoBehaviour
             return EnableSounds && EnableEffectSounds;
         if (type == SoundType.Crowd)
             return EnableSounds && EnableCrowdSounds;
-
+        if (type == SoundType.Voice)
+            return EnableSounds && EnableVoice;
         return true;
     }
-    
+    private void Update()
+    {
+        PlayerPrefs.SetFloat("MasterVolume", MasterVolume);
+        PlayerPrefs.SetFloat("EffectVolume", EffectVolume);
+        PlayerPrefs.SetFloat("ElevatorVolume", ElevatorVolume);
+        PlayerPrefs.SetFloat("CrowdVolume", CrowdVolume);
+        PlayerPrefs.SetFloat("VoiceVolume", VoiceVolume);
+
+        ElevatorInstance.setVolume(ElevatorVolume * MasterVolume);
+    }
     private void OnInitialize()
     {
         if (CanPlaySound(SoundType.Elevator))
         {
             ElevatorInstance = FMODUnity.RuntimeManager.CreateInstance(ElevatorRef);
+            ElevatorInstance.setVolume(ElevatorVolume);
             ElevatorInstance.start();
         }
         if (CanPlaySound(SoundType.Effect))
@@ -82,8 +93,12 @@ public class SoundManager : MonoBehaviour
         {
 
         }
+        if (CanPlaySound(SoundType.Voice))
+        {
+            //recorder.(volume);
+        }
+        //ElevatorSlider.onValueChanged. += OnElevatorVolumeChanged;
     }
-
     public void SetDoorAudio(int State)
     {
         ElevatorInstance.setParameterByName("ElevatorState", State);
@@ -91,22 +106,17 @@ public class SoundManager : MonoBehaviour
     private void Start()
     {
         NetworkManager.OnInitialized += OnInitialize;
+
+        MasterVolume = PlayerPrefs.GetFloat("MasterVolume");
+        EffectVolume = PlayerPrefs.GetFloat("EffectVolume");
+        ElevatorVolume = PlayerPrefs.GetFloat("ElevatorVolume");
+        CrowdVolume = PlayerPrefs.GetFloat("CrowdVolume");
+        VoiceVolume = PlayerPrefs.GetFloat("VoiceVolume");
+
+        
+
         //NetworkManager.Initialize += OnPlayerLeave();
         //NetworkManager.Initialize += OnPlayerDeath();
-    }
-    private void Update()
-    {
-        if (!Initialized())
-            return;
-        
-        
-        //if (CanPlaySound(SoundType.Crowd) && Initialized())
-            //UpdateCrowd();
-
-
-
-        //if (UseElevatorSounds == true)
-            //UpdateElevator();
     }
     public void OnPlayerDeath()
     {

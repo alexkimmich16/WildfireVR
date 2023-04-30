@@ -35,11 +35,10 @@ public class OnlineEventManager : MonoBehaviour
         PhotonNetwork.RaiseEvent(RestartCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
     #endregion
-    
     #region GameStates
     public const byte NewStateCode = 3;
     public static bool ChangingState;
-    public static void NewState(GameState state, Result result)
+    public static void NewState(GameState state)
     {
         //Debug.Log("TrySet: " + state.ToString());
 
@@ -49,7 +48,7 @@ public class OnlineEventManager : MonoBehaviour
         ChangingState = true;
 
         Debug.Log("sentGame: " + state.ToString());
-        object[] content = state != GameState.Finished ? new object[] { state } : new object[] { state, result };
+        object[] content = new object[] { state };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
         PhotonNetwork.RaiseEvent(NewStateCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
@@ -96,7 +95,7 @@ public class OnlineEventManager : MonoBehaviour
             //Debug.Log("restart");
             //InGameManager.instance.RespawnToSpawnPoint();//respawn
             SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);// reset health
-            RestartEventCallback();
+            RestartEventCallback?.Invoke();
             SpawnManager.instance.RespawnToTeam();// moveback to team
             
             InGameManager.instance.SetNewGameState(GameState.Waiting);
@@ -109,12 +108,6 @@ public class OnlineEventManager : MonoBehaviour
             GameState NewState = (GameState)data[0];
             //Debug.Log("ReceiveState: " + NewState.ToString());
             InGameManager.instance.SetNewGameState(NewState);
-            if (NewState == GameState.Finished)
-            {
-                
-                //Result result = (Result)data[0];
-                //Debug.Log(result.ToString());
-            }
             
             //BillBoardManager.instance.SetOutcome(result);
             

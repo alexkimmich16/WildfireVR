@@ -5,7 +5,8 @@ using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
 using ExitGames.Client.Photon;
-public class SpawnManager : MonoBehaviour
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+public class SpawnManager : MonoBehaviourPunCallbacks
 {
     public static SpawnManager instance;
     void Awake() { instance = this; }
@@ -57,4 +58,15 @@ public class SpawnManager : MonoBehaviour
         //Debug.Log("spawncorotine2");
         ///enable view
     }
+
+    //auto respawn player on team switch
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        if (InGameManager.instance.CurrentState != GameState.Waiting)
+            return;
+        
+        if (targetPlayer.IsLocal && changedProps.ContainsKey(PlayerTeam))
+            SetNewPosition((Team)changedProps[PlayerTeam]);
+    }
+
 }

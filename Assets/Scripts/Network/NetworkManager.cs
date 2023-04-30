@@ -46,7 +46,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public float AfterDeathWait;
 
-    public bool CanRecieveDamage = true;
+    public bool OverrideCanRecieveDamage = false;
+
+    public bool AllowFriendlyFire;
+
+    public bool FriendlyFireWorks(Player Other, Player Me)
+    {
+        bool IsFriendlyFire = GetPlayerTeam(Other) == GetPlayerTeam(Me);
+        return (NetworkManager.instance.AllowFriendlyFire && IsFriendlyFire) || !IsFriendlyFire;    
+    }
+
+    public bool CanRecieveDamage()
+    {
+        if (OverrideCanRecieveDamage)
+            return true;
+        if (InGameManager.instance.CurrentState != GameState.Active)
+            return false;
+        if (DoorManager.instance.Sequence <= SequenceState.OpenOutDoor)
+            return false;
+        return true;
+    }
 
     public List<GameObject> GetPlayers()
     {
@@ -61,14 +80,20 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
-
+        if (!PhotonNetwork.IsMasterClient)
+            return;
         //if able to simpily reset
-        if(InGameManager.instance.CurrentState == GameState.Warmup && !InGameManager.instance.Playable())
+        if (InGameManager.instance.CurrentState == GameState.Warmup && !InGameManager.instance.AbleToStartGame())
         {
             //if alters game 
             InGameManager.instance.CancelStartup();
         }
-
+        
+        if (InGameManager.instance.ShouldEnd())
+        {
+            OnlineEventManager.NewState(GameState.Finished);
+        }
+        
     }
     void Start()
     {
@@ -145,7 +170,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     
     public void LocalTakeDamage(int Damage)
     {
-        if (!CanRecieveDamage)
+        if (CanRecieveDamage() == false)
         {
             Debug.Log("Should have felt: " + Damage + " Damage");
             return;

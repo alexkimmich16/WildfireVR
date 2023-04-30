@@ -3,16 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine.VFX;
-using UnityEngine.XR.Interaction.Toolkit;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Fireball : MonoBehaviour
 {
     public float Speed;
 
-    [HideInInspector]
-    public GameObject Explosion, Flash, DestoryAudio;
     public Rigidbody RB;
 
     public bool Absorbing;
@@ -60,13 +55,10 @@ public class Fireball : MonoBehaviour
     {
         if (Absorbing == true)
             return;
-        if (Explosion != null)
-            GameObject.Instantiate(Explosion, this.transform.position, this.transform.rotation);
-        if (Flash != null)
-            GameObject.Instantiate(Flash, this.transform.position, this.transform.rotation);
-        //Debug.Log("Tag: " + col.collider.tag);
+        //if(col.collider.tag == "HitBox")
+            //Debug.Log(NetworkManager.instance.FriendlyFireWorks(GetComponent<PhotonView>().Owner, PhotonNetwork.LocalPlayer));
 
-        if (col.collider.tag == "HitBox")
+        if (col.collider.tag == "HitBox" && NetworkManager.instance.FriendlyFireWorks(GetComponent<PhotonView>().Owner, PhotonNetwork.LocalPlayer))
         {
             NetworkManager.instance.LocalTakeDamage(FireballController.instance.Damage);
             //Debug.Log("IsMine");
@@ -111,6 +103,7 @@ public class Fireball : MonoBehaviour
         if (SoundManager.instance.EnableEffectSounds && SoundManager.instance.EnableSounds)
         {
             FireballSound = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.FireballRef);
+            FireballSound.setVolume(SoundManager.instance.EffectVolume);
             FMODUnity.RuntimeManager.AttachInstanceToGameObject(FireballSound, GetComponent<Transform>());
             FireballSound.start();
             FireballSound.setParameterByName("Exit", 0f);

@@ -47,6 +47,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks
         if (SoundManager.instance.CanPlaySound(SoundType.Effect))
         {
             DeathInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.RandomSound(SoundManager.instance.DeathRef));
+            DeathInstance.setVolume(SoundManager.instance.EffectVolume);
             FMODUnity.RuntimeManager.AttachInstanceToGameObject(DeathInstance, GetComponent<Transform>());
             DeathInstance.start();
         }
@@ -59,6 +60,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks
         if (SoundManager.instance.CanPlaySound(SoundType.Effect))
         {
             TakeDamageInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.RandomSound(SoundManager.instance.DamageRef));
+            TakeDamageInstance.setVolume(SoundManager.instance.EffectVolume);
             FMODUnity.RuntimeManager.AttachInstanceToGameObject(TakeDamageInstance, GetComponent<Transform>());
             TakeDamageInstance.start();
         }
