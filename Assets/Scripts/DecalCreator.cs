@@ -10,7 +10,7 @@ public class DecalCreator : MonoBehaviour
     {
         List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
 
-        for (int i = 0; i < fire.GetCollisionEvents(other, collisionEvents); i += AccuracyGap)
+        for (int i = 0; i < fire.GetCollisionEvents(other, collisionEvents); i += 1)
         {
             if (collisionEvents[i].colliderComponent.gameObject.layer == LayerMask.NameToLayer("Wall"))
             {
