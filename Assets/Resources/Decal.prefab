@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36fd64cd9e4c21047800ee8fe8ed0ae6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LifeTime: 10.06
+  LifeTime: 40
   Timer: 0.01
   StartCountdownOnStart: 1
 --- !u!135 &4956785983379243668
@@ -106,5 +106,5 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.2
+  m_Radius: 0.15
   m_Center: {x: 0, y: 0, z: 0}

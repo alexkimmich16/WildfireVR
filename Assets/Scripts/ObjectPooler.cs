@@ -14,7 +14,7 @@ namespace ObjectPooling
         public int PoolSize;
         public bool ForceRecycle;
         public Queue<GameObject> objectPool;
-        public Queue<GameObject> toDestory;
+        //public Queue<GameObject> toDestory;
     }
     public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
     {
@@ -50,8 +50,6 @@ namespace ObjectPooling
             for (int i = 0; i < Pools.Count; i++)
             {
                 Pools[i].objectPool = new Queue<GameObject>();
-                if (Pools[i].ForceRecycle)
-                    Pools[i].toDestory = new Queue<GameObject>();
                 if (PhotonNetwork.IsMasterClient)
                 {
                     for (int j = 0; j < Pools[i].PoolSize; j++)
@@ -94,9 +92,11 @@ namespace ObjectPooling
                         if (Pools[i].ForceRecycle)
                         {
                             //grab oldest object
-                            GameObject obj = Pools[i].toDestory.Dequeue();
+                            //GameObject obj = Pools[i].toDestory.Dequeue();
 
-                            Pools[i].objectPool.Enqueue(obj);
+                            //Pools[i].objectPool.Enqueue(obj);
+
+                            Debug.LogError("Somehow out of resource: " + Pools[i].PoolObject.name);
                         }
                         else
                         {
@@ -110,9 +110,15 @@ namespace ObjectPooling
 
                     // Dequeue an object from the pool and return it
                     GameObject pooledObject = Pools[i].objectPool.Dequeue();
-
                     if (Pools[i].ForceRecycle)
+                    {
+                        if(pooledObject.activeSelf)
+                            this.Destroy(pooledObject);
+
                         Pools[i].objectPool.Enqueue(pooledObject);
+                    }
+                   
+                        
 
                     pooledObject.transform.position = position;
                     pooledObject.transform.rotation = rotation;

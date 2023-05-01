@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
+using System.Linq;
 public class Fireball : MonoBehaviour
 {
     public float Speed;
@@ -55,16 +56,7 @@ public class Fireball : MonoBehaviour
     {
         if (Absorbing == true)
             return;
-
-        
-
-        if (col.collider.tag != "Shield" && col.collider.tag != "Hitbox")
-        {
-            KillThis();
-            return;
-        }
             
-
         //if fireball hits ME or My shield
 
         //fireball can't be mine
@@ -85,6 +77,20 @@ public class Fireball : MonoBehaviour
             if (NetworkManager.instance.FriendlyFireWorks(FireballOwner, PhotonNetwork.LocalPlayer))
                 NetworkManager.instance.LocalTakeDamage(FireballController.instance.Damage);
         }
+        /*
+        else if(col.collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
+        {
+            Debug.Log("wal");
+            ContactPoint contact = col.contacts.First(x => x.thisCollider.gameObject.layer == LayerMask.NameToLayer("Wall") || x.otherCollider.gameObject.layer == LayerMask.NameToLayer("Wall"));
+            DecalSpawner.instance.SpawnDecalWall(contact.point, contact.normal);
+        }
+        else if (col.collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            DecalSpawner.instance.SpawnDecalGround(col.contacts[0].point);
+        }
+        */
+        //DecalSpawner.instance.SpawnDecalAtPosition(transform.position, Quaternion.Euler(new Vector3(90, 0, 0)));
+
 
         if (col.collider.tag != "Shield")
             KillThis();
@@ -104,7 +110,7 @@ public class Fireball : MonoBehaviour
         if (SoundManager.instance.CanPlaySound(SoundType.Effect))
             FireballSound.setParameterByName("Exit", 1f);
         gameObject.GetComponent<SphereCollider>().enabled = false;
-        DecalSpawner.instance.SpawnDecalAtPosition(transform.position, Quaternion.Euler(new Vector3(90, 0, 0)));
+        
         //Debug.Log("onhit");
     }
 
@@ -126,6 +132,7 @@ public class Fireball : MonoBehaviour
         TimeActive = StartTime;
         VFX.SetNewState(true);//potentail problem
         RB = GetComponent<Rigidbody>();
+
         if (SoundManager.instance.EnableEffectSounds && SoundManager.instance.EnableSounds)
         {
             FireballSound = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.FireballRef);

@@ -54,7 +54,7 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &128683162094914742
@@ -80,7 +80,7 @@ MonoBehaviour:
     - {fileID: 3579771685081960363}
   FireballSphere: {fileID: 2492401939447835445}
   TimeActive: 0
-  AccelerateSpeed: 4.01
+  AccelerateSpeed: 0.99
   StartTime: 0.99
 --- !u!135 &128683162094914728
 SphereCollider:
@@ -13604,7 +13604,7 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 2095095
+      m_Bits: 0
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
@@ -14650,4 +14650,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fire: {fileID: 3579771685081960363}
-  Multiplier: 0
+  AccuracyGap: 3

@@ -35,19 +35,14 @@ public class AIMagicControl : MonoBehaviour
 
     public Transform hitbox;
 
-    private Vector3 CamHitboxDifference;
     public bool AllActive() { return HeadsetActive && LeftHandActive || RightHandActive; }
-    private void Start()
-    {
-        CamHitboxDifference = Cam.position - hitbox.position;
-    }
     private void Update()
     {
         InputDevices.GetDeviceAtXRNode(XRNode.Head).TryGetFeatureValue(CommonUsages.isTracked, out HeadsetActive);
         InputDevices.GetDeviceAtXRNode(XRNode.RightHand).TryGetFeatureValue(CommonUsages.isTracked, out RightHandActive);
         InputDevices.GetDeviceAtXRNode(XRNode.LeftHand).TryGetFeatureValue(CommonUsages.isTracked, out LeftHandActive);
 
-        hitbox.position = Cam.position + CamHitboxDifference;
+        hitbox.position = Cam.position;
 
         if (AllActive())
         {

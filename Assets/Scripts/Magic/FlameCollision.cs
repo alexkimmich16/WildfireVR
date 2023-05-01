@@ -30,12 +30,6 @@ public class FlameCollision : MonoBehaviour
     //if i'm the one being hit
     private void OnParticleCollision(GameObject other)
     {
-        ///hitbox:
-        ///flame can't be mine
-        ///shiled:
-        ///flame can't be mine
-        ///shield has to be mine
-
         if (other.tag != "Shield" && other.tag != "Hitbox")
             return;
 
