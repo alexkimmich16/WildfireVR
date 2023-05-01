@@ -116,8 +116,6 @@ public class BillBoardManager : MonoBehaviour
     public string OnWin(Result result)
     {
         Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer);
-        //Debug.Log(result.ToString());
-        //Debug.Log(team.ToString());
 
         if(team != Team.Spectator)//player
             return GetWinnerText() + " Won so you: " + GetPlayerWonText();

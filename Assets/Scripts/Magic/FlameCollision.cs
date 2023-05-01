@@ -33,20 +33,37 @@ public class FlameCollision : MonoBehaviour
         if (other.tag != "Shield" && other.tag != "Hitbox")
             return;
 
+
         Player FlameOwner = transform.parent.GetComponent<PhotonView>().Owner;
         if (other.tag == "Shield")
         {
-            if (other.GetComponent<PhotonView>().IsMine && FlameOwner != PhotonNetwork.LocalPlayer)//shield=mine and flame=others
-                if (GetPlayerTeam(PhotonNetwork.LocalPlayer) != GetPlayerTeam(FlameOwner))//flame and sheild need to be opposites
+            Debug.Log("Shield1");
+            //shield=mine and flame=others
+            if (other.transform.parent.GetComponent<PhotonView>().IsMine && FlameOwner != PhotonNetwork.LocalPlayer)
+            {
+                //flame and sheild need to be opposites    
+                Debug.Log("Shield2");
+                if (GetPlayerTeam(PhotonNetwork.LocalPlayer) != GetPlayerTeam(FlameOwner))
+                {
+                    Debug.Log("Shield3");
                     OnlineEventManager.PushFireOnlineEvent(AIMagicControl.instance.Cam.position);
+                }
+            }
+            
+                    
         }
         else if (other.tag == "Hitbox")
         {
+            Debug.Log("Hitbox1");
             if (FlameOwner.IsLocal)//self damage
                 return;
-
+            Debug.Log("Hitbox2");
             if (NetworkManager.instance.FriendlyFireWorks(FlameOwner, PhotonNetwork.LocalPlayer))
+            {
+                Debug.Log("Hitbox3");
                 NetworkManager.instance.LocalTakeDamage(FireController.instance.Damage);
+            }
+                
         }
 
     }
