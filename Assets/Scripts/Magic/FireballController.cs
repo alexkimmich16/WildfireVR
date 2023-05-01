@@ -9,6 +9,13 @@ public enum ControlType
     Constant = 1,
     Directional = 2,
 }
+public enum SpawnDirection
+{
+    HeadForward = 0,
+    HandForward = 1,
+    HandVelocity = 2,
+}
+
 public class FireballController : SpellClass
 {
     public static FireballController instance;
@@ -28,6 +35,7 @@ public class FireballController : SpellClass
 
     public float ControlForce;
     public ControlType controlType;
+    public SpawnDirection spawnDir;
 
 
 
@@ -51,20 +59,34 @@ public class FireballController : SpellClass
 
     public Quaternion SpawnRotation(Side side)
     {
-        SingleInfo StartFrame = PastFrameRecorder.instance.PastFrame(side);
-        SingleInfo EndFrame = PastFrameRecorder.instance.GetControllerInfo(side);
+        if(spawnDir == SpawnDirection.HeadForward)
+        {
+            SingleInfo StartFrame = PastFrameRecorder.instance.PastFrame(side);
+            SingleInfo EndFrame = PastFrameRecorder.instance.GetControllerInfo(side);
 
-        Vector3 HandDirection = (StartFrame.HandPos - EndFrame.HandPos).normalized;
-        float HandDirectionValue = ToDegrees(new Vector2(HandDirection.x, HandDirection.z));
+            Vector3 HandDirection = (StartFrame.HandPos - EndFrame.HandPos).normalized;
+            float HandDirectionValue = ToDegrees(new Vector2(HandDirection.x, HandDirection.z));
 
-        float CamDirectionValue = AIMagicControl.instance.Cam.eulerAngles.y;
-        float Both = HandDirectionValue - CamDirectionValue;
-        Both = Both - 180;
-        Vector2 OutPutDir = ToVector(Both);
-        Vector3 RealOutput = new Vector3(OutPutDir.x * 360f, 0, OutPutDir.y * 360f);
-        return Quaternion.LookRotation(RealOutput);
+            float CamDirectionValue = AIMagicControl.instance.Cam.eulerAngles.y;
+            float Both = HandDirectionValue - CamDirectionValue;
+            Both = Both - 180;
+            Vector2 OutPutDir = ToVector(Both);
+            Vector3 RealOutput = new Vector3(OutPutDir.x * 360f, 0, OutPutDir.y * 360f);
+            return Quaternion.LookRotation(RealOutput);
+        }
+        else
+        {
+            Vector3 RealOutput = new Vector3(AIMagicControl.instance.Hands[(int)side].transform.forward.x, 0f, AIMagicControl.instance.Hands[(int)side].transform.forward.z);
+            
+            return Quaternion.LookRotation(RealOutput);
+        }
+        //spawnDir == SpawnDirection.HeadForward || spawnDir == SpawnDirection.HandVelocity
     }
-
+    public Vector3 SpawnPosition(Side side)
+    {
+        Vector3 Pos = new Vector3(AIMagicControl.instance.Spawn[(int)side].position.x, AIMagicControl.instance.Cam.position.y, AIMagicControl.instance.Spawn[(int)side].position.z);
+        return Pos;
+    }
     public void RecieveNewState(Side side, bool State, int Index, int Level)
     {
         //Debug.Log("State: " + State + "  Index: " + Index);
@@ -104,12 +126,12 @@ public class FireballController : SpellClass
         //CurrentSpell spell = (AIMagicControl.instance.HoldingFire()) ? CurrentSpell.Fireball : CurrentSpell.Fireball;
         //if (AIMagicControl.instance.HoldingFire())
         //AIMagicControl.instance.ResetHoldingFires();
-        OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, Level), AIMagicControl.instance.Spawn[(int)side].position, SpawnRotation(side));
+        OnlineFireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, Level), SpawnPosition(side), SpawnRotation(side));
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Fireball);
     }
 
 
-    public float ToDegrees(Vector2 value) { return Mathf.Atan2(value.y, value.x) * 180 / Mathf.PI; }
+    public float ToDegrees(Vector2 value) { return Mathf.Atan2(value.y, value.x) * 180f / Mathf.PI; }
     public Vector2 ToVector(float value) { return new Vector2(Mathf.Cos(value * Mathf.PI / 180f), Mathf.Sin(value * Mathf.PI / 180f)); }
     public void InitializeWarmups()
     {
@@ -123,7 +145,11 @@ public class FireballController : SpellClass
 
     private void Update()
     {
-        if(FireballWarmups.Count == 2)
+        //Debug.DrawRay(AIMagicControl.instance.Hands[0].transform.position, AIMagicControl.instance.Hands[0].transform.forward, Color.red);
+        //Debug.DrawRay(AIMagicControl.instance.Spawn[0].transform.position, AIMagicControl.instance.Spawn[0].transform.forward, Color.blue);
+        //Debug.DrawRay(AIMagicControl.instance.PositionObjectives[0].transform.position, AIMagicControl.instance.PositionObjectives[0].transform.forward, Color.green);
+
+        if (FireballWarmups.Count == 2)
         {
             for (int i = 0; i < 2; i++)
             {

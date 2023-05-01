@@ -32,7 +32,6 @@ public class BlockController : SpellClass
         if (IsBlocking() != LastFrameBlocking)//onchangestate
         {
             BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, IsBlocking());
-            SetPlayerBool(Blocking, IsBlocking(), PhotonNetwork.LocalPlayer);
         }
         LastFrameBlocking = IsBlocking();
     }
@@ -54,8 +53,5 @@ public class BlockController : SpellClass
         Vector3 Pos = AIMagicControl.instance.Cam.position + (ForwardRot * FlameDistanceFromHead);
         BlockVFXObject.transform.position = Pos;
         BlockVFXObject.transform.rotation = AIMagicControl.instance.Cam.rotation;
-
-        
-        
     }
 }

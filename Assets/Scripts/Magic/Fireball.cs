@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-
+using static Odin.Net;
 public class Fireball : MonoBehaviour
 {
     public float Speed;
@@ -32,7 +32,7 @@ public class Fireball : MonoBehaviour
     //public float LifeTime = 3;
     void Update()
     {
-        if (GetComponent<PhotonView>().IsMine == false)
+        if (!GetComponent<PhotonView>().IsMine)
             return;
         if (Absorbing == true)
         {
@@ -55,19 +55,45 @@ public class Fireball : MonoBehaviour
     {
         if (Absorbing == true)
             return;
-        //if(col.collider.tag == "HitBox")
-            //Debug.Log(NetworkManager.instance.FriendlyFireWorks(GetComponent<PhotonView>().Owner, PhotonNetwork.LocalPlayer));
 
-        if (col.collider.tag == "HitBox" && NetworkManager.instance.FriendlyFireWorks(GetComponent<PhotonView>().Owner, PhotonNetwork.LocalPlayer))
+        
+
+        if (col.collider.tag != "Shield" && col.collider.tag != "Hitbox")
         {
-            NetworkManager.instance.LocalTakeDamage(FireballController.instance.Damage);
-            //Debug.Log("IsMine");
+            KillThis();
+            return;
         }
-        //Debug.Log("IsMine2");
+            
 
-        GetComponent<PhotonDestroy>().StartCountdown();
-        gameObject.GetComponent<PhotonView>().RPC("OnHit", RpcTarget.All);
+        //if fireball hits ME or My shield
 
+        //fireball can't be mine
+        //shield has to be mine
+
+        Player FireballOwner = GetComponent<PhotonView>().Owner;
+        if (col.collider.tag == "Shield")
+        {
+            if (!FireballOwner.IsLocal && col.gameObject.GetComponent<PhotonView>().IsMine)//fireball isn't mine && shield is mine
+                if(GetPlayerTeam(PhotonNetwork.LocalPlayer) != GetPlayerTeam(FireballOwner))
+                    Bounce(col.contacts[0].normal);
+        }
+        else if (col.collider.tag == "Hitbox")
+        {
+            if (FireballOwner.IsLocal)//no self damage
+                return;
+
+            if (NetworkManager.instance.FriendlyFireWorks(FireballOwner, PhotonNetwork.LocalPlayer))
+                NetworkManager.instance.LocalTakeDamage(FireballController.instance.Damage);
+        }
+
+        if (col.collider.tag != "Shield")
+            KillThis();
+
+        void KillThis()
+        {
+            GetComponent<PhotonDestroy>().StartCountdown();
+            gameObject.GetComponent<PhotonView>().RPC("OnHit", RpcTarget.All);
+        }
     }
 
     [PunRPC]

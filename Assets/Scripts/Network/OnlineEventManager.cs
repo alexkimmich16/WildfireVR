@@ -10,8 +10,8 @@ public class OnlineEventManager : MonoBehaviour
     void Awake() { instance = this; }
     public static OnlineEventManager instance;
 
-    #region Fire
-    public float FireForce;
+    #region DeflectFire
+    
     public delegate void FirePush(Vector3 Pos);
     public static event FirePush FirePushEvent;
     public const byte PushFire = 1;
@@ -83,11 +83,10 @@ public class OnlineEventManager : MonoBehaviour
     {
         if (photonEvent.Code == PushFire)
         {
-            Debug.Log("push");
+            Debug.Log("Push Fire");
             object[] data = (object[])photonEvent.CustomData;
             Vector3 pos = (Vector3)data[0];
-            if(FirePushEvent != null)
-                FirePushEvent(pos);
+            FirePushEvent?.Invoke(pos);
             //FireController.TriggerFirePushEvent(pos);
         }
         if(photonEvent.Code == RestartCode)

@@ -33,26 +33,31 @@ public class AIMagicControl : MonoBehaviour
     public List<Material> Materials;
     public List<SkinnedMeshRenderer> handsToChange;
 
+    public Transform hitbox;
+
+    private Vector3 CamHitboxDifference;
     public bool AllActive() { return HeadsetActive && LeftHandActive || RightHandActive; }
-    
+    private void Start()
+    {
+        CamHitboxDifference = Cam.position - hitbox.position;
+    }
     private void Update()
     {
         InputDevices.GetDeviceAtXRNode(XRNode.Head).TryGetFeatureValue(CommonUsages.isTracked, out HeadsetActive);
         InputDevices.GetDeviceAtXRNode(XRNode.RightHand).TryGetFeatureValue(CommonUsages.isTracked, out RightHandActive);
         InputDevices.GetDeviceAtXRNode(XRNode.LeftHand).TryGetFeatureValue(CommonUsages.isTracked, out LeftHandActive);
 
+        hitbox.position = Cam.position + CamHitboxDifference;
+
         if (AllActive())
         {
-            
             PastFrameRecorder PR = PastFrameRecorder.instance;
 
             //List<CurrentLearn> TrueMotions = RestrictionManager.instance.AllWorkingMotions(PR.PastFrame(Side.right), PR.GetControllerInfo(Side.right));
             //CurrentLearn DisplayMotion = TrueMotions.Count == 0 ? CurrentLearn.Nothing : TrueMotions[0];
+
             for (int i = 0; i < handsToChange.Count; i++)
-            {
                 handsToChange[i].material = Materials[GetMatTestNum((Side)i)]; //set hand
-            }
-                
 
             int GetMatTestNum(Side side)
             {
@@ -69,12 +74,8 @@ public class AIMagicControl : MonoBehaviour
 
             }
 
+            
         }
-        
-
-        
-
-        //PastFrameRecorder.instance.UseSides = new List<bool>() { RightHandActive, LeftHandActive };
 
         if (!HeadsetActive)
             Set(Cam, IdlePositions[0]);

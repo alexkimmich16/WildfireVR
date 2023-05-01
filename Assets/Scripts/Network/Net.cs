@@ -26,8 +26,6 @@ namespace Odin
 
         public static string DoorState = "DoorState";
 
-        public static string Blocking = "Blocking";
-
         public static bool ShouldDebug = false;
 
         public static bool Alive(Player player)

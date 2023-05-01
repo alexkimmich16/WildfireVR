@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
+using static Odin.Net;
 public class FlameCollision : MonoBehaviour
 {
     public ParticleSystem fire;
@@ -16,24 +18,45 @@ public class FlameCollision : MonoBehaviour
         {
             Vector3 Pos = m_Particles[i].position;
             Vector3 Dir = (Pos - PushPos).normalized;
-            m_Particles[i].velocity = Dir * (OnlineEventManager.instance.FireForce);
+            float Distance = Vector3.Distance(Dir, PushPos);
+            m_Particles[i].velocity = Dir * FireController.instance.DeflectForce * (Mathf.Pow(Distance, FireController.instance.DeflectDistanceForce));
         }
         fire.SetParticles(m_Particles, numParticlesAlive);
     }
     
+
+    
+    //but collider is local
+    //if i'm the one being hit
     private void OnParticleCollision(GameObject other)
     {
-        //Debug.Log("Tag: " + other.t);
-        if (transform.parent.GetComponent<PhotonView>().IsMine)
+        ///hitbox:
+        ///flame can't be mine
+        ///shiled:
+        ///flame can't be mine
+        ///shield has to be mine
+
+        if (other.tag != "Shield" && other.tag != "Hitbox")
             return;
-        if (other.transform == AIMagicControl.instance.Rig && NetworkManager.instance.FriendlyFireWorks(transform.parent.GetComponent<PhotonView>().Owner, PhotonNetwork.LocalPlayer))
+
+        Player FlameOwner = transform.parent.GetComponent<PhotonView>().Owner;
+        if (other.tag == "Shield")
         {
-            if (BlockController.instance.IsBlocking())
-                PushFire(AIMagicControl.instance.Cam.position);
-            else if (!BlockController.instance.IsBlocking())
+            if (other.GetComponent<PhotonView>().IsMine && FlameOwner != PhotonNetwork.LocalPlayer)//shield=mine and flame=others
+                if (GetPlayerTeam(PhotonNetwork.LocalPlayer) != GetPlayerTeam(FlameOwner))//flame and sheild need to be opposites
+                    OnlineEventManager.PushFireOnlineEvent(AIMagicControl.instance.Cam.position);
+        }
+        else if (other.tag == "Hitbox")
+        {
+            if (FlameOwner.IsLocal)//self damage
+                return;
+
+            if (NetworkManager.instance.FriendlyFireWorks(FlameOwner, PhotonNetwork.LocalPlayer))
                 NetworkManager.instance.LocalTakeDamage(FireController.instance.Damage);
         }
+
     }
+
     private void OnEnable()
     {
         OnlineEventManager.FirePushEvent += PushFire;

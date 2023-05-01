@@ -41,9 +41,10 @@ public class FireController : SpellClass
     public List<Transform> Targets = new List<Transform>();
     public List<CooldownInfo> DamageCooldowns = new List<CooldownInfo>();
 
+    [Header("Deflect")]
+    public float DeflectForce;
+    public float DeflectDistanceForce;
     //public List<FlameObject> ActiveFires;
-
-    public float BlockForce;
 
     public float TimeDelay = 0.3f;
     private List<float> DelayTimer;
