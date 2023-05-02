@@ -9085,7 +9085,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &868629501
 Transform:
   m_ObjectHideFlags: 0
@@ -9094,7 +9094,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 868629499}
   m_LocalRotation: {x: -0, y: 0.55012226, z: -0, w: 0.83508414}
-  m_LocalPosition: {x: -0.52, y: 1.6778691, z: 22.62}
+  m_LocalPosition: {x: -0.52, y: 8.54, z: 22.62}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9126,13 +9126,13 @@ MonoBehaviour:
   MaxTime: 2
   FireballSpeed: 600
   Spawn: {fileID: 1761682216}
-  Active: 1
-  LookAtPlayer: 1
+  Active: 0
+  LookAtPlayer: 0
   Motion: 2
   Flame: {fileID: 0}
   AccelerateSpeed: 1.19
   CanSpawn: 0
-  OnlineFunction: 1
+  OnlineFunction: 0
   SpawnIfMaster: 0
   LookAtMaster: 1
 --- !u!1 &872711500
@@ -18947,7 +18947,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1761682216
 Transform:
   m_ObjectHideFlags: 0
