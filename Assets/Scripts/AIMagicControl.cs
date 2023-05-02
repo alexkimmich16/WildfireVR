@@ -34,7 +34,15 @@ public class AIMagicControl : MonoBehaviour
     public List<SkinnedMeshRenderer> handsToChange;
 
     public Transform hitbox;
+    public float HitboxBackDist = 0.5f;
 
+    public bool AllowIdlePositions;
+
+    private Vector3 Offset;
+    private void Start()
+    {
+        Offset = hitbox.position - Cam.position;
+    }
     public bool AllActive() { return HeadsetActive && LeftHandActive || RightHandActive; }
     private void Update()
     {
@@ -42,7 +50,11 @@ public class AIMagicControl : MonoBehaviour
         InputDevices.GetDeviceAtXRNode(XRNode.RightHand).TryGetFeatureValue(CommonUsages.isTracked, out RightHandActive);
         InputDevices.GetDeviceAtXRNode(XRNode.LeftHand).TryGetFeatureValue(CommonUsages.isTracked, out LeftHandActive);
 
-        hitbox.position = Cam.position;
+        
+        //Vector3 AdjustedOffset = Offset * Quaternion.LookRotation(new Vector3(Cam.forward.x, 0f, Cam.forward.z));
+        //Vector3 RealPos = 
+        hitbox.position = Cam.position - Cam.forward * HitboxBackDist;
+
 
         if (AllActive())
         {
@@ -71,13 +83,16 @@ public class AIMagicControl : MonoBehaviour
 
             
         }
-
-        if (!HeadsetActive)
-            Set(Cam, IdlePositions[0]);
-        if (!RightHandActive)
-            Set(Hands[0], IdlePositions[1]);
-        if (!LeftHandActive)
-            Set(Hands[1], IdlePositions[2]);
+        if (AllowIdlePositions)
+        {
+            if (!HeadsetActive)
+                Set(Cam, IdlePositions[0]);
+            if (!RightHandActive)
+                Set(Hands[0], IdlePositions[1]);
+            if (!LeftHandActive)
+                Set(Hands[1], IdlePositions[2]);
+        }
+        
 
         void Set(Transform ToSet, Transform Reference)
         {

@@ -50,7 +50,7 @@ MeshCollider:
   m_GameObject: {fileID: 4717908099351886365}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
@@ -9849,6 +9849,7 @@ GameObject:
   - component: {fileID: 688230770895388257}
   - component: {fileID: 3438423443841482334}
   - component: {fileID: 151129638119597805}
+  - component: {fileID: 6030531950295228174}
   m_Layer: 9
   m_Name: OnlineBlock
   m_TagString: Untagged
@@ -9930,6 +9931,19 @@ MonoBehaviour:
     VFXGraph: {fileID: 0}
     ParticalSystem:
     - {fileID: 8978893155458580480}
+--- !u!114 &6030531950295228174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8978893156680012180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f044a06889cc4942826b214055881a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collider: {fileID: 4865595947093234318}
 --- !u!1 &8978893156711797274
 GameObject:
   m_ObjectHideFlags: 0

@@ -56,24 +56,36 @@ public class Fireball : MonoBehaviour
     {
         if (Absorbing == true)
             return;
-            
+
         //if fireball hits ME or My shield
 
         //fireball can't be mine
         //shield has to be mine
-
+        //Debug.Log("col: " + col.collider.tag);
         Player FireballOwner = GetComponent<PhotonView>().Owner;
         if (col.collider.tag == "Shield")
         {
-            if (!FireballOwner.IsLocal && col.gameObject.GetComponent<PhotonView>().IsMine)//fireball isn't mine && shield is mine
-                if(GetPlayerTeam(PhotonNetwork.LocalPlayer) != GetPlayerTeam(FireballOwner))
-                    Bounce(col.contacts[0].normal);
+            //Debug.Log("FireballOwner.IsLocal: " + FireballOwner.IsLocal);
+            //Debug.Log("S1");
+            if (FireballOwner.IsLocal && !col.transform.parent.GetComponent<PhotonView>().IsMine)
+            {
+                //Debug.Log("S2");
+                //fireball isn't mine && shield is mine
+                if (GetPlayerTeam(PhotonNetwork.LocalPlayer) != GetPlayerTeam(col.transform.parent.GetComponent<PhotonView>().Owner))
+                {
+                    //Debug.Log("S3");
+                    Bounce(col.transform.parent.forward);
+                }
+                    
+            }
+            
         }
-        else if (col.collider.tag == "Hitbox")
+        else if (col.collider.tag == "HitBox")
         {
+            //Debug.Log("HB1");
             if (FireballOwner.IsLocal)//no self damage
                 return;
-
+            //Debug.Log("HB2");
             if (NetworkManager.instance.FriendlyFireWorks(FireballOwner, PhotonNetwork.LocalPlayer))
                 NetworkManager.instance.LocalTakeDamage(FireballController.instance.Damage);
         }
@@ -92,7 +104,7 @@ public class Fireball : MonoBehaviour
         //DecalSpawner.instance.SpawnDecalAtPosition(transform.position, Quaternion.Euler(new Vector3(90, 0, 0)));
 
 
-        if (col.collider.tag != "Shield")
+        if (col.collider.gameObject.tag != "Shield")
             KillThis();
 
         void KillThis()
@@ -119,10 +131,14 @@ public class Fireball : MonoBehaviour
     {
         Speed = speed;
     }
-    public void Bounce(Vector3 collisionNormal)
+    public void Bounce(Vector3 New)
     {
-        Vector3 New = Vector3.Reflect(transform.forward, collisionNormal);
-        transform.eulerAngles = New;
+        //Vector3 New = Vector3.Reflect(transform.forward, collisionNormal);
+
+        //transform.eulerAngles = New;
+
+
+        ForwardInfo = New;
         //rb.velocity = direction * Mathf.Max(speed, minVelocity);
     }
     private void OnEnable()

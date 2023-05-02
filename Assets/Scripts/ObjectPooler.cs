@@ -102,7 +102,7 @@ namespace ObjectPooling
                         {
                             //GameObject obj = PhotonNetwork.Instantiate(prefabId, position, rotation);
                             GameObject obj = RefPool.Instantiate(prefabId, position, rotation);
-                            obj.SetActive(false);
+                            //obj.SetActive(false);
                             Pools[i].objectPool.Enqueue(obj);
                         }
 
@@ -110,6 +110,7 @@ namespace ObjectPooling
 
                     // Dequeue an object from the pool and return it
                     GameObject pooledObject = Pools[i].objectPool.Dequeue();
+                    
                     if (Pools[i].ForceRecycle)
                     {
                         if(pooledObject.activeSelf)
@@ -117,14 +118,18 @@ namespace ObjectPooling
 
                         Pools[i].objectPool.Enqueue(pooledObject);
                     }
-                   
-                        
+                    
+
 
                     pooledObject.transform.position = position;
                     pooledObject.transform.rotation = rotation;
 
                     pooledObject.SetActive(true);
+                    if(pooledObject.GetComponent<PhotonView>().OwnershipTransfer != OwnershipOption.Fixed && !pooledObject.GetComponent<PhotonView>().IsMine)
+                        pooledObject.GetComponent<PhotonView>().RequestOwnership();
 
+                    //pooledObject.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer);
+                    //
                     return pooledObject;
                 }
             }

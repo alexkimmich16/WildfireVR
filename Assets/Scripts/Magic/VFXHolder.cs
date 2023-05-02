@@ -30,14 +30,11 @@ public class VFXHolder
         }
         else if (ParticalSystem.Count != 0)
         {
-            if (NewState == true)
-                for (int i = 0; i < ParticalSystem.Count; i++)
+            for (int i = 0; i < ParticalSystem.Count; i++)
+                if (NewState == true)
                     ParticalSystem[i].Play();
-            else if (NewState == false)
-            {
-                for (int i = 0; i < ParticalSystem.Count; i++)
+                else
                     ParticalSystem[i].Stop();
-            }
         }
     }
 }

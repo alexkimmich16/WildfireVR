@@ -420,8 +420,12 @@ namespace RootMotion.FinalIK
                 if (LOD < 1 && positionWeight > 0f)
                 {
                     // Fix upperarm twist relative to bend normal
-                    Quaternion space = Quaternion.LookRotation(upperArm.solverRotation * upperArmBendAxis, forearm.solverPosition - upperArm.solverPosition);
+                    
+                    ///EDITED THIS!!
+                    ///
+                    Quaternion space = upperArmBendAxis != Vector3.zero ? Quaternion.LookRotation(upperArm.solverRotation * upperArmBendAxis, forearm.solverPosition - upperArm.solverPosition) : new Quaternion(0f, 0f, 0f, 1f);
                     Vector3 upperArmTwist = Quaternion.Inverse(space) * bendNormal;
+                    
                     float angle = Mathf.Atan2(upperArmTwist.x, upperArmTwist.z) * Mathf.Rad2Deg;
                     upperArm.solverRotation = Quaternion.AngleAxis(angle * positionWeight, forearm.solverPosition - upperArm.solverPosition) * upperArm.solverRotation;
 

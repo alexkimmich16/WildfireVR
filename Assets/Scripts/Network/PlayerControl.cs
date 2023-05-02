@@ -31,9 +31,6 @@ public class PlayerControl : MonoBehaviourPunCallbacks
         GetComponent<NetworkPlayer>().Dead = false;
         myRagdoll.DisableRagdoll();
     }
-    [PunRPC]
-    public void SetEyes(Eyes eyes) { GetComponent<MultiplayerEyes>().ChangeEyes(eyes); }
-
 
 
     [PunRPC]

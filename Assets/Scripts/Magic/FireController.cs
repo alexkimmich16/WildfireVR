@@ -7,6 +7,7 @@ using static Odin.Net;
 using Photon.Pun;
 using Photon.Realtime;
 using RestrictionSystem;
+using System.Linq;
 public enum FireDetectType
 {
     Colliders = 0,
@@ -49,13 +50,8 @@ public class FireController : SpellClass
     public float TimeDelay = 0.3f;
     private List<float> DelayTimer;
     public List<bool> IsCountingDelay;
-    public bool IsCooldown(Transform hitAttempt)
-    {
-        for (int i = 0; i < DamageCooldowns.Count; i++)
-            if (DamageCooldowns[i].Target == hitAttempt)
-                return true;
-        return false;
-    }
+
+    public bool IsCooldown(Transform hitAttempt) { return DamageCooldowns.Any(x => x.Target == hitAttempt); }
 
     #region StartStop
     public void StopFire(Side side)
@@ -66,7 +62,6 @@ public class FireController : SpellClass
             OnlineFire[(int)side].GetComponent<PhotonDestroy>().StartCountdown();
             OnlineFire[(int)side] = null;
         }
-        EyeController.instance.ChangeEyes(Eyes.Fire);
     }
     public void StartFire(Side side, int Level)
     {
@@ -79,8 +74,6 @@ public class FireController : SpellClass
             OnlineFire[(int)side].GetPhotonView().RPC("SetFlamesOnline", RpcTarget.All, false);
             OnlineFire[(int)side].GetComponent<PhotonDestroy>().StartCountdown();
         }
-
-        EyeController.instance.ChangeEyes(Eyes.Fire);
         
         
 
@@ -122,7 +115,6 @@ public class FireController : SpellClass
                 IsCountingDelay[(int)side] = false;
                 DelayTimer[(int)side] = 0f;
             }
-                
             else
                 StartFire(side, Level);
         }

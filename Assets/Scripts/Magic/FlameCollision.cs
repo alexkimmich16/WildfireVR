@@ -30,37 +30,39 @@ public class FlameCollision : MonoBehaviour
     //if i'm the one being hit
     private void OnParticleCollision(GameObject other)
     {
-        if (other.tag != "Shield" && other.tag != "Hitbox")
+        //Debug.Log("other: " + other.name);
+        //Debug.Log("other: " + other.tag);
+        if (other.tag != "Shield" && other.tag != "Player")
             return;
 
-
+        
         Player FlameOwner = transform.parent.GetComponent<PhotonView>().Owner;
         if (other.tag == "Shield")
         {
-            Debug.Log("Shield1");
+            //Debug.Log("S1");
             //shield=mine and flame=others
             if (other.transform.parent.GetComponent<PhotonView>().IsMine && FlameOwner != PhotonNetwork.LocalPlayer)
             {
                 //flame and sheild need to be opposites    
-                Debug.Log("Shield2");
+                //Debug.Log("S1");
                 if (GetPlayerTeam(PhotonNetwork.LocalPlayer) != GetPlayerTeam(FlameOwner))
                 {
-                    Debug.Log("Shield3");
+                    //Debug.Log("S1");
                     OnlineEventManager.PushFireOnlineEvent(AIMagicControl.instance.Cam.position);
                 }
             }
             
                     
         }
-        else if (other.tag == "Hitbox")
+        else if (other.name == AIMagicControl.instance.Rig.name)//hitbox
         {
-            Debug.Log("Hitbox1");
+            //Debug.Log("Hitbox1");
             if (FlameOwner.IsLocal)//self damage
                 return;
-            Debug.Log("Hitbox2");
+            //Debug.Log("Hitbox2");
             if (NetworkManager.instance.FriendlyFireWorks(FlameOwner, PhotonNetwork.LocalPlayer))
             {
-                Debug.Log("Hitbox3");
+                //Debug.Log("Hitbox3");
                 NetworkManager.instance.LocalTakeDamage(FireController.instance.Damage);
             }
                 

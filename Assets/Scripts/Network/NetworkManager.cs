@@ -50,8 +50,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public bool AllowFriendlyFire;
 
+    public Transform playerList;
     public bool FriendlyFireWorks(Player Other, Player Me)
     {
+        if (!Exists(PlayerTeam, Other) || !Exists(PlayerTeam, Me))
+            return false;
+        
         bool IsFriendlyFire = GetPlayerTeam(Other) == GetPlayerTeam(Me);
         return (NetworkManager.instance.AllowFriendlyFire && IsFriendlyFire) || !IsFriendlyFire;    
     }
@@ -74,8 +78,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Players.Add(playerList.GetChild(i).gameObject);
         return Players;
     }
-    public List<GameObject> Players;
-    public Transform playerList;
+    
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
@@ -182,7 +185,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log("TakeDamage: " + Damage);
         int BeforeHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
         int NewHealth = Mathf.Clamp(BeforeHealth - Damage, 0, 100);
-        OnTakeDamage(Damage);
+        OnTakeDamage?.Invoke(Damage);
         NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("TakeDamage", RpcTarget.All);
         SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);
         if(NewHealth == 0)

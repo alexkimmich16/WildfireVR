@@ -75,7 +75,6 @@ MonoBehaviour:
   VFX:
     VFXGraph: {fileID: 0}
     ParticalSystem:
-    - {fileID: 7382733242415984707}
     - {fileID: 5229383862806365316}
     - {fileID: 3579771685081960363}
   FireballSphere: {fileID: 2492401939447835445}
@@ -126,7 +125,7 @@ MonoBehaviour:
   Group: 0
   prefixField: -1
   Synchronization: 3
-  OwnershipTransfer: 0
+  OwnershipTransfer: 1
   observableSearch: 2
   ObservedComponents:
   - {fileID: 5900886308611242991}
