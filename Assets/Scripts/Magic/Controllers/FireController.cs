@@ -1,11 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.VFX;
-using UnityEngine.VFX.Utility;
-using static Odin.Net;
 using Photon.Pun;
-using Photon.Realtime;
 using RestrictionSystem;
 using System.Linq;
 public enum FireDetectType

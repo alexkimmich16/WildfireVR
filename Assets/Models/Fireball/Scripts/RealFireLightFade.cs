@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
- 
+
 namespace RealFireSmoke
 {
     public class RealFireLightFade : MonoBehaviour

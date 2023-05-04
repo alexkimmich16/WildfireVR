@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using UnityEngine;
-using System.Collections;
 
 public class AddMaterialOnHit : MonoBehaviour
 {

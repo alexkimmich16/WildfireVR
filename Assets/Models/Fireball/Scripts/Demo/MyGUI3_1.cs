@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
 
 public class MyGUI3_1 : MonoBehaviour
 {

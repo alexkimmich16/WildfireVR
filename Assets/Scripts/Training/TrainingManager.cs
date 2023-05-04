@@ -1,13 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using RestrictionSystem;
-using UnityEngine.Events;
-using System.Linq;
 
 namespace TrainingManager
 {

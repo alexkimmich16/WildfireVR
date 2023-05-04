@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
-using System.Linq;
 public class FireballObject : SpellObjectClass
 {
     public float Speed;

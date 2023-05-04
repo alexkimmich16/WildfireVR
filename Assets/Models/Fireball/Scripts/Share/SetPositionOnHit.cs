@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 
 public class SetPositionOnHit : MonoBehaviour
 {

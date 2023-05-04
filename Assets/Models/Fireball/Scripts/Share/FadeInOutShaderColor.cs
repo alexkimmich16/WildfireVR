@@ -1,8 +1,4 @@
-﻿using System.Diagnostics;
-using System.Security;
-using UnityEngine;
-using System.Collections;
-using Debug = UnityEngine.Debug;
+﻿using UnityEngine;
 
 public class FadeInOutShaderColor : MonoBehaviour
 {

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Photon.Pun;
-using Photon.Realtime;
 using static Odin.Net;
 
 public class BillBoardManager : MonoBehaviour

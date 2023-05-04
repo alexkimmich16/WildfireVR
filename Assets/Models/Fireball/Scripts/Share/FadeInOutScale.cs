@@ -1,6 +1,4 @@
-﻿using System.Text;
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 
 public class FadeInOutScale : MonoBehaviour
 {

@@ -1,11 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
 using Photon.Pun;
-using UnityEngine.XR.Interaction.Toolkit;
-using static Odin.Net;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 using RestrictionSystem;
 public class NetworkPlayer : MonoBehaviourPun
 {

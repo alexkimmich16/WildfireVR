@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static Odin.Net;
 using Photon.Pun;
 
 public class DecalSpawner : MonoBehaviour

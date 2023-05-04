@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using RestrictionSystem;
-using Sirenix.OdinInspector;
 public enum ControlType
 {
     OnRotateHand = 0,
