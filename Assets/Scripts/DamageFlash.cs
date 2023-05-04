@@ -6,39 +6,43 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 //using UnityEngine.Rendering.PostProcessing;
 //using UnityEngine.Rendering.Universal;
-public class DamageFlash : MonoBehaviour
+namespace Effects
 {
-    public static DamageFlash instance;
-    void Awake() { instance = this; }
-    [Range(0,1)]
-    public float MaxAlpha;
-
-    [Range(0, 1)]
-    public float Falloff;
-
-    public Color color;
-
-    [Range(0, 1)]
-    public float CurrentAlpha;
-
-    public Volume Volume;
-
-    private void Start()
+    public class DamageFlash : MonoBehaviour
     {
-        NetworkManager.instance.OnTakeDamage += DisplayFlash;
-    }
-    public void DisplayFlash(int Damage)
-    {
-        CurrentAlpha = MaxAlpha;
-    }
-    void Update()
-    {
-        CurrentAlpha -= Falloff * Time.deltaTime;
-        //image.color = new Color(color.r, color.g, color.b, CurrentAlpha);
-        if (Volume.profile.TryGet<ChromaticAberration>(out var Chrom))
+        public static DamageFlash instance;
+        void Awake() { instance = this; }
+        [Range(0, 1)]
+        public float MaxAlpha;
+
+        [Range(0, 1)]
+        public float Falloff;
+
+        public Color color;
+
+        [Range(0, 1)]
+        public float CurrentAlpha;
+
+        public Volume Volume;
+
+        private void Start()
         {
-            Chrom.intensity.overrideState = true;
-            Chrom.intensity.value = CurrentAlpha;
+            NetworkManager.OnTakeDamage += DisplayFlash;
+        }
+        public void DisplayFlash()
+        {
+            CurrentAlpha = MaxAlpha;
+        }
+        void Update()
+        {
+            CurrentAlpha -= Falloff * Time.deltaTime;
+            //image.color = new Color(color.r, color.g, color.b, CurrentAlpha);
+            if (Volume.profile.TryGet<ChromaticAberration>(out var Chrom))
+            {
+                Chrom.intensity.overrideState = true;
+                Chrom.intensity.value = CurrentAlpha;
+            }
         }
     }
 }
+

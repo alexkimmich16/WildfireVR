@@ -312,7 +312,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 20770302}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.4902277, y: 0.46911478, z: -8.1965065}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2505,12 +2505,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 382a302b0e1808b4cb7279e313cd2003, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Mat: {fileID: 2100000, guid: ad358717fc5fead48bb13a226a9d1ee7, type: 2}
-  ShouldDisolve: 0
-  ShouldRegenerate: 1
-  disolveType: 0
-  SubscribeDisolve: {fileID: 0}
-  color: {r: 0, g: 0, b: 0, a: 0}
 --- !u!137 &254529475 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 109434732392105323, guid: 65847589f926b734d9eaed6e25f0046b,
@@ -7731,7 +7725,6 @@ MonoBehaviour:
   RightInfo: []
   LeftInfo: []
   MaxStoreInfo: 12
-  FramesAgo: 2
   TestMain:
   - {fileID: 1600426183}
   - {fileID: 1600426180}
@@ -7783,7 +7776,22 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: ConditionStats
+      Entry: 7
+      Data: 0|RestrictionSystem.ConditionManager+ConditionProgress[,], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: ranks
+      Entry: 1
+      Data: 2|0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   conditions: {fileID: 11400000, guid: 76ee955c20c73154b977ecc314c5bbe4, type: 2}
 --- !u!114 &687382336
 MonoBehaviour:
@@ -9913,6 +9921,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5493128a9191ad34e9237e5de8b700ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxHealth: 100
   DebugScript: 0
   InGame: 0
   PlayerPhotonViews: []
@@ -10541,7 +10550,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 981501667}
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: -0.7071068}
-  m_LocalPosition: {x: -67.966866, y: -18.06025, z: 35.731133}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14145,6 +14154,51 @@ MonoBehaviour:
   m_MoveObjectIn: 14
   m_MoveObjectOut: 15
   m_PoseProvider: {fileID: 0}
+--- !u!1 &1324748047
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1324748048}
+  - component: {fileID: 1324748049}
+  m_Layer: 19
+  m_Name: Left
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1324748048
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1324748047}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.07647, z: 0.7239}
+  m_LocalScale: {x: 0.25, y: 0.01, z: 0.25}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1685260906}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1324748049
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1324748047}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1328164610
 GameObject:
   m_ObjectHideFlags: 0
@@ -15168,21 +15222,29 @@ MonoBehaviour:
     SerializationNodes: []
   IsControlling: 0
   Damage: 25
-  MinDistanceToHead: 0.36
-  StopControllingDistance: 0.07
-  DirectionLeaniency: 21.1
-  ControlForce: 0
+  ControlSensitivity: 1
   controlType: 0
   spawnDir: 1
   PositionExample: {fileID: 669901458}
   ShouldDebug: 0
   Display: 100.10594
-  Actives: 0000
-  FireballWarmups: []
-  FramesAgoRotation: 5
-  HandDirectionValue: 0
-  CamDirectionValue: 0
-  OutPutDir: {x: 0, y: 0}
+  Sides:
+  - Active: 0
+    Fireball: {fileID: 0}
+    Warmup: {fileID: 0}
+    Controlling: 0
+    StartRotation: {x: 0, y: 0, z: 0}
+    DifferenceToStart: {x: 0, y: 0, z: 0}
+    LastForwardFrame: {x: 0, y: 0, z: 0}
+    Difference: {x: 0, y: 0, z: 0, w: 0}
+  - Active: 0
+    Fireball: {fileID: 0}
+    Warmup: {fileID: 0}
+    Controlling: 0
+    StartRotation: {x: 0, y: 0, z: 0}
+    DifferenceToStart: {x: 0, y: 0, z: 0}
+    LastForwardFrame: {x: 0, y: 0, z: 0}
+    Difference: {x: 0, y: 0, z: 0, w: 0}
   WarmupDistFromHand: 0
 --- !u!4 &1459142604
 Transform:
@@ -18052,6 +18114,39 @@ Transform:
   m_Father: {fileID: 1243340996}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 42.832428, y: 11.197973, z: 13.844493}
+--- !u!1 &1685260905
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1685260906}
+  m_Layer: 19
+  m_Name: FloorRaise
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1685260906
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685260905}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1324748048}
+  - {fileID: 2070562165}
+  m_Father: {fileID: 9062918174966249546}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1695544105
 GameObject:
   m_ObjectHideFlags: 0
@@ -19333,12 +19428,138 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
-  EnableSounds: 1
-  EnableEffectSounds: 1
-  EnableElevatorSounds: 1
-  EnableCrowdSounds: 1
-  EnableVoice: 1
+    SerializationNodes:
+    - Name: Sounds
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[SoundType, Assembly-CSharp],[AudioClassInfo,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[SoundType, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 5
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 7
+      Data: 2|AudioClassInfo, Assembly-CSharp
+    - Name: CanPlay
+      Entry: 5
+      Data: true
+    - Name: Volume
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 3|AudioClassInfo, Assembly-CSharp
+    - Name: CanPlay
+      Entry: 5
+      Data: true
+    - Name: Volume
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 7
+      Data: 4|AudioClassInfo, Assembly-CSharp
+    - Name: CanPlay
+      Entry: 5
+      Data: true
+    - Name: Volume
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 3
+    - Name: $v
+      Entry: 7
+      Data: 5|AudioClassInfo, Assembly-CSharp
+    - Name: CanPlay
+      Entry: 5
+      Data: true
+    - Name: Volume
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 4
+    - Name: $v
+      Entry: 7
+      Data: 6|AudioClassInfo, Assembly-CSharp
+    - Name: CanPlay
+      Entry: 5
+      Data: true
+    - Name: Volume
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   CrowdRef:
     Guid:
       Data1: -125635866
@@ -19419,11 +19640,6 @@ MonoBehaviour:
       Data3: -1355409240
       Data4: 1496137132
     Path: event:/Death4
-  MasterVolume: 0.5
-  EffectVolume: 0.5
-  ElevatorVolume: 0.5
-  CrowdVolume: 0.5
-  VoiceVolume: 0.5
 --- !u!1 &1797897149
 GameObject:
   m_ObjectHideFlags: 0
@@ -21875,6 +22091,51 @@ Transform:
   m_Father: {fileID: 475160795}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2070562164
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2070562165}
+  - component: {fileID: 2070562166}
+  m_Layer: 19
+  m_Name: Right
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2070562165
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070562164}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.07647, z: -0.7239}
+  m_LocalScale: {x: 0.25, y: 0.01, z: 0.25}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1685260906}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2070562166
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070562164}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2078897288
 GameObject:
   m_ObjectHideFlags: 0
@@ -22582,12 +22843,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 382a302b0e1808b4cb7279e313cd2003, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Mat: {fileID: 2100000, guid: ad358717fc5fead48bb13a226a9d1ee7, type: 2}
-  ShouldDisolve: 0
-  ShouldRegenerate: 1
-  disolveType: 0
-  SubscribeDisolve: {fileID: 0}
-  color: {r: 0, g: 0, b: 0, a: 0}
 --- !u!137 &2129645467 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5686134208196863108, guid: 1fd3a7c43c8190f4d8c167ebde694364,
@@ -65971,6 +66226,7 @@ Transform:
   - {fileID: 480652915}
   - {fileID: 1924505872}
   - {fileID: 1373912864}
+  - {fileID: 1685260906}
   m_Father: {fileID: 543450653269937883}
   m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

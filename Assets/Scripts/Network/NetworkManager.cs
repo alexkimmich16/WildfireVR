@@ -10,36 +10,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #region Singleton + classes
     public static NetworkManager instance;
     void Awake() { instance = this; }
-    [System.Serializable]
-    public class PlayerInfo
-    {
-        public int InsideNum;
-        public int Health;
-        public Transform Player;
-    }
-    [System.Serializable]
-    public class PlayerStats
-    {
-        public Player player;
-        //public int Num;
-        public NetworkPlayer networkPlayer;
-        public PlayerControl Control;
-        public Transform ObjectReference;
-    }
 
     #endregion
-    static int MaxHealth = 100;
+    public int MaxHealth = 100;
     public bool DebugScript = false;
     //public List<PlayerInfo> info = new List<PlayerInfo>();
     //public List<PlayerStats> Players = new List<PlayerStats>();
     public int InGame;
     public List<PhotonView> PlayerPhotonViews;
 
-    public delegate void DamageEvent(int Damage);
-    public event DamageEvent OnTakeDamage;
-
     public delegate void initializeEvent();
     public static event initializeEvent OnInitialized;
+    public static event initializeEvent OnDeath;
+    public static event initializeEvent OnTakeDamage;
 
     public delegate void Fade(bool In);
     public static event Fade DoFade;
@@ -140,7 +123,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (DebugScript == true)
             Debug.Log("joined a room");
 
-        SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);
+        SetPlayerInt(PlayerHealth, NetworkManager.instance.MaxHealth, PhotonNetwork.LocalPlayer);
         if (Initialized() == false)
         {
             InitializeAllGameStats();
@@ -184,16 +167,17 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (DebugScript == true)
             Debug.Log("TakeDamage: " + Damage);
         int BeforeHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
-        int NewHealth = Mathf.Clamp(BeforeHealth - Damage, 0, 100);
-        OnTakeDamage?.Invoke(Damage);
-        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("TakeDamage", RpcTarget.All);
+        int NewHealth = Mathf.Clamp(BeforeHealth - Damage, 0, NetworkManager.instance.MaxHealth);
+        OnTakeDamage?.Invoke();
+        //NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("TakeDamage", RpcTarget.All);
         SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);
         if(NewHealth == 0)
             StartCoroutine(MainPlayerDeath());
     }
     public IEnumerator MainPlayerDeath()
     {
-        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("PlayerDied", RpcTarget.All);
+        OnDeath?.Invoke();
+        
         AIMagicControl.instance.MyCharacterSkin.SetActive(false);
         DoFade?.Invoke(false);
         //wait to find spawn

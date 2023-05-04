@@ -38,7 +38,7 @@ public class FireAbsorb : MonoBehaviour
     public void OnAbsorbStart(Transform Fireball)
     {
         Debug.Log("works: " + Fireball.name);
-        Fireball.GetComponent<Fireball>().SetAbsorbed(true);
+        Fireball.GetComponent<FireballObject>().SetAbsorbed(true);
         Fire = Fireball.GetComponent<Rigidbody>();
         Fireball.GetComponent<PhotonView>().RPC("ChangeSpeed", RpcTarget.All, AbsorbStartSpeed);
     }

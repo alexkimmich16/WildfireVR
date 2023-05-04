@@ -7,8 +7,10 @@ public enum DisolveType
     MainPlayer = 0,
     NetworkPlayer = 1,
 }
+
 public class DisolveManager : MonoBehaviour
 {
+    /*
     public Material Mat;
     private Material NewMat;
     public bool ShouldDisolve = false;
@@ -18,7 +20,7 @@ public class DisolveManager : MonoBehaviour
     private float SinNum;
     public bool ShouldRegenerate;
     public DisolveType disolveType;
-    public PlayerControl SubscribeDisolve;
+    //public PlayerControl SubscribeDisolve;
     private bool Started = false;
 
     public Color color;
@@ -94,6 +96,6 @@ public class DisolveManager : MonoBehaviour
     {
         ShouldDisolve = true;
     }
-
+    */
     //disolve manager should send info to others
 }

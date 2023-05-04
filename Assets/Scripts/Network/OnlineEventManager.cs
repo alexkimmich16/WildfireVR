@@ -93,7 +93,7 @@ public class OnlineEventManager : MonoBehaviour
         {
             //Debug.Log("restart");
             //InGameManager.instance.RespawnToSpawnPoint();//respawn
-            SetPlayerInt(PlayerHealth, PlayerControl.MaxHealth, PhotonNetwork.LocalPlayer);// reset health
+            SetPlayerInt(PlayerHealth, NetworkManager.instance.MaxHealth, PhotonNetwork.LocalPlayer);// reset health
             RestartEventCallback?.Invoke();
             SpawnManager.instance.RespawnToTeam();// moveback to team
             

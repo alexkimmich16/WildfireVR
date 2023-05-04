@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 128683162094914739}
   - component: {fileID: 6491262522069724006}
-  - component: {fileID: 128683162094914742}
   - component: {fileID: 128683162094914728}
   - component: {fileID: 1291982262454917512}
   - component: {fileID: 7144189571648307523}
   - component: {fileID: 5900886308611242991}
+  - component: {fileID: 3321315982462563062}
   m_Layer: 11
   m_Name: Fireball1
   m_TagString: Untagged
@@ -57,30 +57,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &128683162094914742
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 128683162094914729}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c54bf950d536654091c22b79e43fa27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 600
-  RB: {fileID: 6491262522069724006}
-  Absorbing: 0
-  VFX:
-    VFXGraph: {fileID: 0}
-    ParticalSystem:
-    - {fileID: 5229383862806365316}
-    - {fileID: 3579771685081960363}
-  FireballSphere: {fileID: 2492401939447835445}
-  TimeActive: 0
-  AccelerateSpeed: 0.99
-  StartTime: 0.99
 --- !u!135 &128683162094914728
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -148,6 +124,38 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &3321315982462563062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128683162094914729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e96075196a5f8848b6cf675ead46b06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  AddToAmbientVFX: 1
+  Speed: 600
+  Absorbing: 0
+  VFX:
+    VFXGraph: {fileID: 0}
+    ParticalSystem:
+    - {fileID: 5229383862806365316}
+    - {fileID: 3579771685081960363}
+  FireballSphere: {fileID: 2492401939447835445}
+  AccelerateSpeed: 0.99
+  StartTime: 0.99
 --- !u!1 &260571160780365606
 GameObject:
   m_ObjectHideFlags: 0
@@ -4924,7 +4932,7 @@ GameObject:
   - component: {fileID: 1741161338227726576}
   - component: {fileID: 8604192123352452136}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: SphereVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5007,7 +5015,7 @@ GameObject:
   - component: {fileID: 5229383862806365316}
   - component: {fileID: 2296048738571759163}
   m_Layer: 0
-  m_Name: FireSphere
+  m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

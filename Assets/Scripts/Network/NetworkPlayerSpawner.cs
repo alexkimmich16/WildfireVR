@@ -37,8 +37,8 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
         DestroyIfActive(FireController.instance.OnlineFire[0]);
         DestroyIfActive(FireController.instance.OnlineFire[1]);
 
-        DestroyIfActive(FireballController.instance.FireballWarmups[0]);
-        DestroyIfActive(FireballController.instance.FireballWarmups[1]);
+        DestroyIfActive(FireballController.instance.Sides[0].Warmup);
+        DestroyIfActive(FireballController.instance.Sides[1].Warmup);
 
         DestroyIfActive(BlockController.instance.BlockVFXObject);
 
