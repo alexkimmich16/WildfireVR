@@ -5,13 +5,11 @@ public class PlayerAudio : SerializedMonoBehaviour
 {
     public AudioSource AudioSpeaker;
     public Speaker PhotonSpeaker;
-    void Start()
-    {
-        
-    }
 
     void Update()
     {
-        AudioSpeaker.volume = PlayerPrefs.GetFloat("MasterVolume");
+        AudioSpeaker.volume = SoundManager.instance.Volume(SoundType.Voice);
+
+        PhotonSpeaker.enabled = SoundManager.instance.CanPlay(SoundType.Voice);
     }
 }

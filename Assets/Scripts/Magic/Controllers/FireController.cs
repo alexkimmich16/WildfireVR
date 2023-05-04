@@ -31,7 +31,6 @@ public class FireController : SpellControlClass
     [Header("VFX")]
 
     public List<GameObject> OnlineFire = new List<GameObject>();
-    //public GameObject PrivateFire;
 
     [Header("Lists")]
     public List<Transform> Targets = new List<Transform>();
@@ -40,7 +39,6 @@ public class FireController : SpellControlClass
     [Header("Deflect")]
     public float DeflectForce;
     public float DeflectDistanceForce;
-    //public List<FlameObject> ActiveFires;
 
     public float TimeDelay = 0.3f;
     private List<float> DelayTimer;
@@ -71,37 +69,23 @@ public class FireController : SpellControlClass
         }
         
         
-
-        NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Flames);
         OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, Level), GetPos(side), GetRot(side));
         //OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, Level), Vector3.zero, Camera.main.transform.rotation);
         //OnlineFire[(int)side].name = "OnlineFire";
     }
     #endregion
-    public void InitializeWarmups()
-    {
-        ConditionManager.instance.conditions.MotionConditions[(int)CurrentLearn.Flames - 1].OnNewState += RecieveNewState;
-    }
 
-    private void Start()
+    public override void InitializeSpells()
     {
-        NetworkManager.OnInitialized += InitializeWarmups;
-        
-        //OnlineFire ;
-        for (int i = 0; i < 2; i++)
-            OnlineFire.Add(null);
-
+        OnlineFire = new List<GameObject>() { null, null };
         DelayTimer = new List<float>() { 0f, 0f };
         IsCountingDelay = new List<bool>() { false, false };
         DamageCooldowns = new List<CooldownInfo>();
     }
 
-    public void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level)
+    public override void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level)
     {
         Actives[(int)side] = StartOrFinish;
-        //Debug.Log("StartOrFinish: " + StartOrFinish);
-        //Debug.Log("Set: " + StartOrFinish + "  Time: " + Time.timeSinceLevelLoad);
-        //Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
 
         if (StartOrFinish)
         {
@@ -122,19 +106,20 @@ public class FireController : SpellControlClass
 
     public void ManageEnemyCooldown()
     {
-        if(DamageCooldowns.Count > 0)
-            for (int i = 0; i < DamageCooldowns.Count; i++)
-            {
-                DamageCooldowns[i].Time += Time.deltaTime;
-                if (DamageCooldowns[i].Time > EnemyCooldownTime)
-                    DamageCooldowns.Remove(DamageCooldowns[i]);
-            }
+        if(DamageCooldowns != null)
+            if (DamageCooldowns.Count > 0)
+                for (int i = 0; i < DamageCooldowns.Count; i++)
+                {
+                    DamageCooldowns[i].Time += Time.deltaTime;
+                    if (DamageCooldowns[i].Time > EnemyCooldownTime)
+                        DamageCooldowns.Remove(DamageCooldowns[i]);
+                }
     }
     public Quaternion GetRot(Side side) { return Quaternion.LookRotation(AIMagicControl.instance.PositionObjectives[(int)side].transform.position - AIMagicControl.instance.Cam.position); }
     public Vector3 GetPos(Side side) { return AIMagicControl.instance.PositionObjectives[(int)side].position; }
     private void Update()
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < OnlineFire.Count; i++)
         {
             if (IsCountingDelay[i])
                 DelayTimer[i] += Time.deltaTime;
@@ -147,7 +132,7 @@ public class FireController : SpellControlClass
         }
         ManageEnemyCooldown();
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < OnlineFire.Count; i++)
         {
             if(OnlineFire[i] != null)
             {

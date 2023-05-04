@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
-
-public class XRPlayerMovement : MonoBehaviour
+using Sirenix.OdinInspector;
+public class XRPlayerMovement : SerializedMonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float maxVelocity = 5f;
@@ -13,8 +13,8 @@ public class XRPlayerMovement : MonoBehaviour
 
     [Header("Input Settings")]
     [SerializeField] private XRController controller;
-    [SerializeField] private Vector2 inputAxis;
-    [SerializeField] private Vector2 directionAdd;
+    [ReadOnly, SerializeField] private Vector2 inputAxis;
+    [ReadOnly, SerializeField] private Vector2 directionAdd;
 
     private Rigidbody rb;
     private float currentVelocity;

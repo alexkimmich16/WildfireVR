@@ -6,27 +6,27 @@ public class CamAtFloor : MonoBehaviour
     public float FloorHeight = 0.13f;
     public float ElevatorOffset;
     public GameObject NetworkOBJ;
+    public float HitOffset;
     public bool IsActive = true;
 
     public bool RestrictAll = false;
+    public bool AllowRaycast;
     public void CustomUpdate()
     {
         if (RestrictAll)
             return;
-        //int SequenceNum = (int)DoorManager.instance.Sequence;
-        /*
-        float TempFloorHeight;
-        if (SequenceNum < 2)
+
+        if(Physics.Raycast(Cam.transform.position, -Vector3.up, out RaycastHit hit) && AllowRaycast)
         {
-            TempFloorHeight = ElevatorOffset + DoorManager.instance.Doors[0].OBJ.position.y;
+            //Debug.Log("set1");
+            transform.position = new Vector3(Cam.position.x, hit.point.y + HitOffset, Cam.position.z);
         }
         else
         {
-            
-            //TempFloorHeight = FloorHeight;
+            transform.position = new Vector3(Cam.position.x, ElevatorOffset + DoorManager.instance.Doors[0].OBJ.position.y, Cam.position.z);
         }
-        */
-        transform.position = new Vector3(Cam.position.x, ElevatorOffset + DoorManager.instance.Doors[0].OBJ.position.y, Cam.position.z);
+        
+        
 
     }
     void Start()

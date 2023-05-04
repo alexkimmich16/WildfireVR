@@ -102,8 +102,6 @@ public class FireballObject : SpellObjectClass
         if (SoundManager.instance.CanPlay(SoundType.Effect))
             FireballSound.setParameterByName("Exit", 1f);
         gameObject.GetComponent<SphereCollider>().enabled = false;
-
-        //Debug.Log("onhit");
     }
     public void Bounce(Vector3 New)
     {

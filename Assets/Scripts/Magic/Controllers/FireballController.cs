@@ -65,7 +65,7 @@ public class FireballController : SpellControlClass
         Vector3 Pos = new Vector3(AIMagicControl.instance.Spawn[(int)side].position.x, AIMagicControl.instance.Cam.position.y, AIMagicControl.instance.Spawn[(int)side].position.z);
         return Pos;
     }
-    public void RecieveNewState(Side side, bool State, int Index, int Level)
+    public override void RecieveNewState(Side side, bool State, int Index, int Level)
     {
         if (Index == 0)
         {
@@ -86,30 +86,16 @@ public class FireballController : SpellControlClass
             Sides[(int)side].Controlling = State;
         }
     }
-    private void Start()
-    {
-        NetworkManager.OnInitialized += InitializeWarmups;
-    }
 
     public void SpawnFireball(Side side, int Level)
     {
         if (InGameManager.instance.CanDoMagic() == false)
             return;
 
-        //Debug.Log("Spawn");
-
-        ///direction of controller forward
-        ///
-
-        ///absorb code
-        //CurrentSpell spell = (AIMagicControl.instance.HoldingFire()) ? CurrentSpell.Fireball : CurrentSpell.Fireball;
-        //if (AIMagicControl.instance.HoldingFire())
-        //AIMagicControl.instance.ResetHoldingFires();
         Sides[(int)side].Fireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, Level), SpawnPosition(side), SpawnRotation(side));
         //NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Fireball);
     }
-
-    public void InitializeWarmups()
+    public override void InitializeSpells()
     {
         ConditionManager.instance.conditions.MotionConditions[(int)CurrentLearn.Fireball - 1].OnNewState += RecieveNewState;
         for (int i = 0; i < 2; i++)
@@ -179,20 +165,6 @@ public class FireballController : SpellControlClass
 
 
 }
-
-
-    /*
-    public IEnumerator WaitForClose()
-    {
-        bool PastThreshold = StopControllingDistance < Vector3.Distance(AIMagicControl.instance.Spawn[(int)side].localPosition, Camera.main.transform.localPosition);
-        IsControlling = true;
-        while (PastThreshold == false)
-        {
-            yield return new WaitForSeconds(0.1f);
-        }
-        IsControlling = false;
-    }
-    */
 
 //    public float ToDegrees(Vector2 value) { return Mathf.Atan2(value.y, value.x) * 180f / Mathf.PI; }
 //public Vector2 ToVector(float value) { return new Vector2(Mathf.Cos(value * Mathf.PI / 180f), Mathf.Sin(value * Mathf.PI / 180f)); }

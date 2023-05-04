@@ -14,11 +14,6 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
         //SpawnedPlayerPrefab.transform.SetParent(NetworkManager.instance.playerList);
         //NetworkManager.instance.RefreshPlayerList();
         //get player side
-
-        if (SceneLoader.instance.CurrentSetting == CurrentGame.Battle)
-        {
-            NetworkManager.instance.PlayerPhotonViews.Add(SpawnedPlayerPrefab.GetComponent<PhotonView>());
-        }
         //NetworkManager.instance.Players.Add(SpawnedPlayerPrefab);
         
 
@@ -27,7 +22,6 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
     {
         base.OnLeftRoom();
 
-        NetworkManager.instance.PlayerPhotonViews.Remove(SpawnedPlayerPrefab.GetComponent<PhotonView>());
         DestroyIfActive(SpawnedPlayerPrefab);
 
         DestroyIfActive(FireController.instance.OnlineFire[0]);

@@ -14,10 +14,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #endregion
     public int MaxHealth = 100;
     public bool DebugScript = false;
-    //public List<PlayerInfo> info = new List<PlayerInfo>();
-    //public List<PlayerStats> Players = new List<PlayerStats>();
-    public int InGame;
-    public List<PhotonView> PlayerPhotonViews;
 
     public delegate void initializeEvent();
     public static event initializeEvent OnInitialized;

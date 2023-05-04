@@ -259,7 +259,7 @@ GameObject:
   - component: {fileID: 5272293459400824933}
   - component: {fileID: 802789730534011270}
   - component: {fileID: 5371750711294747581}
-  - component: {fileID: 2099352641000150228}
+  - component: {fileID: 7956913722427456129}
   m_Layer: 16
   m_Name: Network Player
   m_TagString: VRPerson
@@ -367,24 +367,29 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 0
---- !u!114 &2099352641000150228
+--- !u!114 &7956913722427456129
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105980944445082301}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 541a76f9c03874323b5154b14ac00427, type: 3}
+  m_Script: {fileID: 11500000, guid: d612af9ebf2cad6439f96bc071de11b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spline: {fileID: 0}
-  Speed: 0
-  lookForward: 0
-  reverse: 0
-  currentDistance: 0
-  currentClampedDistance: 0
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  AudioSpeaker: {fileID: 4270009255415122392}
+  PhotonSpeaker: {fileID: 2205511636014492040}
 --- !u!1 &8461358418908909968
 GameObject:
   m_ObjectHideFlags: 0

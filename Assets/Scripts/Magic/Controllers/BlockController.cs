@@ -11,6 +11,8 @@ public class BlockController : SpellControlClass
 {
     public static BlockController instance;
     void Awake() { instance = this; }
+
+
     public List<bool> Active;
 
     public GameObject BlockVFXObject;
@@ -23,7 +25,7 @@ public class BlockController : SpellControlClass
     public bool ProperBlock() { return Active[0] == true && Active[1] == true; }
     public bool HalfBlocking() { return Active[0] == true || Active[1] == true; }
     public bool IsBlocking() { return AlwaysTrue ? true : HalfBlocks ? HalfBlocking() : ProperBlock(); }
-    public void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level)
+    public override void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level)
     {
         //Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
         Active[(int)side] = StartOrFinish;
@@ -33,13 +35,8 @@ public class BlockController : SpellControlClass
         }
         LastFrameBlocking = IsBlocking();
     }
-    private void Start()
+    public override void InitializeSpells()
     {
-        NetworkManager.OnInitialized += InitializeBlockObject;
-    }
-    public void InitializeBlockObject()
-    {
-        ConditionManager.instance.conditions.MotionConditions[(int)CurrentLearn.FlameBlock - 1].OnNewState += RecieveNewState;
         BlockVFXObject = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.FlameBlock, 0), Vector3.zero, Quaternion.identity);
         BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.AllBuffered, false);
     }
