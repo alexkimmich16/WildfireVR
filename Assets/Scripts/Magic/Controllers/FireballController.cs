@@ -97,7 +97,6 @@ public class FireballController : SpellControlClass
     }
     public override void InitializeSpells()
     {
-        ConditionManager.instance.conditions.MotionConditions[(int)CurrentLearn.Fireball - 1].OnNewState += RecieveNewState;
         for (int i = 0; i < 2; i++)
         {
             Sides[i].Warmup = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.FireballWarmup.name, Vector3.zero, Quaternion.identity);

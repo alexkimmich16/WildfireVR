@@ -50,7 +50,7 @@ public class FireballObject : SpellObjectClass
     {
         if (Absorbing == true)
             return;
-
+        Debug.Log("" + col.collider.name);
         //if fireball hits ME or My shield
 
         //fireball can't be mine
