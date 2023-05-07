@@ -16,6 +16,8 @@ public class DecalSpawner : MonoBehaviour
     public bool Before;
 
     
+
+
     private void SpawnDecalAtPosition(Vector3 Pos, Quaternion Rot)
     {
         if (SpawnDecals)

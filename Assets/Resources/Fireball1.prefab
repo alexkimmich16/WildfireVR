@@ -144,8 +144,18 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: Sound
+      Entry: 7
+      Data: FMOD.Studio.EventInstance, FMODUnity
+    - Name: handle
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
   AddToAmbientVFX: 1
+  EffectName: fireball
   Speed: 600
   Absorbing: 0
   VFX:

@@ -23,7 +23,7 @@ namespace RestrictionSystem
 
         [HideInInspector]public ConditionProgress[,] ConditionStats = new ConditionProgress[2, 0];
 
-        [System.Serializable]
+        [Serializable]
         public class ConditionProgress//represents all sequences within motion
         {
             public bool Active() { return StartInfo != null; }

@@ -25,6 +25,8 @@ public class XRPlayerMovement : SerializedMonoBehaviour
 
     public XRNode inputSource;
 
+    public CapsuleCollider collider;
+    //public void SetCollider() { getx}
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -32,6 +34,8 @@ public class XRPlayerMovement : SerializedMonoBehaviour
 
     private void FixedUpdate()
     {
+        //SetCollider();
+
         InputDevice device = InputDevices.GetDeviceAtXRNode(inputSource);
         device.TryGetFeatureValue(CommonUsages.primary2DAxis, out inputAxis);
 

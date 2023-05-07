@@ -27,6 +27,10 @@ public class NetworkPlayer : MonoBehaviourPun
     private FMOD.Studio.EventInstance TakeDamageInstance;
     private FMOD.Studio.EventInstance DeathInstance;
 
+    private float TakeDamageTimer;
+
+
+
     void Start()
     {
         OnlineEventManager.RestartEventCallback += OnReset;
@@ -38,8 +42,12 @@ public class NetworkPlayer : MonoBehaviourPun
 
         transform.SetParent(NetworkManager.instance.playerList);
 
-        NetworkManager.OnTakeDamage += TakeDamage;
-        NetworkManager.OnDeath += PlayerDied;
+        if (photonView.IsMine)
+        {
+            NetworkManager.OnTakeDamage += TakeDamage;
+            NetworkManager.OnDeath += PlayerDied;
+        }
+        
     }
     public void OnReset()
     {
@@ -48,6 +56,7 @@ public class NetworkPlayer : MonoBehaviourPun
     }
     void Update()
     {
+        UpdateVolumes();
         if (photonView.IsMine)
         {
             Head.gameObject.SetActive(TestingSelf || Dead);
@@ -75,7 +84,13 @@ public class NetworkPlayer : MonoBehaviourPun
         target.position = rigTrans.position;
         target.rotation = rigTrans.rotation;
     }
-
+    public void UpdateVolumes()
+    {
+        if(photonView.IsMine)
+            TakeDamageTimer -= Time.deltaTime;
+        DeathInstance.setVolume(SoundManager.instance.GetVolume("death"));
+        TakeDamageInstance.setVolume(SoundManager.instance.GetVolume("damage"));
+    }
     [PunRPC]
     public void PlayerDied()
     {
@@ -85,28 +100,30 @@ public class NetworkPlayer : MonoBehaviourPun
 
         Dead = true;
         myRagdoll.EnableRagdoll();
-        if (SoundManager.instance.CanPlay(SoundType.Effect))
-        {
-            DeathInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.RandomSound(SoundManager.instance.DeathRef));
-            DeathInstance.setVolume(SoundManager.instance.Volume(SoundType.Effect));
-            FMODUnity.RuntimeManager.AttachInstanceToGameObject(DeathInstance, GetComponent<Transform>());
-            DeathInstance.start();
-        }
+
+        DeathInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.RandomSound(SoundManager.instance.DeathRef));
+        DeathInstance.setVolume(SoundManager.instance.GetVolume("death"));
+        FMODUnity.RuntimeManager.AttachInstanceToGameObject(DeathInstance, transform);
+        
+        DeathInstance.start();
     }
 
     [PunRPC]
     public void TakeDamage()
     {
+        if (TakeDamageTimer > 0 && photonView.IsMine)
+            return;
+        TakeDamageTimer = SoundManager.instance.TimeBetweenTakeDamage;
+
         if (photonView.IsMine)
             photonView.RPC("TakeDamage", RpcTarget.Others);
 
-        if (SoundManager.instance.CanPlay(SoundType.Effect))
-        {
-            TakeDamageInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.RandomSound(SoundManager.instance.DamageRef));
-            TakeDamageInstance.setVolume(SoundManager.instance.Volume(SoundType.Effect));
-            FMODUnity.RuntimeManager.AttachInstanceToGameObject(TakeDamageInstance, GetComponent<Transform>());
-            TakeDamageInstance.start();
-        }
+        TakeDamageInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.RandomSound(SoundManager.instance.DamageRef));
+        TakeDamageInstance.setVolume(SoundManager.instance.GetVolume("damage"));
+        FMODUnity.RuntimeManager.AttachInstanceToGameObject(TakeDamageInstance, transform);
+        TakeDamageInstance.start();
+
+        
     }
 
 

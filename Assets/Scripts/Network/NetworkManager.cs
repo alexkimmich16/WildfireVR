@@ -163,7 +163,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (DebugScript == true)
             Debug.Log("TakeDamage: " + Damage);
         int BeforeHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
-        int NewHealth = Mathf.Clamp(BeforeHealth - Damage, 0, NetworkManager.instance.MaxHealth);
+        int NewHealth = Mathf.Clamp(BeforeHealth - Damage, 0, MaxHealth);
         OnTakeDamage?.Invoke();
         //NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("TakeDamage", RpcTarget.All);
         SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);

@@ -13,12 +13,19 @@ public class BlockObject : SpellObjectClass
         collider.enabled = false;
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         GetComponent<PhotonVFX>().SetVFX += EnableCollider;
     }
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         GetComponent<PhotonVFX>().SetVFX -= EnableCollider;
+    }
+
+    public override void SetAudio(bool State)
+    {
+        //One day
     }
 }

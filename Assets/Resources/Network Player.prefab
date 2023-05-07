@@ -25,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5429687461142774806}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7406859743030960495}
-  m_RootOrder: 3
+  m_Father: {fileID: 7077550060436018196}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &4270009255415122392
 AudioSource:
@@ -55,9 +55,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 10
-  MaxDistance: 29.82
+  MaxDistance: 67.4
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -74,13 +74,22 @@ AudioSource:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
+      time: 0.61719817
+      value: 1.0015154
+      inSlope: 0.017304897
+      outSlope: 0.017304897
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -3.27874
+      outSlope: -3.27874
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.038282573
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -226,7 +235,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4526970819870675954}
   m_Father: {fileID: 7406859743030960495}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -282,7 +292,6 @@ Transform:
   - {fileID: 7077550060436018196}
   - {fileID: 165320934450250722}
   - {fileID: 1062120216902390105}
-  - {fileID: 4526970819870675954}
   - {fileID: 6020442239639683073}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -448,7 +457,7 @@ PrefabInstance:
     - target: {fileID: 27964832256893997, guid: d509c7e4ee9a8f742a9627137d3823b2,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 27964832256893997, guid: d509c7e4ee9a8f742a9627137d3823b2,
         type: 3}

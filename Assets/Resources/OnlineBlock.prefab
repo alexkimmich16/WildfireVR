@@ -9951,8 +9951,18 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: Sound
+      Entry: 7
+      Data: FMOD.Studio.EventInstance, FMODUnity
+    - Name: handle
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
   AddToAmbientVFX: 0
+  EffectName: 
   collider: {fileID: 4865595947093234318}
 --- !u!1 &8978893156711797274
 GameObject:

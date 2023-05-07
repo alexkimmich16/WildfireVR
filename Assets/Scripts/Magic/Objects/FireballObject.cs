@@ -12,7 +12,7 @@ public class FireballObject : SpellObjectClass
 
     public VFXHolder VFX;
 
-    private FMOD.Studio.EventInstance FireballSound;
+    
     public GameObject FireballSphere;
 
     private float Timer;
@@ -26,8 +26,9 @@ public class FireballObject : SpellObjectClass
     }
 
     //public float LifeTime = 3;
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         if (!GetComponent<PhotonView>().IsMine)
             return;
         if (Absorbing == true)
@@ -50,7 +51,7 @@ public class FireballObject : SpellObjectClass
     {
         if (Absorbing == true)
             return;
-        Debug.Log("" + col.collider.name);
+        //Debug.Log("" + col.collider.name);
         //if fireball hits ME or My shield
 
         //fireball can't be mine
@@ -99,8 +100,8 @@ public class FireballObject : SpellObjectClass
     {
         VFX.SetNewState(false);
         FireballSphere.SetActive(false);
-        if (SoundManager.instance.CanPlay(SoundType.Effect))
-            FireballSound.setParameterByName("Exit", 1f);
+        Sound.setParameterByName("Exit", 1f);
+
         gameObject.GetComponent<SphereCollider>().enabled = false;
     }
     public void Bounce(Vector3 New)
@@ -113,22 +114,21 @@ public class FireballObject : SpellObjectClass
         RB = GetComponent<Rigidbody>();
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
         //Debug.Log("start");
+        base.OnEnable();
         Timer = StartTime;
         VFX.SetNewState(true);//potentail problem
+        //FireballSound = SoundManager.instance.CreateSound("fireball", transform);
 
-        if (SoundManager.instance.CanPlay(SoundType.Effect))
-        {
-            FireballSound = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.FireballRef);
-            FireballSound.setVolume(SoundManager.instance.Volume(SoundType.Effect));
-            FMODUnity.RuntimeManager.AttachInstanceToGameObject(FireballSound, GetComponent<Transform>());
-            FireballSound.start();
-            FireballSound.setParameterByName("Exit", 0f);
-        }
-
+        
         FireballSphere.SetActive(true);
         gameObject.GetComponent<SphereCollider>().enabled = true;
+    }
+
+    public override void SetAudio(bool State)
+    {
+        Sound.setParameterByName("Exit", State ? 0f : 1f);
     }
 }

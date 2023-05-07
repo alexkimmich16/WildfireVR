@@ -13,6 +13,7 @@ namespace RestrictionSystem
         [ListDrawerSettings(ShowIndexLabels = true)] public List<FrameLogicInfo> LogicInfo;
         [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "Motion")] public List<MotionConditionInfo> MotionConditions;
     }
+
     [System.Serializable]
     public struct RegressionInfo
     {

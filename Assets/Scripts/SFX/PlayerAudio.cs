@@ -8,8 +8,8 @@ public class PlayerAudio : SerializedMonoBehaviour
 
     void Update()
     {
+        //maybe transition as door opens
         AudioSpeaker.volume = SoundManager.instance.Volume(SoundType.Voice);
-
-        PhotonSpeaker.enabled = SoundManager.instance.CanPlay(SoundType.Voice);
+        AudioSpeaker.maxDistance = DoorManager.instance.Sequence >= SequenceState.OpenOutDoor ? SoundManager.instance.GameAudioDistance : SoundManager.instance.ElevatorAudioDistance;
     }
 }

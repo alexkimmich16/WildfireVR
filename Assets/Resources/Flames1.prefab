@@ -24430,8 +24430,18 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
+    SerializationNodes:
+    - Name: Sound
+      Entry: 7
+      Data: FMOD.Studio.EventInstance, FMODUnity
+    - Name: handle
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
   AddToAmbientVFX: 1
+  EffectName: flames
 --- !u!114 &7748286695361512429
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,14 +11,16 @@ public class CamAtFloor : MonoBehaviour
 
     public bool RestrictAll = false;
     public bool AllowRaycast;
+
+    public LayerMask LM;
+
     public void CustomUpdate()
     {
         if (RestrictAll)
             return;
 
-        if(Physics.Raycast(Cam.transform.position, -Vector3.up, out RaycastHit hit) && AllowRaycast)
+        if(Physics.Raycast(Cam.transform.position, -Vector3.up, out RaycastHit hit, Mathf.Infinity, LM) && AllowRaycast)
         {
-            //Debug.Log("set1");
             transform.position = new Vector3(Cam.position.x, hit.point.y + HitOffset, Cam.position.z);
         }
         else
