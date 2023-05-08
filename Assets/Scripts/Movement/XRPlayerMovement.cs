@@ -5,33 +5,37 @@ using Sirenix.OdinInspector;
 public class XRPlayerMovement : SerializedMonoBehaviour
 {
     [Header("Movement Settings")]
-    [SerializeField] private float maxVelocity = 5f;
-    [SerializeField] private float acceleration = 2f;
-    [SerializeField] private float deceleration = 4f;
-    [SerializeField] private float jumpForce = 5f;
-    [SerializeField] private float gravityMultiplier = 1f;
+    [SerializeField, FoldoutGroup("Movement Settings")] private float maxVelocity = 5f;
+    [SerializeField, FoldoutGroup("Movement Settings")] private float acceleration = 2f;
+    [SerializeField, FoldoutGroup("Movement Settings")] private float deceleration = 4f;
+    
+    [SerializeField, FoldoutGroup("Movement Settings")] private float gravityMultiplier = 1f;
+    [SerializeField, FoldoutGroup("Movement Settings")] private float GroundedOffsetCheck = 1f;
+    //[SerializeField, FoldoutGroup("Movement Settings"), ReadOnly] private bool UseGravity;
 
     [Header("Input Settings")]
-    [SerializeField] private XRController controller;
-    [ReadOnly, SerializeField] private Vector2 inputAxis;
-    [ReadOnly, SerializeField] private Vector2 directionAdd;
+    [SerializeField, FoldoutGroup("Input Settings")] private XRController controller;
+    [ReadOnly, SerializeField, FoldoutGroup("Input Settings")] private Vector2 inputAxis;
+    [ReadOnly, SerializeField, FoldoutGroup("Input Settings")] private Vector2 directionAdd;
 
     private Rigidbody rb;
     private float currentVelocity;
     private float currentAcceleration;
     private float currentDeceleration;
     private bool isGrounded;
+    
     private Vector3 groundNormal;
 
     public XRNode inputSource;
 
-    public CapsuleCollider collider;
+    [ReadOnly, FoldoutGroup("Push")] public float PushAmount;
+    [ReadOnly, FoldoutGroup("Push")] public Vector3 PushDirection;
+
     //public void SetCollider() { getx}
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
-
     private void FixedUpdate()
     {
         //SetCollider();
@@ -42,8 +46,11 @@ public class XRPlayerMovement : SerializedMonoBehaviour
         Quaternion headYaw = Quaternion.Euler(0, AIMagicControl.instance.Cam.transform.localEulerAngles.y, 0);
         Vector3 YawAdd = headYaw * new Vector3(inputAxis.x, 0, inputAxis.y);
         directionAdd = new Vector2(YawAdd.x, YawAdd.z);
+
+        Vector3 AdjustedPosition = new Vector3(transform.position.x, transform.position.y + GroundedOffsetCheck, transform.position.z);
+        
         // Check if player is grounded
-        isGrounded = Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 0.1f);
+        isGrounded = Physics.Raycast(AdjustedPosition, -transform.up, out RaycastHit hit, 0.1f);
         if (isGrounded)
         {
             groundNormal = hit.normal;
@@ -78,12 +85,13 @@ public class XRPlayerMovement : SerializedMonoBehaviour
             movement = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * movement;
             rb.AddForce(movement, ForceMode.Acceleration);
         }
-
+        /*
         // Jump
         if (isGrounded && controller.inputDevice.TryGetFeatureValue(CommonUsages.primaryButton, out bool primaryButton) && primaryButton)
         {
             rb.AddForce(groundNormal * jumpForce, ForceMode.Impulse);
         }
+        */
     }
 
     public void SetInputAxis(Vector2 axis)
@@ -103,4 +111,6 @@ public class XRPlayerMovement : SerializedMonoBehaviour
         // Opposite direction, stop and change direction
         
     }
+    
 }
+//[SerializeField] private float jumpForce = 5f;

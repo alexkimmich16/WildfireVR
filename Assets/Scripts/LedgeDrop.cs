@@ -2,20 +2,24 @@ using UnityEngine;
 using static Odin.Net;
 using Photon.Pun;
 using Photon.Realtime;
-public class LedgeDrop : MonoBehaviour
+namespace Misc
 {
-    public float DropAmount;
-    public Transform Ledge;
-    public bool Lowered;
-    void Update()
+    public class LedgeDrop : MonoBehaviour
     {
-        if(Initialized() && Exists(PlayerTeam, PhotonNetwork.LocalPlayer))
+        public float DropAmount;
+        public Transform Ledge;
+        public bool Lowered;
+        void Update()
         {
-            Lowered = !IsHigh();
-            Ledge.position = new Vector3(Ledge.position.x, IsHigh() ? 0f : DropAmount, Ledge.position.z);
-        }
-            
-    }
+            if (Initialized() && Exists(PlayerTeam, PhotonNetwork.LocalPlayer))
+            {
+                Lowered = !IsHigh();
+                Ledge.position = new Vector3(Ledge.position.x, IsHigh() ? 0f : DropAmount, Ledge.position.z);
+            }
 
-    bool IsHigh() { return Alive(PhotonNetwork.LocalPlayer) && GetPlayerTeam(PhotonNetwork.LocalPlayer) != Team.Spectator; }
+        }
+
+        bool IsHigh() { return Alive(PhotonNetwork.LocalPlayer) && GetPlayerTeam(PhotonNetwork.LocalPlayer) != Team.Spectator; }
+    }
 }
+

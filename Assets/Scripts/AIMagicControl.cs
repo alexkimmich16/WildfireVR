@@ -33,16 +33,22 @@ public class AIMagicControl : MonoBehaviour
     public List<SkinnedMeshRenderer> handsToChange;
 
     public Transform hitbox;
+    public Transform PreventorCapsule;
     public float HitboxBackDist = 0.5f;
 
     public bool AllowIdlePositions;
 
     private Vector3 Offset;
+    public Quaternion quat;
     private void Start()
     {
         Offset = hitbox.position - Cam.position;
     }
     public bool AllActive() { return HeadsetActive && LeftHandActive || RightHandActive; }
+    private void FixedUpdate()
+    {
+        PreventorCapsule.position = Cam.position;
+    }
     private void Update()
     {
         InputDevices.GetDeviceAtXRNode(XRNode.Head).TryGetFeatureValue(CommonUsages.isTracked, out HeadsetActive);
