@@ -20,10 +20,9 @@ public class FireballSide
     public GameObject Fireball;
     public GameObject Warmup;
     public bool Controlling;
-    public Vector3 StartRotation;
-    public Vector3 DifferenceToStart;
-    public Vector3 LastForwardFrame;
-    public Quaternion Difference;
+    public Quaternion lastControllerRotation;
+    public Quaternion targetRotation;
+    public Quaternion initialFireballRotation;
     //public Vector3 InitialFireballForward;
 }
 public class FireballController : SpellControlClass
@@ -34,8 +33,9 @@ public class FireballController : SpellControlClass
     public bool IsControlling;
     [Header("Stats")]
     public int Damage;
-
-    public float ControlSensitivity;
+    [Header("FireballControl")]
+    //public float rotationMultiplier = 1f;
+    public float lerpSpeed = 2f;
 
     public ControlType controlType;
     public SpawnDirection spawnDir;
@@ -51,20 +51,13 @@ public class FireballController : SpellControlClass
 
     public float WarmupDistFromHand;
 
+    //public Transform Debugger1;
+    //public Transform Debugger2;
+
+    public Vector2 XYMultiplier;
 
     
-    public Quaternion SpawnRotation(Side side)
-    {
-        //Vector3 RealOutput = new Vector3(AIMagicControl.instance.Hands[(int)side].transform.forward.x, 0f, AIMagicControl.instance.Hands[(int)side].transform.forward.z);
 
-        return Quaternion.LookRotation(AIMagicControl.instance.Hands[(int)side].transform.forward);
-        //spawnDir == SpawnDirection.HeadForward || spawnDir == SpawnDirection.HandVelocity
-    }
-    public Vector3 SpawnPosition(Side side)
-    {
-        Vector3 Pos = new Vector3(AIMagicControl.instance.Spawn[(int)side].position.x, AIMagicControl.instance.Cam.position.y, AIMagicControl.instance.Spawn[(int)side].position.z);
-        return Pos;
-    }
     public override void RecieveNewState(Side side, bool State, int Index, int Level)
     {
         if (Index == 0)
@@ -79,10 +72,10 @@ public class FireballController : SpellControlClass
             SpawnFireball(side, Level);
         }
 
-        if(Index == 2)
+        if(Index == 3)
         {
             if (State == true)
-                Sides[(int)side].StartRotation = GetControllerRot((int)side);
+                Sides[(int)side].Fireball.transform.forward = AIMagicControl.instance.Hands[(int)side].transform.forward;
             Sides[(int)side].Controlling = State;
         }
     }
@@ -92,7 +85,15 @@ public class FireballController : SpellControlClass
         if (InGameManager.instance.CanDoMagic() == false)
             return;
 
-        Sides[(int)side].Fireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, Level), SpawnPosition(side), SpawnRotation(side));
+        Sides[(int)side].Fireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, Level), new Vector3(AIMagicControl.instance.Spawn[(int)side].position.x, AIMagicControl.instance.Cam.position.y, AIMagicControl.instance.Spawn[(int)side].position.z), Quaternion.LookRotation(AIMagicControl.instance.Hands[(int)side].transform.forward));
+
+        for (int i = 0; i < Sides.Count; i++)
+        {
+            Sides[i].lastControllerRotation = AIMagicControl.instance.Hands[i].rotation;
+            Sides[i].initialFireballRotation = Sides[(int)side].Fireball.transform.rotation;
+            Sides[i].targetRotation = Sides[(int)side].Fireball.transform.rotation;
+        }
+
         //NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Fireball);
     }
     public override void InitializeSpells()
@@ -103,15 +104,16 @@ public class FireballController : SpellControlClass
             Sides[i].Warmup.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
         }
     }
-    public Vector3 GetControllerRot(int Side) { return AIMagicControl.instance.Hands[Side].transform.rotation.eulerAngles; }
+
     private void Update()
     {
-        //Debug.DrawRay(AIMagicControl.instance.Hands[0].transform.position, AIMagicControl.instance.Hands[0].transform.forward, Color.red);
-        //Debug.DrawRay(AIMagicControl.instance.Spawn[0].transform.position, AIMagicControl.instance.Spawn[0].transform.forward, Color.blue);
-        //Debug.DrawRay(AIMagicControl.instance.PositionObjectives[0].transform.position, AIMagicControl.instance.PositionObjectives[0].transform.forward, Color.green);
-
+        //if(Sides[0].Fireball != null)
+            //Debugger1.rotation = Sides[0].Fireball.transform.rotation;
+        //Debugger2.rotation = Sides[0].targetRotation;
         for (int i = 0; i < Sides.Count; i++)
         {
+            
+            
             if(Sides[i].Warmup != null)
             {
                 Vector3 ForwardRot = Quaternion.Euler(AIMagicControl.instance.Hands[i].eulerAngles) * Vector3.forward;
@@ -122,47 +124,23 @@ public class FireballController : SpellControlClass
 
             if (Sides[i].Controlling)
             {
-                Quaternion rotationDifference = Quaternion.identity;
+                Quaternion currentRotation = AIMagicControl.instance.Hands[i].rotation;
+                Quaternion rotationDifference = Quaternion.Inverse(Sides[i].lastControllerRotation) * currentRotation;
+                rotationDifference = Quaternion.Euler(-rotationDifference.eulerAngles.y * XYMultiplier.y, rotationDifference.eulerAngles.x * XYMultiplier.x, 0f);
 
-                if (controlType == ControlType.OnRotateHand)
-                {
-                    rotationDifference = Quaternion.FromToRotation(Sides[i].LastForwardFrame * 180f, GetControllerRot(i) * 180f);
-                    Sides[i].Fireball.transform.rotation = AIMagicControl.instance.Hands[i].transform.rotation;
-                    //NewDirection = Add(Quaternion.Euler(Direction), AddDir).eulerAngles;         
-                }
-                else if (controlType == ControlType.ApplyConstant)
-                {
-                    //rotationDifference = Quaternion.FromToRotation(Sides[i].StartRotation, GetControllerRot(i));
+                Sides[i].targetRotation = Sides[i].Fireball.transform.rotation * rotationDifference;
+                Sides[i].lastControllerRotation = currentRotation;
 
-                }
-                //Debug.Log(rotationDifference);
-                Sides[i].Fireball.transform.rotation *= Quaternion.Euler(rotationDifference.eulerAngles * ControlSensitivity);
-                //Sides[i].Fireball.transform.Rotate(DirectionAdd);
-                Sides[i].LastForwardFrame = GetControllerRot(i);
-                Sides[i].Difference = Quaternion.Euler(rotationDifference.eulerAngles * ControlSensitivity);
+                Sides[i].Fireball.transform.rotation = Quaternion.Lerp(Sides[i].Fireball.transform.rotation, Sides[i].targetRotation, Time.deltaTime);
+                    
+                //Sides[i].Fireball.transform.position += Sides[i].Fireball.transform.forward * Time.deltaTime; // Move the fireball forward
             }
 
-            Quaternion RotDifference(Vector3 rotation1, Vector3 rotation2)
-            {
-                Quaternion q1 = Quaternion.Euler(rotation1);
-                Quaternion q2 = Quaternion.Euler(rotation2);
-
-                Quaternion Dif = Diff(q1, q2);
-                return Dif;
-            }
-
-            Quaternion Diff(Quaternion to, Quaternion from)
-            {
-                return to * Quaternion.Inverse(from);
-            }
-            Quaternion Add(Quaternion start, Quaternion diff)
-            {
-                return diff * start;
-            }
+            
         }
+
+        
     }
-
-
 }
 
 //    public float ToDegrees(Vector2 value) { return Mathf.Atan2(value.y, value.x) * 180f / Mathf.PI; }

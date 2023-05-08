@@ -1,6 +1,8 @@
 using UnityEngine;
 using Photon.Voice.Unity;
 using Sirenix.OdinInspector;
+using Photon.Pun;
+using static Odin.Net;
 public class PlayerAudio : SerializedMonoBehaviour
 {
     public AudioSource AudioSpeaker;
@@ -10,6 +12,13 @@ public class PlayerAudio : SerializedMonoBehaviour
     {
         //maybe transition as door opens
         AudioSpeaker.volume = SoundManager.instance.Volume(SoundType.Voice);
-        AudioSpeaker.maxDistance = DoorManager.instance.Sequence >= SequenceState.OpenOutDoor ? SoundManager.instance.GameAudioDistance : SoundManager.instance.ElevatorAudioDistance;
+        bool TeamSpeakDoor = DoorManager.instance.Sequence < SequenceState.OpenOutDoor;
+        //AudioSpeaker.maxDistance = DoorManager.instance.Sequence >= SequenceState.OpenOutDoor ? SoundManager.instance.GameAudioDistance : SoundManager.instance.ElevatorAudioDistance;
+        if (DoorManager.instance.Sequence >= SequenceState.OpenOutDoor)
+        {
+            AudioSpeaker.enabled = TeamSpeakDoor ? GetPlayerTeam(transform.parent.parent.GetComponent<PhotonView>().Owner) == GetPlayerTeam(PhotonNetwork.LocalPlayer) : true;
+        }
+
+        
     }
 }

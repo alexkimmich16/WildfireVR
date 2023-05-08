@@ -59,7 +59,6 @@ public class InGameManager : SerializedMonoBehaviour
     /// MAKE SURE OWNERSHIP DOESN"T PASS TO SOMEONE WHO JUST JOINED
     /// IF THERES NOONE ELSE RESTART THE GAME!!!
     /// </summary>
-    /// <returns></returns>
     public Team BestTeamForSpawn()
     {
         if (GetGameState() != GameState.Waiting)

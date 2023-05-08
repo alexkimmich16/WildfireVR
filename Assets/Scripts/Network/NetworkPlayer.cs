@@ -131,28 +131,6 @@ public class NetworkPlayer : MonoBehaviourPun
     //public void MotionDone(RestrictionSystem.CurrentLearn spell) { FirePillar.CallStartFire(spell); }
 }
 /*
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-            stream.SendNext(Health);
-        else
-            Health = (int)stream.ReceiveNext();
-    }
-    public void ChangeHealth(int Change)
-    {
-        int oldHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
-        int newHealth = oldHealth - Change;
-        SetPlayerInt(PlayerHealth, newHealth, PhotonNetwork.LocalPlayer);
-        if (newHealth < 1)
-        {
-            //Death(true);
-            //rpcDeathRPC()
-        }
-        
-    }
-    */
-
-/*
 public IEnumerator DisolveRespawn()
 {
     disolveEvent();

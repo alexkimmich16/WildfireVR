@@ -44,7 +44,7 @@ public class SoundManager : SerializedMonoBehaviour
     public Dictionary<string, SoundEffect> Effects = new Dictionary<string, SoundEffect>();
 
 
-    [FoldoutGroup("VoiceChat")] public float ElevatorAudioDistance, GameAudioDistance;
+    //[FoldoutGroup("VoiceChat")] public float ElevatorAudioDistance, GameAudioDistance;
     [FoldoutGroup("OnHit")] public float TimeBetweenTakeDamage;
     
     

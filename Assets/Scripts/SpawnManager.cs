@@ -16,6 +16,8 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     public delegate void RespawnEvent();
     public static event RespawnEvent OnElevatorRespawn;
 
+    public bool KeepInArena;
+
 
     public List<Transform> Spawns = new List<Transform>();
     void Start()
@@ -34,7 +36,8 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     public void SetNewPosition(Team team)
     {
         Vector3 SpawnPos = Spawns[(int)team].position;
-        AIMagicControl.instance.Rig.position = SpawnPos;
+        if(!KeepInArena)
+            AIMagicControl.instance.Rig.position = SpawnPos;
     }
     public void RespawnToTeam()
     {

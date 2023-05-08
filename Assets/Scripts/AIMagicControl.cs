@@ -47,7 +47,7 @@ public class AIMagicControl : MonoBehaviour
     public bool AllActive() { return HeadsetActive && LeftHandActive || RightHandActive; }
     private void FixedUpdate()
     {
-        PreventorCapsule.position = Cam.position;
+        PreventorCapsule.position = new Vector3(Cam.position.x, Rig.position.y, Cam.position.z);
     }
     private void Update()
     {
@@ -60,6 +60,7 @@ public class AIMagicControl : MonoBehaviour
         //Vector3 RealPos = 
         hitbox.position = Cam.position - Cam.forward * HitboxBackDist;
 
+        handsToChange[0].material = Materials[ConditionManager.instance.ConditionStats[0, 0].SequenceState];
 
         if (AllActive())
         {
@@ -68,8 +69,8 @@ public class AIMagicControl : MonoBehaviour
             //List<CurrentLearn> TrueMotions = RestrictionManager.instance.AllWorkingMotions(PR.PastFrame(Side.right), PR.GetControllerInfo(Side.right));
             //CurrentLearn DisplayMotion = TrueMotions.Count == 0 ? CurrentLearn.Nothing : TrueMotions[0];
 
-            for (int i = 0; i < handsToChange.Count; i++)
-                handsToChange[i].material = Materials[GetMatTestNum((Side)i)]; //set hand
+            //for (int i = 0; i < handsToChange.Count; i++)
+                //handsToChange[i].material = Materials[GetMatTestNum((Side)i)]; //set hand
 
             int GetMatTestNum(Side side)
             {
