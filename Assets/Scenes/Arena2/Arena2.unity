@@ -6287,7 +6287,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &554779631
 Transform:
   m_ObjectHideFlags: 0
@@ -6890,7 +6890,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RespawnTime: 5
   FadeStartTime: 3
-  KeepInArena: 1
+  KeepInArena: 0
   Spawns:
   - {fileID: 1466486357}
   - {fileID: 201726677}
@@ -15165,8 +15165,6 @@ MonoBehaviour:
     targetRotation: {x: 0, y: 0, z: 0, w: 0}
     initialFireballRotation: {x: 0, y: 0, z: 0, w: 0}
   WarmupDistFromHand: 0
-  Debugger1: {fileID: 554779631}
-  Debugger2: {fileID: 1783202443}
   XYMultiplier: {x: 90, y: 60}
 --- !u!4 &1459142604
 Transform:
@@ -19286,7 +19284,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1783202443
 Transform:
   m_ObjectHideFlags: 0

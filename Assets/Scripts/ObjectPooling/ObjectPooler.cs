@@ -123,7 +123,7 @@ namespace ObjectPooling
                     pooledObject.transform.position = position;
                     pooledObject.transform.rotation = rotation;
 
-                    pooledObject.SetActive(true);
+                    //pooledObject.SetActive(true);
                     if(pooledObject.GetComponent<PhotonView>().OwnershipTransfer != OwnershipOption.Fixed && !pooledObject.GetComponent<PhotonView>().IsMine)
                         pooledObject.GetComponent<PhotonView>().RequestOwnership();
 
