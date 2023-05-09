@@ -56,7 +56,27 @@ public class FireballController : SpellControlClass
 
     public Vector2 XYMultiplier;
 
-    
+    public void CheckFireballForMine(object fireball)
+    {
+        for (int i = 0; i < Sides.Count; i++)
+        {
+            if(Sides[i].Fireball != null)
+            {
+                if (ReferenceEquals(fireball, Sides[i].Fireball))
+                {
+                    if (ConditionManager.instance.ConditionStats[i, (int)CurrentLearn.Fireball - 1].SequenceState >= 2)//controlling and fireball collides
+                    {
+                        MotionConditionInfo Condition = ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1];
+                        ConditionManager.instance.ConditionStats[i, (int)CurrentLearn.Fireball - 1].Reset();
+                        for (int j = 0; j < ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1].Sequences.Count; j++)
+                        {
+                            ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1].DoEvent((Side)i, false, j, Condition.CastLevel);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     public override void RecieveNewState(Side side, bool State, int Index, int Level)
     {

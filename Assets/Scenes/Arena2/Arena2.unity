@@ -4985,7 +4985,6 @@ MonoBehaviour:
   PreventorCapsule: {fileID: 1229982123}
   HitboxBackDist: 0.16
   AllowIdlePositions: 0
-  quat: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &462535580
 GameObject:
   m_ObjectHideFlags: 0
@@ -7636,7 +7635,7 @@ MonoBehaviour:
   - {fileID: 1308381498}
   Cam: {fileID: 1297422934}
   UseSides: 0101
-  OverrideSides: 0
+  OverrideSides: 1
   DrawDebug: 0
 --- !u!4 &687382334
 Transform:

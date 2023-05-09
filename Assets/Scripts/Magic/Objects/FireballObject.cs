@@ -2,6 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
+using RestrictionSystem;
 public class FireballObject : SpellObjectClass
 {
     public float Speed;
@@ -91,6 +92,8 @@ public class FireballObject : SpellObjectClass
         void KillThis()
         {
             GetComponent<PhotonDestroy>().StartCountdown();
+            if(GetComponent<PhotonView>().IsMine)
+                FireballController.instance.CheckFireballForMine(gameObject);
             gameObject.GetComponent<PhotonView>().RPC("OnHit", RpcTarget.All);
         }
     }

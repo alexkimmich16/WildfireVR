@@ -39,7 +39,6 @@ public class AIMagicControl : MonoBehaviour
     public bool AllowIdlePositions;
 
     private Vector3 Offset;
-    public Quaternion quat;
     private void Start()
     {
         Offset = hitbox.position - Cam.position;
