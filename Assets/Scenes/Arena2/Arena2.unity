@@ -7634,9 +7634,8 @@ MonoBehaviour:
   - {fileID: 1552789714}
   - {fileID: 1308381498}
   Cam: {fileID: 1297422934}
-  UseSides: 0101
-  OverrideSides: 1
   DrawDebug: 0
+  HandsActive: 
 --- !u!4 &687382334
 Transform:
   m_ObjectHideFlags: 0
@@ -8439,6 +8438,11 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   Motion: 2
+  UseRepeatingHaptics: 1
+  HapticAmplitude: 0.2
+  HapticTime: 0
+  HapticRefreshTime: 0.05
+  HapticOverlap: 0.05
   Actives: 0000
   ShouldDebug: 0
   EnemyCooldownTime: 1.02
@@ -15140,6 +15144,11 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   Motion: 1
+  UseRepeatingHaptics: 0
+  HapticAmplitude: 0.8
+  HapticTime: 0.7
+  HapticRefreshTime: 0.05
+  HapticOverlap: 0.05
   IsControlling: 0
   Damage: 25
   lerpSpeed: 0.28
@@ -15706,6 +15715,11 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   Motion: 3
+  UseRepeatingHaptics: 0
+  HapticAmplitude: 0
+  HapticTime: 0
+  HapticRefreshTime: 0.05
+  HapticOverlap: 0.05
   Active: 0000
   BlockVFXObject: {fileID: 0}
   FlameDistanceFromHead: 2

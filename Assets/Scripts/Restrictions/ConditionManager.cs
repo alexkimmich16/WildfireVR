@@ -99,7 +99,6 @@ namespace RestrictionSystem
                     int CoefficentStart = NowState.SingleConditions.Count * 2;
                     for (int i = 0; i < RawInputs.Length; i++)
                     {
-                        Debug.Log((CoefficentStart + (i * 2)));
                         if(RawInputs[i] > NowState.Coefficents[CoefficentStart + (i * 2)] && RawInputs[i] < NowState.Coefficents[CoefficentStart + (i * 2) + 1])
                         {
                             SequenceReset();

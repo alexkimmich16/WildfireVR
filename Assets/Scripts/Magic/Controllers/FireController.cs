@@ -54,6 +54,8 @@ public class FireController : SpellControlClass
             OnlineFire[(int)side].GetPhotonView().RPC("SetFlamesOnline", RpcTarget.All, false);
             OnlineFire[(int)side].GetComponent<PhotonDestroy>().StartCountdown();
             OnlineFire[(int)side] = null;
+
+            SetHaptics(side, false);
         }
     }
     public void StartFire(Side side, int Level)
@@ -67,8 +69,8 @@ public class FireController : SpellControlClass
             OnlineFire[(int)side].GetPhotonView().RPC("SetFlamesOnline", RpcTarget.All, false);
             OnlineFire[(int)side].GetComponent<PhotonDestroy>().StartCountdown();
         }
-        
-        
+
+        SetHaptics(side, true);
         OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, Level), GetPos(side), GetRot(side));
         //OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, Level), Vector3.zero, Camera.main.transform.rotation);
         //OnlineFire[(int)side].name = "OnlineFire";

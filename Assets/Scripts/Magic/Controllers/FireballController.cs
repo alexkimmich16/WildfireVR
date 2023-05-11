@@ -104,7 +104,7 @@ public class FireballController : SpellControlClass
     {
         if (InGameManager.instance.CanDoMagic() == false)
             return;
-
+        SetHaptics(side, true);
         Sides[(int)side].Fireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, Level), new Vector3(AIMagicControl.instance.Spawn[(int)side].position.x, AIMagicControl.instance.Cam.position.y, AIMagicControl.instance.Spawn[(int)side].position.z), Quaternion.LookRotation(AIMagicControl.instance.Hands[(int)side].transform.forward));
 
         for (int i = 0; i < Sides.Count; i++)
