@@ -10,6 +10,8 @@ namespace RestrictionSystem
         HandFacing = 2,
         HandHeadDistance = 3,
         HandToHeadAngle = 4,
+        TimedAngleChange = 5,
+        AngleChange = 6,
     }
     
     public enum Axis
@@ -29,12 +31,12 @@ namespace RestrictionSystem
         right = 0,
         left = 1,
     }
-    public enum CurrentLearn
+    public enum MotionState
     {
         Nothing = 0,
         Fireball = 1,
         Flames = 2,
-        FlameBlock = 3,
+        Parry = 3,
     }
 
 
@@ -51,6 +53,8 @@ namespace RestrictionSystem
             {Restriction.HandFacing, HandFacing},
             {Restriction.HandHeadDistance, HandHeadDistance},
             {Restriction.HandToHeadAngle, HandToHeadAngle},
+            {Restriction.TimedAngleChange, TimedAngleChange},
+            {Restriction.AngleChange, AngleChange},
         };
         public MotionSettings RestrictionSettings;
         
@@ -65,7 +69,7 @@ namespace RestrictionSystem
                 {
                     for (int j = 1; j < RestrictionSettings.Coefficents.Count + 1; j++)
                     {
-                        CurrentLearn motion = (CurrentLearn)j;
+                        MotionState motion = (MotionState)j;
 
                         FrameLogic.instance.InputRawMotionState(side, motion, MotionWorks(PR.PastFrame(side), PR.GetControllerInfo(side), motion), PR.GetControllerInfo(side).SpawnTime - PR.PastFrame(side).SpawnTime);
                         bool Works = FrameLogic.instance.Calculate(side, motion);
@@ -78,11 +82,10 @@ namespace RestrictionSystem
                 
             }
         }
-        public bool MotionWorks(SingleInfo frame1, SingleInfo frame2, CurrentLearn motionType)
+        public bool MotionWorks(SingleInfo frame1, SingleInfo frame2, MotionState motionType)
         {
             List<float> TestValues = new List<float>();
             MotionRestriction restriction = RestrictionSettings.MotionRestrictions[(int)motionType - 1];
-
             for (int i = 0; i < restriction.Restrictions.Count; i++)
             {
                 TestValues.Add(RestrictionDictionary[restriction.Restrictions[i].restriction].Invoke(restriction.Restrictions[i], frame1, frame2));
@@ -150,6 +153,20 @@ namespace RestrictionSystem
             //restriction.Value = Angle;
             return Angle;
             
+        }
+        public static float TimedAngleChange(SingleRestriction restriction, SingleInfo frame1, SingleInfo frame2)
+        {
+            Vector3 OldDir = EliminateAxis(restriction.UseAxisList, frame1.HandPosType(restriction.UseLocalHandPos).normalized);
+            Vector3 NewDir = EliminateAxis(restriction.UseAxisList, frame2.HandPosType(restriction.UseLocalHandPos).normalized);
+            //restriction.Value = Vector3.Angle(HandDir, OtherDir);
+            return Vector3.Angle(OldDir, NewDir) / (frame2.SpawnTime - frame1.SpawnTime);
+        }
+        public static float AngleChange(SingleRestriction restriction, SingleInfo frame1, SingleInfo frame2)
+        {
+            Vector3 OldDir = EliminateAxis(restriction.UseAxisList, frame1.HandPosType(restriction.UseLocalHandPos).normalized);
+            Vector3 NewDir = EliminateAxis(restriction.UseAxisList, frame2.HandPosType(restriction.UseLocalHandPos).normalized);
+            //restriction.Value = Vector3.Angle(HandDir, OtherDir);
+            return Vector3.Angle(OldDir, NewDir);
         }
         #endregion
     }

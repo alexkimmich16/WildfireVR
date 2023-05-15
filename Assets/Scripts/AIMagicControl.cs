@@ -75,7 +75,7 @@ public class AIMagicControl : MonoBehaviour
             {
                 List<int> Working = new List<int>();
                 for (int j = 1; j < RestrictionManager.instance.RestrictionSettings.Coefficents.Count + 1; j++)
-                    if (RestrictionManager.instance.MotionWorks(PR.PastFrame(side), PastFrameRecorder.instance.GetControllerInfo(side), (CurrentLearn)j))
+                    if (RestrictionManager.instance.MotionWorks(PR.PastFrame(side), PastFrameRecorder.instance.GetControllerInfo(side), (MotionState)j))
                         Working.Add(j);
                 if (Working.Count == 0)
                     return 0;

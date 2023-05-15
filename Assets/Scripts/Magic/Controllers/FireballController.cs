@@ -64,10 +64,10 @@ public class FireballController : SpellControlClass
             {
                 if (ReferenceEquals(fireball, Sides[i].Fireball))
                 {
-                    if (ConditionManager.instance.ConditionStats[i, (int)CurrentLearn.Fireball - 1].SequenceState >= 2)//controlling and fireball collides
+                    if (ConditionManager.instance.ConditionStats[i, (int)MotionState.Fireball - 1].SequenceState >= 2)//controlling and fireball collides
                     {
                         MotionConditionInfo Condition = ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1];
-                        ConditionManager.instance.ConditionStats[i, (int)CurrentLearn.Fireball - 1].Reset();
+                        ConditionManager.instance.ConditionStats[i, (int)MotionState.Fireball - 1].Reset();
                         for (int j = 0; j < ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1].Sequences.Count; j++)
                         {
                             ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1].DoEvent((Side)i, false, j, Condition.CastLevel);
@@ -105,7 +105,7 @@ public class FireballController : SpellControlClass
         if (InGameManager.instance.CanDoMagic() == false)
             return;
         SetHaptics(side, true);
-        Sides[(int)side].Fireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Fireball, Level), new Vector3(AIMagicControl.instance.Spawn[(int)side].position.x, AIMagicControl.instance.Cam.position.y, AIMagicControl.instance.Spawn[(int)side].position.z), Quaternion.LookRotation(AIMagicControl.instance.Hands[(int)side].transform.forward));
+        Sides[(int)side].Fireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(MotionState.Fireball, Level), new Vector3(AIMagicControl.instance.Spawn[(int)side].position.x, AIMagicControl.instance.Cam.position.y, AIMagicControl.instance.Spawn[(int)side].position.z), Quaternion.LookRotation(AIMagicControl.instance.Hands[(int)side].transform.forward));
 
         for (int i = 0; i < Sides.Count; i++)
         {
@@ -124,7 +124,6 @@ public class FireballController : SpellControlClass
             Sides[i].Warmup.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
         }
     }
-
     private void Update()
     {
         //if(Sides[0].Fireball != null)
@@ -146,7 +145,8 @@ public class FireballController : SpellControlClass
             {
                 Quaternion currentRotation = AIMagicControl.instance.Hands[i].rotation;
                 Quaternion rotationDifference = Quaternion.Inverse(Sides[i].lastControllerRotation) * currentRotation;
-                rotationDifference = Quaternion.Euler(-rotationDifference.eulerAngles.y * XYMultiplier.y, rotationDifference.eulerAngles.x * XYMultiplier.x, 0f);
+                Vector2 SideInvert = i == 0 ? new Vector2(-1f, 1f) : new Vector2(1f, -1f);
+                rotationDifference = Quaternion.Euler(rotationDifference.eulerAngles.y * XYMultiplier.y * SideInvert.x, rotationDifference.eulerAngles.x * XYMultiplier.x * SideInvert.y, 0f);
 
                 Sides[i].targetRotation = Sides[i].Fireball.transform.rotation * rotationDifference;
                 Sides[i].lastControllerRotation = currentRotation;

@@ -1,9 +1,10 @@
 using System.Collections;
 using UnityEngine;
+using RestrictionSystem;
 public class FirePillar : MonoBehaviour
 {
     //subscribe to on fire event
-    public delegate void StateEvent(RestrictionSystem.CurrentLearn spell);
+    public delegate void StateEvent(MotionState spell);
     public static event StateEvent OnFire;
 
     //public delegate void CountdownEvent();
@@ -14,14 +15,14 @@ public class FirePillar : MonoBehaviour
     public VFXHolder VFX;
     public static bool AbleToActivate;
     //Debug.Log("FLAMEEEE");
-    public static void CallStartFire(RestrictionSystem.CurrentLearn spell) { if (AbleToActivate) { OnFire(spell); }  }
+    public static void CallStartFire(MotionState spell) { if (AbleToActivate) { OnFire(spell); }  }
 
-    public void StartFlame(RestrictionSystem.CurrentLearn spell)
+    public void StartFlame(MotionState spell)
     {
         if (!AbleToActivate)
             return;
         //Debug.Log("recieved");
-        if(spell == RestrictionSystem.CurrentLearn.Flames || spell == RestrictionSystem.CurrentLearn.Fireball)
+        if(spell == MotionState.Flames || spell == MotionState.Fireball)
         {
             VFX.SetNewState(true);
             StartCoroutine(WaitEndFire());

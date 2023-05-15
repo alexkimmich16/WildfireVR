@@ -13,8 +13,7 @@ public class BillBoardManager : MonoBehaviour
     public GameObject ChangeTeamButton;
 
     public TextMeshProUGUI StateText;
-    public TextMeshProUGUI WarmupTimeText;
-    public TextMeshProUGUI FinishTimeText;
+    public TextMeshProUGUI TimerText;
     public TextMeshProUGUI MyPlayerSpawnText;
     public TextMeshProUGUI MyTeamText;
     public TextMeshProUGUI AliveText;
@@ -29,9 +28,11 @@ public class BillBoardManager : MonoBehaviour
         if (!Initialized())
             return;
 
-        StateText.text = GetGameState().ToString();
-        WarmupTimeText.text = "WarmupTime: " + InGameManager.instance.Timer.ToString();
-        FinishTimeText.text = "FinishTime: " + InGameManager.instance.Timer.ToString();
+        StateText.text = InGameManager.instance.CurrentState.ToString();
+
+        string TimerStateText = InGameManager.instance.CurrentState == GameState.Warmup ? "WarmupTime" : "FinishTime";
+        TimerText.text = TimerStateText + ": " + InGameManager.instance.Timer.ToString();
+        //FinishTimeText.text = "FinishTime: " + InGameManager.instance.Timer.ToString();
 
         if (AllPlayersLoaded())
         {

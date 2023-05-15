@@ -15,9 +15,12 @@ public class KeycodeTesting : MonoBehaviour
     public KeyCode StartGame;
     public KeyCode CancelStartup;
     public KeyCode JoinAsSpectator;
+    
 
     public KeyCode Fireball;
     public KeyCode Flames;
+
+    public KeyCode GetData;
 
     //public ob
 
@@ -58,13 +61,19 @@ public class KeycodeTesting : MonoBehaviour
         if (Input.GetKeyDown(JoinAsSpectator))
             SpawnManager.instance.JoinAsSpectator();
 
+
+        if (Input.GetKeyDown(GetData))
+            DatabaseManage.instance.GetData();
+
+
+
         //if (Input.GetKeyDown(KeyCode.P))
-            //NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetComponent<Ragdoll>().EnableRagdoll();
-        
+        //NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetComponent<Ragdoll>().EnableRagdoll();
+
         //if (Input.GetKeyDown(KeyCode.P))
-            //FireController.instance.RecieveNewState(Side.right, false);
+        //FireController.instance.RecieveNewState(Side.right, false);
         //if (Input.GetKeyDown(KeyCode.O))
-            //FireController.instance.RecieveNewState(Side.right, true);
+        //FireController.instance.RecieveNewState(Side.right, true);
 
     }
 }

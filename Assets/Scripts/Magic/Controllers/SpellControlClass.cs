@@ -6,7 +6,7 @@ using UnityEngine.XR.Interaction;
 using UnityEngine.XR;
 public abstract class SpellControlClass : SerializedMonoBehaviour
 {
-    public CurrentLearn Motion;
+    public MotionState Motion;
     public bool UseRepeatingHaptics;
     [PropertyRange(0f,1f)]public float HapticAmplitude = 0.5f;
     [HideIf("UseRepeatingHaptics")]public float HapticTime = 0.5f;
@@ -20,6 +20,17 @@ public abstract class SpellControlClass : SerializedMonoBehaviour
     public void Start()
     {
         NetworkManager.OnInitialized += Initalize;
+        PastFrameRecorder.disableController += ResetHaptics;
+
+    }
+    public void ResetHaptics(Side side)
+    {
+        if (!UseRepeatingHaptics)
+            return;
+
+        string SideMethod = side == Side.right ? "ForceHapticRight" : "ForceHapticLeft";
+        CancelInvoke(SideMethod);
+
     }
     public void Initalize()
     {
@@ -34,14 +45,14 @@ public abstract class SpellControlClass : SerializedMonoBehaviour
         }
         else
         {
-            string Method = side == Side.right ? "ForceHapticRight" : "ForceHapticLeft";
+            string SideMethod = side == Side.right ? "ForceHapticRight" : "ForceHapticLeft";
             if (State == true)
             {
-                InvokeRepeating(Method, 0f, HapticRefreshTime);
+                InvokeRepeating(SideMethod, 0f, HapticRefreshTime);
             }
             else
             {
-                CancelInvoke(Method);
+                CancelInvoke(SideMethod);
             }
         }
     }
