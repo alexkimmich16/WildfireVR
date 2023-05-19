@@ -6,7 +6,7 @@ using UnityEngine.XR.Interaction;
 using UnityEngine.XR;
 public abstract class SpellControlClass : SerializedMonoBehaviour
 {
-    public MotionState Motion;
+    public Spell Motion;
     public bool UseRepeatingHaptics;
     [PropertyRange(0f,1f)]public float HapticAmplitude = 0.5f;
     [HideIf("UseRepeatingHaptics")]public float HapticTime = 0.5f;

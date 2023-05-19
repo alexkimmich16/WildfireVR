@@ -37,7 +37,7 @@ public class BlockController : SpellControlClass
     }
     public override void InitializeSpells()
     {
-        BlockVFXObject = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(MotionState.Parry, 0), Vector3.zero, Quaternion.identity);
+        BlockVFXObject = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(Spell.UpParry, 0), Vector3.zero, Quaternion.identity);
         BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.AllBuffered, false);
     }
     private void Update()
