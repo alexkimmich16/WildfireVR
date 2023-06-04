@@ -341,8 +341,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5689520855871632223}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 106.3, y: 21.29, z: 24.7}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 106.3, y: 21.92, z: 24.7}
   m_LocalScale: {x: 20, y: 20, z: 20}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -396,7 +396,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6029792702687058253}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.0488, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -415,8 +415,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 301.8
-  m_Range: 35
+  m_Intensity: 50
+  m_Range: 5.6
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -458,9 +458,9 @@ Light:
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 0
-  m_ColorTemperature: 2187
+  m_ColorTemperature: 1500
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 6.25e-43, y: 2.389821e-24, z: 6.18e-43, w: 6.8291495e+22}
+  m_BoundingSphereOverride: {x: 0.40625, y: 174.00002, z: 0, w: 8.4e-44}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -580,11 +580,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BraziarFlame
       objectReference: {fileID: 0}
-    - target: {fileID: 4160654380819514620, guid: df094d326c25e4f47a61e3a30a96dc98,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4899718081248423954, guid: df094d326c25e4f47a61e3a30a96dc98,
         type: 3}
       propertyPath: m_RootOrder
@@ -638,51 +633,6 @@ PrefabInstance:
     - target: {fileID: 4899718081248423954, guid: df094d326c25e4f47a61e3a30a96dc98,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6902287537592893413, guid: df094d326c25e4f47a61e3a30a96dc98,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.41
-      objectReference: {fileID: 0}
-    - target: {fileID: 7155107976749650564, guid: df094d326c25e4f47a61e3a30a96dc98,
-        type: 3}
-      propertyPath: looping
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7155107976749650564, guid: df094d326c25e4f47a61e3a30a96dc98,
-        type: 3}
-      propertyPath: startDelay.scalar
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7155107976749650564, guid: df094d326c25e4f47a61e3a30a96dc98,
-        type: 3}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 175.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7155107976749650564, guid: df094d326c25e4f47a61e3a30a96dc98,
-        type: 3}
-      propertyPath: CustomDataModule.vector1_1.maxCurve.m_Curve.Array.data[1].time
-      value: 0.010154511
-      objectReference: {fileID: 0}
-    - target: {fileID: 7155107976749650564, guid: df094d326c25e4f47a61e3a30a96dc98,
-        type: 3}
-      propertyPath: CustomDataModule.vector1_1.maxCurve.m_Curve.Array.data[1].value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7155107976749650564, guid: df094d326c25e4f47a61e3a30a96dc98,
-        type: 3}
-      propertyPath: CustomDataModule.vector1_1.maxCurve.m_Curve.Array.data[2].inSlope
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7155107976749650564, guid: df094d326c25e4f47a61e3a30a96dc98,
-        type: 3}
-      propertyPath: CustomDataModule.vector1_1.maxCurve.m_Curve.Array.data[2].outSlope
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7721368856826999759, guid: df094d326c25e4f47a61e3a30a96dc98,
-        type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

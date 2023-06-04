@@ -75,7 +75,7 @@ public class FireController : SpellControlClass
         }
 
         SetHaptics(side, true);
-        OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(Spell.Flames, Level), GetPos(side), GetRot(side));
+        OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(MotionState.Flames, Level), GetPos(side), GetRot(side));
         //OnlineFire[(int)side] = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(CurrentLearn.Flames, Level), Vector3.zero, Camera.main.transform.rotation);
         //OnlineFire[(int)side].name = "OnlineFire";
     }
