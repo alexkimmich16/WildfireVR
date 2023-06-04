@@ -31,13 +31,12 @@ namespace RestrictionSystem
         right = 0,
         left = 1,
     }
-    public enum Spell
+    public enum MotionState
     {
         Nothing = 0,
         Fireball = 1,
         Flames = 2,
-        SideParry = 3,
-        UpParry = 4,
+        Parry = 3,
     }
 
 
@@ -70,7 +69,7 @@ namespace RestrictionSystem
                 {
                     for (int j = 1; j < RestrictionSettings.Coefficents.Count + 1; j++)
                     {
-                        Spell motion = (Spell)j;
+                        MotionState motion = (MotionState)j;
 
                         FrameLogic.instance.InputRawMotionState(side, motion, MotionWorks(PR.PastFrame(side), PR.GetControllerInfo(side), motion), PR.GetControllerInfo(side).SpawnTime - PR.PastFrame(side).SpawnTime);
                         bool Works = FrameLogic.instance.Calculate(side, motion);
@@ -83,7 +82,7 @@ namespace RestrictionSystem
                 
             }
         }
-        public bool MotionWorks(SingleInfo frame1, SingleInfo frame2, Spell motionType)
+        public bool MotionWorks(SingleInfo frame1, SingleInfo frame2, MotionState motionType)
         {
             List<float> TestValues = new List<float>();
             MotionRestriction restriction = RestrictionSettings.MotionRestrictions[(int)motionType - 1];

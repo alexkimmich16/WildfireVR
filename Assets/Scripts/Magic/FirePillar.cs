@@ -4,7 +4,7 @@ using RestrictionSystem;
 public class FirePillar : MonoBehaviour
 {
     //subscribe to on fire event
-    public delegate void StateEvent(Spell spell);
+    public delegate void StateEvent(MotionState spell);
     public static event StateEvent OnFire;
 
     //public delegate void CountdownEvent();
@@ -15,14 +15,14 @@ public class FirePillar : MonoBehaviour
     public VFXHolder VFX;
     public static bool AbleToActivate;
     //Debug.Log("FLAMEEEE");
-    public static void CallStartFire(Spell spell) { if (AbleToActivate) { OnFire(spell); }  }
+    public static void CallStartFire(MotionState spell) { if (AbleToActivate) { OnFire(spell); }  }
 
-    public void StartFlame(Spell spell)
+    public void StartFlame(MotionState spell)
     {
         if (!AbleToActivate)
             return;
         //Debug.Log("recieved");
-        if(spell == Spell.Flames || spell == Spell.Fireball)
+        if(spell == MotionState.Flames || spell == MotionState.Fireball)
         {
             VFX.SetNewState(true);
             StartCoroutine(WaitEndFire());
