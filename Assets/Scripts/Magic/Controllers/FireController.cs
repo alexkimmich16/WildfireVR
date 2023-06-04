@@ -44,6 +44,9 @@ public class FireController : SpellControlClass
     private List<float> DelayTimer;
     public List<bool> IsCountingDelay;
 
+    public List<Vector3> Velocities;
+    //public float VelocityMultiplier;
+
     public bool IsCooldown(Transform hitAttempt) { return DamageCooldowns.Any(x => x.Target == hitAttempt); }
 
     #region StartStop
@@ -51,6 +54,7 @@ public class FireController : SpellControlClass
     {
         if (OnlineFire[(int)side] != null)
         {
+            Velocities[(int)side] = XRPlayerMovement.instance.GetComponent<Rigidbody>().velocity;
             OnlineFire[(int)side].GetPhotonView().RPC("SetFlamesOnline", RpcTarget.All, false);
             OnlineFire[(int)side].GetComponent<PhotonDestroy>().StartCountdown();
             OnlineFire[(int)side] = null;
@@ -124,7 +128,11 @@ public class FireController : SpellControlClass
         for (int i = 0; i < OnlineFire.Count; i++)
         {
             if (IsCountingDelay[i])
+            {
                 DelayTimer[i] += Time.deltaTime;
+                //OnlineFire[i].transform.position = OnlineFire[i].transform.position + (Velocities[i] * Time.deltaTime * VelocityMultiplier);
+            }
+                
             if (DelayTimer[i] > TimeDelay)
             {
                 StopFire((Side)i);
