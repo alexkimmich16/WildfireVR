@@ -45,6 +45,9 @@ public class FireController : SpellControlClass
     public List<bool> IsCountingDelay;
 
     public List<Vector3> Velocities;
+
+    [Range(0f,1f)]public float RigidbodyVelocityAdd;
+    //[Range(0f,1f)]public float Cap;
     //public float VelocityMultiplier;
 
     public bool IsCooldown(Transform hitAttempt) { return DamageCooldowns.Any(x => x.Target == hitAttempt); }

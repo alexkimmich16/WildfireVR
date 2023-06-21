@@ -32,19 +32,19 @@ MonoBehaviour:
   planetRadius: 6378
   cloudLayerHeight: 0.84
   cloudLayerThickness: 1.97
-  cloudFadeDistance: 44.87
-  visibilityKM: 90
-  renderScaleSelection: 1
-  renderScale: 0.5
+  cloudFadeDistance: 5
+  visibilityKM: 46
+  renderScaleSelection: 2
+  renderScale: 0.25
   renderInSceneView: 1
-  taaEnabled: 1
+  taaEnabled: 0
   taaBlendFactor: 0.031
-  depthCullOptions: 1
+  depthCullOptions: 0
   subpixelJitterEnabled: 1
   castShadowsEnabled: 1
   screenShadows: 1
   shadowStrength: 0.863
-  shadowResolution: 1024
+  shadowResolution: 256
   shadowDistance: 20000
   extinctionCoefficient: 70
   maxLightingDistance: 2000
