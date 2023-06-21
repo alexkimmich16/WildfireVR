@@ -6950,7 +6950,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RespawnTime: 5
   FadeStartTime: 3
-  KeepInArena: 1
+  KeepInArena: 0
   Spawns:
   - {fileID: 1466486357}
   - {fileID: 201726677}
@@ -10778,7 +10778,7 @@ MonoBehaviour:
   FadeRising: 0
   CurrentFadeValue: 0
   FadeSpeed: 3
-  DoFade: 0
+  DoFade: 1
   Volume: {fileID: 981501668}
 --- !u!114 &981501671
 MonoBehaviour:

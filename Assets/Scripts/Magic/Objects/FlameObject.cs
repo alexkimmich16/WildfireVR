@@ -8,6 +8,7 @@ public class FlameObject : SpellObjectClass
     protected override void Update()
     {
         // GetParticles is allocation free because we reuse the m_Particles buffer between updates
+        /*
         ParticleSystem.Particle[] m_Particles = new ParticleSystem.Particle[fire.main.maxParticles];
         int numParticlesAlive = fire.GetParticles(m_Particles);
         Vector3 velocity = (transform.position - LastPos) / Time.deltaTime;
@@ -23,6 +24,7 @@ public class FlameObject : SpellObjectClass
         }
         fire.SetParticles(m_Particles, numParticlesAlive);
         LastPos = transform.position;
+        */
     }
     float CalculateSpeedTowardsDirection(Vector3 velocity, Vector3 direction)
     {
