@@ -12,21 +12,52 @@ public class ImpulseJumper : MonoBehaviour
     public List<bool> Started;
     public List<float> Cooldowns;
     public List<float> Warmups;
+    public AnimationCurve ImpulseCurve;
+    //Stats
+    //public List<bool> ReleasedTrigger;
+
     public float GroundForce;
     public float AirForce;
     public float CooldownSeconds;
-    public float WarmupSeconds;
 
-    public void DoPush(Side side)
+    private float LastPushSeconds;
+    private float ImpulsePower { get { return LastPushSeconds < MaxPowerTime ? XRPlayerMovement.instance.isGrounded ? GroundForce : AirForce * ImpulseCurve.Evaluate(LastPushSeconds - CooldownSeconds) : 1f; } }
+    public bool CanPush { get { return LastPushSeconds > CooldownSeconds; } }
+    private float MaxPowerTime { get { return ImpulseCurve.keys[^1].time + CooldownSeconds; } }
+
+    public void ImpulseBlast(Side side)
     {
-        float Force = XRPlayerMovement.instance.isGrounded ? GroundForce : AirForce;
         //GetTrigger(side)
-        XRPlayerMovement.instance.Push(Force, - AIMagicControl.instance.Hands[(int)side].forward);
+        XRPlayerMovement.instance.Push(ImpulsePower, - AIMagicControl.instance.Hands[(int)side].forward);
     }
 
-    // Update is called once per frame
+
+
     void Update()
     {
+        LastPushSeconds += Time.deltaTime;
+
+        if (!InGameManager.instance.CanDoMagic())
+            return;
+
+        for (int i = 0; i < TriggerActive.Count; i++)
+        {
+            float TriggerValue = GetTrigger((Side)i);
+
+            if(TriggerValue > 0.4f && CanPush)
+            {
+                ImpulseBlast((Side)i);
+                LastPushSeconds = 0f;
+
+                GameObject BlastOBJ = PhotonNetwork.Instantiate("ImpulseBlast", GetPos(), GetRot());
+                BlastOBJ.GetPhotonView().RPC("SetOnlineVFX", RpcTarget.All, true);
+            }
+
+            Quaternion GetRot() { return AIMagicControl.instance.Hands[i].rotation; }
+            Vector3 GetPos() { return AIMagicControl.instance.PositionObjectives[i].position; }
+
+        }
+        /*
         for (int i = 0; i < TriggerActive.Count; i++)
         {
             Cooldowns[i] -= Time.deltaTime;
@@ -65,6 +96,8 @@ public class ImpulseJumper : MonoBehaviour
             Vector3 GetPos() { return AIMagicControl.instance.PositionObjectives[i].position; }
 
         }
+        */
+
     }
     public float GetTrigger(Side side)
     {

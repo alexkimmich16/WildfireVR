@@ -39,11 +39,6 @@ public class CamAtFloor : MonoBehaviour
             Cam = NetworkOBJ.transform;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     private void FixedUpdate()
     {
         if (IsActive)

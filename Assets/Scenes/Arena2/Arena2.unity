@@ -9181,10 +9181,42 @@ MonoBehaviour:
   Warmups:
   - 0
   - 0
+  ImpulseCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1.0569423
+      outSlope: 1.0569423
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.9416667
+      value: 0.9952875
+      inSlope: 0.5284712
+      outSlope: 0.5284712
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.0916667
+      value: 0.9952875
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   GroundForce: 15
   AirForce: 19
   CooldownSeconds: 1.02
-  WarmupSeconds: 0
 --- !u!1 &868627562
 GameObject:
   m_ObjectHideFlags: 0
@@ -57714,7 +57746,7 @@ MonoBehaviour:
   FloorHeight: 0.13
   ElevatorOffset: -3.6
   NetworkOBJ: {fileID: 0}
-  HitOffset: 0
+  HitOffset: 0.03
   IsActive: 1
   RestrictAll: 0
   AllowRaycast: 1
