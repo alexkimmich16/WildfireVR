@@ -55,6 +55,7 @@ public class FlameCollision : MonoBehaviour
         else if (other.name == AIMagicControl.instance.Rig.name)//hitbox
         {
             //Debug.Log("Hitbox1");
+
             if (FlameOwner.IsLocal)//self damage
                 return;
             //Debug.Log("Hitbox2");

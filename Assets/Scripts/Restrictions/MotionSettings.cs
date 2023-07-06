@@ -12,6 +12,7 @@ namespace RestrictionSystem
         [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "Motion")] public List<MotionRestriction> MotionRestrictions;
         [ListDrawerSettings(ShowIndexLabels = true)] public List<FrameLogicInfo> LogicInfo;
         [ListDrawerSettings(ShowIndexLabels = true, ListElementLabelName = "Motion")] public List<MotionConditionInfo> MotionConditions;
+        [ListDrawerSettings(ShowIndexLabels = true)] public Vector2[][] ExpectedMaxMin;
     }
     [System.Serializable]
     public struct RegressionInfo
@@ -59,7 +60,10 @@ namespace RestrictionSystem
             this.Motion = Motion;
             this.Restrictions = new List<SingleRestriction>(Restrictions);
         }
-        
+        public MotionRestriction()
+        {
+
+        }
     }
     [Serializable]
     public class SingleRestriction

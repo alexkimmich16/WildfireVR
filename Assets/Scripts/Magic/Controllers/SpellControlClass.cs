@@ -4,19 +4,29 @@ using System.Collections.Generic;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction;
 using UnityEngine.XR;
+using UnityEngine;
 public abstract class SpellControlClass : SerializedMonoBehaviour
 {
-    public MotionState Motion;
+    public Spell Motion;
     public bool UseRepeatingHaptics;
     [PropertyRange(0f,1f)]public float HapticAmplitude = 0.5f;
     [HideIf("UseRepeatingHaptics")]public float HapticTime = 0.5f;
     [ShowIf("UseRepeatingHaptics")] public float HapticRefreshTime = 0.05f;
     [ShowIf("UseRepeatingHaptics")] public float HapticOverlap = 0.05f;
 
+    public bool DebugStates;
+
 
     public abstract void InitializeSpells();
     public abstract void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level);
+    public void DebugNewState(Side side, bool StartOrFinish, int Index, int Level)
+    {
+        if (!DebugStates)
+            return;
 
+        Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish + "  Index: " + Index);
+
+    }
     public void Start()
     {
         NetworkManager.OnInitialized += Initalize;
@@ -36,6 +46,7 @@ public abstract class SpellControlClass : SerializedMonoBehaviour
     {
         InitializeSpells();
         ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1].OnNewState += RecieveNewState;
+        ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1].OnNewState += DebugNewState;
     }
     public void SetHaptics(Side side, bool State)
     {

@@ -6950,7 +6950,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RespawnTime: 5
   FadeStartTime: 3
-  KeepInArena: 0
+  KeepInArena: 1
   Spawns:
   - {fileID: 1466486357}
   - {fileID: 201726677}
@@ -8675,6 +8675,7 @@ MonoBehaviour:
   HapticTime: 0
   HapticRefreshTime: 0.05
   HapticOverlap: 0.05
+  DebugStates: 0
   Actives: 0000
   ShouldDebug: 0
   EnemyCooldownTime: 1.02
@@ -9186,27 +9187,27 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
-      inSlope: 1.0569423
-      outSlope: 1.0569423
+      value: 0.19511414
+      inSlope: 1.4139582
+      outSlope: 1.4139582
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.9416667
-      value: 0.9952875
-      inSlope: 0.5284712
-      outSlope: 0.5284712
-      tangentMode: 34
+      time: 0.32689044
+      value: 0.65732354
+      inSlope: 0.8270099
+      outSlope: 0.8270099
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0.17476542
     - serializedVersion: 3
       time: 1.0916667
       value: 0.9952875
-      inSlope: 0
-      outSlope: 0
+      inSlope: 0.4419122
+      outSlope: 0.4419122
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -9216,7 +9217,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   GroundForce: 15
   AirForce: 19
-  CooldownSeconds: 1.02
+  CooldownSeconds: 0.45
 --- !u!1 &868627562
 GameObject:
   m_ObjectHideFlags: 0
@@ -15451,6 +15452,7 @@ MonoBehaviour:
   HapticTime: 0.7
   HapticRefreshTime: 0.05
   HapticOverlap: 0.05
+  DebugStates: 0
   IsControlling: 0
   Damage: 25
   lerpSpeed: 0.28
@@ -16021,6 +16023,7 @@ MonoBehaviour:
   HapticTime: 0
   HapticRefreshTime: 0.05
   HapticOverlap: 0.05
+  DebugStates: 0
   Active: 0000
   BlockVFXObject: {fileID: 0}
   FlameDistanceFromHead: 2
