@@ -105,7 +105,7 @@ public class FireAbsorb : MonoBehaviour
     }
     public void FailedAbsorb()
     {
-        NetworkManager.instance.LocalTakeDamage(5);
+        NetworkManager.instance.LocalTakeDamage(5, null);
         PhotonNetwork.Destroy(Fire.gameObject);
         Fire = null;
         FireballControl = false;

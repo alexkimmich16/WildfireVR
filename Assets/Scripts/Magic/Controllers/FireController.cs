@@ -19,6 +19,7 @@ public class FireController : SpellControlClass
     public bool ShouldDebug;
 
     [Header("DamageStats")]
+    public bool UseCooldowns;
     public float EnemyCooldownTime;
     public int Damage;
     public float CastCooldowntime;
@@ -46,7 +47,9 @@ public class FireController : SpellControlClass
 
     public List<Vector3> Velocities;
 
-    [Range(0f,1f)]public float RigidbodyVelocityAdd;
+    [Range(0f,100f)]public float RigidbodyVelocityMultiplier;
+    [Range(0f,100f)]public float AngleDifference;
+    //[Range(0f,100f)]public float DotProductMulitplier;
     //[Range(0f,1f)]public float Cap;
     //public float VelocityMultiplier;
 
@@ -115,14 +118,17 @@ public class FireController : SpellControlClass
 
     public void ManageEnemyCooldown()
     {
-        if(DamageCooldowns != null)
-            if (DamageCooldowns.Count > 0)
-                for (int i = 0; i < DamageCooldowns.Count; i++)
-                {
-                    DamageCooldowns[i].Time += Time.deltaTime;
-                    if (DamageCooldowns[i].Time > EnemyCooldownTime)
-                        DamageCooldowns.Remove(DamageCooldowns[i]);
-                }
+        if (DamageCooldowns == null)
+            return;
+        if (DamageCooldowns.Count <= 0)
+            return;
+
+        for (int i = 0; i < DamageCooldowns.Count; i++)
+        {
+            DamageCooldowns[i].ProgressTime();
+            if (DamageCooldowns[i].Timer > EnemyCooldownTime)
+                DamageCooldowns.Remove(DamageCooldowns[i]);
+        }
     }
     public Quaternion GetRot(Side side) { return Quaternion.LookRotation(AIMagicControl.instance.PositionObjectives[(int)side].transform.position - AIMagicControl.instance.Cam.position); }
     public Vector3 GetPos(Side side) { return AIMagicControl.instance.PositionObjectives[(int)side].position; }
@@ -156,10 +162,22 @@ public class FireController : SpellControlClass
         }
             
     }
-}
-[System.Serializable]
-public class CooldownInfo
-{
-    public Transform Target;
-    public float Time = 1;
+    [System.Serializable]
+    public struct CooldownInfo
+    {
+        public Transform Target;
+        public float Timer;
+
+        public CooldownInfo(Transform Target)
+        {
+            this.Target = Target;
+            Timer = 0;
+        }
+
+        public void ProgressTime()
+        {
+            Timer -= Time.deltaTime;
+        }
+
+    }
 }

@@ -47,7 +47,7 @@ public class KeycodeTesting : MonoBehaviour
         //AIMagicControl.instance.Flames[(int)Side.Right].StopFire();
 
         if (Input.GetKeyDown(TakeDamage))
-            NetworkManager.instance.LocalTakeDamage(DamageAmount);
+            NetworkManager.instance.LocalTakeDamage(DamageAmount, null);
 
         if (Input.GetKeyDown(Restart))
             InGameManager.instance.RestartGame();
@@ -63,7 +63,7 @@ public class KeycodeTesting : MonoBehaviour
 
 
         if (Input.GetKeyDown(GetData))
-            DatabaseManage.instance.GetData();
+            Data.Secure.instance.GetData();
 
 
 

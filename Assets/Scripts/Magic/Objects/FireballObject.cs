@@ -83,7 +83,7 @@ public class FireballObject : SpellObjectClass
                 return;
             //Debug.Log("HB2");
             if (NetworkManager.instance.FriendlyFireWorks(FireballOwner, PhotonNetwork.LocalPlayer))
-                NetworkManager.instance.LocalTakeDamage(FireballController.instance.Damage);
+                NetworkManager.instance.LocalTakeDamage(FireballController.instance.Damage, FireballOwner);
         }
 
         if (col.collider.gameObject.tag != "Shield")

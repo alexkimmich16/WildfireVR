@@ -2962,7 +2962,7 @@ Transform:
   m_GameObject: {fileID: 3767318100250484739}
   m_LocalRotation: {x: -0.07854816, y: -0.0336051, z: -0.17560917, w: 0.9807458}
   m_LocalPosition: {x: -0.000012121155, y: 0.002941907, z: 0.00002810588}
-  m_LocalScale: {x: 1.0000002, y: 1, z: 0.9999991}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6488850581499642775}
@@ -3263,7 +3263,7 @@ Transform:
   m_GameObject: {fileID: 3994820557726353563}
   m_LocalRotation: {x: -0.07854786, y: 0.033604674, z: 0.17560889, w: 0.9807459}
   m_LocalPosition: {x: 0.00001212575, y: 0.0029419, z: 0.000028108581}
-  m_LocalScale: {x: 0.9999993, y: 0.9999994, z: 0.99999994}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9135221937091402242}
@@ -4737,12 +4737,47 @@ MonoBehaviour:
     executedInEditor: 0
     IKPosition: {x: 0, y: 0, z: 0}
     IKPositionWeight: 1
-    root: {fileID: 0}
+    root: {fileID: 27964832256893997}
     LOD: 0
     scale: 1
     plantFeet: 0
     spine:
-      bones: []
+      bones:
+      - readPosition: {x: -2.0308566, y: -18.546213, z: 36.35101}
+        readRotation: {x: 0.18139976, y: -0.55159575, z: 0.8045936, w: 0.12436009}
+        solverPosition: {x: -1.6241195, y: -17.825617, z: 37.305264}
+        solverRotation: {x: 0.056262635, y: -0.960779, z: 0.18758881, w: 0.1963382}
+        length: 0.19592373
+        sqrMag: 0.038386106
+        axis: {x: -0.000101434925, y: 0.19508266, z: -0.018134532}
+      - readPosition: {x: -2.11165, y: -18.599636, z: 36.180702}
+        readRotation: {x: 0.15302373, y: -0.70067936, z: 0.67873216, w: 0.15797168}
+        solverPosition: {x: -1.6530286, y: -17.638557, z: 37.254673}
+        solverRotation: {x: 0.082199536, y: -0.93889135, z: 0.28619072, w: 0.1726885}
+        length: 0.15698212
+        sqrMag: 0.024643386
+        axis: {x: -0.00000027858806, y: 0.15698215, z: 0.00000066667764}
+      - readPosition: {x: -2.1789765, y: -18.594643, z: 36.03898}
+        readRotation: {x: 0.13940755, y: -0.7545108, z: 0.6183383, w: 0.17010835}
+        solverPosition: {x: -1.6927757, y: -17.509413, z: 37.174767}
+        solverRotation: {x: 0.070133336, y: -0.9646016, z: 0.19854046, w: 0.15876693}
+        length: 0.17075765
+        sqrMag: 0.029158177
+        axis: {x: -0.00000036249793, y: 0.1707393, z: -0.002505013}
+      - readPosition: {x: -2.2506015, y: -18.558645, z: 35.888206}
+        readRotation: {x: 0.18491523, y: -0.55998564, z: 0.79717577, w: 0.12935747}
+        solverPosition: {x: -1.7259431, y: -17.352798, z: 37.115353}
+        solverRotation: {x: 0.03290815, y: -0.99167156, z: 0.09197924, w: 0.08393239}
+        length: 0.08721123
+        sqrMag: 0.007605798
+        axis: {x: 0.00000024619158, y: 0.08720801, z: 0.0007512525}
+      - readPosition: {x: -2.2865357, y: -18.588947, z: 35.814747}
+        readRotation: {x: 0.17194541, y: -0.599188, z: 0.77071184, w: 0.13195445}
+        solverPosition: {x: -1.7330731, y: -17.267395, z: 37.099194}
+        solverRotation: {x: -0.0054293806, y: -0.9999668, z: -0.0025126652, w: 0.005584702}
+        length: 0
+        sqrMag: 0
+        axis: {x: 0, y: 0, z: 0}
       headTarget: {fileID: 0}
       pelvisTarget: {fileID: 6302402739768728524}
       positionWeight: 1
@@ -4763,7 +4798,35 @@ MonoBehaviour:
       maxRootAngle: 25
       rootHeadingOffset: 0
     leftArm:
-      bones: []
+      bones:
+      - readPosition: {x: -2.2182813, y: -18.632082, z: 35.917515}
+        readRotation: {x: -0.5118893, y: -0.8254968, z: 0.1332811, w: 0.19687709}
+        solverPosition: {x: -1.7174629, y: -17.426764, z: 37.073475}
+        solverRotation: {x: -0.71516293, y: -0.49953625, z: -0.13412562, w: 0.47012362}
+        length: 0.18391134
+        sqrMag: 0.033823382
+        axis: {x: 0.000005316195, y: 1, z: -0.0000010866374}
+      - readPosition: {x: -2.072505, y: -18.551085, z: 35.839977}
+        readRotation: {x: -0.62308854, y: -0.43330643, z: 0.20533745, w: -0.61793447}
+        solverPosition: {x: -1.5628645, y: -17.437595, z: 36.974453}
+        solverRotation: {x: -0.79802185, y: 0.0650002, z: -0.5789273, w: 0.15420683}
+        length: 0.19898258
+        sqrMag: 0.03959407
+        axis: {x: -0.0000021412966, y: 0.19898263, z: 0.00000007268117}
+      - readPosition: {x: -1.9145644, y: -18.523388, z: 35.957798}
+        readRotation: {x: -0.7100656, y: -0.2476475, z: 0.4063871, w: -0.5189679}
+        solverPosition: {x: -1.5479814, y: -17.625433, z: 36.910503}
+        solverRotation: {x: -0.5341496, y: 0.5496795, z: 0.048608407, w: 0.64045084}
+        length: 0.2671381
+        sqrMag: 0.07136276
+        axis: {x: 0.0011024058, y: 0.26712385, z: 0.002552163}
+      - readPosition: {x: -1.7081593, y: -18.616331, z: 36.099648}
+        readRotation: {x: -0.71277565, y: -0.16754606, z: 0.26411337, w: -0.6277927}
+        solverPosition: {x: -1.7193775, y: -17.510696, z: 36.740734}
+        solverRotation: {x: 0.76698166, y: 0.04723929, z: -0.04962265, w: -0.638001}
+        length: 0
+        sqrMag: 0
+        axis: {x: 0, y: 0, z: 0}
       target: {fileID: 0}
       bendGoal: {fileID: 0}
       positionWeight: 1
@@ -4783,7 +4846,35 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
     rightArm:
-      bones: []
+      bones:
+      - readPosition: {x: -2.2482991, y: -18.632082, z: 35.931778}
+        readRotation: {x: 0.51955765, y: -0.8301167, z: -0.09926069, w: 0.1763907}
+        solverPosition: {x: -1.7486941, y: -17.429169, z: 37.084583}
+        solverRotation: {x: 0.6510631, y: -0.6019043, z: -0.35607353, w: -0.29502583}
+        length: 0.18391027
+        sqrMag: 0.033822984
+        axis: {x: -0.0000045079023, y: 1, z: 0.00001178679}
+      - readPosition: {x: -2.4004982, y: -18.551085, z: 35.995792}
+        readRotation: {x: 0.65091527, y: -0.12623559, z: -0.081891, w: 0.74408877}
+        solverPosition: {x: -1.9314736, y: -17.447803, z: 37.092762}
+        solverRotation: {x: 0.67781895, y: -0.18852232, z: 0.63612336, w: -0.31680992}
+        length: 0.19898362
+        sqrMag: 0.039594483
+        axis: {x: 0.0000002880859, y: 0.19898368, z: 0.0000012503954}
+      - readPosition: {x: -2.408949, y: -18.523386, z: 36.192657}
+        readRotation: {x: 0.81574875, y: -0.0010026097, z: 0.062386975, w: 0.5750315}
+        solverPosition: {x: -1.9021266, y: -17.592703, z: 36.959576}
+        solverRotation: {x: 0.3622307, y: -0.3106647, z: 0.4429143, w: -0.7590168}
+        length: 0.26713842
+        sqrMag: 0.07136294
+        axis: {x: -0.0011004435, y: 0.26712415, z: 0.002551135}
+      - readPosition: {x: -2.4293869, y: -18.616325, z: 36.442272}
+        readRotation: {x: 0.7571471, y: 0.11804521, z: -0.06728711, w: 0.63895726}
+        solverPosition: {x: -1.7810774, y: -17.49879, z: 36.740734}
+        solverRotation: {x: 0.672868, y: 0.097033076, z: -0.09313596, w: -0.7274331}
+        length: 0
+        sqrMag: 0
+        axis: {x: 0, y: 0, z: 0}
       target: {fileID: 0}
       bendGoal: {fileID: 0}
       positionWeight: 1
@@ -4803,7 +4894,35 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
     leftLeg:
-      bones: []
+      bones:
+      - readPosition: {x: -1.9499803, y: -18.59137, z: 36.252445}
+        readRotation: {x: 0.16658182, y: 0.64498556, z: 0.73046654, w: -0.15054204}
+        solverPosition: {x: -1.5385921, y: -17.768446, z: 37.21745}
+        solverRotation: {x: 0.14242749, y: -0.21416122, z: 0.96050954, w: -0.10616389}
+        length: 0.5791965
+        sqrMag: 0.3354686
+        axis: {x: 0.00000000971972, y: 0.57919663, z: 0.00000017328273}
+      - readPosition: {x: -1.6981355, y: -18.662415, z: 36.76916}
+        readRotation: {x: 0.1610311, y: 0.6892913, z: 0.68669516, w: -0.1655184}
+        solverPosition: {x: -1.4558028, y: -18.281458, z: 36.961647}
+        solverRotation: {x: 0.08086329, y: 0.3209712, z: 0.94186133, w: -0.057758972}
+        length: 0.44736975
+        sqrMag: 0.20013969
+        axis: {x: 0.0000008278865, y: 0.44736978, z: 0.00000080235117}
+      - readPosition: {x: -1.4971259, y: -18.66016, z: 37.168823}
+        readRotation: {x: -0.20822088, y: 0.49481788, z: -0.8380743, w: -0.0971141}
+        solverPosition: {x: -1.3839059, y: -18.633665, z: 37.22796}
+        solverRotation: {x: -0.021897206, y: 0.5041085, z: -0.8632765, w: 0.012283495}
+        length: 0.11735512
+        sqrMag: 0.013772224
+        axis: {x: 0.00000022334893, y: 0.11735518, z: 0.0000005077443}
+      - readPosition: {x: -1.5404112, y: -18.717834, z: 37.076237}
+        readRotation: {x: 0.67269975, y: -0.15461281, z: -0.15842138, w: -0.7060261}
+        solverPosition: {x: -1.3840086, y: -18.691338, z: 37.12575}
+        solverRotation: {x: 0.6910428, y: 0.0018604171, z: -0.009070855, w: -0.7227548}
+        length: 0
+        sqrMag: 0
+        axis: {x: 0, y: 0, z: 0}
       target: {fileID: 0}
       bendGoal: {fileID: 0}
       positionWeight: 0
@@ -4820,7 +4939,35 @@ MonoBehaviour:
         m_RotationOrder: 4
       useAnimatedBendNormal: 0
     rightLeg:
-      bones: []
+      bones:
+      - readPosition: {x: -2.1524684, y: -18.59137, z: 36.351784}
+        readRotation: {x: 0.16297878, y: 0.64718723, z: 0.73127747, w: -0.14078352}
+        solverPosition: {x: -1.745185, y: -17.779055, z: 37.307316}
+        solverRotation: {x: 0.089750245, y: -0.17146178, z: 0.9810533, w: 0.008952394}
+        length: 0.5676113
+        sqrMag: 0.32218254
+        axis: {x: -0.0000008784243, y: 0.56761134, z: -0.00000033381824}
+      - readPosition: {x: -1.9158537, y: -18.660992, z: 36.863007}
+        readRotation: {x: 0.1489256, y: 0.6935815, z: 0.68942624, w: -0.14648356}
+        solverPosition: {x: -1.7726243, y: -18.3132, z: 37.117268}
+        solverRotation: {x: 0.096521266, y: 0.38380075, z: 0.9146601, w: 0.08232742}
+        length: 0.46105334
+        sqrMag: 0.21257018
+        axis: {x: -0.00000035270483, y: 0.4610534, z: 0.0000004117848}
+      - readPosition: {x: -1.727484, y: -18.658674, z: 37.283817}
+        readRotation: {x: -0.18551175, y: 0.46960557, z: -0.85128486, w: -0.14272453}
+        solverPosition: {x: -1.8079007, y: -18.632175, z: 37.4483}
+        solverRotation: {x: 0.0031329005, y: 0.4893652, z: -0.87125844, w: -0.03770269}
+        length: 0.11735592
+        sqrMag: 0.013772411
+        axis: {x: -0.0000003013396, y: 0.11735595, z: -0.000000026783965}
+      - readPosition: {x: -1.7764485, y: -18.719488, z: 37.1962}
+        readRotation: {x: 0.6819472, y: -0.18170571, z: -0.16753209, w: -0.68837804}
+        solverPosition: {x: -1.8152518, y: -18.692986, z: 37.348198}
+        solverRotation: {x: 0.7020429, y: -0.02840997, z: -0.015964128, w: -0.7113889}
+        length: 0
+        sqrMag: 0
+        axis: {x: 0, y: 0, z: 0}
       target: {fileID: 1770296117663371955}
       bendGoal: {fileID: 0}
       positionWeight: 0
@@ -4838,25 +4985,79 @@ MonoBehaviour:
       useAnimatedBendNormal: 0
     locomotion:
       weight: 1
-      footDistance: 0.3
-      stepThreshold: 0.4
+      footDistance: 0.27
+      stepThreshold: 0.41
       angleThreshold: 60
       comAngleMlp: 1
       maxVelocity: 0.4
       velocityFactor: 0.4
       maxLegStretch: 1
       rootSpeed: 20
-      stepSpeed: 3
+      stepSpeed: 3.93
       stepHeight:
         serializedVersion: 2
-        m_Curve: []
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 0.5
+          value: 0.03
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
       maxBodyYOffset: 0.05
       heelHeight:
         serializedVersion: 2
-        m_Curve: []
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 0.5
+          value: 0.03
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4

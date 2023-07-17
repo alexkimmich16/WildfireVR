@@ -47,7 +47,9 @@ public class InGameManager : SerializedMonoBehaviour
     public delegate void StateEvent();
     public event StateEvent OnStartCountdown;
     public event StateEvent OnGameStart;
-    public event StateEvent OnGameEnd;
+
+    public delegate void FinishEvent(Result result);
+    public static event FinishEvent OnGameEnd;
 
     [ReadOnly] public float Timer;
 
@@ -96,7 +98,7 @@ public class InGameManager : SerializedMonoBehaviour
         }
         else if (state == GameState.Finished)
         {
-            OnGameEnd?.Invoke();
+            OnGameEnd?.Invoke(EndResult());
             if (PhotonNetwork.IsMasterClient)
             {
                 //SetGameFloat(GameFinishTimer, 0f);
@@ -275,5 +277,12 @@ public enum Result
 {
     AttackWon = 0,
     DefenseWon = 1,
+    UnDefined = 2,
+}
+
+public enum OutCome
+{
+    Win = 0,
+    Loss = 1,
     UnDefined = 2,
 }

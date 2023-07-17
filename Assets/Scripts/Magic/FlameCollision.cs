@@ -5,19 +5,33 @@ using static Odin.Net;
 public class FlameCollision : MonoBehaviour
 {
     public ParticleSystem fire;
-    public void PushFire(Vector3 PushPos)
+    public void PushFire(Vector3 PushPos, Vector3 PushDirection)
     {
-        Debug.Log("pushfire");
+        //Debug.Log("pushfire");
         // GetParticles is allocation free because we reuse the m_Particles buffer between updates
         ParticleSystem.Particle[] m_Particles = new ParticleSystem.Particle[fire.main.maxParticles];
         int numParticlesAlive = fire.GetParticles(m_Particles);
 
+
+
         for (int i = 0; i < numParticlesAlive; i++)
         {
-            Vector3 Pos = m_Particles[i].position;
-            Vector3 Dir = (Pos - PushPos).normalized;
-            float Distance = Vector3.Distance(Dir, PushPos);
-            m_Particles[i].velocity = Dir * FireController.instance.DeflectForce * (Mathf.Pow(Distance, FireController.instance.DeflectDistanceForce));
+            if(PushDirection == Vector3.zero)
+            {
+                Vector3 Pos = m_Particles[i].position;
+                Vector3 Dir = (Pos - PushPos).normalized;
+                float Distance = Vector3.Distance(Dir, PushPos);
+                m_Particles[i].velocity = Dir * FireController.instance.DeflectForce * (Mathf.Pow(Distance, FireController.instance.DeflectDistanceForce));
+            }
+            else
+            {
+                Vector3 Pos = m_Particles[i].position;
+                float Distance = Vector3.Distance(PushPos, Pos);
+                if (Distance < FireManipulation.instance.MaxManipulateRange)
+                {
+                    m_Particles[i].velocity = m_Particles[i].velocity + (PushDirection * FireManipulation.instance.PushForce);
+                }
+            }
         }
         fire.SetParticles(m_Particles, numParticlesAlive);
     }
@@ -46,7 +60,7 @@ public class FlameCollision : MonoBehaviour
                 if (GetPlayerTeam(PhotonNetwork.LocalPlayer) != GetPlayerTeam(FlameOwner))
                 {
                     //Debug.Log("S1");
-                    OnlineEventManager.PushFireOnlineEvent(AIMagicControl.instance.Cam.position);
+                    OnlineEventManager.PushFireOnlineEvent(AIMagicControl.instance.Cam.position, Vector3.zero);
                 }
             }
             
@@ -55,16 +69,17 @@ public class FlameCollision : MonoBehaviour
         else if (other.name == AIMagicControl.instance.Rig.name)//hitbox
         {
             //Debug.Log("Hitbox1");
-
+            //flameowner = other, damaged = self,
             if (FlameOwner.IsLocal)//self damage
                 return;
-            //Debug.Log("Hitbox2");
-            if (NetworkManager.instance.FriendlyFireWorks(FlameOwner, PhotonNetwork.LocalPlayer))
-            {
-                //Debug.Log("Hitbox3");
-                NetworkManager.instance.LocalTakeDamage(FireController.instance.Damage);
-            }
-                
+            if (!NetworkManager.instance.FriendlyFireWorks(FlameOwner, PhotonNetwork.LocalPlayer))
+                return;
+            if (FireController.instance.IsCooldown(AIMagicControl.instance.Rig) && FireController.instance.UseCooldowns)
+                return;
+
+            FireController.instance.DamageCooldowns.Add(new FireController.CooldownInfo(AIMagicControl.instance.Rig));
+            NetworkManager.instance.LocalTakeDamage(FireController.instance.Damage, FlameOwner);
+
         }
 
     }

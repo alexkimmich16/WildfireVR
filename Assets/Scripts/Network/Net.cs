@@ -24,6 +24,9 @@ namespace Odin
         //public static List<string> DoorNames = new List<string>() { "ElevatorHeight", "InnerGateHeight", "OuterGateHeight" };
 
         public static string DoorState = "DoorState";
+        public static string KillCount = "KillCount";
+        public static string DamageDoneCount = "DamageDoneCount";
+        public static string ELOText = "ELO";
 
         public static bool ShouldDebug = false;
 

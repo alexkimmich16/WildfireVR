@@ -17,7 +17,9 @@ public class BillBoardManager : MonoBehaviour
     public TextMeshProUGUI MyPlayerSpawnText;
     public TextMeshProUGUI MyTeamText;
     public TextMeshProUGUI AliveText;
-    
+
+    public TextMeshProUGUI MyKills;
+
     public TextMeshProUGUI AttackTeamCount, AttackTeamAlive;
     public TextMeshProUGUI DefenseTeamCount, DefenseTeamAlive;
 
@@ -46,7 +48,11 @@ public class BillBoardManager : MonoBehaviour
         if (Exists(PlayerTeam, PhotonNetwork.LocalPlayer))
             MyTeamText.text = "MyTeam: " + GetPlayerTeam(PhotonNetwork.LocalPlayer).ToString();
         if (Exists(PlayerHealth, PhotonNetwork.LocalPlayer))
+        {
             AliveText.text = "Alive: " + Alive(PhotonNetwork.LocalPlayer).ToString();
+            MyKills.text = "MyKills: " + GetPlayerInt(KillCount, PhotonNetwork.LocalPlayer).ToString();
+            
+        }
     }
     bool AllPlayersLoaded()
     {

@@ -38,7 +38,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         bool IsFriendlyFire = GetPlayerTeam(Other) == GetPlayerTeam(Me);
         return (NetworkManager.instance.AllowFriendlyFire && IsFriendlyFire) || !IsFriendlyFire;    
     }
+    public override void OnLeftRoom()
+    {
+        base.OnLeftRoom();
 
+        //check if rage quitted in middle of game
+        Team MyTeam = GetPlayerTeam(PhotonNetwork.LocalPlayer);
+        if (InGameManager.instance.CurrentState == GameState.Active && MyTeam != Team.Spectator)
+        {
+            //other team won
+            Result result = MyTeam == Team.Attack ? Result.DefenseWon : Result.AttackWon;
+            Data.Secure.instance.EndGameManage(result);
+        }
+    }
     public bool CanRecieveDamage()
     {
         if (OverrideCanRecieveDamage)
@@ -89,10 +101,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log("try connect to server");
         }
     }
-    public static bool HasConnected()
-    {
-        return PhotonNetwork.InRoom == true && Initialized();
-    }
+    public static bool HasConnected() { return PhotonNetwork.InRoom == true && Initialized(); }
     public override void OnConnectedToMaster()
     {
         if (DebugScript == true)
@@ -120,6 +129,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log("joined a room");
 
         SetPlayerInt(PlayerHealth, NetworkManager.instance.MaxHealth, PhotonNetwork.LocalPlayer);
+        SetPlayerInt(KillCount, 0, PhotonNetwork.LocalPlayer);
+        SetPlayerInt(DamageDoneCount, 0, PhotonNetwork.LocalPlayer);
         if (Initialized() == false)
         {
             InitializeAllGameStats();
@@ -150,7 +161,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         base.OnPlayerEnteredRoom(newPlayer);
     }
     
-    public void LocalTakeDamage(int Damage)
+    public void LocalTakeDamage(int Damage, Player AttackingPlayer)
     {
         if (CanRecieveDamage() == false)
         {
@@ -162,13 +173,24 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             
         if (DebugScript == true)
             Debug.Log("TakeDamage: " + Damage);
+
+        //adjust other player's total damage
+        SetPlayerInt(DamageDoneCount, GetPlayerInt(DamageDoneCount, AttackingPlayer) + Damage, AttackingPlayer);
+
         int BeforeHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
         int NewHealth = Mathf.Clamp(BeforeHealth - Damage, 0, MaxHealth);
         OnTakeDamage?.Invoke();
         //NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("TakeDamage", RpcTarget.All);
         SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);
         if(NewHealth == 0)
+        {
+            //update attacking player kill count
+            SetPlayerInt(KillCount, GetPlayerInt(KillCount, AttackingPlayer) + 1, AttackingPlayer);
+            
+
             StartCoroutine(MainPlayerDeath());
+        }
+            
     }
     public IEnumerator MainPlayerDeath()
     {
