@@ -25,7 +25,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
         NetworkManager.OnInitialized += SpawnSequence;
     }
     
-    public void JoinAsSpectator()
+    public void JoinAsPlayer()
     {
         if (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator && GetGameState() == GameState.Waiting)
         {

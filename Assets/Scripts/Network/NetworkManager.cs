@@ -97,9 +97,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.ConnectUsingSettings();
         if (DebugScript == true)
-        {
             Debug.Log("try connect to server");
-        }
     }
     public static bool HasConnected() { return PhotonNetwork.InRoom == true && Initialized(); }
     public override void OnConnectedToMaster()
@@ -113,8 +111,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         roomOptions.IsOpen = true;
         PhotonNetwork.JoinOrCreateRoom("Room 1", roomOptions, TypedLobby.Default);
     }
-   
-
     public IEnumerator WaitForInitalized()
     {
         yield return new WaitWhile(() => Initialized() == false);
@@ -131,27 +127,25 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         SetPlayerInt(PlayerHealth, NetworkManager.instance.MaxHealth, PhotonNetwork.LocalPlayer);
         SetPlayerInt(KillCount, 0, PhotonNetwork.LocalPlayer);
         SetPlayerInt(DamageDoneCount, 0, PhotonNetwork.LocalPlayer);
+        SetPlayer(UsernameText, 0, PhotonNetwork.LocalPlayer);
+        //InitializeAllGameStats
         if (Initialized() == false)
-        {
-            InitializeAllGameStats();
-        }
-        StartCoroutine(WaitForInitalized());
-        base.OnJoinedRoom();
-        void InitializeAllGameStats()
         {
             SetGameState(GameState.Waiting);
 
             SetGameInt(DoorState, (int)SequenceState.Waiting);
-            
+
             for (int i = 0; i < DoorManager.instance.Doors.Count; i++)
             {
                 Vector3 Local = DoorManager.instance.Doors[i].OBJ.localPosition;
                 DoorManager.instance.Doors[i].OBJ.localPosition = new Vector3(Local.x, DoorManager.instance.Doors[i].MinMax.x, Local.z);
             }
 
-            if(InGameManager.instance.ShouldDebug)
+            if (InGameManager.instance.ShouldDebug)
                 Debug.Log("Initialized room and reset or created all stats");
         }
+        StartCoroutine(WaitForInitalized());
+        base.OnJoinedRoom();
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
@@ -160,7 +154,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         base.OnPlayerEnteredRoom(newPlayer);
     }
-    
     public void LocalTakeDamage(int Damage, Player AttackingPlayer)
     {
         if (CanRecieveDamage() == false)
@@ -168,24 +161,27 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log("Should have felt: " + Damage + " Damage");
             return;
         }
-        if (GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer) == 0)
+        int CurrentHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
+        if (CurrentHealth == 0)
             return;
             
         if (DebugScript == true)
             Debug.Log("TakeDamage: " + Damage);
 
         //adjust other player's total damage
-        SetPlayerInt(DamageDoneCount, GetPlayerInt(DamageDoneCount, AttackingPlayer) + Damage, AttackingPlayer);
+        if (AttackingPlayer != null)
+            SetPlayerInt(DamageDoneCount, GetPlayerInt(DamageDoneCount, AttackingPlayer) + Damage, AttackingPlayer);
 
-        int BeforeHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
-        int NewHealth = Mathf.Clamp(BeforeHealth - Damage, 0, MaxHealth);
+        
+        int NewHealth = Mathf.Clamp(CurrentHealth - Damage, 0, MaxHealth);
         OnTakeDamage?.Invoke();
         //NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("TakeDamage", RpcTarget.All);
         SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);
         if(NewHealth == 0)
         {
             //update attacking player kill count
-            SetPlayerInt(KillCount, GetPlayerInt(KillCount, AttackingPlayer) + 1, AttackingPlayer);
+            if (AttackingPlayer != null)
+                SetPlayerInt(KillCount, GetPlayerInt(KillCount, AttackingPlayer) + 1, AttackingPlayer);
             
 
             StartCoroutine(MainPlayerDeath());

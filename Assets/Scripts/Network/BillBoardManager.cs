@@ -86,6 +86,9 @@ public class BillBoardManager : MonoBehaviour
             return;
 
         GameState state = GetGameState();
+
+        
+
         if (state == GameState.Waiting)
         {
             DisplayVictory.text = "Waiting For Players";
@@ -107,10 +110,9 @@ public class BillBoardManager : MonoBehaviour
             }
             
         }
-
         else if (state == GameState.Finished)
         {
-            if (Exists(GameOutcome, null))
+            if (Exists(GameOutcome, null) && Exists(PlayerTeam, PhotonNetwork.LocalPlayer))
                 if (GetGameResult() != Result.UnDefined)
                     DisplayVictory.text = OnWin(GetGameResult());
         }

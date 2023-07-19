@@ -27,6 +27,7 @@ namespace Odin
         public static string KillCount = "KillCount";
         public static string DamageDoneCount = "DamageDoneCount";
         public static string ELOText = "ELO";
+        public static string UsernameText = "Username";
 
         public static bool ShouldDebug = false;
 
@@ -58,18 +59,48 @@ namespace Odin
             Debug.LogError("Get Local Failure");
             return 100;
         }
-        #region NetworkGet
-        public static float GetGameFloat(string text)
+        #region Get
+        public static object GetGameVar(string text)
         {
-            //Debug.Log("Getfloat");
             if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
-                return (float)temp;
+                return temp;
             else
             {
-                Debug.LogError("GetGameFloat.main with string: " + text + " has not been set");
-                return 0f;
+                Debug.LogError("Game Variable: " + text + " has not been set");
+                return null;
             }
         }
+        public static object GetPlayerVar(string text, Player player)
+        {
+            if (player.CustomProperties.TryGetValue(text, out object temp))
+                return temp;
+            else
+            {
+                Debug.LogError("Player Variable: " + text + " has not been set");
+                return null;
+            }
+        }
+        #endregion
+
+
+        #region set
+        public static void SetGameVar(string text, object var)
+        {
+            if (ShouldDebug) Debug.Log("SetGameVar of string: " + text);
+            Hashtable Hash = new Hashtable();
+            Hash.Add(text, var);
+            PhotonNetwork.CurrentRoom.SetCustomProperties(Hash);
+        }
+        public static void SetPlayerVar(Team team, Player player)
+        {
+            if (ShouldDebug) Debug.Log("SetPlayerTeam");
+            Hashtable Hash = new Hashtable();
+            Hash.Add(PlayerTeam, team);
+            player.SetCustomProperties(Hash);
+        }
+        #endregion
+
+
         public static GameState GetGameState()
         {
             if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(GameStateText, out object temp))
@@ -88,16 +119,6 @@ namespace Odin
             {
                 Debug.LogError("GetInt.GetPlayerTeam with string: " + PlayerTeam + " has not been set");
                 return Team.Attack;
-            }
-        }
-        public static int GetGameInt(string text)
-        {
-            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
-                return (int)temp;
-            else
-            {
-                Debug.LogError("GetHash.GetInt.OfRoom with string: " + text + " has not been set");
-                return 100;
             }
         }
         public static Result GetGameResult()
@@ -141,7 +162,7 @@ namespace Odin
                 return true;
             }
         }
-        #endregion Exists
+        
         #region Exists
         public static bool Exists(string text, Player player)
         {

@@ -185,9 +185,10 @@ namespace Data
             int NewCurrency = CurrentInfo.Currency + TotalEarnedCurrency;
             Debug.Log("Currency Changed From " + PreviousEXP + " to " + NewCurrency);
 
-            int OldELO = CurrentInfo.ELO;
-            int NewELO = ELO.instance.MyNewELO(MyTeam, OldELO, WinningTeam);
-            Debug.Log("ELO Changed From " + OldELO + " to " + NewELO);
+            //int OldELO = CurrentInfo.ELO;
+            int NewELO = 20;
+            //int NewELO = ELO.instance.MyNewELO(MyTeam, OldELO, WinningTeam);
+            //Debug.Log("ELO Changed From " + OldELO + " to " + NewELO);
 
             int PreviousKillCount = CurrentInfo.KillCount;
             int NewKills = PreviousKillCount + GameKills;

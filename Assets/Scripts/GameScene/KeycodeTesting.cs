@@ -14,7 +14,7 @@ public class KeycodeTesting : MonoBehaviour
     public KeyCode Restart;
     public KeyCode StartGame;
     public KeyCode CancelStartup;
-    public KeyCode JoinAsSpectator;
+    public KeyCode JoinAsPlayer;
     
 
     public KeyCode Fireball;
@@ -58,8 +58,8 @@ public class KeycodeTesting : MonoBehaviour
         if (Input.GetKeyDown(CancelStartup))
             InGameManager.instance.CancelStartup();
 
-        if (Input.GetKeyDown(JoinAsSpectator))
-            SpawnManager.instance.JoinAsSpectator();
+        if (Input.GetKeyDown(JoinAsPlayer))
+            SpawnManager.instance.JoinAsPlayer();
 
 
         if (Input.GetKeyDown(GetData))

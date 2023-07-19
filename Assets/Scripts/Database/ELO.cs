@@ -25,9 +25,9 @@ namespace Data
             int MyIndex = MyTeamOld.ToList().FindIndex(x => x == PreviousELO);
 
 
-            int[] MyTeamNew = team == Team.Attack ? NewAttack : NewDefense;
+            int[] MyTeamELOS = team == Team.Attack ? NewAttack : NewDefense;
 
-            return MyTeamNew[MyIndex];
+            return MyTeamELOS[MyIndex];
         }
         public static void CalculateElo(Team Winner, int[] Attacking, int[] Defending, out int[] newRatingsAttacking, out int[] newRatingsDefending)
         {

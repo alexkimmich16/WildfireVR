@@ -584,6 +584,11 @@ PrefabInstance:
       propertyPath: solver.spine.headTarget
       value: 
       objectReference: {fileID: 7077550060436018196}
+    - target: {fileID: 5961056463806732066, guid: d509c7e4ee9a8f742a9627137d3823b2,
+        type: 3}
+      propertyPath: solver.spine.bodyPosStiffness
+      value: 0.206
+      objectReference: {fileID: 0}
     - target: {fileID: 5961056463806732067, guid: d509c7e4ee9a8f742a9627137d3823b2,
         type: 3}
       propertyPath: m_Name
