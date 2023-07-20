@@ -53,8 +53,8 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     public IEnumerator FirstSpawnSequence()//get appropriate team, spawn, set online
     {
         Team team = InGameManager.instance.BestTeamForSpawn();
-        SetPlayerTeam(team, PhotonNetwork.LocalPlayer);
-        yield return new WaitWhile(() => Exists(PlayerTeam, PhotonNetwork.LocalPlayer) == false); //wait for team
+        SetPlayerVar(ID.PlayerTeam, team, PhotonNetwork.LocalPlayer);
+        yield return new WaitWhile(() => Exists(ID.PlayerTeam, PhotonNetwork.LocalPlayer) == false); //wait for team
         SetNewPosition(team);
         OnElevatorRespawn?.Invoke();
         //Debug.Log("spawncorotine2");
@@ -67,8 +67,10 @@ public class SpawnManager : MonoBehaviourPunCallbacks
         if (InGameManager.instance.CurrentState != GameState.Waiting)
             return;
         
-        if (targetPlayer.IsLocal && changedProps.ContainsKey(PlayerTeam))
-            SetNewPosition((Team)changedProps[PlayerTeam]);
+        if (targetPlayer.IsLocal && changedProps.ContainsKey(ID.PlayerTeam))
+            SetNewPosition((Team)changedProps[ID.PlayerTeam]);
     }
+
+    
 
 }

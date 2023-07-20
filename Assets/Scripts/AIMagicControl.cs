@@ -43,7 +43,7 @@ public class AIMagicControl : MonoBehaviour
     {
         Offset = hitbox.position - Cam.position;
     }
-    public bool AllActive() { return HeadsetActive && LeftHandActive || RightHandActive; }
+    public bool AllActive() { return HeadsetActive && LeftHandActive && RightHandActive; }
     private void FixedUpdate()
     {
         PreventorCapsule.position = new Vector3(Cam.position.x, Rig.position.y, Cam.position.z);

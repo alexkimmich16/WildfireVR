@@ -11,7 +11,7 @@ namespace Misc
         public bool Lowered;
         void Update()
         {
-            if (Initialized() && Exists(PlayerTeam, PhotonNetwork.LocalPlayer))
+            if (Initialized() && Exists(ID.PlayerTeam, PhotonNetwork.LocalPlayer))
             {
                 Lowered = !IsHigh();
                 Ledge.position = new Vector3(Ledge.position.x, IsHigh() ? 0f : DropAmount, Ledge.position.z);

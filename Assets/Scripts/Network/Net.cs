@@ -8,33 +8,28 @@ namespace Odin
 {
     public static class Net
     {
-        public static string PlayerTeam = "Team";
-        //public static string PlayerAlive = "Alive";
-        public static string PlayerHealth = "Health";
+        public static class ID
+        {
+            public static string PlayerTeam = "Team";
+            public static string PlayerHealth = "Health";
 
-        //public static string GameWarmupTimer = "WarmupTimer";
-        //public static string GameFinishTimer = "FinishTimer";
-        public static string GameStateText = "State";
+            public static string KillCount = "KillCount";
+            public static string DamageDone = "DamageDone";
+            public static string ELO = "ELO";
+            public static string Username = "Username";
 
-        public static string GameOutcome = "Outcome";
+            public static string GameState = "State";
+            public static string Result = "Result";
 
-        //public static string AttackTeamCount = "AttackTeam";
-        //public static string DefenseTeamCount = "DefenseTeam";
-
-        //public static List<string> DoorNames = new List<string>() { "ElevatorHeight", "InnerGateHeight", "OuterGateHeight" };
-
-        public static string DoorState = "DoorState";
-        public static string KillCount = "KillCount";
-        public static string DamageDoneCount = "DamageDoneCount";
-        public static string ELOText = "ELO";
-        public static string UsernameText = "Username";
+            public static string DoorState = "DoorState";
+            
+        }
+        
+        
 
         public static bool ShouldDebug = false;
 
-        public static bool Alive(Player player)
-        {
-            return GetPlayerInt(PlayerHealth, player) > 0;
-        }
+        public static bool Alive(Player player) { return (int)GetPlayerVar(ID.PlayerHealth, player) > 0; }
 
         public static bool Contains(List<GameObject> AllObjects, GameObject myObject)
         {
@@ -43,22 +38,23 @@ namespace Odin
                     return true;
             return false;
         }
-        public static bool Initialized()
+        public static bool Initialized() { return Exists(ID.DoorState, null) == true; }
+
+        #region Exists
+        public static bool Exists(string text, Player player)
         {
-            return Exists(DoorState, null) == true;
-        }
-        public static int GetLocal()
-        {
-            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            if (player == null)
             {
-                if (PhotonNetwork.LocalPlayer == PhotonNetwork.PlayerList[i])
-                {
-                    return i;
-                }
+                if (PhotonNetwork.CurrentRoom == null)
+                    return false;
+                if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(text))
+                    return true;
+                return false;
             }
-            Debug.LogError("Get Local Failure");
-            return 100;
+            return player.CustomProperties.ContainsKey(text);
         }
+
+        #endregion
         #region Get
         public static object GetGameVar(string text)
         {
@@ -91,151 +87,19 @@ namespace Odin
             Hash.Add(text, var);
             PhotonNetwork.CurrentRoom.SetCustomProperties(Hash);
         }
-        public static void SetPlayerVar(Team team, Player player)
+        public static void SetPlayerVar(string text, object var, Player player)
         {
-            if (ShouldDebug) Debug.Log("SetPlayerTeam");
+            if (ShouldDebug) Debug.Log("SetPlayerVar of string: " + text);
             Hashtable Hash = new Hashtable();
-            Hash.Add(PlayerTeam, team);
+            Hash.Add(text, var);
             player.SetCustomProperties(Hash);
         }
         #endregion
 
+        #region ShortCuts
+        public static GameState GetGameState() { return (GameState)GetGameVar(ID.GameState); }
 
-        public static GameState GetGameState()
-        {
-            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(GameStateText, out object temp))
-                return (GameState)temp;
-            else
-            {
-                Debug.LogError("GetGameState.CurrentRoom with string: " + GameStateText + " has not been set");
-                return GameState.Finished;
-            }
-        }
-        public static Team GetPlayerTeam(Player player)
-        {
-            if (player.CustomProperties.TryGetValue(PlayerTeam, out object temp))
-                return (Team)temp;
-            else
-            {
-                Debug.LogError("GetInt.GetPlayerTeam with string: " + PlayerTeam + " has not been set");
-                return Team.Attack;
-            }
-        }
-        public static Result GetGameResult()
-        {
-            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(GameOutcome, out object temp))
-                return (Result)temp;
-            else
-            {
-                Debug.LogError("GetHash.GetInt.OfRoom with string: " + GameOutcome + " has not been set");
-                return Result.UnDefined;
-            }
-        }
-        public static int GetPlayerInt(string text, Player player)
-        {
-            if (player.CustomProperties.TryGetValue(text, out object temp))
-                return (int)temp;
-            else
-            {
-                Debug.LogError("GetHash.GetInt.OfPlayer with string: " + text + " has not been set");
-                return 100;
-            }
-        }
-        public static bool GetGameBool(string text)
-        {
-            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(text, out object temp))
-                return (bool)temp;
-            else
-            {
-                Debug.LogError("GetHash.GetBool with string: " + text + "has not been set");
-                return true;
-            }
-        }
-
-        public static bool GetPlayerBool(string text, Player player)
-        {
-            if (player.CustomProperties.TryGetValue(text, out object temp))
-                return (bool)temp;
-            else
-            {
-                Debug.LogError("GetHash.GetBool with string: " + text + "has not been set");
-                return true;
-            }
-        }
-        
-        #region Exists
-        public static bool Exists(string text, Player player)
-        {
-            if (player == null)
-            {
-                if (PhotonNetwork.CurrentRoom == null)
-                    return false;
-                if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(text))
-                    return true;
-                return false;
-            }
-            return player.CustomProperties.ContainsKey(text);
-        }
-
-        #endregion
-        #region NetworkSet
-        public static void SetGameResult(Result result)
-        {
-            if (ShouldDebug) Debug.Log("SetGameResult");
-            Hashtable TeamHash = new Hashtable();
-            TeamHash.Add(GameOutcome, result);
-            PhotonNetwork.CurrentRoom.SetCustomProperties(TeamHash);
-        }
-        public static void SetGameFloat(string text, float Num)
-        {
-            if(ShouldDebug)Debug.Log("SetGameFloat");
-            Hashtable TeamHash = new Hashtable();
-            TeamHash.Add(text, Num);
-            PhotonNetwork.CurrentRoom.SetCustomProperties(TeamHash);
-        }
-        public static void SetGameState(GameState state)
-        {
-            if (ShouldDebug) Debug.Log("SetGameState");
-            Hashtable TeamHash = new Hashtable();
-            TeamHash.Add(GameStateText, state);
-            PhotonNetwork.CurrentRoom.SetCustomProperties(TeamHash);
-        }
-        public static void SetPlayerTeam(Team team, Player player)
-        {
-            if (ShouldDebug) Debug.Log("SetPlayerTeam");
-            Hashtable TeamHash = new Hashtable();
-            TeamHash.Add(PlayerTeam, team);
-            player.SetCustomProperties(TeamHash);
-        }
-        public static void SetPlayerBool(string text, bool State, Player player)
-        {
-            if (ShouldDebug) Debug.Log("SetPlayerBool");
-            Hashtable HealthHash = new Hashtable();
-            HealthHash.Add(text, State);
-            player.SetCustomProperties(HealthHash);
-        }
-        public static void SetGameBool(string text, bool State)
-        {
-            if (ShouldDebug) Debug.Log("SetGameBool");
-            Hashtable HealthHash = new Hashtable();
-            //Debug.Log("set");
-            HealthHash.Add(text, State);
-            PhotonNetwork.CurrentRoom.SetCustomProperties(HealthHash);
-        }
-        public static void SetPlayerInt(string text, int SetNum, Player player)
-        {
-            if (ShouldDebug) Debug.Log("SetPlayerInt");
-            Hashtable HealthHash = new Hashtable();
-            HealthHash.Add(text, SetNum);
-            player.SetCustomProperties(HealthHash);
-        }
-        public static void SetGameInt(string text, int SetNum)
-        {
-            if (ShouldDebug) Debug.Log("SetGameInt");
-            Hashtable HealthHash = new Hashtable();
-            HealthHash.Add(text, SetNum);
-            PhotonNetwork.CurrentRoom.SetCustomProperties(HealthHash);
-        }
+        public static Team GetPlayerTeam(Player player) { return (Team)GetPlayerVar(ID.PlayerTeam, player); }
         #endregion
     }
 }

@@ -52,7 +52,7 @@ public class FireManipulation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!PastFrameRecorder.IsReady())
+        if (!PastFrameRecorder.IsReady() || !AIMagicControl.instance.AllActive())
             return;
         CooldownTimer += Time.deltaTime;
         if (ActiveManipulating && !IsManipulating())

@@ -164,13 +164,13 @@ namespace Data
                 return;
             } 
 
-            int GameDamageDone = GetPlayerInt(DamageDoneCount, PhotonNetwork.LocalPlayer);
-            int GameKills = GetPlayerInt(KillCount, PhotonNetwork.LocalPlayer);
+            int GameDamageDone = (int)GetPlayerVar(ID.DamageDone, PhotonNetwork.LocalPlayer);
+            int GameKills = (int)GetPlayerVar(ID.KillCount, PhotonNetwork.LocalPlayer);
 
             int OutcomeExperience = EXP.instance.GameEndExperience(MyTeam, outCome);
             int KillExperience = EXP.instance.KillExperience(GameKills);
             int DamageExperience = EXP.instance.DamageExperience(GameDamageDone);
-            int SecondsExperience = EXP.instance.SecondsExperience(Mathf.RoundToInt(InGameManager.instance.FinishTime - InGameManager.instance.Timer));
+            int SecondsExperience = EXP.instance.SecondsExperience(Mathf.RoundToInt(InGameManager.instance.GameTime - InGameManager.instance.Timer));
 
             int TotalEarnedEXP = OutcomeExperience + KillExperience + DamageExperience + SecondsExperience;
             int PreviousEXP = CurrentInfo.Experience;
@@ -219,7 +219,7 @@ namespace Data
             StartCoroutine(LoadData());
             InGameManager.OnGameEnd += EndGameManage;
 
-            SetPlayerInt(ELOText, CurrentInfo.ELO, PhotonNetwork.LocalPlayer);
+            SetPlayerVar(ID.ELO, CurrentInfo.ELO, PhotonNetwork.LocalPlayer);
         }
     }
     //elo

@@ -16,7 +16,7 @@ namespace Data
         public int StartingElo;
         private const int K = 32; // The constant determining the magnitude of rating changes
 
-        public int[] GetTeamELO(Team team) { return PhotonNetwork.PlayerList.Where(p => GetPlayerTeam(p) == team).Select(player => GetPlayerInt(ELOText, player)).ToArray(); }
+        public int[] GetTeamELO(Team team) { return PhotonNetwork.PlayerList.Where(p => GetPlayerTeam(p) == team).Select(player => (int)GetPlayerVar(ID.ELO, player)).ToArray(); }
         public int MyNewELO(Team team, int PreviousELO, Team Winner)
         {
             CalculateElo(Winner, GetTeamELO(Team.Attack), GetTeamELO(Team.Defense), out int[] NewAttack, out int[] NewDefense);

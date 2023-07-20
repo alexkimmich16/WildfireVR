@@ -33,35 +33,6 @@ public class OnlineEventManager : MonoBehaviour
         PhotonNetwork.RaiseEvent(RestartCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
     #endregion
-    #region GameStates
-    public const byte NewStateCode = 3;
-    public static bool ChangingState;
-    public static void NewState(GameState state)
-    {
-        //Debug.Log("TrySet: " + state.ToString());
-
-        if (ChangingState == true || !PhotonNetwork.IsMasterClient)
-            return;
-
-        ChangingState = true;
-
-        Debug.Log("sentGame: " + state.ToString());
-        object[] content = new object[] { state };
-        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
-        PhotonNetwork.RaiseEvent(NewStateCode, content, raiseEventOptions, SendOptions.SendReliable);
-    }
-    #endregion
-    #region DoorStates
-    public const byte DoorCode = 4;
-    public static void DoorEvent(SequenceState state)
-    {
-        //Debug.Log(result.ToString());
-        //Debug.Log("sentDoor: " + state.ToString());
-        object[] content = new object[] { (int)state };
-        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
-        PhotonNetwork.RaiseEvent(DoorCode, content, raiseEventOptions, SendOptions.SendReliable);
-    }
-    #endregion
     #region PlaySound
     public const byte SoundCode = 5;
     public static void SoundEvent(int SoundIndex)
@@ -93,31 +64,11 @@ public class OnlineEventManager : MonoBehaviour
         {
             //Debug.Log("restart");
             //InGameManager.instance.RespawnToSpawnPoint();//respawn
-            SetPlayerInt(PlayerHealth, NetworkManager.instance.MaxHealth, PhotonNetwork.LocalPlayer);// reset health
+            SetPlayerVar(ID.PlayerHealth, NetworkManager.instance.MaxHealth, PhotonNetwork.LocalPlayer);// reset health
             RestartEventCallback?.Invoke();
             SpawnManager.instance.RespawnToTeam();// moveback to team
             
-            InGameManager.instance.SetNewGameState(GameState.Waiting);
-        }
-        if(photonEvent.Code == NewStateCode)
-        {
-            ChangingState = false;
-            
-            object[] data = (object[])photonEvent.CustomData;
-            GameState NewState = (GameState)data[0];
-            //Debug.Log("ReceiveState: " + NewState.ToString());
-            InGameManager.instance.SetNewGameState(NewState);
-            
-            //BillBoardManager.instance.SetOutcome(result);
-            
-            //SetOutcome
-        }
-        if(photonEvent.Code == DoorCode)
-        {
-            object[] data = (object[])photonEvent.CustomData;
-            int state = (int)data[0];
-            SoundManager.instance.SetDoorAudio(state);
-            DoorManager.instance.RecieveOnlineDoorState((SequenceState)state);
+            InGameManager.instance.SetNewGameState((int)GameState.Waiting);
         }
         if (photonEvent.Code == SoundCode)
         {

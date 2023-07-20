@@ -3,9 +3,15 @@ using UnityEngine;
 using TMPro;
 using Photon.Pun;
 using static Odin.Net;
+using System.Linq;
 
 public class BillBoardManager : MonoBehaviour
 {
+    #region Singleton + Classes
+    public static BillBoardManager instance;
+    void Awake() { instance = this; }
+    #endregion
+
     public List<TextMeshProUGUI> Health = new List<TextMeshProUGUI>();
     public TextMeshProUGUI DisplayVictory;
 
@@ -45,26 +51,17 @@ public class BillBoardManager : MonoBehaviour
             DefenseTeamAlive.text = "Defense Team Alive: " + InGameManager.instance.TotalAlive(Team.Defense);
         }
 
-        if (Exists(PlayerTeam, PhotonNetwork.LocalPlayer))
+        if (Exists(ID.PlayerTeam, PhotonNetwork.LocalPlayer))
             MyTeamText.text = "MyTeam: " + GetPlayerTeam(PhotonNetwork.LocalPlayer).ToString();
-        if (Exists(PlayerHealth, PhotonNetwork.LocalPlayer))
+        if (Exists(ID.PlayerHealth, PhotonNetwork.LocalPlayer))
         {
             AliveText.text = "Alive: " + Alive(PhotonNetwork.LocalPlayer).ToString();
-            MyKills.text = "MyKills: " + GetPlayerInt(KillCount, PhotonNetwork.LocalPlayer).ToString();
+            MyKills.text = "MyKills: " + GetPlayerVar(ID.KillCount, PhotonNetwork.LocalPlayer).ToString();
             
         }
     }
-    bool AllPlayersLoaded()
-    {
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-            if (Exists(PlayerHealth, PhotonNetwork.PlayerList[i]) == false || Exists(PlayerTeam, PhotonNetwork.PlayerList[i]) == false)
-                return false;
-        return true;
-    }
-    #region Singleton + Classes
-    public static BillBoardManager instance;
-    void Awake() { instance = this; }
-    #endregion
+    bool AllPlayersLoaded() { return PhotonNetwork.PlayerList.Any(player => !Exists(ID.PlayerHealth, player) || !Exists(ID.PlayerTeam, player)); }
+    
     void Update()
     {
         if (!PhotonNetwork.InRoom)
@@ -73,14 +70,14 @@ public class BillBoardManager : MonoBehaviour
         UpdateWall();
         for (int i = 0; i < Health.Count; i++)
         {
-            if (i < PhotonNetwork.PlayerList.Length && Exists(PlayerHealth, PhotonNetwork.PlayerList[i]) == true)
+            bool Works = i < PhotonNetwork.PlayerList.Length && Exists(ID.PlayerHealth, PhotonNetwork.PlayerList[i]);
+            Health[i].gameObject.SetActive(Works);
+            if (Works)
             {
-                int HealthNum = GetPlayerInt(PlayerHealth, PhotonNetwork.PlayerList[i]);
-                Health[i].gameObject.SetActive(true);
-                Health[i].text = "Player" + i + " Health: " + HealthNum;
+                int HealthNum = (int)GetPlayerVar(ID.PlayerHealth, PhotonNetwork.PlayerList[i]);
+                string Username = (string)GetPlayerVar(ID.Username, PhotonNetwork.PlayerList[i]);
+                Health[i].text = Username + " Health: " + HealthNum;
             }
-            else
-                Health[i].gameObject.SetActive(false);
         }
         if (!Initialized())
             return;
@@ -100,7 +97,7 @@ public class BillBoardManager : MonoBehaviour
         else if (state == GameState.Active)
         {
             //float FinishTimer = GetGameFloat("FinishTimer");
-            if (DoorManager.instance.Sequence > SequenceState.OpenOutDoor)
+            if (DoorManager.instance.Sequence > DoorState.OpenOutDoor)
             {
                 DisplayVictory.text = "Started!  Time Left: " + InGameManager.instance.Timer;
             }
@@ -112,9 +109,13 @@ public class BillBoardManager : MonoBehaviour
         }
         else if (state == GameState.Finished)
         {
-            if (Exists(GameOutcome, null) && Exists(PlayerTeam, PhotonNetwork.LocalPlayer))
-                if (GetGameResult() != Result.UnDefined)
-                    DisplayVictory.text = OnWin(GetGameResult());
+            if (Exists(ID.Result, null) && Exists(ID.PlayerTeam, PhotonNetwork.LocalPlayer))
+            {
+                Result result = (Result)GetGameVar(ID.Result);
+                if (result != Result.UnDefined)
+                    DisplayVictory.text = OnWin(result);
+            }
+                
         }
     }
     public void SetOutcome(Result result)

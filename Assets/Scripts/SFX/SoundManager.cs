@@ -91,6 +91,7 @@ public class SoundManager : SerializedMonoBehaviour
     private void Start()
     {
         NetworkManager.OnInitialized += OnInitialize;
+        NetworkManager.OnDoorState += SetDoorAudio;
         for (int i = 0; i < System.Enum.GetValues(typeof(SoundType)).Length; i++)
             Sounds[(SoundType)i].Volume = PlayerPrefs.GetFloat(((SoundType)i).ToString());
 

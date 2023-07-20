@@ -32,7 +32,8 @@ public class InGameManager : SerializedMonoBehaviour
 
     [Header("Time")]
     public float WarmupTime = 5f;
-    public float FinishTime = 200f;
+    public float GameTime = 200f;
+    public float FinishTime = 15f;
 
     public bool ChooseAttackOnEven = true;
     [Header("Output")]
@@ -61,6 +62,12 @@ public class InGameManager : SerializedMonoBehaviour
     /// MAKE SURE OWNERSHIP DOESN"T PASS TO SOMEONE WHO JUST JOINED
     /// IF THERES NOONE ELSE RESTART THE GAME!!!
     /// </summary>
+    /// 
+
+    private void Start()
+    {
+        NetworkManager.OnGameState += SetNewGameState;
+    }
     public Team BestTeamForSpawn()
     {
         if (GetGameState() != GameState.Waiting)
@@ -74,9 +81,10 @@ public class InGameManager : SerializedMonoBehaviour
             return SideCount(Team.Attack) > SideCount(Team.Defense) ? Team.Defense : Team.Attack;
     }
     //called by OnlineEventmanager
-    public void SetNewGameState(GameState state)
+    public void SetNewGameState(int stateNum)
     {
         //for each individually
+        GameState state = (GameState)stateNum;
         CurrentState = state;
         //Debug.Log("Recieve: " + state.ToString());
         //Debug.Log("newstate: " + state);
@@ -94,7 +102,7 @@ public class InGameManager : SerializedMonoBehaviour
         else if (state == GameState.Active)
         {
             OnGameStart?.Invoke();
-            Timer = FinishTime;
+            Timer = GameTime;
         }
         else if (state == GameState.Finished)
         {
@@ -102,12 +110,11 @@ public class InGameManager : SerializedMonoBehaviour
             if (PhotonNetwork.IsMasterClient)
             {
                 //SetGameFloat(GameFinishTimer, 0f);
-                SetGameResult(EndResult());
+                SetGameVar(ID.Result, EndResult());
                 //OnlineEventManager.FinishEvent(EndResult());
             }
             
         }
-        SetGameState(state);
     }
     #endregion
 
@@ -127,27 +134,36 @@ public class InGameManager : SerializedMonoBehaviour
     }
     public void ProgressTime()
     {
-        if (AutoStart && SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers && CurrentState == GameState.Waiting)
-            OnlineEventManager.NewState(GameState.Warmup);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            //if autostart try to start game
+            if (AutoStart)
+            {
+                StartGame();
+            }
 
-        if (CurrentState == GameState.Waiting && BalenceTeams == true && PhotonNetwork.IsMasterClient)
-            BalanceTeams();
+
+            if (CurrentState == GameState.Waiting && BalenceTeams == true)
+                BalanceTeams();
+        }
+        
+        
         
         if(CurrentState == GameState.Warmup)
         {
             Timer -= Time.deltaTime;
             if (Timer < 0)
-                OnlineEventManager.NewState(GameState.Active);
+                SetGameVar(ID.GameState, GameState.Active);
         }
  
         if (CurrentState == GameState.Active)
         {
-            if ((int)DoorManager.instance.Sequence >= (int)SequenceState.WaitingForAllExit)
+            if ((int)DoorManager.instance.Sequence >= (int)DoorState.WaitingForAllExit)
             {
                 Timer -= Time.deltaTime;
                 if (ShouldEnd())
                 {
-                    OnlineEventManager.NewState(GameState.Finished);
+                    SetGameVar(ID.GameState, GameState.Finished);
                 }
             }
 
@@ -167,13 +183,17 @@ public class InGameManager : SerializedMonoBehaviour
     public void StartGame()
     {
         if (SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers && GetGameState() == GameState.Waiting)
-            OnlineEventManager.NewState(GameState.Warmup);
+        {
+            SetGameVar(ID.GameState, GameState.Warmup);
+            Debug.Log("start");
+        }
+            
     }
     public void CancelStartup()
     {
         if (GetGameState() == GameState.Warmup)
         {
-            OnlineEventManager.NewState(GameState.Waiting);
+            SetGameVar(ID.GameState, GameState.Waiting);
             //SetNewGameState(GameState.Waiting);
             //SetGameFloat(GameWarmupTimer, 0);
         }
@@ -202,7 +222,7 @@ public class InGameManager : SerializedMonoBehaviour
     {
         int Count = 0;
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-            if (Exists(PlayerTeam, PhotonNetwork.PlayerList[i]))
+            if (Exists(ID.PlayerTeam, PhotonNetwork.PlayerList[i]))
                 if (GetPlayerTeam(PhotonNetwork.PlayerList[i]) == team)
                     Count += 1;
         return Count;
@@ -213,9 +233,9 @@ public class InGameManager : SerializedMonoBehaviour
     {
         if (AlwaysCast == true)
             return true;
-        if (AIMagicControl.instance.AllActive() == false)
+        if (!AIMagicControl.instance.AllActive())
             return false;
-        if (Exists(PlayerTeam, PhotonNetwork.LocalPlayer) == false)
+        if (Exists(ID.PlayerTeam, PhotonNetwork.LocalPlayer) == false)
             return false;
         if (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator)
             return false;
@@ -236,7 +256,7 @@ public class InGameManager : SerializedMonoBehaviour
         {
             if(ShouldDebug)
                 Debug.Log("Team: " + GetPlayerTeam(PhotonNetwork.PlayerList[i]) + "  Alive: " + Alive(PhotonNetwork.PlayerList[i]));
-            if(Exists(PlayerTeam, PhotonNetwork.PlayerList[i]) && Exists(PlayerHealth, PhotonNetwork.PlayerList[i]))
+            if(Exists(ID.PlayerTeam, PhotonNetwork.PlayerList[i]) && Exists(ID.PlayerHealth, PhotonNetwork.PlayerList[i]))
                 if (Alive(PhotonNetwork.PlayerList[i]) && GetPlayerTeam(PhotonNetwork.PlayerList[i]) == team)
                     AliveNum += 1;
         }
@@ -260,7 +280,7 @@ public class InGameManager : SerializedMonoBehaviour
 
         //Set new player side
         Team NewTeam = GetPlayerTeam(player) == Team.Attack ? Team.Defense : Team.Attack;
-        SetPlayerTeam(NewTeam, player);
+        SetPlayerVar(ID.PlayerTeam, NewTeam, player);
     }
     #endregion
 

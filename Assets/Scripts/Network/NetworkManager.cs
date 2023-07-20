@@ -5,6 +5,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     #region Singleton + classes
@@ -30,9 +31,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public bool AllowFriendlyFire;
 
     public Transform playerList;
+
+    public delegate void OnNewState(int State);
+    public static event OnNewState OnGameState;
+    public static event OnNewState OnDoorState;
+
     public bool FriendlyFireWorks(Player Other, Player Me)
     {
-        if (!Exists(PlayerTeam, Other) || !Exists(PlayerTeam, Me))
+        if (!Exists(ID.PlayerTeam, Other) || !Exists(ID.PlayerTeam, Me))
             return false;
         
         bool IsFriendlyFire = GetPlayerTeam(Other) == GetPlayerTeam(Me);
@@ -57,7 +63,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             return true;
         if (InGameManager.instance.CurrentState != GameState.Active)
             return false;
-        if (DoorManager.instance.Sequence <= SequenceState.OpenOutDoor)
+        if (DoorManager.instance.Sequence <= DoorState.OpenOutDoor)
             return false;
         return true;
     }
@@ -85,7 +91,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         
         if (InGameManager.instance.ShouldEnd())
         {
-            OnlineEventManager.NewState(GameState.Finished);
+            SetGameVar(ID.GameState, GameState.Finished);
         }
         
     }
@@ -124,16 +130,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (DebugScript == true)
             Debug.Log("joined a room");
 
-        SetPlayerInt(PlayerHealth, NetworkManager.instance.MaxHealth, PhotonNetwork.LocalPlayer);
-        SetPlayerInt(KillCount, 0, PhotonNetwork.LocalPlayer);
-        SetPlayerInt(DamageDoneCount, 0, PhotonNetwork.LocalPlayer);
-        SetPlayer(UsernameText, 0, PhotonNetwork.LocalPlayer);
+        SetPlayerVar(ID.PlayerHealth, NetworkManager.instance.MaxHealth, PhotonNetwork.LocalPlayer);
+        SetPlayerVar(ID.KillCount, 0, PhotonNetwork.LocalPlayer);
+        SetPlayerVar(ID.DamageDone, 0, PhotonNetwork.LocalPlayer);
+        SetPlayerVar(ID.Username, Steam.SteamAccess.ID, PhotonNetwork.LocalPlayer);
         //InitializeAllGameStats
         if (Initialized() == false)
         {
-            SetGameState(GameState.Waiting);
+            SetGameVar(ID.GameState, GameState.Waiting);
 
-            SetGameInt(DoorState, (int)SequenceState.Waiting);
+            SetGameVar(ID.DoorState, (int)DoorState.Waiting);
 
             for (int i = 0; i < DoorManager.instance.Doors.Count; i++)
             {
@@ -161,7 +167,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Debug.Log("Should have felt: " + Damage + " Damage");
             return;
         }
-        int CurrentHealth = GetPlayerInt(PlayerHealth, PhotonNetwork.LocalPlayer);
+        int CurrentHealth = (int)GetPlayerVar(ID.PlayerHealth, PhotonNetwork.LocalPlayer);
         if (CurrentHealth == 0)
             return;
             
@@ -170,24 +176,50 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         //adjust other player's total damage
         if (AttackingPlayer != null)
-            SetPlayerInt(DamageDoneCount, GetPlayerInt(DamageDoneCount, AttackingPlayer) + Damage, AttackingPlayer);
+            SetPlayerVar(ID.DamageDone, (int)GetPlayerVar(ID.DamageDone, AttackingPlayer) + Damage, AttackingPlayer);
 
         
         int NewHealth = Mathf.Clamp(CurrentHealth - Damage, 0, MaxHealth);
         OnTakeDamage?.Invoke();
         //NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("TakeDamage", RpcTarget.All);
-        SetPlayerInt(PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);
+        SetPlayerVar(ID.PlayerHealth, NewHealth, PhotonNetwork.LocalPlayer);
         if(NewHealth == 0)
         {
             //update attacking player kill count
             if (AttackingPlayer != null)
-                SetPlayerInt(KillCount, GetPlayerInt(KillCount, AttackingPlayer) + 1, AttackingPlayer);
+                SetPlayerVar(ID.KillCount, (int)GetPlayerVar(ID.KillCount, AttackingPlayer) + 1, AttackingPlayer);
             
 
             StartCoroutine(MainPlayerDeath());
         }
             
     }
+    
+    public override void OnRoomPropertiesUpdate(Hashtable changedProps)
+    {
+        //on GameState change, change for everyone
+
+        foreach (int key in changedProps.Keys)
+        {
+            Debug.Log("key:" + key + " value: " + changedProps[key]);
+        }
+        if (changedProps.ContainsKey(changedProps.ContainsKey(ID.GameState)))
+        {
+            OnGameState?.Invoke((int)((GameState)changedProps[ID.GameState]));
+            Debug.Log("call: " + ((GameState)changedProps[ID.GameState]).ToString());
+        }
+            
+
+        //on DoorState change, change for everyone
+        if (changedProps.ContainsKey(changedProps.ContainsKey(ID.DoorState)))
+        {
+            OnDoorState?.Invoke((int)(DoorState)changedProps[ID.DoorState]);
+            Debug.Log("call2");
+        }
+            
+
+    }
+
     public IEnumerator MainPlayerDeath()
     {
         OnDeath?.Invoke();
