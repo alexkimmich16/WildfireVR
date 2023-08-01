@@ -1,5 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
+using System.Collections;
 public class Ragdoll : SerializedMonoBehaviour
 {
     public float Upforce;
@@ -8,6 +9,8 @@ public class Ragdoll : SerializedMonoBehaviour
     public Collider[] Colliders;
 
     public RootMotion.FinalIK.VRIK IK;
+
+    public Animator punchAnim;
 
     [Button(ButtonSizes.Small)]
     public void EnableRagdoll()
@@ -43,5 +46,23 @@ public class Ragdoll : SerializedMonoBehaviour
     void Start()
     {
         DisableRagdoll();
+    }
+    [Button]
+    public void DoAnim()
+    {
+        StartCoroutine(AnimSequence());
+        
+    }
+
+    public IEnumerator AnimSequence()
+    {
+        IK.enabled = false;
+        punchAnim.Play("RightHook", 0);
+        Debug.Log("issue1: " + IK.enabled);
+        //wait until finished
+        yield return new WaitWhile(() => !punchAnim.IsInTransition(0));
+        Debug.Log("issue2" + IK.enabled);
+        IK.enabled = true;
+        Debug.Log("issue3" + IK.enabled);
     }
 }
