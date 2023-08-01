@@ -33,7 +33,7 @@ public class NetworkPlayer : MonoBehaviourPun
 
     void Start()
     {
-        OnlineEventManager.RestartEventCallback += OnReset;
+        InGameManager.OnRestart += OnReset;
 
         CharacterDisplay = AIMagicControl.instance.MyCharacterDisplay;
         RigHead = AIMagicControl.instance.CamOffset;

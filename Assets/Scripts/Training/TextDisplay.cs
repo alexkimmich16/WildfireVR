@@ -5,7 +5,7 @@ using TMPro;
 using Sirenix.OdinInspector;
 
 
-namespace TrainingManager
+namespace Training
 {
     public enum FadeState
     {

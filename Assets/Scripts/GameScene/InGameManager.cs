@@ -25,7 +25,6 @@ public class InGameManager : SerializedMonoBehaviour
     public int MinPlayers = 1;
    
     public bool BalenceTeams = false;
-    public bool MagicBeforeStart = false;
     public bool AlwaysCast = true;
     public bool AutoStart = true;
     
@@ -36,9 +35,6 @@ public class InGameManager : SerializedMonoBehaviour
     public float FinishTime = 15f;
 
     public bool ChooseAttackOnEven = true;
-    [Header("Output")]
-
-    //public List<Transform> SpectatorSpawns = new List<Transform>();
 
     [Header("Debug")]
     public bool ShouldDebug;
@@ -46,23 +42,39 @@ public class InGameManager : SerializedMonoBehaviour
     #region StateEvents
 
     public delegate void StateEvent();
-    public event StateEvent OnStartCountdown;
-    public event StateEvent OnGameStart;
+    public static event StateEvent OnBeginWaiting;
+    public static event StateEvent OnStartCountdown;
+    public static event StateEvent OnGameStart;
+    public static event StateEvent OnRestart;
+    public static event StateEvent OnFinish;
 
     public delegate void FinishEvent(Result result);
     public static event FinishEvent OnGameEnd;
 
     [ReadOnly] public float Timer;
 
+    private bool SendingGameState;
+
     //private bool StartedCountdown = false;
 
+    public bool ShouldEnd { get{ return TotalAlive(Team.Attack) == 0 || TotalAlive(Team.Defense) == 0 || Timer < 0;
+        }}
+    public bool AbleToStartGame{ get{
+            bool AboveMin = SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers;
+            bool CloseInSize = Mathf.Abs(SideCount(Team.Attack) - SideCount(Team.Defense)) < 2;
+            return AboveMin && CloseInSize;
+        }}
+    public bool CanDoMagic { get{
+            if (AlwaysCast == true)
+                return true;
+            //hands inactive/no team/dead
+            if (!AIMagicControl.instance.AllActive() || !Exists(ID.PlayerTeam, PhotonNetwork.LocalPlayer) || !Alive(PhotonNetwork.LocalPlayer))
+                return false;
+            if (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator)//spectator
+                return false;
 
-
-    /// <summary>
-    /// MAKE SURE OWNERSHIP DOESN"T PASS TO SOMEONE WHO JUST JOINED
-    /// IF THERES NOONE ELSE RESTART THE GAME!!!
-    /// </summary>
-    /// 
+            return true;
+        } }
 
     private void Start()
     {
@@ -70,7 +82,7 @@ public class InGameManager : SerializedMonoBehaviour
     }
     public Team BestTeamForSpawn()
     {
-        if (GetGameState() != GameState.Waiting)
+        if (CurrentState != GameState.Waiting)
             return Team.Spectator;
 
         if (SideCount(Team.Attack) == MaxPlayers && SideCount(Team.Defense) == MaxPlayers)
@@ -84,15 +96,24 @@ public class InGameManager : SerializedMonoBehaviour
     public void SetNewGameState(int stateNum)
     {
         //for each individually
+        
         GameState state = (GameState)stateNum;
+        //Debug.Log(state.ToString());
+
+        //last = finished, new = waiting: means restart
+        if(CurrentState == GameState.Finished && state == GameState.Waiting)
+        {
+            SetPlayerVar(ID.PlayerHealth, NetworkManager.instance.MaxHealth, PhotonNetwork.LocalPlayer);// reset health
+            OnRestart?.Invoke();
+            SpawnManager.instance.RespawnToTeam();// moveback to team
+        }
         CurrentState = state;
-        //Debug.Log("Recieve: " + state.ToString());
-        //Debug.Log("newstate: " + state);
+
+        SendingGameState = false;
         Timer = 0f;
         if(state == GameState.Waiting)
         {
-            //restart
-            //StartedCountdown = false;
+            OnBeginWaiting?.Invoke();
         }
         else if (state == GameState.Warmup)
         {
@@ -107,6 +128,7 @@ public class InGameManager : SerializedMonoBehaviour
         else if (state == GameState.Finished)
         {
             OnGameEnd?.Invoke(EndResult());
+            Timer = FinishTime;
             if (PhotonNetwork.IsMasterClient)
             {
                 //SetGameFloat(GameFinishTimer, 0f);
@@ -117,23 +139,15 @@ public class InGameManager : SerializedMonoBehaviour
         }
     }
     #endregion
-
-    public bool AbleToStartGame()
+    void Update()
     {
-        bool AboveMin = SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers;
-        bool CloseInSize = Mathf.Abs(SideCount(Team.Attack) - SideCount(Team.Defense)) < 2;
-        return AboveMin && CloseInSize;
-    }
-    public bool ShouldEnd()//if m
-    {
-        bool SideGone = TotalAlive(Team.Attack) == 0 || TotalAlive(Team.Defense) == 0;
-        bool TimerDone = Timer < 0 && CurrentState == GameState.Active;
+        if (!NetworkManager.HasConnected)
+            return;
+        if (!Initialized())
+            return;
+        if (SendingGameState == true)
+            return;
 
-
-        return SideGone || TimerDone;
-    }
-    public void ProgressTime()
-    {
         if (PhotonNetwork.IsMasterClient)
         {
             //if autostart try to start game
@@ -146,64 +160,55 @@ public class InGameManager : SerializedMonoBehaviour
             if (CurrentState == GameState.Waiting && BalenceTeams == true)
                 BalanceTeams();
         }
-        
-        
-        
-        if(CurrentState == GameState.Warmup)
-        {
+        bool CountingDown = CurrentState == GameState.Finished || CurrentState == GameState.Warmup || (CurrentState == GameState.Active && (int)DoorManager.instance.Sequence >= (int)DoorState.WaitingForAllExit);
+        if (CountingDown)
             Timer -= Time.deltaTime;
-            if (Timer < 0)
-                SetGameVar(ID.GameState, GameState.Active);
-        }
- 
-        if (CurrentState == GameState.Active)
+
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+
+        if (CurrentState == GameState.Warmup && Timer < 0)
+            SendState(GameState.Active);
+
+        if (CurrentState == GameState.Active && (int)DoorManager.instance.Sequence >= (int)DoorState.WaitingForAllExit && ShouldEnd)
+            SendState(GameState.Finished);
+
+        if (CurrentState == GameState.Finished && Timer < 0)
+            SendState(GameState.Waiting);
+
+        void SendState(GameState State)
         {
-            if ((int)DoorManager.instance.Sequence >= (int)DoorState.WaitingForAllExit)
-            {
-                Timer -= Time.deltaTime;
-                if (ShouldEnd())
-                {
-                    SetGameVar(ID.GameState, GameState.Finished);
-                }
-            }
-
+            SendingGameState = true;
+            SetGameVar(ID.GameState, State);
         }
-            
-    }
-    void Update()
-    {
-        if (!NetworkManager.HasConnected())
-            return;
-        if (!Initialized())
-            return;
-
-        ProgressTime();
     }
 
+
+
+    #region SequenceChanges
     public void StartGame()
     {
-        if (SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers && GetGameState() == GameState.Waiting)
+        if (SideCount(Team.Attack) >= MinPlayers && SideCount(Team.Defense) >= MinPlayers && CurrentState == GameState.Waiting)
         {
             SetGameVar(ID.GameState, GameState.Warmup);
-            Debug.Log("start");
+            //Debug.Log("start");
         }
-            
+
     }
     public void CancelStartup()
     {
-        if (GetGameState() == GameState.Warmup)
+        if (CurrentState == GameState.Warmup)
         {
             SetGameVar(ID.GameState, GameState.Waiting);
             //SetNewGameState(GameState.Waiting);
             //SetGameFloat(GameWarmupTimer, 0);
         }
     }
-   
-    #region SequenceManage
     public void RestartGame()
     {
-        if (GetGameState() == GameState.Finished)//only restart on finish
-            OnlineEventManager.instance.RestartEvent();
+        if (CurrentState == GameState.Finished)//only restart on finish
+            SetGameVar(ID.GameState, GameState.Waiting);
         //tell all to restart, master will reset stats
     }
     #endregion
@@ -227,42 +232,25 @@ public class InGameManager : SerializedMonoBehaviour
                     Count += 1;
         return Count;
     }
-    
-    
-    public bool CanDoMagic()
-    {
-        if (AlwaysCast == true)
-            return true;
-        if (!AIMagicControl.instance.AllActive())
-            return false;
-        if (Exists(ID.PlayerTeam, PhotonNetwork.LocalPlayer) == false)
-            return false;
-        if (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator)
-            return false;
-        GameState state = GetGameState();
-        if (state == GameState.Active)
-            return true;
-        else if (state == GameState.Waiting)
-            return MagicBeforeStart;
-        else
-            return false;
-
-        
-    }
+   
     public int TotalAlive(Team team)
     {
         int AliveNum = 0;
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
-            if(ShouldDebug)
+            if (ShouldDebug)
                 Debug.Log("Team: " + GetPlayerTeam(PhotonNetwork.PlayerList[i]) + "  Alive: " + Alive(PhotonNetwork.PlayerList[i]));
-            if(Exists(ID.PlayerTeam, PhotonNetwork.PlayerList[i]) && Exists(ID.PlayerHealth, PhotonNetwork.PlayerList[i]))
+            if (Exists(ID.PlayerTeam, PhotonNetwork.PlayerList[i]) && Exists(ID.PlayerHealth, PhotonNetwork.PlayerList[i]))
                 if (Alive(PhotonNetwork.PlayerList[i]) && GetPlayerTeam(PhotonNetwork.PlayerList[i]) == team)
                     AliveNum += 1;
         }
         return AliveNum;
+        //{ return PhotonNetwork.PlayerList.Where(player => Exists(ID.PlayerTeam, player) && Exists(ID.PlayerHealth, player)).Count(player => Alive(player) && GetPlayerTeam(player) == team); }
     }
-    
+
+
+
+
     //in future call on special action, button, player left, game end etc
     public void BalanceTeams()
     {

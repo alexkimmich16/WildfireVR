@@ -71,7 +71,7 @@ public class FireController : SpellControlClass
     public void StartFire(Side side, int Level)
     {
         //Debug.Log(InGameManager.instance.CanDoMagic());
-        if (InGameManager.instance.CanDoMagic() == false)
+        if (InGameManager.instance.CanDoMagic == false)
             return;
 
         if (OnlineFire[(int)side] != null)

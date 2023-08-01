@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using RestrictionSystem;
 
-namespace TrainingManager
+namespace Training
 {
     public enum TrainingState
     {

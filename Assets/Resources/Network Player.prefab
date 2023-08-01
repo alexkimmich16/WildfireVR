@@ -270,6 +270,7 @@ GameObject:
   - component: {fileID: 802789730534011270}
   - component: {fileID: 5371750711294747581}
   - component: {fileID: 7956913722427456129}
+  - component: {fileID: 1238379845849762614}
   m_Layer: 16
   m_Name: Network Player
   m_TagString: VRPerson
@@ -389,7 +390,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 2
+    SerializedFormat: 0
     SerializedBytes: 
     ReferencedUnityObjects: []
     SerializedBytesString: 
@@ -399,6 +400,24 @@ MonoBehaviour:
     SerializationNodes: []
   AudioSpeaker: {fileID: 4270009255415122392}
   PhotonSpeaker: {fileID: 2205511636014492040}
+--- !u!114 &1238379845849762614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105980944445082301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0d930a7a8c6b064686567b65a368a46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TorsoAndArms: {fileID: 1912159895241580745}
+  Pants: {fileID: 2391314176915141174}
+  Hood: {fileID: 8657082076984951057}
+  Belt: {fileID: 4651181285484012869}
+  SkinNum: 0
+  ManualTest: 0
 --- !u!1 &8461358418908909968
 GameObject:
   m_ObjectHideFlags: 0
@@ -529,6 +548,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 1397207906421768553, guid: d509c7e4ee9a8f742a9627137d3823b2,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1d96d1f801bac444ca52826af0f1f8b4, type: 2}
     - target: {fileID: 1686596354560997361, guid: d509c7e4ee9a8f742a9627137d3823b2,
         type: 3}
       propertyPath: m_Layer
@@ -598,8 +622,12 @@ PrefabInstance:
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 5961056463806732069, guid: d509c7e4ee9a8f742a9627137d3823b2,
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961056463806732069, guid: d509c7e4ee9a8f742a9627137d3823b2,
         type: 3}
+      propertyPath: serializationData.SerializedFormat
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6208820881657648453, guid: d509c7e4ee9a8f742a9627137d3823b2,
         type: 3}
       propertyPath: m_Layer
@@ -635,9 +663,33 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6048248040921965612}
   m_PrefabAsset: {fileID: 0}
+--- !u!137 &1912159895241580745 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5289172954775831781, guid: d509c7e4ee9a8f742a9627137d3823b2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6048248040921965612}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &2391314176915141174 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8268633236741740058, guid: d509c7e4ee9a8f742a9627137d3823b2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6048248040921965612}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &4651181285484012869 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1397207906421768553, guid: d509c7e4ee9a8f742a9627137d3823b2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6048248040921965612}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6020442239639683073 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 27964832256893997, guid: d509c7e4ee9a8f742a9627137d3823b2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6048248040921965612}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &8657082076984951057 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3155778436049265981, guid: d509c7e4ee9a8f742a9627137d3823b2,
     type: 3}
   m_PrefabInstance: {fileID: 6048248040921965612}
   m_PrefabAsset: {fileID: 0}

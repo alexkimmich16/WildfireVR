@@ -67,8 +67,8 @@ public class DoorManager : SerializedMonoBehaviour
     }
     private void Start()
     {
-        InGameManager.instance.OnGameStart += StartSequence;
-        OnlineEventManager.RestartEventCallback += ResetDoors;
+        InGameManager.OnGameStart += StartSequence;
+        InGameManager.OnRestart += ResetDoors;
         NetworkManager.OnDoorState += SetNewDoorState;
         for (int i = 0; i < Doors.Count; i++)
             Doors[i].OBJ.localPosition = new Vector3(0, Doors[i].MinMax.x, 0);

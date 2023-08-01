@@ -84,7 +84,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _Blend: 0
-    - _BumpScale: 1
+    - _BumpScale: 0.5
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -102,7 +102,7 @@ Material:
     - _Parallax: 0.02
     - _QueueOffset: 0
     - _ReceiveShadows: 0
-    - _Smoothness: 0.2
+    - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -114,7 +114,7 @@ Material:
     - _BaseColor: {r: 0.7264151, g: 0.6341719, b: 0.5802183, a: 1}
     - _Color: {r: 0.7264151, g: 0.6341719, b: 0.5802183, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SpecColor: {r: 0.9056604, g: 0.68066925, b: 0.68066925, a: 1}
+    - _SpecColor: {r: 0.8679245, g: 0.6359321, b: 0.6359321, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &3832465638866431715
 MonoBehaviour:

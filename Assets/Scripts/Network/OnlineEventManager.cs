@@ -21,20 +21,8 @@ public class OnlineEventManager : MonoBehaviour
     }
 
     #endregion
-    #region Restart
-
-    public delegate void Restart();
-    public static event Restart RestartEventCallback;
-    public const byte RestartCode = 2;
-    public void RestartEvent()
-    {
-        object[] content = new object[] { };
-        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
-        PhotonNetwork.RaiseEvent(RestartCode, content, raiseEventOptions, SendOptions.SendReliable);
-    }
-    #endregion
     #region PlaySound
-    public const byte SoundCode = 5;
+    public const byte SoundCode = 2;
     public static void SoundEvent(int SoundIndex)
     {
         //Debug.Log(result.ToString());
@@ -59,16 +47,6 @@ public class OnlineEventManager : MonoBehaviour
             //float Force = 
             FirePushEvent?.Invoke(pos, dir);
             //FireController.TriggerFirePushEvent(pos);
-        }
-        if(photonEvent.Code == RestartCode)
-        {
-            //Debug.Log("restart");
-            //InGameManager.instance.RespawnToSpawnPoint();//respawn
-            SetPlayerVar(ID.PlayerHealth, NetworkManager.instance.MaxHealth, PhotonNetwork.LocalPlayer);// reset health
-            RestartEventCallback?.Invoke();
-            SpawnManager.instance.RespawnToTeam();// moveback to team
-            
-            InGameManager.instance.SetNewGameState((int)GameState.Waiting);
         }
         if (photonEvent.Code == SoundCode)
         {

@@ -8,16 +8,22 @@ namespace ObjectPooling
     {
         void Start()
         {
-            OnlineEventManager.RestartEventCallback += RefreshObjects;
+            InGameManager.OnRestart += RefreshObjects;
         }
 
         public void RefreshObjects()
         {
             for (int i = 0; i < ObjectPooler.instance.Pools.Count; i++)
             {
+                if (ObjectPooler.instance.Pools[i].objectPool == null)
+                {
+                    Debug.LogError("null object pool");
+                    return;
+                }
+                    
                 List<GameObject> ActiveList = ObjectPooler.instance.Pools[i].objectPool.ToList().Where(obj => obj.activeSelf).ToList();
                 for (int j = 0; j < ActiveList.Count; j++)
-                    PhotonNetwork.Destroy(ActiveList[j]);
+                    Destroy(ActiveList[j]);
             }
         }
     }

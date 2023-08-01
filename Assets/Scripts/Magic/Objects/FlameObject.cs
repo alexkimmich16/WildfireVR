@@ -28,7 +28,7 @@ public class FlameObject : SpellObjectClass
         }
 
 
-        Debug.Log(CalculateSpeedTowardsDirection(VelocityDirection, Direction));
+        //Debug.Log(CalculateSpeedTowardsDirection(VelocityDirection, Direction));
         main.startSpeedMultiplier = StartingSpeed + ReworkedMultiplier;
         
 

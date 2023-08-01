@@ -37,7 +37,7 @@ public class ImpulseJumper : MonoBehaviour
     {
         LastPushSeconds += Time.deltaTime;
 
-        if (!InGameManager.instance.CanDoMagic())
+        if (!InGameManager.instance.CanDoMagic)
             return;
 
         for (int i = 0; i < TriggerActive.Count; i++)

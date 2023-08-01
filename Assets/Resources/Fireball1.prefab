@@ -137,23 +137,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
+    SerializedFormat: 0
+    SerializedBytes: 03010500000053006f0075006e0064002f00000000012400000046004d004f0044002e00530074007500640069006f002e004500760065006e00740049006e007300740061006e00630065002c00200046004d004f00440055006e006900740079001b0106000000680061006e0064006c006500000000000000000005
     ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Sound
-      Entry: 7
-      Data: FMOD.Studio.EventInstance, FMODUnity
-    - Name: handle
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
   AddToAmbientVFX: 1
   EffectName: fireball
   Speed: 600

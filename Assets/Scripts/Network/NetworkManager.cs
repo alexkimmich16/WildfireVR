@@ -5,6 +5,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
+using System.Linq;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -26,8 +27,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public float AfterDeathWait;
 
-    public bool OverrideCanRecieveDamage = false;
-
     public bool AllowFriendlyFire;
 
     public Transform playerList;
@@ -36,13 +35,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public static event OnNewState OnGameState;
     public static event OnNewState OnDoorState;
 
+    public bool CanRecieveDamage { get { return InGameManager.instance.CurrentState == GameState.Active && DoorManager.instance.Sequence > DoorState.OpenOutDoor; } }
+    public static bool HasConnected { get { return PhotonNetwork.InRoom == true && Initialized(); } }
     public bool FriendlyFireWorks(Player Other, Player Me)
     {
         if (!Exists(ID.PlayerTeam, Other) || !Exists(ID.PlayerTeam, Me))
             return false;
         
         bool IsFriendlyFire = GetPlayerTeam(Other) == GetPlayerTeam(Me);
-        return (NetworkManager.instance.AllowFriendlyFire && IsFriendlyFire) || !IsFriendlyFire;    
+        return (AllowFriendlyFire && IsFriendlyFire) || !IsFriendlyFire;    
     }
     public override void OnLeftRoom()
     {
@@ -50,24 +51,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         //check if rage quitted in middle of game
         Team MyTeam = GetPlayerTeam(PhotonNetwork.LocalPlayer);
-        if (InGameManager.instance.CurrentState == GameState.Active && MyTeam != Team.Spectator)
+        if(InGameManager.instance.CurrentState == GameState.Active && MyTeam != Team.Spectator)
         {
             //other team won
             Result result = MyTeam == Team.Attack ? Result.DefenseWon : Result.AttackWon;
             Data.Secure.instance.EndGameManage(result);
         }
     }
-    public bool CanRecieveDamage()
-    {
-        if (OverrideCanRecieveDamage)
-            return true;
-        if (InGameManager.instance.CurrentState != GameState.Active)
-            return false;
-        if (DoorManager.instance.Sequence <= DoorState.OpenOutDoor)
-            return false;
-        return true;
-    }
-
     public List<GameObject> GetPlayers()
     {
         List<GameObject> Players = new List<GameObject>();
@@ -83,17 +73,17 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsMasterClient)
             return;
         //if able to simpily reset
-        if (InGameManager.instance.CurrentState == GameState.Warmup && !InGameManager.instance.AbleToStartGame())
+        if (InGameManager.instance.CurrentState == GameState.Warmup && !InGameManager.instance.AbleToStartGame)
         {
             //if alters game 
             InGameManager.instance.CancelStartup();
         }
-        
-        if (InGameManager.instance.ShouldEnd())
+        /*
+        if (InGameManager.instance.ShouldEnd)
         {
             SetGameVar(ID.GameState, GameState.Finished);
         }
-        
+        */
     }
     void Start()
     {
@@ -105,7 +95,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (DebugScript == true)
             Debug.Log("try connect to server");
     }
-    public static bool HasConnected() { return PhotonNetwork.InRoom == true && Initialized(); }
+    
     public override void OnConnectedToMaster()
     {
         if (DebugScript == true)
@@ -162,7 +152,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     public void LocalTakeDamage(int Damage, Player AttackingPlayer)
     {
-        if (CanRecieveDamage() == false)
+        if (CanRecieveDamage == false)
         {
             Debug.Log("Should have felt: " + Damage + " Damage");
             return;
@@ -189,7 +179,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (AttackingPlayer != null)
                 SetPlayerVar(ID.KillCount, (int)GetPlayerVar(ID.KillCount, AttackingPlayer) + 1, AttackingPlayer);
             
-
             StartCoroutine(MainPlayerDeath());
         }
             
@@ -198,26 +187,32 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnRoomPropertiesUpdate(Hashtable changedProps)
     {
         //on GameState change, change for everyone
-
-        foreach (int key in changedProps.Keys)
+        
+        foreach (string key in changedProps.Keys)
         {
-            Debug.Log("key:" + key + " value: " + changedProps[key]);
+            //Debug.Log("key: " + key.ToString() + " value: " + changedProps[key]);
         }
-        if (changedProps.ContainsKey(changedProps.ContainsKey(ID.GameState)))
+        
+        if (changedProps.ContainsKey(ID.GameState))
         {
             OnGameState?.Invoke((int)((GameState)changedProps[ID.GameState]));
-            Debug.Log("call: " + ((GameState)changedProps[ID.GameState]).ToString());
         }
             
 
         //on DoorState change, change for everyone
-        if (changedProps.ContainsKey(changedProps.ContainsKey(ID.DoorState)))
+        if (changedProps.ContainsKey(ID.DoorState))
         {
             OnDoorState?.Invoke((int)(DoorState)changedProps[ID.DoorState]);
-            Debug.Log("call2");
         }
-            
 
+
+
+        /*
+        foreach (string key in changedProps.Keys)
+        {
+            Debug.Log("key: " + key.ToString() + " value: " + changedProps[key]);
+        }
+        */
     }
 
     public IEnumerator MainPlayerDeath()

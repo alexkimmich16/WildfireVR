@@ -37,10 +37,14 @@ public class BillBoardManager : MonoBehaviour
             return;
 
         StateText.text = InGameManager.instance.CurrentState.ToString();
-
-        string TimerStateText = InGameManager.instance.CurrentState == GameState.Warmup ? "WarmupTime" : "FinishTime";
+        string TimerStateText = "";
+        if (InGameManager.instance.CurrentState == GameState.Warmup)
+            TimerStateText = "WarmupTime";
+        else if(InGameManager.instance.CurrentState == GameState.Active)
+            TimerStateText = "GameTime";
+        else if (InGameManager.instance.CurrentState == GameState.Finished)
+            TimerStateText = "FinishTime";
         TimerText.text = TimerStateText + ": " + InGameManager.instance.Timer.ToString();
-        //FinishTimeText.text = "FinishTime: " + InGameManager.instance.Timer.ToString();
 
         if (AllPlayersLoaded())
         {
@@ -56,11 +60,11 @@ public class BillBoardManager : MonoBehaviour
         if (Exists(ID.PlayerHealth, PhotonNetwork.LocalPlayer))
         {
             AliveText.text = "Alive: " + Alive(PhotonNetwork.LocalPlayer).ToString();
-            MyKills.text = "MyKills: " + GetPlayerVar(ID.KillCount, PhotonNetwork.LocalPlayer).ToString();
-            
         }
+        if(Exists(ID.KillCount, PhotonNetwork.LocalPlayer))
+            MyKills.text = "MyKills: " + GetPlayerVar(ID.KillCount, PhotonNetwork.LocalPlayer).ToString();
     }
-    bool AllPlayersLoaded() { return PhotonNetwork.PlayerList.Any(player => !Exists(ID.PlayerHealth, player) || !Exists(ID.PlayerTeam, player)); }
+    bool AllPlayersLoaded() { return PhotonNetwork.PlayerList.All(player => Exists(ID.PlayerHealth, player) && Exists(ID.PlayerTeam, player)); }
     
     void Update()
     {
@@ -75,14 +79,19 @@ public class BillBoardManager : MonoBehaviour
             if (Works)
             {
                 int HealthNum = (int)GetPlayerVar(ID.PlayerHealth, PhotonNetwork.PlayerList[i]);
-                string Username = (string)GetPlayerVar(ID.Username, PhotonNetwork.PlayerList[i]);
-                Health[i].text = Username + " Health: " + HealthNum;
+                if(Exists(ID.Username, PhotonNetwork.PlayerList[i]))
+                {
+                    string Username = (string)GetPlayerVar(ID.Username, PhotonNetwork.PlayerList[i]);
+                    Health[i].text = Username + " Health: " + HealthNum;
+                }
+                
             }
         }
         if (!Initialized())
             return;
 
-        GameState state = GetGameState();
+        GameState state = InGameManager.instance.CurrentState;
+        //GameState state = GetGameState();
 
         
 

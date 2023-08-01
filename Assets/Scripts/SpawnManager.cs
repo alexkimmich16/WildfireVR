@@ -18,7 +18,6 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
     public bool KeepInArena;
 
-
     public List<Transform> Spawns = new List<Transform>();
     void Start()
     {

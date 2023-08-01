@@ -39,8 +39,8 @@ namespace Data
         public DataInfo CurrentInfo;
 
         public delegate void LoadFinish();
-        public event LoadFinish OnLoadFinish;
-
+        public static event LoadFinish OnLoadFinish;
+        public bool ShouldDebug;
 
         [Button] public void CallRegister() { StartCoroutine(Register()); }
         [Button] public void LoadDataButton() { StartCoroutine(LoadData()); }
@@ -88,7 +88,7 @@ namespace Data
 
             if (www.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log("Game Saved With Code: " + www.downloadHandler.text);
+                //Debug.Log("Game Saved With Code: " + www.downloadHandler.text);
             }
             else
             {
@@ -116,14 +116,14 @@ namespace Data
                     yield break;
                 }
                 
-                Debug.Log(www.downloadHandler.text);
+                //Debug.Log(www.downloadHandler.text);
                 string[] webResults = www.downloadHandler.text.Split('\t');
-                int[] intArray = webResults.Select(str => int.Parse(str)).ToArray();
+                int[] intArray = webResults.Where(x => int.TryParse(x, out int result)).Select(str => int.Parse(str)).ToArray();
                 DataInfo info = new DataInfo(intArray[0], intArray[1], intArray[2], intArray[3], intArray[4], intArray[5], intArray[6]);
+                //if(webResults[7] != "null")
+                    //JsonStats.instance.SetNewInfo(webResults[7]);
                 CurrentInfo = info;
                 OnLoadFinish?.Invoke();
-
-
             }
             else
             {
@@ -131,27 +131,7 @@ namespace Data
             }
         }
 
-        public struct DataInfo
-        {
-            public DataInfo(int Experience, int Currency, int ELO, int WinCount, int LoseCount, int KillCount, int DamageCount)
-            {
-                this.ELO = ELO;
-                this.Currency = Currency;
-                this.Experience = Experience;
-                this.WinCount = WinCount;
-                this.LoseCount = LoseCount;
-                this.KillCount = KillCount;
-                this.DamageCount = DamageCount;
-            }
-
-            public int Experience;
-            public int Currency;
-            public int ELO;
-
-            public int WinCount, LoseCount;
-            public int KillCount;
-            public int DamageCount;
-        }
+        
         public void EndGameManage(Result result)
         {
             Team MyTeam = GetPlayerTeam(PhotonNetwork.LocalPlayer);
@@ -160,9 +140,7 @@ namespace Data
             OutCome outCome = MyTeam == WinningTeam ? OutCome.Win : OutCome.Loss;
 
             if (MyTeam == Team.Spectator)
-            {
                 return;
-            } 
 
             int GameDamageDone = (int)GetPlayerVar(ID.DamageDone, PhotonNetwork.LocalPlayer);
             int GameKills = (int)GetPlayerVar(ID.KillCount, PhotonNetwork.LocalPlayer);
@@ -175,7 +153,8 @@ namespace Data
             int TotalEarnedEXP = OutcomeExperience + KillExperience + DamageExperience + SecondsExperience;
             int PreviousEXP = CurrentInfo.Experience;
             int NewEXP = PreviousEXP + TotalEarnedEXP;
-            Debug.Log("EXP Changed From " + PreviousEXP + " to " + NewEXP);
+            if(ShouldDebug)
+                Debug.Log("EXP Changed From " + PreviousEXP + " to " + NewEXP);
 
             bool LeveledUp = EXP.instance.LeveledUp(PreviousEXP, NewEXP);
 
@@ -183,16 +162,18 @@ namespace Data
             int LevelUpExperience = LeveledUp ? Currency.instance.CurrencyPerLevelup : 0;
             int TotalEarnedCurrency = GameCurrency + LevelUpExperience;
             int NewCurrency = CurrentInfo.Currency + TotalEarnedCurrency;
-            Debug.Log("Currency Changed From " + PreviousEXP + " to " + NewCurrency);
+            if (ShouldDebug)
+                Debug.Log("Currency Changed From " + PreviousEXP + " to " + NewCurrency);
 
-            //int OldELO = CurrentInfo.ELO;
-            int NewELO = 20;
+            int OldELO = CurrentInfo.ELO;
+            int NewELO = ELO.instance.NewElo(OldELO, GetPlayerTeam(PhotonNetwork.LocalPlayer), outCome);
             //int NewELO = ELO.instance.MyNewELO(MyTeam, OldELO, WinningTeam);
             //Debug.Log("ELO Changed From " + OldELO + " to " + NewELO);
 
             int PreviousKillCount = CurrentInfo.KillCount;
             int NewKills = PreviousKillCount + GameKills;
-            Debug.Log("Kills Changed From " + PreviousKillCount + " to " + NewKills);
+            if (ShouldDebug)
+                Debug.Log("Kills Changed From " + PreviousKillCount + " to " + NewKills);
 
             int NewWinCount = CurrentInfo.WinCount;
             int NewLoseCount = CurrentInfo.LoseCount;
@@ -207,21 +188,65 @@ namespace Data
             int PreviousDamage = CurrentInfo.DamageCount;
             int NewDamageCount = PreviousDamage + GameDamageDone;
 
-            DataInfo saveInfo = new DataInfo(NewELO, NewCurrency, NewEXP, NewWinCount, NewLoseCount, NewKills, NewDamageCount);
+            DataInfo saveInfo = new DataInfo(NewEXP, NewCurrency, NewELO, NewWinCount, NewLoseCount, NewKills, NewDamageCount);
             CurrentInfo = saveInfo;
 
             StartCoroutine(SaveData());
             ///wait for database to create saveinfo
         }
+        public void OnResetSetStats()
+        {
+            if (!Exists(ID.PlayerTeam, PhotonNetwork.LocalPlayer))
+                return;
+            if (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator)
+                return;
+
+            SetPlayerVar(ID.ELO, CurrentInfo.ELO, PhotonNetwork.LocalPlayer);
+            SetPlayerVar(ID.KillCount, 0, PhotonNetwork.LocalPlayer);
+            SetPlayerVar(ID.DamageDone, 0, PhotonNetwork.LocalPlayer);
+
+            
+
+            
+        }
         public void Start()
         {
             //OnRecievedInfo += RecieveLoadedStats;
+            OnLoadFinish += DoneLoadingInfo;
             StartCoroutine(LoadData());
+            InGameManager.OnBeginWaiting += OnResetSetStats;
             InGameManager.OnGameEnd += EndGameManage;
+        }
 
+        public void DoneLoadingInfo()
+        {
             SetPlayerVar(ID.ELO, CurrentInfo.ELO, PhotonNetwork.LocalPlayer);
         }
     }
+
+    public struct DataInfo
+    {
+        public DataInfo(int Experience, int Currency, int ELO, int WinCount, int LoseCount, int KillCount, int DamageCount)
+        {
+            this.ELO = ELO;
+            this.Currency = Currency;
+            this.Experience = Experience;
+            this.WinCount = WinCount;
+            this.LoseCount = LoseCount;
+            this.KillCount = KillCount;
+            this.DamageCount = DamageCount;
+        }
+
+        public int Experience;
+        public int Currency;
+        public int ELO;
+
+        public int WinCount, LoseCount;
+        public int KillCount;
+        public int DamageCount;
+    }
+
+    
     //elo
     //gear
     //currency

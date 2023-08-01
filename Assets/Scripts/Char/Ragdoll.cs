@@ -27,6 +27,9 @@ public class Ragdoll : SerializedMonoBehaviour
 
     public void DisableRagdoll()
     {
+        if (IK == null)
+            return;
+
         IK.enabled = true;
         foreach (Rigidbody rb in Rigidbodies)
         {

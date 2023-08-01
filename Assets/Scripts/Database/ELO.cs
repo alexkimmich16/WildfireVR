@@ -7,66 +7,93 @@ using static Odin.Net;
 using System.Linq;
 using Photon.Pun;
 using Photon.Realtime;
+using Sirenix.OdinInspector;
 namespace Data
 {
-    public class ELO : MonoBehaviour
+    public class ELO : SerializedMonoBehaviour
     {
         void Awake() { instance = this; }
         public static ELO instance;
-        public int StartingElo;
-        private const int K = 32; // The constant determining the magnitude of rating changes
 
+        private float KFactor = 16f;
+        
+        private int[] AttackSave;
+        private int[] DefenseSave;
+
+        public void SaveAllELO()
+        {
+            AttackSave = GetTeamELO(Team.Attack);
+            DefenseSave = GetTeamELO(Team.Defense);
+        }
+
+        
         public int[] GetTeamELO(Team team) { return PhotonNetwork.PlayerList.Where(p => GetPlayerTeam(p) == team).Select(player => (int)GetPlayerVar(ID.ELO, player)).ToArray(); }
-        public int MyNewELO(Team team, int PreviousELO, Team Winner)
+
+        public int NewElo(int MyElo, Team team, OutCome outCome)
         {
-            CalculateElo(Winner, GetTeamELO(Team.Attack), GetTeamELO(Team.Defense), out int[] NewAttack, out int[] NewDefense);
+            if (outCome == OutCome.UnDefined)
+                return MyElo;
 
-            int[] MyTeamOld = GetTeamELO(team);
-            int MyIndex = MyTeamOld.ToList().FindIndex(x => x == PreviousELO);
+            int[] MyTeamScore = team == Team.Attack ? AttackSave : DefenseSave;
+            int[] OtherTeamScore = team == Team.Attack ? DefenseSave : AttackSave;
 
-
-            int[] MyTeamELOS = team == Team.Attack ? NewAttack : NewDefense;
-
-            return MyTeamELOS[MyIndex];
-        }
-        public static void CalculateElo(Team Winner, int[] Attacking, int[] Defending, out int[] newRatingsAttacking, out int[] newRatingsDefending)
-        {
-            // Calculate expected probabilities for each team
-            double expectedScoreTeamA = CalculateExpectedScore(Attacking, Defending);
-            double expectedScoreTeamB = CalculateExpectedScore(Defending, Attacking);
-
-            // Calculate new ratings for each player in Team A
-            newRatingsAttacking = CalculateNewRatings(Attacking, expectedScoreTeamA, Winner == Team.Attack ? 1 : 0);
-
-            // Calculate new ratings for each player in Team B
-            newRatingsDefending = CalculateNewRatings(Defending, expectedScoreTeamB, Winner == Team.Defense ? 1 : 0);
+            return GetNewValue(MyElo, (float)MyTeamScore.Average(), (float)OtherTeamScore.Average(), outCome == OutCome.Win);
         }
 
-        private static double CalculateExpectedScore(int[] Attacking, int[] Defending)
+        
+
+        public int GetNewValue(float MyElo, float MyTeamScore, float OtherScore, bool IsWinner)
         {
-            // Calculate the sum of ratings for each team
-            double AttackingRatingSum = Attacking.Sum();
-            double DefendingRatingSum = Defending.Sum();
+            float MyTeamExpected = GetExpectedScore(MyTeamScore, OtherScore);
 
-            // Calculate the expected score for Team A
-            double expectedScore = 1 / (1 + Math.Pow(10, (DefendingRatingSum - AttackingRatingSum) / 400.0));
+            return (int)UpdateRating(MyElo, MyTeamExpected, IsWinner);
 
-            return expectedScore;
-        }
 
-        private static int[] CalculateNewRatings(int[] team, double expectedScore, int actualScore)
-        {
-            int[] newRatings = new int[team.Length];
 
-            for (int i = 0; i < team.Length; i++)
+            float GetExpectedScore(float rating1, float rating2)
             {
-                int rating = team[i];
-                int newRating = rating + (int)(K * (actualScore - expectedScore));
-                newRatings[i] = newRating;
+                return 1f / (1f + Mathf.Pow(10f, (rating2 - rating1) / 400f));
             }
 
-            return newRatings;
+            float UpdateRating(float oldRating, float expectedScore, bool isWinner)
+            {
+                return oldRating + KFactor * ((isWinner ? 1 : 0) - expectedScore);
+            }
         }
+
+        private void Start()
+        {
+            InGameManager.OnGameStart += SaveAllELO;
+        }
+
+
+        /*
+        public int[] AttackTeam;
+        public int[] DefenseTeam;
+        public bool AttackWins;
+
+        [Button]
+        public void Recalculate()
+        {
+            int[] PreviousAttack = AttackTeam;
+            int[] PreviousDefense = DefenseTeam;
+
+            int[] NewAttack = new int[PreviousAttack.Length];
+            int[] NewDefense = new int[PreviousDefense.Length];
+
+            for (int i = 0; i < PreviousAttack.Length; i++)
+                NewAttack[i] = GetNewValue(PreviousAttack[i], (float)PreviousAttack.Average(), (float)PreviousDefense.Average(), AttackWins);
+
+            for (int i = 0; i < PreviousDefense.Length; i++)
+                NewDefense[i] = GetNewValue(PreviousDefense[i], (float)PreviousDefense.Average(), (float)PreviousAttack.Average(), !AttackWins);
+
+            AttackTeam = NewAttack;
+            DefenseTeam = NewDefense;
+
+            //GetNewElo(GetPlayerTeam(PhotonNetwork.LocalPlayer), (int)GetPlayerVar(ID.ELO, PhotonNetwork.LocalPlayer), GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Attack ? Team.Attack : Team.Defense);
+        }
+        
+        */
     }
 }
 
