@@ -11,10 +11,13 @@ namespace Skin
     {
         private SkinController SC => SkinController.instance;
 
-        public SkinnedMeshRenderer TorsoAndArms;
-        public SkinnedMeshRenderer Pants;
-        public SkinnedMeshRenderer Hood;
-        public SkinnedMeshRenderer Belt;
+        public List<SkinnedMeshRenderer> Bodyparts;
+        public List<SkinnedMeshRenderer> Hood;
+
+       // public SkinnedMeshRenderer TorsoAndArms;
+        //public SkinnedMeshRenderer Pants;
+        ///public SkinnedMeshRenderer Hood;
+        //public SkinnedMeshRenderer Belt;
 
         public int SkinNum;
         private Material ActiveBodyMat;
@@ -23,16 +26,23 @@ namespace Skin
         private bool GivenLocalSkin;
 
         private void Start()
-        {
-            ActiveBodyMat = new Material(TorsoAndArms.materials[1]);
-            ActiveHoodMat = new Material(Hood.materials[0]);
+        {        
+            ActiveBodyMat = new Material(Bodyparts[0].materials[0]);
+            ActiveHoodMat = new Material(Hood[0].materials[0]);
 
             ActiveBodyMat.name = "ActiveBody";
             ActiveHoodMat.name = "ActiveHood";
-            TorsoAndArms.sharedMaterials = new Material[] { ActiveBodyMat, ActiveBodyMat, TorsoAndArms.sharedMaterials[2] };
-            Pants.sharedMaterials = new Material[] { ActiveBodyMat, ActiveBodyMat };
-            Hood.sharedMaterials = new Material[] { ActiveHoodMat };
-            Belt.sharedMaterials = new Material[] { ActiveBodyMat };
+
+            foreach (SkinnedMeshRenderer mesh in Bodyparts)
+                mesh.sharedMaterials = new Material[] { ActiveBodyMat };
+
+            foreach (SkinnedMeshRenderer mesh in Hood)
+                mesh.sharedMaterials = new Material[] { ActiveHoodMat };
+
+            //TorsoAndArms.sharedMaterials = new Material[] { ActiveBodyMat, ActiveBodyMat, TorsoAndArms.sharedMaterials[2] };
+            //Pants.sharedMaterials = new Material[] { ActiveBodyMat, ActiveBodyMat };
+            //Hood.sharedMaterials = new Material[] { ActiveHoodMat };
+            //Belt.sharedMaterials = new Material[] { ActiveBodyMat };
 
             
         }

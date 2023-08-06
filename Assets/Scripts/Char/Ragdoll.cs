@@ -13,13 +13,22 @@ public class Ragdoll : SerializedMonoBehaviour
     public Animator punchAnim;
 
     [Button(ButtonSizes.Small)]
+
     public void EnableRagdoll()
     {
+        DoRagdoll();
+        DoRagdoll();
+    }
+    public void DoRagdoll()
+    {
         IK.enabled = false;
+        SetAnim(false);
         foreach (Rigidbody rb in Rigidbodies)
         {
-            rb.AddForce(Vector3.up * Upforce, ForceMode.Impulse);
-            rb.AddForce(Vector3.left * SideForce, ForceMode.Impulse);
+            rb.AddForce(Vector3.up * Upforce, ForceMode.VelocityChange);
+
+            Vector3 Backwards = -transform.forward;
+            rb.AddForce(Backwards * SideForce, ForceMode.VelocityChange);
             rb.isKinematic = false;
         }
         foreach (Collider Col in Colliders)
@@ -27,12 +36,11 @@ public class Ragdoll : SerializedMonoBehaviour
             Col.enabled = true;
         }
     }
-
+    [Button(ButtonSizes.Small)]
     public void DisableRagdoll()
     {
         if (IK == null)
             return;
-
         IK.enabled = true;
         foreach (Rigidbody rb in Rigidbodies)
         {
@@ -46,23 +54,31 @@ public class Ragdoll : SerializedMonoBehaviour
     void Start()
     {
         DisableRagdoll();
+        SetAnim(false);
     }
+
     [Button]
     public void DoAnim()
     {
         StartCoroutine(AnimSequence());
-        
+    }
+
+    public void SetAnim(bool state)
+    {
+        //Debug.Log("state: " + state);
+        if(punchAnim != null)
+            punchAnim.enabled = state;
     }
 
     public IEnumerator AnimSequence()
     {
+        SetAnim(true);
         IK.enabled = false;
-        punchAnim.Play("RightHook", 0);
-        Debug.Log("issue1: " + IK.enabled);
+        punchAnim.Rebind();
         //wait until finished
-        yield return new WaitWhile(() => !punchAnim.IsInTransition(0));
-        Debug.Log("issue2" + IK.enabled);
+
+        yield return new WaitWhile(() => !punchAnim.GetCurrentAnimatorStateInfo(0).IsName("AfterHook"));
         IK.enabled = true;
-        Debug.Log("issue3" + IK.enabled);
+        SetAnim(false);
     }
 }
