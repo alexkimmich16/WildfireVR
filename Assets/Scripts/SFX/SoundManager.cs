@@ -30,7 +30,6 @@ public class SoundManager : SerializedMonoBehaviour
         public FMODUnity.EventReference Ref;
         [Range(0.0f, 1f)] public float Volume = 1;
     }
-
     #endregion
 
     [FoldoutGroup("References")] private FMOD.Studio.EventInstance CrowdInstance, ElevatorInstance;
@@ -46,54 +45,65 @@ public class SoundManager : SerializedMonoBehaviour
 
     //[FoldoutGroup("VoiceChat")] public float ElevatorAudioDistance, GameAudioDistance;
     [FoldoutGroup("OnHit")] public float TimeBetweenTakeDamage;
-    
+   
+
+
     
     public FMOD.Studio.EventInstance CreateSound(string Text)
     {
         SoundEffect effect = Effects[Text];
         FMOD.Studio.EventInstance Sound = FMODUnity.RuntimeManager.CreateInstance(effect.Ref);
-        Sound.setVolume(GetVolume(Text));
+        Sound.setVolume(Volume(Text));
         return Sound;
     }
 
-    public float GetVolume(string ID) { return Effects[ID].Volume *  Sounds[Effects[ID].type].Volume * Sounds[SoundType.Master].Volume; }
-    
-    //public List<AudioClip> CrowdShouts;
+    public float Volume(string ID) { return Effects[ID].Volume *  Sounds[Effects[ID].type].Volume * Sounds[SoundType.Master].Volume; }
+    public float Volume(SoundType type) { return Sounds[type].Volume * Sounds[SoundType.Master].Volume; }
 
     public FMODUnity.EventReference RandomSound(List<FMODUnity.EventReference> SoundList) { return SoundList[Random.Range(0, SoundList.Count)]; }
 
-    public float Volume(SoundType type) { return Sounds[type].Volume * Sounds[SoundType.Master].Volume; }
+    
 
+    public void SetVolume(SoundType soundType, float Change)
+    {
+        float CurrentVolume = PlayerPrefs.GetFloat(soundType.ToString());
+        float NewVolume = Mathf.Clamp(CurrentVolume + Change, 0f, 1f);
 
+        PlayerPrefs.SetFloat(soundType.ToString(), NewVolume);
+        Sounds[soundType].Volume = NewVolume;
+
+        Debug.Log("vol2");
+    }
     private void Update()
     {
-        for (int i = 0; i < System.Enum.GetValues(typeof(SoundType)).Length; i++)
-            PlayerPrefs.SetFloat(((SoundType)i).ToString(), Sounds[(SoundType)i].Volume);
+        //handle specific effect volumes
+        foreach (string Key in Effects.Keys)
+        {
+            PlayerPrefs.SetFloat(Key, Effects[Key].Volume);
+        }
+            
 
-        List<string> Keys = Effects.Keys.ToList();
-        for (int i = 0; i < Keys.Count; i++)
-            PlayerPrefs.SetFloat(Keys[i], Effects[Keys[i]].Volume);
-
-        ElevatorInstance.setVolume(GetVolume("elevator"));
+        ElevatorInstance.setVolume(Volume("elevator"));
     }
     private void OnInitialize()
     {
         ElevatorInstance = CreateSound("elevator");
-        ElevatorInstance.setVolume(GetGameState() == GameState.Warmup ? GetVolume("elevator") : 0f);
+        ElevatorInstance.setVolume(GetGameState() == GameState.Warmup ? Volume("elevator") : 0f);
         ElevatorInstance.start();
 
     }
     public void SetDoorAudio(int State)
     {
         ElevatorInstance.setParameterByName("ElevatorState", State);
-        ElevatorInstance.setVolume(GetVolume("elevator"));
+        ElevatorInstance.setVolume(Volume("elevator"));
     }
     private void Start()
     {
         NetworkManager.OnInitialized += OnInitialize;
         NetworkManager.OnDoorState += SetDoorAudio;
-        for (int i = 0; i < System.Enum.GetValues(typeof(SoundType)).Length; i++)
-            Sounds[(SoundType)i].Volume = PlayerPrefs.GetFloat(((SoundType)i).ToString());
+
+        foreach (SoundType sound in Sounds.Keys)
+            Sounds[sound].Volume = PlayerPrefs.GetFloat(sound.ToString());
 
         List<string> Keys = Effects.Keys.ToList();
         for (int i = 0; i < Keys.Count; i++)

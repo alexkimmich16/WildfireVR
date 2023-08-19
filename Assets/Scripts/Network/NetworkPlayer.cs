@@ -88,8 +88,8 @@ public class NetworkPlayer : MonoBehaviourPun
     {
         if(photonView.IsMine)
             TakeDamageTimer -= Time.deltaTime;
-        DeathInstance.setVolume(SoundManager.instance.GetVolume("death"));
-        TakeDamageInstance.setVolume(SoundManager.instance.GetVolume("damage"));
+        DeathInstance.setVolume(SoundManager.instance.Volume("death"));
+        TakeDamageInstance.setVolume(SoundManager.instance.Volume("damage"));
     }
     [PunRPC]
     public void PlayerDied()
@@ -102,7 +102,7 @@ public class NetworkPlayer : MonoBehaviourPun
         myRagdoll.EnableRagdoll();
 
         DeathInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.RandomSound(SoundManager.instance.DeathRef));
-        DeathInstance.setVolume(SoundManager.instance.GetVolume("death"));
+        DeathInstance.setVolume(SoundManager.instance.Volume("death"));
         FMODUnity.RuntimeManager.AttachInstanceToGameObject(DeathInstance, transform);
         
         DeathInstance.start();
@@ -119,7 +119,7 @@ public class NetworkPlayer : MonoBehaviourPun
             photonView.RPC("TakeDamage", RpcTarget.Others);
 
         TakeDamageInstance = FMODUnity.RuntimeManager.CreateInstance(SoundManager.instance.RandomSound(SoundManager.instance.DamageRef));
-        TakeDamageInstance.setVolume(SoundManager.instance.GetVolume("damage"));
+        TakeDamageInstance.setVolume(SoundManager.instance.Volume("damage"));
         FMODUnity.RuntimeManager.AttachInstanceToGameObject(TakeDamageInstance, transform);
         TakeDamageInstance.start();
 

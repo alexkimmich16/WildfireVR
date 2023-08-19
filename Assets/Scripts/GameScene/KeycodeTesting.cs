@@ -1,5 +1,7 @@
 using UnityEngine;
 using RestrictionSystem;
+using System.Linq;
+using System;
 public class KeycodeTesting : MonoBehaviour
 {
     public static KeycodeTesting instance;
@@ -21,6 +23,11 @@ public class KeycodeTesting : MonoBehaviour
     public KeyCode Flames;
 
     public KeyCode GetData;
+
+    public KeyCode OpenMenu;
+    public KeyCode OpenOptions;
+
+    public KeyCode[] Codes;
 
     //public ob
 
@@ -64,6 +71,24 @@ public class KeycodeTesting : MonoBehaviour
 
         if (Input.GetKeyDown(GetData))
             Data.Secure.instance.GetData();
+
+        if (Input.GetKeyDown(OpenMenu))
+            Menu.MenuController.instance.OnMenuToggle();
+
+        if (Input.GetKeyDown(OpenOptions))
+        {
+            Menu.MenuEffect.instance.ButtonTouched(Menu.MenuType.Options);
+        }
+            
+
+        if (Codes.Any(x => Input.GetKeyDown(x)))
+        {
+
+            int Index = Array.FindIndex(Codes, x => Input.GetKeyDown(x) == true);
+            //Debug.Log(Index);
+            SettingsControl.quality = (Quality)Index;
+            //Debug.Log(SettingsControl.quality.ToString());
+        }
 
 
 

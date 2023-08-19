@@ -48,5 +48,5 @@ public abstract class SpellObjectClass : SerializedMonoBehaviour
         Sound.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
-    public void OnVolumeChange() { Sound.setVolume(SoundManager.instance.GetVolume(EffectName)); }
+    public void OnVolumeChange() { Sound.setVolume(SoundManager.instance.Volume(EffectName)); }
 }
