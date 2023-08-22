@@ -5,45 +5,76 @@ using UnityEngine.VFX;
 using Sirenix.OdinInspector;
 namespace Menu
 {
-    public enum MenuType
+    public enum MenuButtonType
     {
         Resume = 0,
         Options = 1,
         Quit = 2,
     }
-
+    [RequireComponent(typeof(VFXText))]
     public class MenuButtons : SerializedMonoBehaviour
     {
-        public Menu buttonType;
-        [ShowIf("buttonType", Menu.Base)] public MenuType type;
+        public Menu menuType;
+        [ShowIf("menuType", Menu.Base)] public MenuButtonType type;
 
-        [ShowIf("buttonType", Menu.Options)] public bool Increase;
-        [ShowIf("buttonType", Menu.Options)] public SoundType SoundType;
+        [ShowIf("menuType", Menu.Options)] public bool Increase;
 
         private float Timer;
+
+        //private float CooldownTimer;
         private void OnTriggerEnter(Collider other)
         {
+            if (!MenuController.instance.CanPress)
+                return;
+
             if (LayerMask.LayerToName(other.gameObject.layer) == "Hand")
             {
-                if (buttonType == Menu.Base)
+                if (menuType == Menu.Base)
                 {
-                    MenuEffect.instance.ButtonTouched(type);
+                    MenuController.instance.ButtonTouched(type);
                     GetComponent<VFXText>().SetVFXColor(true);
                 }
-                else if(buttonType == Menu.Options)
+                else if(menuType == Menu.Options)
                 {
-                    MenuEffect.instance.ButtonTouched(SoundType, Increase);
-                    GetComponent<VFXText>().SetVFXColor(true);
+                    if (GetComponent<VFXText>().displayType == OptionsButtons.VolumeButton)
+                    {
+                        MenuEffect.instance.ButtonTouched(GetComponent<VFXText>().SoundType, Increase);
+                        GetComponent<VFXText>().SetVFXColor(true);
 
-                    Timer = MenuEffect.instance.ButtonColorTime;
+                        Timer = MenuEffect.instance.ButtonColorTime;
+                    }
+                    
+
+                    else if (GetComponent<VFXText>().displayType == OptionsButtons.BackButton)
+                    {
+                        
+                        MenuController.instance.OptionsBackButton();
+
+                        GetComponent<VFXText>().SetVFXColor(true);
+                        Timer = MenuEffect.instance.ButtonColorTime;
+                    }
+                    else if (GetComponent<VFXText>().displayType == OptionsButtons.QualityChange)
+                    {
+                        MenuEffect.instance.QualityChange(Increase);
+
+                        GetComponent<VFXText>().SetVFXColor(true);
+                        Timer = MenuEffect.instance.ButtonColorTime;
+                    }
+
                 }
                 
             }
                 
         }
-
+        public void ResetTimer()
+        {
+            //CooldownTimer = MenuController.instance.NewMenuTouchCooldown;
+        }
         private void Update()
         {
+
+            //CooldownTimer -= Time.deltaTime;
+
             if (Timer > 0)
                 Timer -= Time.deltaTime;
             if (Timer < 0)

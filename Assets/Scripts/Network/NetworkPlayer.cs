@@ -1,6 +1,10 @@
 using UnityEngine;
 using Photon.Pun;
 using RestrictionSystem;
+using Photon.Pun;
+using Photon.Realtime;
+using static Odin.Net;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class NetworkPlayer : MonoBehaviourPun
 {
     public static float DeathTime = 1f;
@@ -39,6 +43,8 @@ public class NetworkPlayer : MonoBehaviourPun
         RigHead = AIMagicControl.instance.CamOffset;
         RigLeft = AIMagicControl.instance.PositionObjectives[(int)Side.left];
         RigRight = AIMagicControl.instance.PositionObjectives[(int)Side.right];
+
+        NetworkManager.instance.PlayerList.Add(photonView.Owner, transform);
 
         transform.SetParent(NetworkManager.instance.playerList);
 
@@ -125,7 +131,6 @@ public class NetworkPlayer : MonoBehaviourPun
 
         
     }
-
 
     //[PunRPC]
     //public void MotionDone(RestrictionSystem.CurrentLearn spell) { FirePillar.CallStartFire(spell); }

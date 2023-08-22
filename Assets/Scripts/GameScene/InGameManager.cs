@@ -67,8 +67,8 @@ public class InGameManager : SerializedMonoBehaviour
     public bool CanDoMagic { get{
             if (AlwaysCast == true)
                 return true;
-            //hands inactive/no team/dead
-            if (!AIMagicControl.instance.AllActive() || !Exists(ID.PlayerTeam, PhotonNetwork.LocalPlayer) || !Alive(PhotonNetwork.LocalPlayer))
+            //hands inactive/no team/dead/in menu
+            if (!AIMagicControl.instance.AllActive() || !Exists(ID.PlayerTeam, PhotonNetwork.LocalPlayer) || !Alive(PhotonNetwork.LocalPlayer) || Menu.MenuController.instance.AnyMenusOpen)
                 return false;
             if (GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Spectator)//spectator
                 return false;

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using RestrictionSystem;
+using Sirenix.OdinInspector;
 public enum ControlType
 {
     OnRotateHand = 0,
@@ -47,9 +48,10 @@ public class FireballController : SpellControlClass
     public bool ShouldDebug;
     public float Display;
 
+    public bool UseWarmups;
+    [ShowIf("UseWarmups")] public float WarmupDistFromHand;
     public List<FireballSide> Sides;
-
-    public float WarmupDistFromHand;
+    
 
     //public Transform Debugger1;
     //public Transform Debugger2;
@@ -86,12 +88,14 @@ public class FireballController : SpellControlClass
         if (Index == 0)
         {
             Sides[(int)side].Active = State;
-            Sides[(int)side].Warmup.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, State);
+            if(UseWarmups)
+                Sides[(int)side].Warmup.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, State);
         }
 
         if (State == true && Index == 1)
         {
-            Sides[(int)side].Warmup.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
+            if (UseWarmups)
+                Sides[(int)side].Warmup.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
             SpawnFireball(side, Level);
         }
 
@@ -122,6 +126,9 @@ public class FireballController : SpellControlClass
     }
     public override void InitializeSpells()
     {
+        if (!UseWarmups)
+            return;
+        
         for (int i = 0; i < 2; i++)
         {
             Sides[i].Warmup = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.FireballWarmup.name, Vector3.zero, Quaternion.identity);
@@ -137,7 +144,7 @@ public class FireballController : SpellControlClass
         {
             
             
-            if(Sides[i].Warmup != null)
+            if(Sides[i].Warmup != null && UseWarmups)
             {
                 Vector3 ForwardRot = Quaternion.Euler(AIMagicControl.instance.Hands[i].eulerAngles) * Vector3.forward;
                 Sides[i].Warmup.transform.position = AIMagicControl.instance.Hands[i].position + (WarmupDistFromHand * ForwardRot);

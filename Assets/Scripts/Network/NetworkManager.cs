@@ -31,6 +31,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public Transform playerList;
 
+    public Dictionary<Player, Transform> PlayerList = new Dictionary<Player, Transform>();
+
     public delegate void OnNewState(int State);
     public static event OnNewState OnGameState;
     public static event OnNewState OnDoorState;
@@ -58,18 +60,24 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Data.Secure.instance.EndGameManage(result);
         }
     }
-    public List<GameObject> GetPlayers()
+    public List<GameObject> GetPlayers() { return PlayerList.Values.Select(transform => transform.gameObject).ToList(); }
+    /*
     {
         List<GameObject> Players = new List<GameObject>();
         for (int i = 0; i < playerList.childCount; ++i)
             Players.Add(playerList.GetChild(i).gameObject);
         return Players;
     }
-    
+    */
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
+
+        bool Removed = PlayerList.Remove(otherPlayer);
+        if (!Removed)
+            Debug.LogError("Failed To Remove Player From Dictionary!");
+
         if (!PhotonNetwork.IsMasterClient)
             return;
         //if able to simpily reset

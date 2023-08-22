@@ -77,7 +77,7 @@ public class KeycodeTesting : MonoBehaviour
 
         if (Input.GetKeyDown(OpenOptions))
         {
-            Menu.MenuEffect.instance.ButtonTouched(Menu.MenuType.Options);
+            Menu.MenuController.instance.ButtonTouched(Menu.MenuButtonType.Options);
         }
             
 

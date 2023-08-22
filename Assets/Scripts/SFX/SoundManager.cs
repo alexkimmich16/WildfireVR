@@ -7,8 +7,7 @@ public enum SoundType
 {
     Master = 0,
     Effect = 1,
-    Crowd = 2,
-    Voice = 3,
+    Voice = 2,
 }
 public class SoundManager : SerializedMonoBehaviour
 {
@@ -71,8 +70,6 @@ public class SoundManager : SerializedMonoBehaviour
 
         PlayerPrefs.SetFloat(soundType.ToString(), NewVolume);
         Sounds[soundType].Volume = NewVolume;
-
-        Debug.Log("vol2");
     }
     private void Update()
     {

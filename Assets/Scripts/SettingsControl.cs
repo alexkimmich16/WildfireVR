@@ -14,7 +14,6 @@ public class SettingsControl : MonoBehaviour
         get { return (Quality)QualitySettings.GetQualityLevel(); } 
         set {
             QualitySettings.SetQualityLevel((int)value);
-            OnSettingsChange?.Invoke(value);
         } }
 
     //settings
@@ -29,6 +28,7 @@ public class SettingsControl : MonoBehaviour
     void Start()
     {
         OnSettingsChange += NewSettings;
+        quality = (Quality) PlayerPrefs.GetInt("quality");
     }
     public void NewSettings(Quality quality)
     {
@@ -36,5 +36,12 @@ public class SettingsControl : MonoBehaviour
         FogObject.SetActive(quality >= FogMinQuality);
         AmbientVFX.instance.vfxGraph.SetFloat("SpawnAmount", AmbientParticles[(int)quality]);
 
+    }
+
+    public static void ChangeSettings(int Levels)
+    {
+        quality = (Quality)Mathf.Clamp(Levels + (int)quality, 0, 2);
+        PlayerPrefs.SetInt("quality", (int)quality);
+        OnSettingsChange?.Invoke(quality);
     }
 }

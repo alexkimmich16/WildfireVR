@@ -48,6 +48,7 @@ public class AIMagicControl : MonoBehaviour
     {
         PreventorCapsule.position = new Vector3(Cam.position.x, Rig.position.y, Cam.position.z);
     }
+    //public bool CanCast
     private void Update()
     {
         InputDevices.GetDeviceAtXRNode(XRNode.Head).TryGetFeatureValue(CommonUsages.isTracked, out HeadsetActive);

@@ -34,6 +34,7 @@ namespace Menu
         [FoldoutGroup("Ref")] public Mesh PlusMesh;
         [FoldoutGroup("Ref")] public Mesh SubtractMesh;
         [FoldoutGroup("Ref")] public List<VFXText> VolumeDisplays;
+        [FoldoutGroup("Ref")] public VFXText QualityDisplay;
 
 
         [FoldoutGroup("VFX")] public float ButtonColorTime;
@@ -94,38 +95,19 @@ namespace Menu
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(new Vector3(0, AIMagicControl.instance.Cam.eulerAngles.y, 0)), Time.deltaTime * rotationSpeed);
         }
 
-
-        public void ButtonTouched(MenuType type)
-        {
-            MenuController.instance.SetMenu(false);
-            //Debug.Log("" + other.gameObject.name);
-            if (type == MenuType.Resume)
-            {
-                MenuController.instance.SetOptionsMenu(false);
-
-            }
-            else if (type == MenuType.Options)
-            {
-                MenuController.instance.SetOptionsMenu(true);
-                //open options menu
-            }
-            else if (type == MenuType.Quit)
-            {
-                MenuController.instance.SetOptionsMenu(false);
-                //bring up are you sure menu
-            }
-        }
-
         public void ButtonTouched(SoundType soundType, bool Increase)
         {
-            SoundManager.instance.SetVolume(soundType, MenuController.instance.VolumeChange * (Increase ? 1 : -1));
-            //if()
-            VolumeDisplays[(int)soundType].ResetMesh();
+            SoundManager.instance.SetVolume(soundType, MenuController.VolumeChange * (Increase ? 1f : -1f));
+            VolumeDisplays[(int)soundType].Play();
             //ResetText
+        }
 
+        public void QualityChange(bool Increase)
+        {
+            SettingsControl.ChangeSettings(Increase ? 1 : -1);
 
-
-            Debug.Log("vol");
+            QualityDisplay.Play();
+            //ResetText
         }
 
     }

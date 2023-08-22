@@ -22,6 +22,9 @@ namespace Odin
             public static string Result = "Result";
 
             public static string DoorState = "DoorState";
+
+            public static string Height = "PlayerHeight";
+            public static string ArmLength = "ArmLength";
             
         }
         

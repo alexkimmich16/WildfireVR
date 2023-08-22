@@ -9,17 +9,16 @@ using Sirenix.OdinInspector;
 using System.Linq;
 namespace Menu
 {
-    public enum Menu
-    {
-        Base = 0,
-        Options = 1,
-    }
+    
 
-    public enum DisplayType
+    public enum OptionsButtons
     {
         VolumeDisplay = 0,
         VolumeButton = 1,
         VolumeTypeText = 2,
+        BackButton = 3,
+        QualityChange = 4,
+        QualityDisplay = 5,
     }
 
     public class VFXText : SerializedMonoBehaviour
@@ -34,7 +33,7 @@ namespace Menu
         private BoxCollider Collider;
 
         public Menu menu;
-        [ShowIf("menu", Menu.Options)]public DisplayType displayType;
+        [ShowIf("menu", Menu.Options)]public OptionsButtons displayType;
         [ShowIf("menu", Menu.Options)] public SoundType SoundType;
 
         private float[] cumulativeAreas;
@@ -43,6 +42,8 @@ namespace Menu
         private Vector3[] precomputedPoints;
 
         public int PointMultiplier = 1;
+
+
 
         MenuEffect ME => MenuEffect.instance;
 
@@ -62,11 +63,12 @@ namespace Menu
             }
             else if(menu == Menu.Options)
             {
-                if(displayType == DisplayType.VolumeDisplay)
+                if(displayType == OptionsButtons.VolumeDisplay)
                 {
-                    mesh = ME.TextToMesh(Mathf.RoundToInt(SoundManager.instance.Volume(SoundType) * 100f).ToString());
+                    //Debug.Log(Mathf.RoundToInt(PlayerPrefs.GetFloat(SoundType.ToString()) * 100f).ToString());
+                    mesh = ME.TextToMesh(Mathf.RoundToInt(PlayerPrefs.GetFloat(SoundType.ToString()) * 100f).ToString());
                 }
-                else if (displayType == DisplayType.VolumeButton)
+                else if (displayType == OptionsButtons.VolumeButton || displayType == OptionsButtons.QualityChange)
                 {
                     Mesh MeshReference = GetComponent<MenuButtons>().Increase ? ME.PlusMesh : ME.SubtractMesh;
                     mesh = new Mesh
@@ -81,9 +83,17 @@ namespace Menu
                         subMeshCount = MeshReference.subMeshCount
                     };
                 }
-                else if (displayType == DisplayType.VolumeTypeText)
+                else if (displayType == OptionsButtons.VolumeTypeText)
                 {
                     mesh = ME.TextToMesh(SoundType.ToString().ToUpper());
+                }
+                else if (displayType == OptionsButtons.BackButton)
+                {
+                    mesh = ME.TextToMesh("BACK");
+                }
+                else if (displayType == OptionsButtons.QualityDisplay)
+                {
+                    mesh = ME.TextToMesh(SettingsControl.quality.ToString());
                 }
             }
             if (RendererTest)
@@ -151,20 +161,22 @@ namespace Menu
         
         public void OnMenuChange(bool NewState)
         {
-            if(Collider != null)
-                Collider.enabled = NewState;
-
             if (NewState == true)
                 SetVFXColor(false);
 
             if (NewState)
             {
+                if(GetComponent<MenuButtons>())
+                    GetComponent<MenuButtons>().ResetTimer();
                 Play();
             }
             else
             {
                 VFX.Stop();
             }
+
+            if (Collider != null)
+                Collider.enabled = NewState;
         }
         public Texture2D GetTexture2D(Vector3[] Positions)
         {
@@ -190,11 +202,12 @@ namespace Menu
 
             ResetMesh();
 
-
             if (menu == Menu.Base)
                 MenuController.OnMenuState += OnMenuChange;
             else if(menu == Menu.Options)
                 MenuController.OnOptionsState += OnMenuChange;
+            //MenuController.MenuStateEvents[(int)menu] += OnMenuChange;
+            //MenuController.menuEvent((int)menu) += OnMenuChange;
         }
 
         public void SetVFXColor(bool Touched)
