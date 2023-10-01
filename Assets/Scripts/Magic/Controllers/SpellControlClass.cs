@@ -1,5 +1,5 @@
 using Sirenix.OdinInspector;
-using RestrictionSystem;
+
 using System.Collections.Generic;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction;
@@ -18,19 +18,19 @@ public abstract class SpellControlClass : SerializedMonoBehaviour
 
 
     public abstract void InitializeSpells();
-    public abstract void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level);
-    public void DebugNewState(Side side, bool StartOrFinish, int Index, int Level)
+    public abstract void RecieveNewState(Side side, int State);
+    public void DebugNewState(Side side, int State)
     {
         if (!DebugStates)
             return;
 
-        Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish + "  Index: " + Index);
+        Debug.Log("side: " + side.ToString() + "  State: " + State);
 
     }
     public void Start()
     {
         NetworkManager.OnInitialized += Initalize;
-        PastFrameRecorder.disableController += ResetHaptics;
+        Athena.PastFrameRecorder.disableController += ResetHaptics;
 
     }
     public void ResetHaptics(Side side)
@@ -45,8 +45,8 @@ public abstract class SpellControlClass : SerializedMonoBehaviour
     public void Initalize()
     {
         InitializeSpells();
-        ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1].OnNewState += RecieveNewState;
-        ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1].OnNewState += DebugNewState;
+        Athena.Runtime.instance.Spells[Motion].SpellEvent += RecieveNewState;
+        Athena.Runtime.instance.Spells[Motion].SpellEvent += DebugNewState;
     }
     public void SetHaptics(Side side, bool State)
     {

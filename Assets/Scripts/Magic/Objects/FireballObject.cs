@@ -2,7 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;
-using RestrictionSystem;
+
 public class FireballObject : SpellObjectClass
 {
     public float Speed;

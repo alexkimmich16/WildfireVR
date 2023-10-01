@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
-using RestrictionSystem;
+
 public enum SpellType
 {
     Individual = 0,
@@ -60,35 +60,8 @@ public class AIMagicControl : MonoBehaviour
         //Vector3 RealPos = 
         hitbox.position = Cam.position - Cam.forward * HitboxBackDist;
 
-        handsToChange[0].material = Materials[ConditionManager.instance.ConditionStats[0, 0].SequenceState];
+        //handsToChange[0].material = Materials[ConditionManager.instance.ConditionStats[0, 0].SequenceState];
 
-        if (AllActive())
-        {
-            PastFrameRecorder PR = PastFrameRecorder.instance;
-
-            //List<CurrentLearn> TrueMotions = RestrictionManager.instance.AllWorkingMotions(PR.PastFrame(Side.right), PR.GetControllerInfo(Side.right));
-            //CurrentLearn DisplayMotion = TrueMotions.Count == 0 ? CurrentLearn.Nothing : TrueMotions[0];
-
-            //for (int i = 0; i < handsToChange.Count; i++)
-                //handsToChange[i].material = Materials[GetMatTestNum((Side)i)]; //set hand
-
-            int GetMatTestNum(Side side)
-            {
-                List<int> Working = new List<int>();
-                for (int j = 1; j < RestrictionManager.instance.RestrictionSettings.Coefficents.Count + 1; j++)
-                    if (RestrictionManager.instance.MotionWorks(PR.PastFrame(side), PastFrameRecorder.instance.GetControllerInfo(side), (Spell)j))
-                        Working.Add(j);
-                if (Working.Count == 0)
-                    return 0;
-                else if (Working.Count == 1)
-                    return Working[0];
-                else
-                    return RestrictionManager.instance.RestrictionSettings.Coefficents.Count + 1;
-
-            }
-
-            
-        }
         if (AllowIdlePositions)
         {
             if (!HeadsetActive)

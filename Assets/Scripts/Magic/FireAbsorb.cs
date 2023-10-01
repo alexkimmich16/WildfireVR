@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
-using RestrictionSystem;
+
 public class FireAbsorb : MonoBehaviour
 {
     public static FireAbsorb instance;

@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using RestrictionSystem;
+
 public class FirePillar : MonoBehaviour
 {
     //subscribe to on fire event

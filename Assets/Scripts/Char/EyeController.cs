@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using RestrictionSystem;
+
 
 namespace Eyes
 {
@@ -24,20 +24,23 @@ namespace Eyes
         {
             if (!IsOfflineVariant)
                 return;
-            RestrictionManager.instance.RestrictionSettings.MotionConditions[0].OnNewState += RecieveFireball;
-            RestrictionManager.instance.RestrictionSettings.MotionConditions[1].OnNewState += RecieveFlames;
+
+
+
+            Athena.Runtime.instance.Spells[Spell.Fireball].SpellEvent += RecieveFireball;
+            Athena.Runtime.instance.Spells[Spell.Flames].SpellEvent += RecieveFlames;
         }
         //each local controls rpcs for network as well
-        public void RecieveFireball(Side side, bool State, int Index, int Level)
+        public void RecieveFireball(Side side, int state)
         {
-            if(State == true && Index == 1)
+            if(state == 1)
             {
                 SetEyes(Eyes.Fire);
             }
         }
-        public void RecieveFlames(Side side, bool State, int Index, int Level)
+        public void RecieveFlames(Side side, int state)
         {
-            if (State == true)
+            if (state == 1)
             {
                 SetEyes(Eyes.Fire);
             }

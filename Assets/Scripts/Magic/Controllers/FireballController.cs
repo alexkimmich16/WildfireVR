@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using RestrictionSystem;
+
 using Sirenix.OdinInspector;
 public enum ControlType
 {
@@ -66,6 +66,7 @@ public class FireballController : SpellControlClass
             {
                 if (ReferenceEquals(fireball, Sides[i].Fireball))
                 {
+                    /*
                     if (ConditionManager.instance.ConditionStats[i, (int)Spell.Fireball - 1].SequenceState >= 2)//controlling and fireball collides
                     {
                         MotionConditionInfo Condition = ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1];
@@ -75,31 +76,34 @@ public class FireballController : SpellControlClass
                             ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1].DoEvent((Side)i, false, j, Condition.CastLevel);
                         }
                     }
+                    */
                 }
             }
         }
     }
 
-    public override void RecieveNewState(Side side, bool State, int Index, int Level)
+    public override void RecieveNewState(Side side, int state)
     {
         if (InGameManager.instance.CanDoMagic == false)
             return;
 
-        if (Index == 0)
+        bool State = state == 1;
+
+        if (state == 0)
         {
             Sides[(int)side].Active = State;
             if(UseWarmups)
                 Sides[(int)side].Warmup.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, State);
         }
 
-        if (State == true && Index == 1)
+        if (state == 1)
         {
             if (UseWarmups)
                 Sides[(int)side].Warmup.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
-            SpawnFireball(side, Level);
+            SpawnFireball(side, 1);
         }
 
-        if(Index == 3)
+        if(state == 2)
         {
             if (State == true)
                 Sides[(int)side].Fireball.transform.forward = AIMagicControl.instance.Hands[(int)side].transform.forward;

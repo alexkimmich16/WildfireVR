@@ -1,7 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 using static Odin.Net;
-using RestrictionSystem;
+
 using Sirenix.OdinInspector;
 using System.Linq;
 public class MimicTester : SerializedMonoBehaviour

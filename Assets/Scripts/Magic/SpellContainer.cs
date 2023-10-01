@@ -8,9 +8,9 @@ public class SpellContainer : ScriptableObject
     [System.Serializable]
     public class SpellHolder
     {
-        public RestrictionSystem.Spell spell;
+        public Spell spell;
         public List<GameObject> Levels;
     }
 
-    public string SpellName(RestrictionSystem.Spell spell, int Level) { return Spells[(int)spell - 1].Levels[Level].name; }
+    public string SpellName(Spell spell, int Level) { return Spells[(int)spell - 1].Levels[Level].name; }
 }

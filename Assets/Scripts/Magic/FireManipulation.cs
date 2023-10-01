@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
-using RestrictionSystem;
+
 public class FireManipulation : MonoBehaviour
 {
     public static FireManipulation instance;
@@ -76,7 +76,7 @@ public class FireManipulation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!PastFrameRecorder.IsReady() || !AIMagicControl.instance.AllActive())
+        if (!Athena.PastFrameRecorder.IsReady || !AIMagicControl.instance.AllActive())
             return;
         BothHandMotions.Add((AIMagicControl.instance.Hands[0].position + AIMagicControl.instance.Hands[1].position) / 2f);
         if (BothHandMotions.Count < 2)

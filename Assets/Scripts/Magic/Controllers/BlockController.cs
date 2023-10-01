@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using RestrictionSystem;
+
 using Photon.Pun;
 
 
@@ -25,10 +25,10 @@ public class BlockController : SpellControlClass
     public bool ProperBlock() { return Active[0] == true && Active[1] == true; }
     public bool HalfBlocking() { return Active[0] == true || Active[1] == true; }
     public bool IsBlocking() { return AlwaysTrue ? true : HalfBlocks ? HalfBlocking() : ProperBlock(); }
-    public override void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level)
+    public override void RecieveNewState(Side side, int State)
     {
         //Debug.Log("side: " + side + "  StartOrFinish: " + StartOrFinish);
-        Active[(int)side] = StartOrFinish;
+        Active[(int)side] = State == 1;
         if (IsBlocking() != LastFrameBlocking)//onchangestate
         {
             BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, IsBlocking());
@@ -37,8 +37,8 @@ public class BlockController : SpellControlClass
     }
     public override void InitializeSpells()
     {
-        BlockVFXObject = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(Spell.SideParry, 0), Vector3.zero, Quaternion.identity);
-        BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.AllBuffered, false);
+        //BlockVFXObject = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(Spell.SideParry, 0), Vector3.zero, Quaternion.identity);
+        //BlockVFXObject.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.AllBuffered, false);
     }
     private void Update()
     {

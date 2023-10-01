@@ -1,6 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
-using RestrictionSystem;
+
 using Photon.Pun;
 using Photon.Realtime;
 using static Odin.Net;

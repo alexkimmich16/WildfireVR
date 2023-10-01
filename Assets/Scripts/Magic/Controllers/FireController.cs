@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using RestrictionSystem;
+
 using System.Linq;
 public enum FireDetectType
 {
@@ -95,11 +95,11 @@ public class FireController : SpellControlClass
         DamageCooldowns = new List<CooldownInfo>();
     }
 
-    public override void RecieveNewState(Side side, bool StartOrFinish, int Index, int Level)
+    public override void RecieveNewState(Side side, int State)
     {
-        Actives[(int)side] = StartOrFinish;
+        Actives[(int)side] = State == 1;
 
-        if (StartOrFinish)
+        if (Actives[(int)side])
         {
             if (IsCountingDelay[(int)side] == true)
             {
@@ -107,7 +107,7 @@ public class FireController : SpellControlClass
                 DelayTimer[(int)side] = 0f;
             }
             else
-                StartFire(side, Level);
+                StartFire(side, 1);
         }
         else
         {
