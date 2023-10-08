@@ -13,10 +13,6 @@ namespace Athena
 
         public const int MaxStoreInfo = 10;
 
-        public List<Transform> TestMain;
-        public List<Transform> TestCam;
-        public List<Transform> TestHand;
-
         public List<Transform> PlayerHands;
         public Transform Cam;
 

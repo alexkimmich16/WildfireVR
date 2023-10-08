@@ -316,11 +316,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 687382334}
   - {fileID: 989335098}
   - {fileID: 633604290}
   - {fileID: 1328164612}
   - {fileID: 924804818}
-  - {fileID: 687382334}
   - {fileID: 1789683654}
   - {fileID: 916699088}
   - {fileID: 1972834505}
@@ -2339,7 +2339,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1024487651}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 66, y: 0, z: 0}
 --- !u!1 &143982113
 GameObject:
@@ -2535,7 +2535,7 @@ Transform:
   - {fileID: 2092196173}
   - {fileID: 477445882}
   m_Father: {fileID: 1024487651}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &157822354
 GameObject:
@@ -15300,7 +15300,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 20770303}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &633604291
 MonoBehaviour:
@@ -16754,39 +16754,14 @@ GameObject:
   m_Component:
   - component: {fileID: 687382334}
   - component: {fileID: 687382333}
-  - component: {fileID: 687382332}
   - component: {fileID: 687382335}
-  - component: {fileID: 687382336}
   m_Layer: 0
-  m_Name: Restrictions
+  m_Name: Athena
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &687382332
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 687382331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98c2c64b7e72e9746b09c454fa22466b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  RestrictionSettings: {fileID: 11400000, guid: 76ee955c20c73154b977ecc314c5bbe4,
-    type: 2}
 --- !u!114 &687382333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16807,25 +16782,55 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes: []
-  RightInfo: []
-  LeftInfo: []
-  MaxStoreInfo: 12
-  TestMain:
-  - {fileID: 1600426183}
-  - {fileID: 1600426180}
-  TestCam:
-  - {fileID: 1600426185}
-  - {fileID: 1600426182}
-  TestHand:
-  - {fileID: 1600426184}
-  - {fileID: 1600426181}
+    SerializationNodes:
+    - Name: FrameInfo
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[System.Collections.Generic.List`1[[Athena.AthenaFrame,
+        Assembly-CSharp]], mscorlib]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 1|System.Collections.Generic.List`1[[Athena.AthenaFrame, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|System.Collections.Generic.List`1[[Athena.AthenaFrame, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   PlayerHands:
   - {fileID: 1552789714}
   - {fileID: 1308381498}
   Cam: {fileID: 1297422934}
   DrawDebug: 0
-  HandsActive: 
+  HandsActive: 0000
+  Controllers:
+  - {fileID: 1552789710}
+  - {fileID: 1308381502}
 --- !u!4 &687382334
 Transform:
   m_ObjectHideFlags: 0
@@ -16839,7 +16844,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 20770303}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &687382335
 MonoBehaviour:
@@ -16850,57 +16855,63 @@ MonoBehaviour:
   m_GameObject: {fileID: 687382331}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2272e7395951f914b98bcaa7394f4e80, type: 3}
+  m_Script: {fileID: 11500000, guid: a7db13f822720a34d9a7f6b54c5c0847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 5022602860645237092, guid: cf208cec217815549888bc24a1635915, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: ConditionStats
+    - Name: Spells
       Entry: 7
-      Data: 0|RestrictionSystem.ConditionManager+ConditionProgress[,], RestrictionSystem
+      Data: 0|System.Collections.Generic.Dictionary`2[[Spell, Assembly-CSharp],[Athena.Runtime+SpellReferences,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Spell, Assembly-CSharp]],
+        mscorlib
     - Name: 
       Entry: 12
       Data: 0
-    - Name: ranks
-      Entry: 1
-      Data: 2|0
     - Name: 
       Entry: 13
       Data: 
     - Name: 
       Entry: 8
       Data: 
-  conditions: {fileID: 11400000, guid: 76ee955c20c73154b977ecc314c5bbe4, type: 2}
---- !u!114 &687382336
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 687382331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 079fdb208da1fc44e87afec9dbbe205c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  PastMotionFrames: []
-  MotionSettings: {fileID: 11400000, guid: 76ee955c20c73154b977ecc314c5bbe4, type: 2}
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: Athena.Runtime+SpellReferences, Assembly-CSharp
+    - Name: Model
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!1 &688251180
 GameObject:
   m_ObjectHideFlags: 0
@@ -19544,7 +19555,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 20770303}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &930095736
 PrefabInstance:
@@ -20581,7 +20592,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 20770303}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &994403002
 PrefabInstance:
@@ -20999,7 +21010,6 @@ Transform:
   - {fileID: 2146122636}
   - {fileID: 496053016}
   - {fileID: 915171015}
-  - {fileID: 1600426179}
   - {fileID: 156523411}
   - {fileID: 132773667}
   - {fileID: 1923578710}
@@ -26005,7 +26015,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 20770303}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1332574823
 GameObject:
@@ -29954,117 +29964,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1587732561}
   m_CullTransparentMesh: 1
---- !u!1001 &1600426178
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1024487651}
-    m_Modifications:
-    - target: {fileID: 2373583108500438542, guid: 22adff6904ad81042ab83cb7bf732462,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 2373583108500438542, guid: 22adff6904ad81042ab83cb7bf732462,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 13.399174
-      objectReference: {fileID: 0}
-    - target: {fileID: 2373583108500438542, guid: 22adff6904ad81042ab83cb7bf732462,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -4.437869
-      objectReference: {fileID: 0}
-    - target: {fileID: 2373583108500438542, guid: 22adff6904ad81042ab83cb7bf732462,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -4.148618
-      objectReference: {fileID: 0}
-    - target: {fileID: 2373583108500438542, guid: 22adff6904ad81042ab83cb7bf732462,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2373583108500438542, guid: 22adff6904ad81042ab83cb7bf732462,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2373583108500438542, guid: 22adff6904ad81042ab83cb7bf732462,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2373583108500438542, guid: 22adff6904ad81042ab83cb7bf732462,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2373583108500438542, guid: 22adff6904ad81042ab83cb7bf732462,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2373583108500438542, guid: 22adff6904ad81042ab83cb7bf732462,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2373583108500438542, guid: 22adff6904ad81042ab83cb7bf732462,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2373583108500438543, guid: 22adff6904ad81042ab83cb7bf732462,
-        type: 3}
-      propertyPath: m_Name
-      value: TestCams
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 22adff6904ad81042ab83cb7bf732462, type: 3}
---- !u!4 &1600426179 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2373583108500438542, guid: 22adff6904ad81042ab83cb7bf732462,
-    type: 3}
-  m_PrefabInstance: {fileID: 1600426178}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1600426180 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2373583107154514593, guid: 22adff6904ad81042ab83cb7bf732462,
-    type: 3}
-  m_PrefabInstance: {fileID: 1600426178}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1600426181 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2373583107722012283, guid: 22adff6904ad81042ab83cb7bf732462,
-    type: 3}
-  m_PrefabInstance: {fileID: 1600426178}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1600426182 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2373583107353490020, guid: 22adff6904ad81042ab83cb7bf732462,
-    type: 3}
-  m_PrefabInstance: {fileID: 1600426178}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1600426183 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2373583106940776610, guid: 22adff6904ad81042ab83cb7bf732462,
-    type: 3}
-  m_PrefabInstance: {fileID: 1600426178}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1600426184 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2373583108564606177, guid: 22adff6904ad81042ab83cb7bf732462,
-    type: 3}
-  m_PrefabInstance: {fileID: 1600426178}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1600426185 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2373583107228791919, guid: 22adff6904ad81042ab83cb7bf732462,
-    type: 3}
-  m_PrefabInstance: {fileID: 1600426178}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1602621432
 GameObject:
   m_ObjectHideFlags: 0
@@ -30881,7 +30780,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1024487651}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1669457655
 GameObject:
@@ -34033,7 +33932,7 @@ Transform:
   - {fileID: 526793971}
   - {fileID: 612311443}
   m_Father: {fileID: 1024487651}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1870875815
 GameObject:
@@ -34836,7 +34735,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1024487651}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1924505871
 GameObject:
@@ -35091,7 +34990,7 @@ Transform:
   - {fileID: 426743751}
   - {fileID: 1695544109}
   m_Father: {fileID: 1024487651}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1932812282
 GameObject:
