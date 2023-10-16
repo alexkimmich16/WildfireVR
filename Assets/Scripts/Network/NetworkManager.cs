@@ -61,6 +61,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
     public List<GameObject> GetPlayers() { return PlayerList.Values.Select(transform => transform.gameObject).ToList(); }
+    public List<GameObject> GetPlayers(Team team) { return GetPlayers().Where(x => GetPlayerTeam(x.GetComponent<PhotonView>().Owner) == team).ToList(); }
     /*
     {
         List<GameObject> Players = new List<GameObject>();

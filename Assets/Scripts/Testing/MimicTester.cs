@@ -1,13 +1,14 @@
 using UnityEngine;
 using Photon.Pun;
 using static Odin.Net;
-
 using Sirenix.OdinInspector;
 using System.Linq;
 public class MimicTester : SerializedMonoBehaviour
 {
     public static MimicTester instance;
     void Awake() { instance = this; }
+
+    public bool IsTesting;
     public float MaxTime;
     public float FireballSpeed;
     public Transform Spawn;
@@ -23,6 +24,8 @@ public class MimicTester : SerializedMonoBehaviour
     public float AccelerateSpeed;
 
     public bool CanSpawn;
+
+    public Transform Target;
 
     [FoldoutGroup("SpawningFunctions")] public bool OnlineFunction;
     [FoldoutGroup("SpawningFunctions"), ShowIf("OnlineFunction")] public bool SpawnIfMaster;
@@ -41,8 +44,9 @@ public class MimicTester : SerializedMonoBehaviour
     bool CanOnlineSpawn() { return SpawnIfMaster == PhotonNetwork.IsMasterClient; }
     void Update()
     {
-        if (!Active || !Initialized())
+        if (!IsTesting && (!Active || !Initialized()))
             return;
+       
         Timer += Time.deltaTime;
         CanSpawn = CanOnlineSpawn();
         if (OnlineFunction && !CanOnlineSpawn())
@@ -68,9 +72,7 @@ public class MimicTester : SerializedMonoBehaviour
 
     public void SpawnFireball()
     {
-        //GameObject Current = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(Spell.Fireball, true)), Spawn.position, Spawn.rotation);
-        GameObject Current = PhotonNetwork.Instantiate((AIMagicControl.instance.spells.SpellName(Spell.Fireball, 1)), Spawn.position, Spawn.rotation);
-        Current.GetPhotonView().RPC("ChangeSpeed", RpcTarget.All, FireballSpeed);
+        FireballController.CreateFireball(Spawn.position, Spawn.rotation, Target, FireballSpeed );
     }
 
     public void ChangeFlames()

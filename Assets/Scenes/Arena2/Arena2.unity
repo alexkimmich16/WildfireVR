@@ -18567,6 +18567,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
+  IsTesting: 0
   MaxTime: 2
   FireballSpeed: 600
   Spawn: {fileID: 1761682216}
@@ -18576,6 +18577,7 @@ MonoBehaviour:
   Flame: {fileID: 0}
   AccelerateSpeed: 1.19
   CanSpawn: 0
+  Target: {fileID: 0}
   OnlineFunction: 0
   SpawnIfMaster: 0
   LookAtMaster: 1
@@ -27214,7 +27216,10 @@ MonoBehaviour:
     lastControllerRotation: {x: 0, y: 0, z: 0, w: 0}
     targetRotation: {x: 0, y: 0, z: 0, w: 0}
     initialFireballRotation: {x: 0, y: 0, z: 0, w: 0}
-  XYMultiplier: {x: 90, y: 60}
+  initialSpeed: 16
+  AccelerateSpeed: 0
+  proximityThreshold: 3.5
+  turnSpeed: 8
 --- !u!4 &1459142604
 Transform:
   m_ObjectHideFlags: 0

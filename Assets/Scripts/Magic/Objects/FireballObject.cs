@@ -5,9 +5,12 @@ using static Odin.Net;
 
 public class FireballObject : SpellObjectClass
 {
-    public float Speed;
+    public float initialSpeed => FireballController.instance.initialSpeed;
+    public float AccelerateSpeed => FireballController.instance.AccelerateSpeed;
+    public float turnSpeed  => FireballController.instance.turnSpeed; // Defines the size of the arc.
+    public float proximityThreshold => FireballController.instance.proximityThreshold; // Defines the size of the arc.
 
-    private Rigidbody RB;
+    private Rigidbody rb;
 
     public bool Absorbing;
 
@@ -16,9 +19,14 @@ public class FireballObject : SpellObjectClass
     
     public GameObject FireballSphere;
 
-    private float Timer;
-    public float AccelerateSpeed;
-    public float StartTime;
+    private float timer;
+    
+
+    public Transform target;
+
+    public bool hitFromLeft = true;
+    private Vector3 adjustedTargetPosition;
+
 
     public void SetAbsorbed(bool State)
     {
@@ -27,26 +35,48 @@ public class FireballObject : SpellObjectClass
     }
 
     //public float LifeTime = 3;
+
+
+    float speed { get { return (initialSpeed + initialSpeed * Mathf.Pow(timer, AccelerateSpeed)); } }
     protected override void Update()
     {
         base.Update();
-        if (!GetComponent<PhotonView>().IsMine)
+        if (!GetComponent<PhotonView>().IsMine || !FireballSphere.activeSelf)
             return;
-        if (Absorbing == true)
+
+        // Update timer
+        timer += Time.deltaTime;
+
+        // Update Rigidbody's velocity
+        rb.velocity = Vector3.zero;
+        //rb.velocity = transform.forward * (initialSpeed + initialSpeed * Mathf.Pow(timer, AccelerateSpeed));
+
+
+
+
+        // Compute the direction to the target
+        Vector3 toTarget = target.position - transform.position;
+
+        if (toTarget.magnitude < proximityThreshold)
         {
-            //direction towards hand(graudal or isntant)
+            // If within proximity, go straight to target
+            transform.forward = toTarget.normalized;
         }
         else
         {
-            if (FireballSphere.activeSelf)
-            {
-                //transform.position += transform.forward * Time.deltaTime * Speed * Mathf.Pow(TimeActive, AccelerateSpeed);
-                RB.velocity = transform.forward * Time.deltaTime * Speed * Mathf.Pow(Timer, MimicTester.instance.AccelerateSpeed);
-                Timer += Time.deltaTime;
-            }
+            // Get the rotation that looks at the target
+            Quaternion targetRotation = Quaternion.LookRotation(toTarget);
 
+            // Gradually turn the fireball towards this rotation
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
         }
 
+        // Move the fireball forward
+        transform.position += transform.forward * speed * Time.deltaTime;
+
+
+        if (timer > 2)
+            Destroy(gameObject);
     }
     void OnCollisionEnter(Collision col)
     {
@@ -114,20 +144,33 @@ public class FireballObject : SpellObjectClass
 
     private void Start()
     {
-        RB = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
+
+        if (target)
+        {
+            // Compute the direction to the target
+            Vector3 toTarget = (target.position - transform.position).normalized;
+
+            // Blend between the fireball's current forward direction and the target direction
+            Vector3 newDirection = Vector3.Slerp(transform.forward, toTarget, turnSpeed * Time.deltaTime);
+
+            // Move the fireball
+            transform.position += newDirection * speed * Time.deltaTime;
+            transform.forward = newDirection;
+        }
     }
 
     protected override void OnEnable()
     {
         //Debug.Log("start");
         base.OnEnable();
-        Timer = StartTime;
+        timer =0;
         VFX.SetNewState(true);//potentail problem
         //FireballSound = SoundManager.instance.CreateSound("fireball", transform);
-
-        
         FireballSphere.SetActive(true);
         gameObject.GetComponent<SphereCollider>().enabled = true;
+
+     
     }
 
     public override void SetAudio(bool State)

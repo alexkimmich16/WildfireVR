@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-
+using System.Linq;
+using static Odin.Net;
 using Sirenix.OdinInspector;
 public enum ControlType
 {
@@ -51,12 +52,31 @@ public class FireballController : SpellControlClass
     public bool UseWarmups;
     [ShowIf("UseWarmups")] public float WarmupDistFromHand;
     public List<FireballSide> Sides;
-    
 
+    public float initialSpeed;
+    public float AccelerateSpeed;
+    public float proximityThreshold = 2.0f;  // Distance at which fireball stops arcing and goes directly.
+    //public float HitPlayerAngle;
+    //public float rotationSpeed;
+
+    //public float desiredWorldAngle = 0f; // Desired world angle to hit the target from (0 to 360)
+    //public float arcModifier = 1f; // Defines the size of the arc.
+
+    public float turnSpeed = 0.1f;  // How much it tries to get closer to the target directly.
+
+    public static GameObject CreateFireball(Vector3 Pos, Quaternion Rot, Transform Target, float Speed = 0.5f)
+    {
+        GameObject Current = PhotonNetwork.Instantiate((AIMagicControl.instance.spells.SpellName(Spell.Fireball, 1)), Pos, Rot);
+        Current.GetPhotonView().RPC("ChangeSpeed", RpcTarget.All, Speed);
+
+        Current.GetComponent<FireballObject>().target = Target;
+
+        return Current;
+    }
     //public Transform Debugger1;
     //public Transform Debugger2;
 
-    public Vector2 XYMultiplier;
+    //public Vector2 XYMultiplier;
 
     public void CheckFireballForMine(object fireball)
     {
@@ -111,13 +131,21 @@ public class FireballController : SpellControlClass
         }
     }
 
+
+    public Transform GetFireballTargetPlayer(Vector3 Position, Vector3 Direction, Team team) { return NetworkManager.instance.GetPlayers(team).OrderBy(enemy => Vector3.Angle(Direction, enemy.transform.position - Position)).FirstOrDefault().transform; }
     public void SpawnFireball(Side side, int Level)
     {
         if (InGameManager.instance.CanDoMagic == false)
             return;
 
         SetHaptics(side, true);
-        Sides[(int)side].Fireball = PhotonNetwork.Instantiate(AIMagicControl.instance.spells.SpellName(Spell.Fireball, Level), new Vector3(AIMagicControl.instance.Spawn[(int)side].position.x, AIMagicControl.instance.Cam.position.y, AIMagicControl.instance.Spawn[(int)side].position.z), Quaternion.LookRotation(AIMagicControl.instance.Hands[(int)side].transform.forward));
+
+        Vector3 Pos = new Vector3(AIMagicControl.instance.Spawn[(int)side].position.x, AIMagicControl.instance.Cam.position.y, AIMagicControl.instance.Spawn[(int)side].position.z);
+        Quaternion Rot = Quaternion.LookRotation(AIMagicControl.instance.Hands[(int)side].transform.forward);
+
+        Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Attack ? Team.Defense : Team.Attack;
+        Transform Target = GetFireballTargetPlayer(Pos, AIMagicControl.instance.Hands[(int)side].transform.forward, team);
+        Sides[(int)side].Fireball = CreateFireball(Pos, Rot, Target);
 
         for (int i = 0; i < Sides.Count; i++)
         {
@@ -125,8 +153,6 @@ public class FireballController : SpellControlClass
             Sides[i].initialFireballRotation = Sides[(int)side].Fireball.transform.rotation;
             Sides[i].targetRotation = Sides[(int)side].Fireball.transform.rotation;
         }
-
-        //NetworkPlayerSpawner.instance.SpawnedPlayerPrefab.GetPhotonView().RPC("MotionDone", RpcTarget.All, CurrentLearn.Fireball);
     }
     public override void InitializeSpells()
     {
@@ -146,8 +172,6 @@ public class FireballController : SpellControlClass
         //Debugger2.rotation = Sides[0].targetRotation;
         for (int i = 0; i < Sides.Count; i++)
         {
-            
-            
             if(Sides[i].Warmup != null && UseWarmups)
             {
                 Vector3 ForwardRot = Quaternion.Euler(AIMagicControl.instance.Hands[i].eulerAngles) * Vector3.forward;
@@ -155,7 +179,7 @@ public class FireballController : SpellControlClass
                 Sides[i].Warmup.transform.rotation = AIMagicControl.instance.Hands[i].rotation; //forward
             }
             
-
+            /*
             if (Sides[i].Controlling)
             {
                 Quaternion currentRotation = AIMagicControl.instance.Hands[i].rotation;
@@ -170,7 +194,7 @@ public class FireballController : SpellControlClass
                     
                 //Sides[i].Fireball.transform.position += Sides[i].Fireball.transform.forward * Time.deltaTime; // Move the fireball forward
             }
-
+            */
             
         }
 

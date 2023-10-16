@@ -15,9 +15,11 @@ public abstract class SpellObjectClass : SerializedMonoBehaviour
 
     protected virtual void OnEnable()
     {
+        
+        
         if (AddToAmbientVFX)
-            AmbientParticles.AmbientVFX.instance.Actives.Add(transform);
-        if (EffectName != "")
+            AmbientParticles.AmbientVFX.instance?.Actives.Add(transform);
+        if (EffectName != "" && SoundManager.instance != null)
         {
             Sound = SoundManager.instance.CreateSound(EffectName);
             FMODUnity.RuntimeManager.AttachInstanceToGameObject(Sound, transform);
@@ -34,14 +36,14 @@ public abstract class SpellObjectClass : SerializedMonoBehaviour
     protected virtual void Update()
     {
         //Debug.Log("up");
-        if (EffectName != "")
+        if (EffectName != "" && SoundManager.instance != null)
             OnVolumeChange();
     }
     protected virtual void OnDisable()
     {
         //Debug.Log("dis");
         if (AddToAmbientVFX)
-            AmbientParticles.AmbientVFX.instance.Actives.Remove(transform);
+            AmbientParticles.AmbientVFX.instance?.Actives.Remove(transform);
 
         SetAudio(false);
 

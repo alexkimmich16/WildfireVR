@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public enum CurrentGame
 {
     StartMenu = 0,
@@ -18,7 +19,6 @@ public class SceneLoader : MonoBehaviour
 
     public CurrentGame CurrentSetting;
     //final and unchangeable on this scene
-
     public static bool BattleScene()
     {
         if (SceneManager.GetActiveScene().buildIndex == 2)
