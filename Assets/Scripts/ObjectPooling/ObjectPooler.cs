@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.Linq;
-
-
+using Sirenix.OdinInspector;
+using System;
 namespace ObjectPooling
 {
     [System.Serializable]
@@ -12,7 +12,9 @@ namespace ObjectPooling
         public GameObject PoolObject;
         public int PoolSize;
         public bool ForceRecycle;
-        public Queue<GameObject> objectPool;
+
+
+        [ShowInInspector, ReadOnly] public Queue<GameObject> objectPool;
         //public Queue<GameObject> toDestory;
     }
     public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
@@ -28,12 +30,9 @@ namespace ObjectPooling
 
         public DefaultPool RefPool;
 
-        private void Start()
-        {
-            NetworkManager.OnInitialized += InitalizePool;
-        }
         public void InitalizePool()
         {
+            Debug.Log("initalize");
             if (!ShouldPool)
                 return;
             RefPool = PhotonNetwork.PrefabPool as DefaultPool;
@@ -45,14 +44,18 @@ namespace ObjectPooling
                 foreach (GameObject prefab in this.ReferencePool)
                     if (!RefPool.ResourceCache.ContainsKey(prefab.name))
                         RefPool.ResourceCache.Add(prefab.name, prefab);
-
+            
             for (int i = 0; i < Pools.Count; i++)
             {
                 Pools[i].objectPool = new Queue<GameObject>();
+                
                 if (PhotonNetwork.IsMasterClient)
                 {
+                    //if i started a new room
                     for (int j = 0; j < Pools[i].PoolSize; j++)
                     {
+                        
+                        
                         GameObject obj = PhotonNetwork.Instantiate(Pools[i].PoolObject.name, Vector3.zero, Quaternion.identity);
                         obj.SetActive(false);
                         Pools[i].objectPool.Enqueue(obj);
@@ -60,9 +63,12 @@ namespace ObjectPooling
                 }
                 else
                 {
+                    //joined another's room
                     List<GameObject> objectsWithName = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == Pools[i].PoolObject.name + "(Clone)").ToList();
+                    
                     List<GameObject> ActiveList = objectsWithName.Where(obj => obj.activeSelf).ToList();
                     List<GameObject> InActiveList = objectsWithName.Where(obj => !obj.activeSelf).ToList();
+
                     for (int j = 0; j < ActiveList.Count; j++)
                         Pools[i].objectPool.Enqueue(ActiveList[j]);
                     for (int j = 0; j < InActiveList.Count; j++)
@@ -161,7 +167,7 @@ namespace ObjectPooling
                 }
             }
             //else, destroy it
-            Object.Destroy(gameObject);
+            UnityEngine.Object.Destroy(gameObject);
         }
 
         public bool PrefabPoolSet()

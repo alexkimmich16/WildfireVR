@@ -2,16 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Photon.Pun;
+using System;
 namespace ObjectPooling
 {
     public class ObjectPoolerRefresh : MonoBehaviour
     {
-        void Start()
-        {
-            InGameManager.OnRestart += RefreshObjects;
-        }
-
-        public void RefreshObjects()
+        public static void RefreshObjects()
         {
             for (int i = 0; i < ObjectPooler.instance.Pools.Count; i++)
             {

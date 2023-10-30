@@ -30,8 +30,6 @@ public class NetworkPlayerSpawner : MonoBehaviourPunCallbacks
         DestroyIfActive(FireballController.instance.Sides[0].Warmup);
         DestroyIfActive(FireballController.instance.Sides[1].Warmup);
 
-        DestroyIfActive(BlockController.instance.BlockVFXObject);
-
         void DestroyIfActive(GameObject obj)
         {
             if (obj != null)

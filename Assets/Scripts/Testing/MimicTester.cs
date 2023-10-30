@@ -64,15 +64,15 @@ public class MimicTester : SerializedMonoBehaviour
         {
             if (Motion == Spell.Fireball)
                 SpawnFireball();
-            else if (Motion == Spell.Flames)
-                ChangeFlames();
+            //else if (Motion == Spell.Flames)
+                //ChangeFlames();
             Timer = 0;
         }
     }
 
     public void SpawnFireball()
     {
-        FireballController.CreateFireball(Spawn.position, Spawn.rotation, Target, FireballSpeed );
+        FireballController.CreateFireball(Spawn.position, Spawn.rotation, Target);
     }
 
     public void ChangeFlames()
@@ -80,7 +80,7 @@ public class MimicTester : SerializedMonoBehaviour
         //GameObject Current = Instantiate(Resources.Load<GameObject>(AIMagicControl.instance.spells.SpellName(Spell.Fireball, true)), Spawn.position, Spawn.rotation);
         if (Flame == null)
         {
-            Flame = PhotonNetwork.Instantiate((AIMagicControl.instance.spells.SpellName(Spell.Flames, 1)), Spawn.position, Spawn.rotation);
+            //Flame = PhotonNetwork.Instantiate((AIMagicControl.instance.spells.SpellName(Spell.Flames, 1)), Spawn.position, Spawn.rotation);
             Flame.GetPhotonView().RPC("SetFlamesOnline", RpcTarget.All, true);
         } 
         else if (Flame != null)

@@ -15316,7 +15316,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RespawnTime: 5
   FadeStartTime: 3
-  KeepInArena: 1
+  KeepInArena: 0
   Spawns:
   - {fileID: 1466486357}
   - {fileID: 201726677}
@@ -16755,6 +16755,7 @@ GameObject:
   - component: {fileID: 687382334}
   - component: {fileID: 687382333}
   - component: {fileID: 687382335}
+  - component: {fileID: 687382336}
   m_Layer: 0
   m_Name: Athena
   m_TagString: Untagged
@@ -16786,14 +16787,13 @@ MonoBehaviour:
     - Name: FrameInfo
       Entry: 7
       Data: 0|System.Collections.Generic.List`1[[System.Collections.Generic.List`1[[Athena.AthenaFrame,
-        Assembly-CSharp]], mscorlib]], mscorlib
+        Athena]], mscorlib]], mscorlib
     - Name: 
       Entry: 12
       Data: 2
     - Name: 
       Entry: 7
-      Data: 1|System.Collections.Generic.List`1[[Athena.AthenaFrame, Assembly-CSharp]],
-        mscorlib
+      Data: 1|System.Collections.Generic.List`1[[Athena.AthenaFrame, Athena]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -16805,8 +16805,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 2|System.Collections.Generic.List`1[[Athena.AthenaFrame, Assembly-CSharp]],
-        mscorlib
+      Data: 2|System.Collections.Generic.List`1[[Athena.AthenaFrame, Athena]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -16825,12 +16824,8 @@ MonoBehaviour:
   PlayerHands:
   - {fileID: 1552789714}
   - {fileID: 1308381498}
-  Cam: {fileID: 1297422934}
   DrawDebug: 0
   HandsActive: 0000
-  Controllers:
-  - {fileID: 1552789710}
-  - {fileID: 1308381502}
 --- !u!4 &687382334
 Transform:
   m_ObjectHideFlags: 0
@@ -16861,57 +16856,25 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 5022602860645237092, guid: cf208cec217815549888bc24a1635915, type: 3}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: Spells
-      Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[Spell, Assembly-CSharp],[Athena.Runtime+SpellReferences,
-        Assembly-CSharp]], mscorlib
-    - Name: comparer
-      Entry: 7
-      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Spell, Assembly-CSharp]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 1
-    - Name: $v
-      Entry: 7
-      Data: Athena.Runtime+SpellReferences, Assembly-CSharp
-    - Name: Model
-      Entry: 10
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
+  SpellHolder: {fileID: 11400000, guid: 8ff1c6f401711a346a369b81302d2817, type: 2}
+--- !u!114 &687382336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 687382331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff815cd534267fb45903d2986825074c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &688251180
 GameObject:
   m_ObjectHideFlags: 0
@@ -17745,7 +17708,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &762929925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17753,7 +17716,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 762929924}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a5d960cdc46629d47b000b200bdb849f, type: 3}
   m_Name: 
@@ -18567,17 +18530,17 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  IsTesting: 0
+  IsTesting: 1
   MaxTime: 2
   FireballSpeed: 600
   Spawn: {fileID: 1761682216}
   Active: 0
   LookAtPlayer: 1
-  Motion: 2
+  Motion: 1
   Flame: {fileID: 0}
   AccelerateSpeed: 1.19
   CanSpawn: 0
-  Target: {fileID: 0}
+  Target: {fileID: 1297422934}
   OnlineFunction: 0
   SpawnIfMaster: 0
   LookAtMaster: 1
@@ -19540,7 +19503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxHealth: 100
-  DebugScript: 0
+  DebugScript: 1
   AfterDeathWait: 3.05
   AllowFriendlyFire: 0
   playerList: {fileID: 872711501}
@@ -24504,7 +24467,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.08
+  m_Radius: 0.11
   m_Height: 3.87
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -26000,6 +25963,7 @@ MonoBehaviour:
   JoinAsPlayer: 0
   Fireball: 48
   Flames: 49
+  Parry: 50
   GetData: 100
   OpenMenu: 105
   OpenOptions: 111
@@ -27032,6 +26996,7 @@ MonoBehaviour:
   positionSpeed: 5
   SideSpacing: -0.3
   HeightSpacing: 1.2
+  Cam: {fileID: 1297422934}
   PlusMesh: {fileID: -3984410138145557879, guid: 0d624569fada5324dbe18deec9f2e311,
     type: 3}
   SubtractMesh: {fileID: -5013545882258883354, guid: 6a0bd934f83afc544ab73e8330aa248f,
@@ -27216,9 +27181,11 @@ MonoBehaviour:
     lastControllerRotation: {x: 0, y: 0, z: 0, w: 0}
     targetRotation: {x: 0, y: 0, z: 0, w: 0}
     initialFireballRotation: {x: 0, y: 0, z: 0, w: 0}
-  initialSpeed: 16
+  initialSpeed: 10
   AccelerateSpeed: 0
   proximityThreshold: 3.5
+  HeightOffset: 0
+  Fireballs: []
   turnSpeed: 8
 --- !u!4 &1459142604
 Transform:
@@ -28068,7 +28035,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1517121320
 Transform:
   m_ObjectHideFlags: 0
@@ -28106,18 +28073,14 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  Motion: 3
+  Motion: 2
   UseRepeatingHaptics: 0
   HapticAmplitude: 0
   HapticTime: 0
   HapticRefreshTime: 0.05
   HapticOverlap: 0.05
   DebugStates: 0
-  Active: 0000
-  BlockVFXObject: {fileID: 0}
-  FlameDistanceFromHead: 2
-  HalfBlocks: 0
-  AlwaysTrue: 0
+  MaxParryDistance: 4.5
 --- !u!1 &1518077420
 GameObject:
   m_ObjectHideFlags: 0
@@ -31817,7 +31780,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1761682216
 Transform:
   m_ObjectHideFlags: 0
@@ -32485,11 +32448,11 @@ MonoBehaviour:
     SerializationNodes:
     - Name: Sounds
       Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[SoundType, Assembly-CSharp],[SoundManager+AudioClassInfo,
-        Assembly-CSharp]], mscorlib
+      Data: 0|System.Collections.Generic.Dictionary`2[[SoundType, Sound],[SoundManager+AudioClassInfo,
+        Sound]], mscorlib
     - Name: comparer
       Entry: 7
-      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[SoundType, Assembly-CSharp]],
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[SoundType, Sound]],
         mscorlib
     - Name: 
       Entry: 12
@@ -32511,7 +32474,7 @@ MonoBehaviour:
       Data: 0
     - Name: $v
       Entry: 7
-      Data: 2|SoundManager+AudioClassInfo, Assembly-CSharp
+      Data: 2|SoundManager+AudioClassInfo, Sound
     - Name: Volume
       Entry: 4
       Data: 1
@@ -32529,7 +32492,7 @@ MonoBehaviour:
       Data: 1
     - Name: $v
       Entry: 7
-      Data: 3|SoundManager+AudioClassInfo, Assembly-CSharp
+      Data: 3|SoundManager+AudioClassInfo, Sound
     - Name: Volume
       Entry: 4
       Data: 1
@@ -32547,7 +32510,7 @@ MonoBehaviour:
       Data: 2
     - Name: $v
       Entry: 7
-      Data: 4|SoundManager+AudioClassInfo, Assembly-CSharp
+      Data: 4|SoundManager+AudioClassInfo, Sound
     - Name: Volume
       Entry: 4
       Data: 1
@@ -32566,7 +32529,7 @@ MonoBehaviour:
     - Name: Effects
       Entry: 7
       Data: 5|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[SoundManager+SoundEffect,
-        Assembly-CSharp]], mscorlib
+        Sound]], mscorlib
     - Name: comparer
       Entry: 7
       Data: 6|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
@@ -32585,7 +32548,7 @@ MonoBehaviour:
       Data: flames
     - Name: $v
       Entry: 7
-      Data: 7|SoundManager+SoundEffect, Assembly-CSharp
+      Data: 7|SoundManager+SoundEffect, Sound
     - Name: ID
       Entry: 1
       Data: flames
@@ -32636,7 +32599,7 @@ MonoBehaviour:
       Data: fireball
     - Name: $v
       Entry: 7
-      Data: 8|SoundManager+SoundEffect, Assembly-CSharp
+      Data: 8|SoundManager+SoundEffect, Sound
     - Name: ID
       Entry: 1
       Data: fireball
@@ -32687,7 +32650,7 @@ MonoBehaviour:
       Data: death
     - Name: $v
       Entry: 7
-      Data: 9|SoundManager+SoundEffect, Assembly-CSharp
+      Data: 9|SoundManager+SoundEffect, Sound
     - Name: ID
       Entry: 6
       Data: 
@@ -32738,7 +32701,7 @@ MonoBehaviour:
       Data: damage
     - Name: $v
       Entry: 7
-      Data: 10|SoundManager+SoundEffect, Assembly-CSharp
+      Data: 10|SoundManager+SoundEffect, Sound
     - Name: ID
       Entry: 6
       Data: 
@@ -32789,7 +32752,7 @@ MonoBehaviour:
       Data: elevator
     - Name: $v
       Entry: 7
-      Data: 11|SoundManager+SoundEffect, Assembly-CSharp
+      Data: 11|SoundManager+SoundEffect, Sound
     - Name: ID
       Entry: 6
       Data: 
@@ -35533,7 +35496,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1972834503}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff979e3f1d75cad4789b26dc74a94e3c, type: 3}
   m_Name: 

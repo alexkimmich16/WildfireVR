@@ -27,8 +27,8 @@ namespace Eyes
 
 
 
-            Athena.Runtime.instance.Spells[Spell.Fireball].SpellEvent += RecieveFireball;
-            Athena.Runtime.instance.Spells[Spell.Flames].SpellEvent += RecieveFlames;
+            Athena.Runtime.instance.SpellHolder.Spells[Spell.Fireball].SpellEvent += RecieveFireball;
+            //Athena.Runtime.instance.SpellHolder.Spells[Spell.Flames].SpellEvent += RecieveFlames;
         }
         //each local controls rpcs for network as well
         public void RecieveFireball(Side side, int state)

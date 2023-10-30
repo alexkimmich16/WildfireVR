@@ -12,9 +12,9 @@ public class PlayerAudio : SerializedMonoBehaviour
     {
         //maybe transition as door opens
         AudioSpeaker.volume = SoundManager.instance.Volume(SoundType.Voice);
-        bool TeamSpeakDoor = DoorManager.instance.Sequence < DoorState.OpenOutDoor;
+        bool TeamSpeakDoor = SoundManager.CurrentDoorState < DoorState.OpenOutDoor;
         //AudioSpeaker.maxDistance = DoorManager.instance.Sequence >= SequenceState.OpenOutDoor ? SoundManager.instance.GameAudioDistance : SoundManager.instance.ElevatorAudioDistance;
-        if (DoorManager.instance.Sequence >= DoorState.OpenOutDoor)
+        if (SoundManager.CurrentDoorState >= DoorState.OpenOutDoor)
         {
             AudioSpeaker.enabled = TeamSpeakDoor ? GetPlayerTeam(transform.parent.parent.GetComponent<PhotonView>().Owner) == GetPlayerTeam(PhotonNetwork.LocalPlayer) : true;
         }

@@ -4,16 +4,9 @@ using static Odin.Net;
 using Sirenix.OdinInspector;
 using System.Linq;
 using Photon.Realtime;
-#region Classes
+using System;
+using ObjectPooling;
 
-public enum Team
-{
-    Attack = 0,
-    Defense = 1,
-    Spectator = 2,
-}
-
-#endregion
 public class InGameManager : SerializedMonoBehaviour
 {
     public static InGameManager instance;
@@ -41,12 +34,11 @@ public class InGameManager : SerializedMonoBehaviour
     public GameState CurrentState;
     #region StateEvents
 
-    public delegate void StateEvent();
-    public static event StateEvent OnBeginWaiting;
-    public static event StateEvent OnStartCountdown;
-    public static event StateEvent OnGameStart;
-    public static event StateEvent OnRestart;
-    public static event StateEvent OnFinish;
+    public static event Action OnBeginWaiting;
+    public static event Action OnStartCountdown;
+    public static event Action OnGameStart;
+    public static event Action OnRestart;
+    public static event Action OnFinish;
 
     public delegate void FinishEvent(Result result);
     public static event FinishEvent OnGameEnd;
@@ -79,7 +71,9 @@ public class InGameManager : SerializedMonoBehaviour
     private void Start()
     {
         NetworkManager.OnGameState += SetNewGameState;
+        OnRestart += OnRestartReaction;
     }
+    public void OnRestartReaction() { ObjectPoolerRefresh.RefreshObjects(); }
     public Team BestTeamForSpawn()
     {
         if (CurrentState != GameState.Waiting)
@@ -88,7 +82,7 @@ public class InGameManager : SerializedMonoBehaviour
         if (SideCount(Team.Attack) == MaxPlayers && SideCount(Team.Defense) == MaxPlayers)
             return Team.Spectator;
         else if (SideCount(Team.Attack) == SideCount(Team.Defense))
-            return ChooseAttackOnEven ? Team.Attack : (Team)Random.Range(0, 2);
+            return ChooseAttackOnEven ? Team.Attack : (Team)UnityEngine.Random.Range(0, 2);
         else
             return SideCount(Team.Attack) > SideCount(Team.Defense) ? Team.Defense : Team.Attack;
     }
@@ -236,12 +230,12 @@ public class InGameManager : SerializedMonoBehaviour
     public int TotalAlive(Team team)
     {
         int AliveNum = 0;
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        foreach(Player player in PhotonNetwork.PlayerList)
         {
             if (ShouldDebug)
-                Debug.Log("Team: " + GetPlayerTeam(PhotonNetwork.PlayerList[i]) + "  Alive: " + Alive(PhotonNetwork.PlayerList[i]));
-            if (Exists(ID.PlayerTeam, PhotonNetwork.PlayerList[i]) && Exists(ID.PlayerHealth, PhotonNetwork.PlayerList[i]))
-                if (Alive(PhotonNetwork.PlayerList[i]) && GetPlayerTeam(PhotonNetwork.PlayerList[i]) == team)
+                Debug.Log("Team: " + GetPlayerTeam(player) + "  Alive: " + Alive(player));
+            if (Exists(ID.PlayerTeam, player) && Exists(ID.PlayerHealth, player))
+                if (Alive(player) && GetPlayerTeam(player) == team)
                     AliveNum += 1;
         }
         return AliveNum;
@@ -274,23 +268,4 @@ public class InGameManager : SerializedMonoBehaviour
 
 }
 
-public enum GameState
-{
-    Waiting = 0,
-    Warmup = 1,
-    Active = 2,
-    Finished = 3,
-}
-public enum Result
-{
-    AttackWon = 0,
-    DefenseWon = 1,
-    UnDefined = 2,
-}
 
-public enum OutCome
-{
-    Win = 0,
-    Loss = 1,
-    UnDefined = 2,
-}

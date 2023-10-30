@@ -44,8 +44,8 @@ public abstract class SpellObjectClass : SerializedMonoBehaviour
         //Debug.Log("dis");
         if (AddToAmbientVFX)
             AmbientParticles.AmbientVFX.instance?.Actives.Remove(transform);
-
-        SetAudio(false);
+        if(EffectName != "")
+            SetAudio(false);
 
         Sound.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }

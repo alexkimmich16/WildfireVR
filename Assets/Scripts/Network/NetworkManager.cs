@@ -7,6 +7,8 @@ using Photon.Realtime;
 using static Odin.Net;
 using System.Linq;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using ObjectPooling;
+using System;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     #region Singleton + classes
@@ -17,14 +19,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public int MaxHealth = 100;
     public bool DebugScript = false;
 
-    public delegate void initializeEvent();
-    public static event initializeEvent OnInitialized;
-    public static event initializeEvent OnDeath;
-    public static event initializeEvent OnTakeDamage;
+    
 
-    public delegate void Fade(bool In);
-    public static event Fade DoFade;
-
+   
     public float AfterDeathWait;
 
     public bool AllowFriendlyFire;
@@ -33,9 +30,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public Dictionary<Player, Transform> PlayerList = new Dictionary<Player, Transform>();
 
-    public delegate void OnNewState(int State);
-    public static event OnNewState OnGameState;
-    public static event OnNewState OnDoorState;
+    public delegate void Fade(bool In);
+    public static event Fade DoFade;
+
+    public static event Action OnInitialized;
+    public static event Action OnDeath;
+    public static event Action OnTakeDamage;
+
+    public static event Action<int> OnGameState;
+    public static event Action<int> OnDoorState;
+
+    public void NewDoorState(int state)
+    {
+        SoundManager.instance.SetDoorAudio(state);
+    }
+    
 
     public bool CanRecieveDamage { get { return InGameManager.instance.CurrentState == GameState.Active && DoorManager.instance.Sequence > DoorState.OpenOutDoor; } }
     public static bool HasConnected { get { return PhotonNetwork.InRoom == true && Initialized(); } }
@@ -60,16 +69,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Data.Secure.instance.EndGameManage(result);
         }
     }
-    public List<GameObject> GetPlayers() { return PlayerList.Values.Select(transform => transform.gameObject).ToList(); }
+    public List<GameObject> GetPlayers() { return PlayerList.Values.Select(transform => transform.gameObject).Where(x => Alive(x.GetComponent<PhotonView>().Owner)).ToList(); }
     public List<GameObject> GetPlayers(Team team) { return GetPlayers().Where(x => GetPlayerTeam(x.GetComponent<PhotonView>().Owner) == team).ToList(); }
-    /*
-    {
-        List<GameObject> Players = new List<GameObject>();
-        for (int i = 0; i < playerList.childCount; ++i)
-            Players.Add(playerList.GetChild(i).gameObject);
-        return Players;
-    }
-    */
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
@@ -96,7 +97,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     void Start()
     {
+
+        OnInitialized += OnInitializedReaction;
+        OnDoorState += NewDoorState;
         ConnectToServer();
+    }
+    public void OnInitializedReaction()
+    {
+        ObjectPooler.instance.InitalizePool();
+        SoundManager.instance.OnInitialize();
     }
     void ConnectToServer()
     {
@@ -116,6 +125,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         roomOptions.IsOpen = true;
         PhotonNetwork.JoinOrCreateRoom("Room 1", roomOptions, TypedLobby.Default);
     }
+    
     public IEnumerator WaitForInitalized()
     {
         yield return new WaitWhile(() => Initialized() == false);
@@ -205,23 +215,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (changedProps.ContainsKey(ID.GameState))
         {
             OnGameState?.Invoke((int)((GameState)changedProps[ID.GameState]));
-        }
-            
+        } 
 
         //on DoorState change, change for everyone
         if (changedProps.ContainsKey(ID.DoorState))
         {
             OnDoorState?.Invoke((int)(DoorState)changedProps[ID.DoorState]);
         }
-
-
-
-        /*
-        foreach (string key in changedProps.Keys)
-        {
-            Debug.Log("key: " + key.ToString() + " value: " + changedProps[key]);
-        }
-        */
     }
 
     public IEnumerator MainPlayerDeath()

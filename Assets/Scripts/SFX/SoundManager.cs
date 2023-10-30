@@ -3,6 +3,8 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using static Odin.Net;
 using System.Linq;
+using System;
+
 public enum SoundType
 {
     Master = 0,
@@ -44,10 +46,12 @@ public class SoundManager : SerializedMonoBehaviour
 
     //[FoldoutGroup("VoiceChat")] public float ElevatorAudioDistance, GameAudioDistance;
     [FoldoutGroup("OnHit")] public float TimeBetweenTakeDamage;
-   
 
 
-    
+    public static event Action OnVolumeChange;
+
+    public static DoorState CurrentDoorState;
+
     public FMOD.Studio.EventInstance CreateSound(string Text)
     {
         SoundEffect effect = Effects[Text];
@@ -59,7 +63,7 @@ public class SoundManager : SerializedMonoBehaviour
     public float Volume(string ID) { return Effects[ID].Volume *  Sounds[Effects[ID].type].Volume * Sounds[SoundType.Master].Volume; }
     public float Volume(SoundType type) { return Sounds[type].Volume * Sounds[SoundType.Master].Volume; }
 
-    public FMODUnity.EventReference RandomSound(List<FMODUnity.EventReference> SoundList) { return SoundList[Random.Range(0, SoundList.Count)]; }
+    public FMODUnity.EventReference RandomSound(List<FMODUnity.EventReference> SoundList) { return SoundList[UnityEngine.Random.Range(0, SoundList.Count)]; }
 
     
 
@@ -68,8 +72,11 @@ public class SoundManager : SerializedMonoBehaviour
         float CurrentVolume = PlayerPrefs.GetFloat(soundType.ToString());
         float NewVolume = Mathf.Clamp(CurrentVolume + Change, 0f, 1f);
 
+        ///STEAMCLOUD
         PlayerPrefs.SetFloat(soundType.ToString(), NewVolume);
         Sounds[soundType].Volume = NewVolume;
+
+        OnVolumeChange?.Invoke();
     }
     private void Update()
     {
@@ -82,7 +89,7 @@ public class SoundManager : SerializedMonoBehaviour
 
         ElevatorInstance.setVolume(Volume("elevator"));
     }
-    private void OnInitialize()
+    public void OnInitialize()
     {
         ElevatorInstance = CreateSound("elevator");
         ElevatorInstance.setVolume(GetGameState() == GameState.Warmup ? Volume("elevator") : 0f);
@@ -93,11 +100,11 @@ public class SoundManager : SerializedMonoBehaviour
     {
         ElevatorInstance.setParameterByName("ElevatorState", State);
         ElevatorInstance.setVolume(Volume("elevator"));
+        CurrentDoorState = (DoorState)State;
     }
+
     private void Start()
     {
-        NetworkManager.OnInitialized += OnInitialize;
-        NetworkManager.OnDoorState += SetDoorAudio;
 
         foreach (SoundType sound in Sounds.Keys)
             Sounds[sound].Volume = PlayerPrefs.GetFloat(sound.ToString());

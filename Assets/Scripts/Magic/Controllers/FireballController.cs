@@ -56,6 +56,13 @@ public class FireballController : SpellControlClass
     public float initialSpeed;
     public float AccelerateSpeed;
     public float proximityThreshold = 2.0f;  // Distance at which fireball stops arcing and goes directly.
+
+    public float HeightOffset;
+
+
+    public List<FireballObject> Fireballs;
+
+
     //public float HitPlayerAngle;
     //public float rotationSpeed;
 
@@ -64,70 +71,26 @@ public class FireballController : SpellControlClass
 
     public float turnSpeed = 0.1f;  // How much it tries to get closer to the target directly.
 
-    public static GameObject CreateFireball(Vector3 Pos, Quaternion Rot, Transform Target, float Speed = 0.5f)
+    public static GameObject CreateFireball(Vector3 Pos, Quaternion Rot, Transform Target = null, float Speed = 0.5f)
     {
         GameObject Current = PhotonNetwork.Instantiate((AIMagicControl.instance.spells.SpellName(Spell.Fireball, 1)), Pos, Rot);
-        Current.GetPhotonView().RPC("ChangeSpeed", RpcTarget.All, Speed);
+        //Current.GetPhotonView().RPC("SetSide", RpcTarget.All, side);
 
         Current.GetComponent<FireballObject>().target = Target;
 
         return Current;
     }
-    //public Transform Debugger1;
-    //public Transform Debugger2;
 
-    //public Vector2 XYMultiplier;
-
-    public void CheckFireballForMine(object fireball)
-    {
-        for (int i = 0; i < Sides.Count; i++)
-        {
-            if(Sides[i].Fireball != null)
-            {
-                if (ReferenceEquals(fireball, Sides[i].Fireball))
-                {
-                    /*
-                    if (ConditionManager.instance.ConditionStats[i, (int)Spell.Fireball - 1].SequenceState >= 2)//controlling and fireball collides
-                    {
-                        MotionConditionInfo Condition = ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1];
-                        ConditionManager.instance.ConditionStats[i, (int)Spell.Fireball - 1].Reset();
-                        for (int j = 0; j < ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1].Sequences.Count; j++)
-                        {
-                            ConditionManager.instance.conditions.MotionConditions[(int)Motion - 1].DoEvent((Side)i, false, j, Condition.CastLevel);
-                        }
-                    }
-                    */
-                }
-            }
-        }
-    }
 
     public override void RecieveNewState(Side side, int state)
     {
         if (InGameManager.instance.CanDoMagic == false)
             return;
 
-        bool State = state == 1;
-
-        if (state == 0)
+        //bool State = state == 1;
+        if(state == 1)
         {
-            Sides[(int)side].Active = State;
-            if(UseWarmups)
-                Sides[(int)side].Warmup.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, State);
-        }
-
-        if (state == 1)
-        {
-            if (UseWarmups)
-                Sides[(int)side].Warmup.GetComponent<PhotonView>().RPC("SetOnlineVFX", RpcTarget.All, false);
             SpawnFireball(side, 1);
-        }
-
-        if(state == 2)
-        {
-            if (State == true)
-                Sides[(int)side].Fireball.transform.forward = AIMagicControl.instance.Hands[(int)side].transform.forward;
-            Sides[(int)side].Controlling = State;
         }
     }
 
@@ -135,16 +98,18 @@ public class FireballController : SpellControlClass
     public Transform GetFireballTargetPlayer(Vector3 Position, Vector3 Direction, Team team) { return NetworkManager.instance.GetPlayers(team).OrderBy(enemy => Vector3.Angle(Direction, enemy.transform.position - Position)).FirstOrDefault().transform; }
     public void SpawnFireball(Side side, int Level)
     {
-        if (InGameManager.instance.CanDoMagic == false)
-            return;
-
         SetHaptics(side, true);
-
         Vector3 Pos = new Vector3(AIMagicControl.instance.Spawn[(int)side].position.x, AIMagicControl.instance.Cam.position.y, AIMagicControl.instance.Spawn[(int)side].position.z);
         Quaternion Rot = Quaternion.LookRotation(AIMagicControl.instance.Hands[(int)side].transform.forward);
 
-        Team team = GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Attack ? Team.Defense : Team.Attack;
-        Transform Target = GetFireballTargetPlayer(Pos, AIMagicControl.instance.Hands[(int)side].transform.forward, team);
+        //check enough players to find target
+        Team OtherTeam = GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Attack ? Team.Defense : Team.Attack;
+        Transform Target = null;
+        if (NetworkManager.instance.GetPlayers(OtherTeam).Count > 0 && GetPlayerTeam(PhotonNetwork.LocalPlayer) != Team.Spectator)
+        {
+            Target = GetFireballTargetPlayer(Pos, AIMagicControl.instance.Hands[(int)side].transform.forward, OtherTeam).GetComponent<NetworkPlayer>().Head;
+        }
+            
         Sides[(int)side].Fireball = CreateFireball(Pos, Rot, Target);
 
         for (int i = 0; i < Sides.Count; i++)

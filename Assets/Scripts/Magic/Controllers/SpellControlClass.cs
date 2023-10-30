@@ -45,8 +45,8 @@ public abstract class SpellControlClass : SerializedMonoBehaviour
     public void Initalize()
     {
         InitializeSpells();
-        Athena.Runtime.instance.Spells[Motion].SpellEvent += RecieveNewState;
-        Athena.Runtime.instance.Spells[Motion].SpellEvent += DebugNewState;
+        Athena.Runtime.instance.SpellHolder.Spells[Motion].SpellEvent += RecieveNewState;
+        Athena.Runtime.instance.SpellHolder.Spells[Motion].SpellEvent += DebugNewState;
     }
     public void SetHaptics(Side side, bool State)
     {
