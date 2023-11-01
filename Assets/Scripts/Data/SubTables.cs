@@ -20,7 +20,7 @@ namespace Data
         
         void Start()
         {
-            InGameManager.OnGameEnd += AddGame;
+            //InGameManager.OnGameEnd += AddGame;
             if(FirstOpenedApplication.Year < 2000)
                 FirstOpenedApplication = DateTime.Now;
         }

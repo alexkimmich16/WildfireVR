@@ -62,6 +62,8 @@ public class FireballController : SpellControlClass
 
     public List<FireballObject> Fireballs;
 
+    public Transform PlaceholderTarget;
+
 
     //public float HitPlayerAngle;
     //public float rotationSpeed;
@@ -104,12 +106,10 @@ public class FireballController : SpellControlClass
 
         //check enough players to find target
         Team OtherTeam = GetPlayerTeam(PhotonNetwork.LocalPlayer) == Team.Attack ? Team.Defense : Team.Attack;
-        Transform Target = null;
-        if (NetworkManager.instance.GetPlayers(OtherTeam).Count > 0 && GetPlayerTeam(PhotonNetwork.LocalPlayer) != Team.Spectator)
-        {
-            Target = GetFireballTargetPlayer(Pos, AIMagicControl.instance.Hands[(int)side].transform.forward, OtherTeam).GetComponent<NetworkPlayer>().Head;
-        }
-            
+        Transform Target = GetTarget();
+
+        
+        
         Sides[(int)side].Fireball = CreateFireball(Pos, Rot, Target);
 
         for (int i = 0; i < Sides.Count; i++)
@@ -117,6 +117,15 @@ public class FireballController : SpellControlClass
             Sides[i].lastControllerRotation = AIMagicControl.instance.Hands[i].rotation;
             Sides[i].initialFireballRotation = Sides[(int)side].Fireball.transform.rotation;
             Sides[i].targetRotation = Sides[(int)side].Fireball.transform.rotation;
+        }
+
+        Transform GetTarget()
+        {
+            if (PlaceholderTarget != null)
+                return PlaceholderTarget;
+            if (NetworkManager.instance.GetPlayers(OtherTeam).Count > 0 && GetPlayerTeam(PhotonNetwork.LocalPlayer) != Team.Spectator)
+                return GetFireballTargetPlayer(Pos, AIMagicControl.instance.Hands[(int)side].transform.forward, OtherTeam).GetComponent<NetworkPlayer>().Head;
+            return null;
         }
     }
     public override void InitializeSpells()
