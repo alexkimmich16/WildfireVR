@@ -7,6 +7,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using Sirenix.OdinInspector;
 using System.Linq;
+using System;
 namespace Data
 {
     public class Secure : SerializedMonoBehaviour
@@ -38,8 +39,7 @@ namespace Data
         #endregion
         public DataInfo CurrentInfo;
 
-        public delegate void LoadFinish();
-        public static event LoadFinish OnLoadFinish;
+        public static event Action OnLoadFinish;
         public bool ShouldDebug;
 
         [Button] public void CallRegister() { StartCoroutine(Register()); }
