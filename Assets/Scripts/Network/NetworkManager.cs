@@ -100,18 +100,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         OnInitialized += OnInitializedReaction;
         OnDoorState += NewDoorState;
-        ConnectToServer();
+
+        //connect to server
+        PhotonNetwork.ConnectUsingSettings();
+        if (DebugScript == true)
+            Debug.Log("try connect to server");
     }
     public void OnInitializedReaction()
     {
         ObjectPooler.instance.InitalizePool();
         SoundManager.instance.OnInitialize();
-    }
-    void ConnectToServer()
-    {
-        PhotonNetwork.ConnectUsingSettings();
-        if (DebugScript == true)
-            Debug.Log("try connect to server");
     }
     
     public override void OnConnectedToMaster()
@@ -223,7 +221,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             OnDoorState?.Invoke((int)(DoorState)changedProps[ID.DoorState]);
         }
     }
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        if (changedProps.ContainsKey(ID.PlayerHealth))
+        {
+            if (PlayerList.ContainsKey(targetPlayer))
+            {
+                //update player object callback
+                int NewHealth = (int)changedProps[ID.PlayerHealth];
+                PlayerList[targetPlayer].GetComponent<NetworkPlayer>().OnHealthChange(NewHealth);
+            }
+            else
+            {
+                Debug.LogError("unable to find player");
+            }
+            //find relevant player object
 
+           
+            
+        }
+    }
     public IEnumerator MainPlayerDeath()
     {
         OnDeath?.Invoke();
@@ -236,4 +253,5 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         SpawnManager.instance.SetNewPosition(Team.Spectator);
         DoFade?.Invoke(true);
     }
+
 }

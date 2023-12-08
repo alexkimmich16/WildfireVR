@@ -33,6 +33,20 @@ public class NetworkPlayer : MonoBehaviourPun
 
     private float TakeDamageTimer;
 
+    public void OnHealthChange(int NewHealth)
+    {
+        //set 
+        if(NewHealth == 0)
+        {
+            //maybe remove healthbar
+        }
+
+        if (NewHealth == NetworkManager.instance.MaxHealth)
+        {
+            //initialize as alive
+        }
+    }
+
 
 
     void Start()
