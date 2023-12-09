@@ -9,7 +9,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Aura : MonoBehaviourPunCallbacks
 {
-    public VisualEffect AuraVFX;
+    public List<VisualEffect> AuraVFX;
     public static int MaxHealth = 100;
 
     private PhotonView MyPhotonView;
@@ -20,17 +20,15 @@ public class Aura : MonoBehaviourPunCallbacks
     }
     public void OnHealthChange(int NewHealth)
     {
-        Debug.Log("callked");
         float NormalizedValue = (float)NewHealth / (float)MaxHealth;
-        AuraVFX.SetFloat("Health", NormalizedValue);
+        AuraVFX.ForEach(vfx => vfx.SetFloat("Health", NormalizedValue));
         if (NewHealth == 0)
         {
-            AuraVFX.Stop();
+            AuraVFX.ForEach(vfx => vfx.Stop());
         }
         else if (NewHealth == MaxHealth)
         {
-            Debug.Log("stat");
-            AuraVFX.Play();
+            AuraVFX.ForEach(vfx => vfx.Play());
         }
     }
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
@@ -54,7 +52,7 @@ public class Aura : MonoBehaviourPunCallbacks
                 return;
             }
 
-            AuraVFX.Stop();
+            AuraVFX.ForEach(vfx => vfx.Stop());
 
         }
     }
