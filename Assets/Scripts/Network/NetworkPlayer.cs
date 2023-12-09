@@ -1,17 +1,11 @@
 using UnityEngine;
 using Photon.Pun;
-
-using Photon.Pun;
-using Photon.Realtime;
 using static Odin.Net;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using UnityEngine.VFX;
 public class NetworkPlayer : MonoBehaviourPun
 {
     public static float DeathTime = 1f;
-
-
-    //public delegate void DisolveAll();
-    //public event DisolveAll disolveEvent;
 
     public Transform Head;
     public Transform Left;
@@ -33,19 +27,7 @@ public class NetworkPlayer : MonoBehaviourPun
 
     private float TakeDamageTimer;
 
-    public void OnHealthChange(int NewHealth)
-    {
-        //set 
-        if(NewHealth == 0)
-        {
-            //maybe remove healthbar
-        }
-
-        if (NewHealth == NetworkManager.instance.MaxHealth)
-        {
-            //initialize as alive
-        }
-    }
+    
 
 
 
